@@ -83,6 +83,29 @@ public class LC1388_PizzaWith3nSlices {
         }
         return Math.max(dp[k][0], dp[k][1]);
     }
+
+    // S2: DP
+    // time = O(n^2), space = O(n^2)
+    public int maxSizeSlices4(int[] slices) {
+        int n = slices.length;
+        return Math.max(solve(slices, 0, n - 2, n / 3), solve(slices, 1, n - 1, n / 3));
+    }
+
+    private int solve(int[] slices, int start, int end, int k) {
+        int[][] f0 = new int[501][501]; // the max gain when we do not pick the i-th slice, with total j picked
+        int[][] f1 = new int[501][501]; // the max gain when we do pick the i-th slice, with total j picked
+
+        f0[start][0] = 0;
+        f1[start][1] = slices[start];
+
+        for (int i = start + 1; i <= end; i++) {
+            for (int j = 1; j <= Math.min(k, i - start + 1); j++) {
+                f0[i][j] = Math.max(f0[i - 1][j], f1[i - 1][j]);
+                f1[i][j] = f0[i - 1][j - 1] + slices[i];
+            }
+        }
+        return Math.max(f0[end][k], f1[end][k]);
+    }
 }
 /**
  * The reason behind process i in desecending order:
@@ -92,4 +115,15 @@ public class LC1388_PizzaWith3nSlices {
  * If we take descending order, we first compute dp[i] then dp[i-1],
  * where in this situation the value of dp[i-1] has not been changed
  * (The value of dp[i-1] is still the value representing dp[i-1][j-1]).
+ *
+ * x x x x x x x x
+ * house robber II => (n + 1) / 2
+ * 不能连续选2个相邻的元素
+ * 1. never pick adjacent slices
+ * 2. end -> start wrap up
+ * 3. pick as many as 3n / 3 slices
+ * x x x x 1 0 1 0 1 x x x
+ * 100010100 => 001010 => 010 => ...
+ * 3n -> n
+ * 3n - 3 -> n - 1
  */

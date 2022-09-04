@@ -18,6 +18,7 @@ public class LC1329_SorttheMatrixDiagonally {
      * @param mat
      * @return
      */
+    // S1
     // time = O((m + n) * min(m, n) * log(min(m, n))) => O(m * n * log(min(m, n)))
     // 从全局的整个过程来看，mat里所有元素都会被加入到maxHeap中一次，也会被poll()出来填回去一次，所以整体上是m * n个元素被heap操作2次
     // space = O(min(m, n))
@@ -45,4 +46,27 @@ public class LC1329_SorttheMatrixDiagonally {
         // refill the matrix in reverse direction as i, j lands on the end of the diagonal in last step
         while (i > 0 && j > 0) mat[--i][--j] = maxHeap.poll(); // O(min(m, n) * log(min(m, n)))
     }
+
+    // S2
+    // time = O(m * n * log(min(m, n))), space = O(min(m, n))
+    public int[][] diagonalSort2(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        for (int b = -(m - 1); b <= n - 1; b++) {
+            List<Integer> q = new ArrayList<>();
+            for (int x = 0, y = b; x < m && y < n; x++, y++) {
+                if (y >= 0) q.add(mat[x][y]);
+            }
+            Collections.sort(q);
+            for (int x = 0, y = b, k = 0; x < m && y < n; x++, y++) {
+                if (y >= 0) mat[x][y] = q.get(k++);
+            }
+        }
+        return mat;
+    }
 }
+/**
+ * 将坐标轴你逆时针倒转90度，变成数学坐标系，那么对角线变成 y = ax + b, a = 1 => y = x + b
+ * x = m - 1 => b = -(m - 1)
+ * y = n - 1 => b = n - 1
+ * x always >= 0
+ */

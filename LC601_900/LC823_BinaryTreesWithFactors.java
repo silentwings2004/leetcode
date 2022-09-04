@@ -22,21 +22,25 @@ public class LC823_BinaryTreesWithFactors {
      */
     // time = O(n^2), space = O(n)
     public int numFactoredBinaryTrees(int[] arr) {
-        // corner case
-        if (arr == null || arr.length == 0) return 0;
+        int n = arr.length;
+        Arrays.sort(arr);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) map.put(arr[i], i);
 
-        long res = 0L, mod = (long)1e9 + 7;
-        Arrays.sort(arr); // Sort the list A at first
-        HashMap<Integer, Long> map = new HashMap<>();
-
-        for (int i = 0; i < arr.length; i++) { // Scan A from small element to bigger
-            map.put(arr[i], 1L);
+        long[] f = new long[n];
+        long M = (long)(1e9 + 7), res = 0;
+        for (int i = 0; i < n; i++) {
+            f[i] = 1;
             for (int j = 0; j < i; j++) {
                 if (arr[i] % arr[j] == 0) {
-                    map.put(arr[i], (map.get(arr[i]) + map.get(arr[j]) * map.getOrDefault(arr[i] / arr[j], 0L)) % mod);
+                    int d = arr[i] / arr[j];
+                    if (map.containsKey(d)) {
+                        int k = map.get(d);
+                        f[i] = (f[i] + f[j] * f[k]) % M;
+                    }
                 }
             }
-            res = (res + map.get(arr[i])) % mod;
+            res = (res + f[i]) % M;
         }
         return (int) res;
     }
@@ -47,4 +51,15 @@ public class LC823_BinaryTreesWithFactors {
  * dp[i] = sum(dp[j] * dp[i / j])
  * res = sum(dp[i])
  * with i, j, i / j in the list L
+ *
+ * 父节点的值一定大于子节点的值 -> 排序
+ * 完全二叉树，要么2个儿子，要么一个儿子都没有
+ * 先求所有子节点的值
+ * f(i): 以第i个数为根的二叉树有多少种
+ * 1. 无儿子：1
+ * 2. 3*8
+ * 3. 4*6
+ * 4. 6*4
+ * 5. 8*3
+ * => f(4) * f(6)
  */

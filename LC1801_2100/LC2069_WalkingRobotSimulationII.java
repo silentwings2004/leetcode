@@ -37,7 +37,7 @@ public class LC2069_WalkingRobotSimulationII {
     private int x, y, d;
     int width, height, total;
     private int[][] directions = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    public Robot(int width, int height) {
+    public LC2069_WalkingRobotSimulationII(int width, int height) {
         this.width = width;
         this.height = height;
         x = 0;

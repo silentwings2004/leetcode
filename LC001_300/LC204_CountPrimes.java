@@ -19,7 +19,7 @@ public class LC204_CountPrimes {
         boolean[] notPrime = new boolean[n];
         int res = 0;
 
-        for (int i = 2; i <n; i++) {
+        for (int i = 2; i < n; i++) {
             if (!notPrime[i]) {
                 res++;
                 for (int j = 2; i * j < n; i++) {
@@ -49,4 +49,29 @@ public class LC204_CountPrimes {
         }
         return count;
     }
+
+    // S3: 线性筛法
+    // time = O(n), space = O(n)
+    public int countPrimes3(int n) {
+        boolean[] st = new boolean[n + 1];
+        int[] primes = new int[n];
+        int idx = 0;
+
+        for (int i = 2; i < n; i++) {
+            if (!st[i]) primes[idx++] = i;
+            for (int j = 0; i * primes[j] < n; j++) {
+                st[i * primes[j]] = true;
+                if (i % primes[j] == 0) break;
+            }
+        }
+        return idx;
+    }
 }
+/**
+ * 线性筛法
+ * 每个合数N 一定会被且只会被最小质因子筛一次
+ * p是N的最小质因子
+ * i= N/p  p <= i
+ * pj 一定 <+ i 的所有质因子
+ * 因此pj一定是pj * i的最小质因子
+ */

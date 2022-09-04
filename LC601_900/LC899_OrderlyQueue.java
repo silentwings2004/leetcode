@@ -36,10 +36,30 @@ public class LC899_OrderlyQueue {
             return res;
         }
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public String orderlyQueue2(String s, int k) {
+        if (k == 1) {
+            String res = s;
+            for (int i = 0; i < s.length(); i++) {
+                s = s.substring(1) + s.charAt(0);
+                if (res.compareTo(s) > 0) res = s;
+            }
+            return res;
+        }
+
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        return String.valueOf(chars);
+    }
 }
 /**
  * 0 [123456789]
  * 0 [891234567] => 8 [912345670]  => 8 [567091234]  => 5670912348 => 9 [123485670] => 9 [485670123] => 4856701239
  * 把被处理的数放在第一个，然后后面跑起来，总能找到个位置插进去
  * 如果不在第一个的话，就让它整体转起来,直到想插入的那个元素转移到了第一个
+ *
+ * k == 1 => O(n^2) 循环的方式，n个串里找到字典序最小的串 => 字符串的最小表示法 O(n)
+ * k >= 2 => 可以将任意相邻字符交换，其他不变 => 排序后的结果
  */

@@ -29,22 +29,25 @@ public class LC761_SpecialBinaryString {
     // time = O(n^2), space = O(n)
     public String makeLargestSpecial(String s) {
         int n = s.length();
-        if (n == 2) return s;
+        if (n <= 2) return s;
 
-        List<String> list = new ArrayList<>();
-        for (int j = 0; j < n; j++) {
-            int i = j, count = 0;
-            while (j < n) {
-                if (s.charAt(j) == '1') count++;
-                else count--;
-                if (count == 0) break;
-                j++;
-            }
-            list.add("1" + makeLargestSpecial(s.substring(i + 1, j)) + "0"); // 注意这里是从 i + 1开始！！！
-        }
-        Collections.sort(list, (o1, o2) -> o2.compareTo(o1));
+        List<String> q = new ArrayList<>();
+        int cnt = 0;
         StringBuilder sb = new StringBuilder();
-        for (String x : list) sb.append(x);
+        for (char c : s.toCharArray()) {
+            sb.append(c);
+            if (c == '1') cnt++;
+            else {
+                cnt--;
+                if (cnt == 0) {
+                    q.add('1' + makeLargestSpecial(sb.substring(1, sb.length() - 1)) + '0');
+                    sb = new StringBuilder();
+                }
+            }
+        }
+        Collections.sort(q, (o1, o2) -> o2.compareTo(o1));
+        sb = new StringBuilder();
+        for (String x : q) sb.append(x);
         return sb.toString();
     }
 }
@@ -56,4 +59,14 @@ public class LC761_SpecialBinaryString {
  * 所以对于任何一个S,只能通过内部的ABCDEF这些S'之间的位置调整,使得S自身调整至字典序最大（暂时不考虑ABCDEF内部的调整，假设它们已经各自字典序最优）。
  * 那么如何调整ABCDEF使得S的字典序最大呢？显然，只要让ABCDEF按照字典序从大到小排列即可。
  * 这就有了递归的思路。把S拆成ABCDEF，让它们各自递归成字典序最大，然后优化后的ABCDF按字典序重排，就能得到字典序最大的S。
+ *
+ * 题目等价于有效的括号系列
+ * 卡特兰数
+ * 每次将相邻的2个合法括号子串进行交换
+ * 每次只能交换同级括号
+ * 目标：括号序列的字典序最大
+ * (()) () (())
+ * 同级括号内部是独立的，每个括号内部是个子问题，递归分治
+ * 最优解内部一定是字典序最大
+ * 同级之间字典序最大 => 剑指offer AC.58
  */

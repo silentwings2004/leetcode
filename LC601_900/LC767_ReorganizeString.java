@@ -107,6 +107,38 @@ public class LC767_ReorganizeString {
         }
         return String.valueOf(res);
     }
+
+    // S4
+    // time = O(n), space = O(n)
+    public String reorganizeString4(String s) {
+        int[] count = new int[26];
+        int n = s.length(), max = 0;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            count[c - 'a']++;
+            max = Math.max(max, count[c - 'a']);
+        }
+
+        if (max > (n + 1) / 2) return "";
+
+        char[] chars = new char[n];
+        int i = 1, j = 0;
+        for (int k = 0; k < 26; k++) {
+            if (count[k] > 0 && count[k] <= n / 2) {
+                while (count[k] > 0 && i < n) {
+                    chars[i] = (char)(k + 'a');
+                    count[k]--;
+                    i += 2;
+                }
+            }
+            while (count[k] > 0 && j < n) {
+                chars[j] = (char)(k + 'a');
+                count[k]--;
+                j += 2;
+            }
+        }
+        return String.valueOf(chars);
+    }
 }
 /**
  * 用PQ的贪心法比较好 -> 哪个频次多就用哪个
@@ -148,4 +180,8 @@ public class LC767_ReorganizeString {
  * "lvovv"
  * 预期结果：
  * "vlvov"
+ *
+ * C > [n / 2]  一定无解
+ * Ci <= [n / 2]  一定有解
+ * n 为奇数  Ci > [n / 2]   Ci = [n / 2] => 放到偶数位
  */

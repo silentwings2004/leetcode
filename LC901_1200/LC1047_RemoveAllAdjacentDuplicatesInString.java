@@ -47,7 +47,7 @@ public class LC1047_RemoveAllAdjacentDuplicatesInString {
 }
 /**
  * 数学归纳法
- * n = 1 成立
+ * n = 1 成立，一个字母不能删
  * 设 k < n 均成立
- * k = n 时也成立
+ * 证明 k = n 时也成立
  */

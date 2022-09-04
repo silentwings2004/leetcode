@@ -94,4 +94,58 @@ public class LC622_DesignCircularQueue {
             this.val = val;
         }
     }
+
+    // S2
+    // time = O(1), space = O(1)
+    class MyCircularQueue {
+        int hh = 0, tt = 0;
+        int[] q;
+        public MyCircularQueue(int k) {
+            q = new int[k + 1];
+        }
+
+        public boolean enQueue(int value) {
+            if (isFull()) return false;
+            q[tt++] = value;
+            if (tt == q.length) tt = 0;
+            return true;
+        }
+
+        public boolean deQueue() {
+            if (isEmpty()) return false;
+            hh++;
+            if (hh == q.length) hh = 0;
+            return true;
+        }
+
+        public int Front() {
+            if (isEmpty()) return -1;
+            return q[hh];
+        }
+
+        public int Rear() {
+            if (isEmpty()) return -1;
+            int t = tt - 1;
+            if (t < 0) t += q.length;
+            return q[t];
+        }
+
+        public boolean isEmpty() {
+            return hh == tt;
+        }
+
+        public boolean isFull() {
+            return (tt + 1) % q.length == hh;
+        }
+    }
 }
+/**
+ * 1. h == t 表示队空
+ * 2. h != t [h, t-1]
+ * 3. 何时队满？t == h - 1
+ * 区分队空和队满，所以要开到k + 1
+ *
+ * 非循环队列
+ * 1. h > t
+ * 2. [h, t]
+ */

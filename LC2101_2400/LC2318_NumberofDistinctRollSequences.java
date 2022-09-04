@@ -65,6 +65,46 @@ public class LC2318_NumberofDistinctRollSequences {
     private int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
     }
+
+    // S1.2
+    public int distinctSequences2(int n) {
+        long[][][] f = new long[10010][7][7];
+        long M = (long)(1e9 + 7);
+
+        if (n == 1) return 6;
+
+        long count = 0;
+        for (int a = 1; a <= 6; a++) {
+            for (int b = 1; b <= 6; b++) {
+                if (a != b && gcd(b, a) == 1) {
+                    f[2][b][a] = 1;
+                    count++;
+                }
+            }
+        }
+        if (n == 2) return (int) count;
+
+        for (int i = 3; i <= n; i++) {
+            for (int a = 1; a <= 6; a++) {
+                for (int b = 1; b <= 6; b++) {
+                    if (a == b || gcd(b, a) != 1) continue;
+                    for (int c = 1; c <= 6; c++) {
+                        if (c != a) {
+                            f[i][b][a] = (f[i][b][a] + f[i - 1][c][b]) % M;
+                        }
+                    }
+                }
+            }
+        }
+
+        long res = 0;
+        for (int a = 1; a <= 6; a++) {
+            for (int b = 1; b <= 6; b++) {
+                res = (res + f[n][b][a]) % M;
+            }
+        }
+        return (int) res;
+    }
 }
 /**
  * 状态表示：f(i,j,k)
@@ -78,4 +118,26 @@ public class LC2318_NumberofDistinctRollSequences {
  * (4,j) = 1
  * 最后一位k固定不变 => 前面方案数 i - 1 类，最后两位是4和j => f(i-1,4,j)
  * time = O(6^3 * n), space = O(36n)
+ *
+ * 1. b != a
+ * 2. gcd(b,a) == 1
+ * 3. c != a
+ * dp[i][b][a] => dp[i-1][c][b]
+ * x x x x i
+ *   ? c b a
+ * for (int i = 1; i <= n; i++) {
+ *     for (int a = 1; a <= 6; a++) {
+ *         for (int b = 1; b <= 6; b++) {
+ *              for (int c = 1; c <= 6; c++) {
+ *                  if (b != a && gcd(b, a) == 1 && c != a) {
+ *                      dp[i][b][a] += dp[i - 1][c][b]
+ *                  }
+ *              }
+ *         }
+ *     }
+ * }
+ * sum dp[n][x][x]
+ * i 至少从3开始
+ * i == 2 => dp[2][x][x]
+ * i == 1 => dp[1][x][x] => 6 扔一次，共6种可能
  */

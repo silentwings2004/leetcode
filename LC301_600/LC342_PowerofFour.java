@@ -16,11 +16,21 @@ public class LC342_PowerofFour {
      * @param n
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public boolean isPowerOfFour(int n) {
         if (n == 1) return true;
         if (n > 0 && (n & (n - 1)) == 0 && (n - 1) % 3 == 0) return true;
         return false;
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public boolean isPowerOfFour2(int n) {
+        if (n <= 0) return false;
+        int r = (int) Math.sqrt(n);
+        if (r * r != n) return false;
+        return (1 << 30) % n == 0;
     }
 }
 /**
@@ -28,4 +38,8 @@ public class LC342_PowerofFour {
  * 其中满足power of 2的条件是：除了最高bit位是1，其余位都是0，所以 num & (num-1) ==0
  * 为什么num-1一定会是3的倍数呢？(4^k-1)=(2^k+1)(2^k-1)，
  * 其中2^k一定不能被3整除，余数可能是1，也可能是2，无论哪一种，(2^k+1)和(2^k-1)里必然有一个能被3整除。
+ *
+ * 1. n > 0
+ * 2. 只包含因子2 => LC231  or n 能否整除2^30
+ * 3. 平方数
  */

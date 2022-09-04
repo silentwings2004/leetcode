@@ -60,7 +60,7 @@ public class LC53_MaximumSubarray {
     }
 }
 /**
- * f[i]表示所有以nums[i]即为的区间中的最大和是多少
+ * f[i]表示所有以nums[i]结尾的区间中的最大和是多少
  * 状态计算：
  * 1.区间长度 >= 2
  * 2. 区间长度 = 1
@@ -73,4 +73,11 @@ public class LC53_MaximumSubarray {
  * 2. 最大前缀
  * 3. 最大后缀
  * 4. 总和
+ *
+ * Kadane
+ * dp[i]: 以i为结尾的subarray sum最大为多少，长度不确定，关注以i结尾
+ * 是自成一派，还是接在前面
+ * dp[i] = dp[i-1] + nums[i]  (if dp[i-1] < 0 => nums[i]反而会变小)
+ * dp[i] = nums[i]
+ * dp[i] = Math.max(dp[i-1] + nums[i], nums[i])
  */

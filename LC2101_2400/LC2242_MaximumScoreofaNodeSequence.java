@@ -78,4 +78,55 @@ public class LC2242_MaximumScoreofaNodeSequence {
         int c = nodes1.get(i), d = nodes2.get(j);
         return scores[a] + scores[b] + scores[c] + scores[d];
     }
+
+    // S2: Greedy
+    // time = O(ElogE + 9*E) = O(nlogn), space = O(n)
+    public int maximumScore2(int[] scores, int[][] edges) {
+        int n = scores.length;
+        List<int[]>[] graph = new List[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        for (int[] x : edges) {
+            int a = x[0], b = x[1];
+            graph[a].add(new int[]{scores[b], b});
+            graph[b].add(new int[]{scores[a], a});
+        }
+
+        for (int i = 0; i < n; i++) {
+            Collections.sort(graph[i], (o1, o2) -> o2[0] - o1[0]);
+            if (graph[i].size() > 3) {
+                graph[i] = Arrays.asList(graph[i].get(0), graph[i].get(1), graph[i].get(2));
+            }
+        }
+
+        int res = -1;
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            for (int[] x : graph[a]) {
+                for (int[] y : graph[b]) {
+                    int i = x[1], j = y[1];
+                    if (i != j && i != b && j != a) {
+                        res = Math.max(res, scores[i] + scores[a] + scores[b] + scores[j]);
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
 }
+/**
+ * for (edge: edges) {
+ *     a = edge[0], b = edge[1];
+ *     for (int i : top 3 of nxt[a]) {
+ *         for (int j : top 3 of nxt[b]) {
+ *              if (i!=j && i!=b && j!=a)
+ *                  i->a->b->j
+ *         }
+ *     }
+ * }
+ * let i be the largeest neighbor of a;
+ * let j be the largeest neighbor of b;
+ * i->a->b->j
+ * 顾虑就是i和b重合，j和a重合
+ * 并不需要遍历它的所有邻居，只要找top 3
+ */

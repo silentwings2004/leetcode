@@ -113,7 +113,54 @@ public class LC1054_DistantBarcodes {
         return res;
     }
 
+    // S4
+    // time = O(n), space = O(n)
+    public int[] rearrangeBarcodes4(int[] barcodes) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x : barcodes) map.put(x, map.getOrDefault(x, 0) + 1);
 
+        int i = 1, j = 0, n = barcodes.length;
+        for (int x : map.keySet()) {
+            int v = map.get(x);
+            if (v <= n / 2) {
+                while (v > 0 && i < n) {
+                    barcodes[i] = x;
+                    v--;
+                    i += 2;
+                }
+            }
+            while (v > 0 && j < n) {
+                barcodes[j] = x;
+                v--;
+                j += 2;
+            }
+        }
+        return barcodes;
+    }
+
+    // S5
+    // time = O(nlogn), space = O(n)
+    public int[] rearrangeBarcodes5(int[] barcodes) {
+        int n = barcodes.length;
+        int[] res = new int[n];
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x : barcodes) map.put(x, map.getOrDefault(x, 0) + 1);
+
+        List<int[]> q = new ArrayList<>();
+        for (int x : map.keySet()) q.add(new int[]{x, map.get(x)});
+        Collections.sort(q, (o1, o2) -> o2[1] - o1[1]);
+
+        int k = 0;
+        for (int[] p : q) {
+            while (p[1]-- > 0) {
+                res[k] = p[0];
+                k += 2;
+                if (k >= n) k = 1;
+            }
+        }
+        return res;
+    }
 }
 /**
  * ref: LC767 一模一样，LC358特例

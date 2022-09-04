@@ -22,6 +22,7 @@ public class LC1074_NumberofSubmatricesThatSumtoTarget {
      * @param target
      * @return
      */
+    // S1
     // time = O(m^2 * n^2), space = O(m * n)
     public int numSubmatrixSumTarget(int[][] matrix, int target) {
         int m = matrix.length, n = matrix[0].length;
@@ -50,6 +51,35 @@ public class LC1074_NumberofSubmatricesThatSumtoTarget {
             map.put(preSum, map.getOrDefault(preSum, 0) + 1);
         }
         return count;
+    }
+
+    // S2:
+    // time = O(m^2 * n), space = O(m * n)
+    public int numSubmatrixSumTarget2(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int[][] s = new int[m + 1][n + 1];
+
+        // 预处理下每列的前缀和
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                s[i][j] = s[i - 1][j] + matrix[i - 1][j - 1];
+            }
+        }
+
+        int res = 0;
+        for (int i = 1; i <= m; i++) { // 上行边界
+            for (int j = i; j <= m; j++) { // 下行边界
+                HashMap<Integer, Integer> map = new HashMap<>();
+                map.put(0, 1);
+                int presum = 0;
+                for (int k = 1; k <= n; k++) {
+                    presum += s[j][k] - s[i - 1][k]; // 上下行边界之间的列之和
+                    res += map.getOrDefault(presum - target, 0);
+                    map.put(presum, map.getOrDefault(presum, 0) + 1);
+                }
+            }
+        }
+        return res;
     }
 }
 /**

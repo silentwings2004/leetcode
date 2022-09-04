@@ -28,26 +28,17 @@ public class LC362_DesignHitCounter {
      * All the calls are being made to the system in chronological order (i.e., timestamp is monotonically increasing).
      * At most 300 calls will be made to hit and getHits.
      */
-    TreeMap<Integer, Integer> map;
-    int sum;
+    Queue<Integer> queue;
     public LC362_DesignHitCounter() {
-        map = new TreeMap<>();
-        sum = 0;
+        queue = new LinkedList<>();
     }
-
-    // time = O(logn), space = O(n)
+    // time = O(1), space = O(n)
     public void hit(int timestamp) {
-        sum++;
-        map.put(timestamp, sum);
+        queue.offer(timestamp);
     }
-
-    // time = O(logn), space = O(n)
+    // time = O(1), space = O(n)
     public int getHits(int timestamp) {
-        Integer left = map.floorKey(timestamp - 300);
-        Integer right = map.floorKey(timestamp);
-        int a = 0, b = 0;
-        if (left != null) a = map.get(left);
-        if (right != null) b = map.get(right);
-        return b - a;
+        while (!queue.isEmpty() && timestamp - queue.peek() >= 300) queue.poll();
+        return queue.size();
     }
 }

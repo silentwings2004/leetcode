@@ -15,14 +15,16 @@ public class LC387_FirstUniqueCharacterinaString {
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int firstUniqChar(String s) {
-        int[] freq = new int[26];
-        for (char c : s.toCharArray()) freq[c - 'a']++;
+        int[] count = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) count[s.charAt(i) - 'a']++;
 
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (freq[c - 'a'] == 1) return i;
+        int res = -1;
+        for (int i = 0; i < n; i++) {
+            if (count[s.charAt(i) - 'a'] == 1) return i;
         }
         return -1;
     }
@@ -44,5 +46,17 @@ public class LC387_FirstUniqueCharacterinaString {
             }
         }
         return map.size() == 0 ? -1 : map.entrySet().iterator().next().getValue();
+    }
+
+    // S3: lastIndexOf
+    // time = O(1), space = O(1)
+    public int firstUniqChar3(String s) {
+        int n = s.length(), res = n;
+        for (char c = 'a'; c <= 'z'; c++) {
+            int idx = s.indexOf(c);
+            if (idx == -1) continue;
+            if (idx == s.lastIndexOf(c)) res = Math.min(res, idx);
+        }
+        return res == n ? -1 : res;
     }
 }

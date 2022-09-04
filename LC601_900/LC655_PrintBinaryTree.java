@@ -65,3 +65,9 @@ public class LC655_PrintBinaryTree {
         return Math.max(lh, rh) + 1;
     }
 }
+/**
+ * 1. 确定h, w
+ * 2. 递归
+ * max{h1, h2} + 1
+ * max{w1, w2} * 2 + 1
+ */

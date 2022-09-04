@@ -96,31 +96,23 @@ public class LC2267_CheckifThereIsaValidParenthesesStringPath {
     // time = O(m * n * (m + n) / 2), space = O(m * n * (m + n) / 2);
     public boolean hasValidPath3(char[][] grid) {
         int m = grid.length, n = grid[0].length;
-        boolean[][][] dp = new boolean[101][101][101];
-        if (grid[0][0] == '(') dp[0][0][1] = true;
+        boolean[][][] f = new boolean[110][110][110];
+
+        if (grid[0][0] == '(') f[0][0][1] = true;
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                for (int k = 0; k <= 100; k++) {
-                    if (grid[i][j] == '(') {
-                        if (i >= 1 && k >= 1) {
-                            dp[i][j][k] |= dp[i - 1][j][k - 1];
-                        }
-                        if (j >= 1 && k >= 1) {
-                            dp[i][j][k] |= dp[i][j - 1][k - 1];
-                        }
-                    } else {
-                        if (i >= 1 && k + 1 <= 100) {
-                            dp[i][j][k] |= dp[i - 1][j][k + 1];
-                        }
-                        if (j >= 1 && k + 1 <= 100) {
-                            dp[i][j][k] |= dp[i][j - 1][k + 1];
-                        }
+                for (int k = 0; k <= (m + n - 1) / 2; k++) {
+                    if (i == 0 && j == 0) continue;
+                    if (k > 0 && grid[i][j] == '(') {
+                        f[i][j][k] = (i > 0 && f[i - 1][j][k - 1]) || (j > 0 && f[i][j - 1][k - 1]);
+                    } else if (grid[i][j] == ')') {
+                        f[i][j][k] = (i > 0 && f[i - 1][j][k + 1]) || (j > 0 && f[i][j - 1][k + 1]);
                     }
                 }
             }
         }
-        return dp[m - 1][n - 1][0];
+        return f[m - 1][n - 1][0];
     }
 }
 /**

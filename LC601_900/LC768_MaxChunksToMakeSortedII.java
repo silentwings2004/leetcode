@@ -30,11 +30,7 @@ public class LC768_MaxChunksToMakeSortedII {
         for (int i = 0; i < n; i++) {
             sum1 += arr[i];
             sum2 += exp[i];
-            if (sum1 == sum2) {
-                count++;
-                sum1 = 0;
-                sum2 = 0;
-            }
+            if (sum1 == sum2) count++;
         }
         return count;
     }
@@ -43,15 +39,10 @@ public class LC768_MaxChunksToMakeSortedII {
     // time = O(n), space = O(n)
     public int maxChunksToSorted2(int[] arr) {
         Stack<Integer> stack = new Stack<>();
-        int curMax = 0;
         for (int x : arr) {
-            if (stack.isEmpty() || stack.peek() <= x) {
-                stack.push(x);
-                curMax = x;
-            } else {
-                while (!stack.isEmpty() && stack.peek() > x) stack.pop();
-                stack.push(curMax);
-            }
+            int t = x;
+            while (!stack.isEmpty() && stack.peek() > x) t = Math.max(t, stack.pop());
+            stack.push(t); // 每一段只要存该段内的最大值即可！
         }
         return stack.size();
     }

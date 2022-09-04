@@ -137,6 +137,38 @@ public class LC1723_FindMinimumTimetoFinishAllJobs {
         }
         return false;
     }
+
+    // S4: brute-force
+    // time = O(n * 3^n), space = O(k + n)
+    int[] jobs, s;
+    int ans;
+    public int minimumTimeRequired4(int[] jobs, int k) {
+        this.jobs = jobs;
+        s = new int[k];
+        ans = Integer.MAX_VALUE;
+        dfs(0, 0, 0);
+        return ans;
+    }
+
+    private void dfs(int a, int b, int c) {
+        if (c > ans) return;
+        if (a == jobs.length) {
+            ans = c;
+            return;
+        }
+
+        for (int i = 0; i < b; i++) {
+            s[i] += jobs[a];
+            dfs(a + 1, b, Math.max(c, s[i]));
+            s[i] -= jobs[a];
+        }
+
+        if (b < s.length) {
+            s[b] += jobs[a];
+            dfs(a + 1, b + 1, Math.max(s[b], c));
+            s[b] -= jobs[a];
+        }
+    }
 }
 /**
  * NP问题 -> 暴搜
@@ -157,4 +189,11 @@ public class LC1723_FindMinimumTimetoFinishAllJobs {
  * 而如果先分配小的，再分配大的发现超标，之前那些dfs层数就浪费了。
  * 继续优化：
  * 如果你当前处理第i个job,如果你分配给了一个空闲的工人，如果有多个空闲的工人，你分配给谁都一样，这时候无需继续分叉，只是轮换对称了一下
+ *
+ * n个数，m 组
+ * n k => 斯特林数
+ * n = 12
+ * 最多100多万，方案数很少，暴搜即可 AC3166
+ * n 比较多，可以用模拟退火
+ * 暴搜，每次只有2类：要么放到前面的集合里，要么放入一个新的集合里
  */

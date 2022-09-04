@@ -25,31 +25,40 @@ public class LC576_OutofBoundaryPaths {
      * @param startColumn
      * @return
      */
-    // S1
-    // time = O(m * n * k), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    // S1: dp
+    // time = O(m * n * k), space = O(m * n * k)
+    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        int[][] dp = new int[m][n];
-        int M = (int)(1e9 + 7);
-        dp[startRow][startColumn] = 1;
-        int res = 0;
+        if (maxMove == 0) return 0;
+        int[][][] f = new int[m][n][maxMove + 1];
 
-        for (int k = 0; k < maxMove; k++) {
-            int[][] temp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            f[i][0][1]++;
+            f[i][n - 1][1]++;
+        }
+
+        for (int j = 0; j < n; j++) {
+            f[0][j][1]++;
+            f[m - 1][j][1]++;
+        }
+
+        int M = (int)(1e9 + 7);
+        for (int k = 1; k <= maxMove; k++) {
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
-                    for (int[] dir : DIRECTIONS) {
-                        int ii = i + dir[0];
-                        int jj = j + dir[1];
-                        if (ii < 0 || ii >= m || jj < 0 || jj >= n) {
-                            res = (res + dp[i][j]) % M;
-                        } else {
-                            temp[ii][jj] = (dp[i][j] + temp[ii][jj]) % M;
-                        }
+                    for (int[] dir : directions) {
+                        int a = i + dir[0];
+                        int b = j + dir[1];
+                        if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                        f[i][j][k] = (f[i][j][k] + f[a][b][k - 1]) % M;
                     }
                 }
             }
-            dp = temp;
+        }
+
+        int res = 0;
+        for (int k = 1; k <= maxMove; k++) {
+            res = (res + f[startRow][startColumn][k]) % M;
         }
         return res;
     }
@@ -95,4 +104,8 @@ public class LC576_OutofBoundaryPaths {
  * dp[i][j][k] = dp[i-1][j][k-1] + dp[i+1][j][k-1] + dp[i][j-1][k-1] + dp[i][j+1][k-1]
  * 本题特别注意更新新dp值得时候必须要使用上一轮的旧dp值，只有这一轮全更新完了才能全面覆盖上一轮的旧dp值，不能在旧dp里混进新的dp值
  * 另外注意从外向内走来倒推
+ *
+ * f(i,j,k): 从边界外移动了k步后移到(i,j)的方案数
+ * f(x,y,k)
+ * 1 <= k <= N
  */

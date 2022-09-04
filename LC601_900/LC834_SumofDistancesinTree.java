@@ -143,9 +143,155 @@ public class LC834_SumofDistancesinTree {
             }
         }
     }
+
+    // S3: two pass
+    // time = O(n), space = O(n)
+    final int N = 30010, M = N * 2;
+    int[] h, e, ne;
+    int[] sum, cnt, up;
+    int n, idx;
+    public int[] sumOfDistancesInTree3(int n, int[][] edges) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        sum = new int[N];
+        cnt = new int[N];
+        up = new int[N];
+        Arrays.fill(h, -1);
+
+        this.n = n;
+        idx = 0;
+
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            add(a, b);
+            add(b, a);
+        }
+
+        dfs3(0, -1);
+        dfs4(0, -1);
+
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) res[i] = sum[i] + up[i];
+        return res;
+    }
+
+    private void dfs3(int u, int p) {
+        sum[u] = 0;
+        cnt[u] = 1;
+
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (j == p) continue;
+            dfs3(j, u);
+            sum[u] += sum[j] + cnt[j];
+            cnt[u] += cnt[j];
+        }
+    }
+
+    private void dfs4(int u, int p) {
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (j == p) continue;
+            up[j] = up[u] + sum[u] - (sum[j] + cnt[j]) + n - cnt[j];
+            dfs4(j, u);
+        }
+    }
+
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
+
+    // S4: dfs
+    class Solution {
+        // time = O(n), space = O(n)
+        int[] subtree, res;
+        List<Integer>[] graph;
+        boolean[] st;
+        int n;
+        public int[] sumOfDistancesInTree(int n, int[][] edges) {
+            this.n = n;
+            subtree = new int[n];
+            res = new int[n];
+            st = new boolean[n];
+            graph = new List[n];
+            for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+
+            for (int[] edge : edges) {
+                int a = edge[0], b = edge[1];
+                graph[a].add(b);
+                graph[b].add(a);
+            }
+
+            st[0] = true;
+            dfs(0);
+
+            Arrays.fill(st, false);
+            st[0] = true;
+            res[0] = dfs2(0);
+
+            Arrays.fill(st, false);
+            st[0] = true;
+            dfs3(0);
+            return res;
+        }
+
+        private int dfs(int u) {
+            int sum = 1;
+            for (int next : graph[u]) {
+                if (st[next]) continue;
+                st[next] = true;
+                sum += dfs(next);
+            }
+            subtree[u] = sum;
+            return sum;
+        }
+
+        private int dfs2(int u) {
+            int sum = 0;
+            for (int next : graph[u]) {
+                if (st[next]) continue;
+                st[next] = true;
+                sum += dfs2(next);
+            }
+            sum += subtree[u] - 1;
+            return sum;
+        }
+
+        private void dfs3(int u) {
+            for (int next : graph[u]) {
+                if (st[next]) continue;
+                st[next] = true;
+                int b = subtree[next];
+                int a = n - b;
+                res[next] = res[u] + a - b;
+                dfs3(next);
+            }
+        }
+    }
 }
 /**
  * 树型dp
  * dp[u] 表示以 u 为根的子树，它的所有子节点到它的距离之和
  * sz[u] 表示以 u 为根的子树的节点数量
+ *
+ * down:
+ * sum[u] += sum[j] + cnt[j]
+ * cnt[u] += cnt[j]
+ *
+ * up:
+ * u 往下走的总和 = sum[u] - (sum[j] + cnt[j])
+ * up[j] = S + C = (up[u] + sum[u] - (sum[j] + cnt[j])) + (n - cnt[j])
+ *
+ * Re-root 移根
+ * f(child) -> f(parent) + a - b = f(parent) + n - 2 * subtree_size(child)
+ * b = subtree_size(child)
+ * a = n - b
+ *
+ * 0 pick a root
+ * 1 subtree_size of every node
+ * 2 distance sum towards root => f(root)
+ * 3 f(node)
  */

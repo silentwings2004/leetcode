@@ -80,6 +80,46 @@ public class LC529_Minesweeper {
         }
         return board;
     }
+
+    // S2: dfs
+    // time = O(m * n), space = O(m * n)
+    char[][] board;
+    int m, n;
+    public char[][] updateBoard2(char[][] board, int[] click) {
+        this.board = board;
+        m = board.length;
+        n = board[0].length;
+        int x = click[0], y = click[1];
+        if (board[x][y] == 'M') {
+            board[x][y] = 'X';
+            return board;
+        }
+        dfs(x, y);
+        return board;
+    }
+
+    private void dfs(int x, int y) {
+        if (board[x][y] != 'E') return;
+
+        int s = 0;
+        for (int i = Math.max(0, x - 1); i <= Math.min(m - 1, x + 1); i++) {
+            for (int j = Math.max(0, y - 1); j <= Math.min(n - 1, y + 1); j++) {
+                if (i == x && j == y) continue;
+                if (board[i][j] == 'M' || board[i][j] == 'X') s++;
+            }
+        }
+        if (s > 0) {
+            board[x][y] = (char)('0' + s);
+            return;
+        }
+        board[x][y] = 'B';
+        for (int i = Math.max(0, x - 1); i <= Math.min(m - 1, x + 1); i++) {
+            for (int j = Math.max(0, y - 1); j <= Math.min(n - 1, y + 1); j++) {
+                if (i == x && j == y) continue;
+                dfs(i, j);
+            }
+        }
+    }
 }
 /**
  * 必须要等到周围8个都遍历完了，一个地雷都没有，才能加入队列里。

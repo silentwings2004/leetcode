@@ -24,37 +24,35 @@ public class LC1830_MinimumNumberofOperationstoMakeStringSorted {
      * @return
      */
     // time = O(n), space = O(1)
-    private int mod = 1000000007;
+    long mod = (long)(1e9 + 7);
     public int makeStringSorted(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
+        int n = s.length();
+        int[] cnt = new int[26];
+        for (int i = 0; i < n; i++) cnt[s.charAt(i) - 'a']++;
 
+        long[] fact = new long[3001];
+        fact[0] = 1;
+        for (int i = 1; i <= 3000; i++) fact[i] = fact[i - 1] * i % mod;
 
-        int[] freq = new int[26];
-        for (char c : s.toCharArray()) freq[c - 'a']++;
-
-        long[] factorial = new long[3001];
-        factorial[0] = 1;
-        for (int i = 1; i <= 3000; i++) factorial[i] = factorial[i - 1] * i % mod;
-
-        long ret = 0;
-        for (int i = 0; i < s.length(); i++) {
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
             int countSmaller = 0;
-            for (int k = 0; k < s.charAt(i) - 'a'; k++) {
-                countSmaller += freq[k]; // -> 'a'
+            for (int k = 0; k < 26; k++) {
+                if (k < c - 'a') countSmaller += cnt[k];
+                else break;
             }
-
             // 求阶乘，后面有多少位
-            long ans = countSmaller * factorial[s.length() - i - 1] % mod; // -> a * 6!
+            long ans = countSmaller * fact[n - 1 - i] % mod;
 
             // 去重
             for (int k = 0; k < 26; k++) {
-                ans = ans * inv(factorial[freq[k]]) % mod;
+                ans = ans * inv(fact[cnt[k]]) % mod;
             }
-            ret = (ret + ans) % mod;
-            freq[s.charAt(i) - 'a']--;
+            res = (res + ans) % mod;
+            cnt[c - 'a']--;
         }
-        return (int)ret;
+        return (int) res;
     }
 
     private long inv(long x) {
@@ -63,6 +61,56 @@ public class LC1830_MinimumNumberofOperationstoMakeStringSorted {
             s = s * (mod - mod / x) % mod;
         }
         return s;
+    }
+
+    // S2
+    final int N = 3010, M = (int) 1e9 + 7;
+    long[] f, g;
+    public int makeStringSorted2(String s) {
+        f = new long[N];
+        g = new long[N];
+        f[0] = g[0] = 1;
+
+        int n = s.length();
+        for (int i = 1; i <= n; i++) {
+            f[i] = f[i - 1] * i % M;
+            g[i] = qmi(f[i], M - 2);
+        }
+
+        int res = 0;
+        int[] cnt = new int[26];
+        for (char c : s.toCharArray()) cnt[c - 'a']++;
+        for (char c : s.toCharArray()) {
+            int x = c - 'a';
+            for (int i = 0; i < x; i++) {
+                if (cnt[i] == 0) continue;
+                cnt[i]--;
+                res = (res + get(cnt)) % M;
+                cnt[i]++;
+            }
+            cnt[x]--;
+        }
+        return res;
+    }
+
+    private int get(int[] cnt) {
+        int sum = 0;
+        for (int i = 0; i < 26; i++) sum += cnt[i];
+        long res = f[sum];
+        for (int i = 0; i < 26; i++) {
+            res = res * g[cnt[i]] % M;
+        }
+        return (int) res;
+    }
+
+    private long qmi(long a, int b) {
+        long res = 1;
+        while (b > 0) {
+            if ((b & 1) == 1) res = res * a % M;
+            a = a * a % M;
+            b >>= 1;
+        }
+        return res;
     }
 }
 /**
@@ -100,4 +148,17 @@ public class LC1830_MinimumNumberofOperationstoMakeStringSorted {
  *  (a * b) % mod = a % mod * b % mod
  *  (a / b) % mod = a % mod / b % mod
  *  (a / b) % mod = a % mod * inv(b) % mod  逆元 给一个算一个
+ *
+ *  求小于当前排列的第一个排列
+ *  本质求当前排列的排名是多少
+ *  康拓展开，数位dp
+ *  重复排列问题
+ *  n1个a， n2个b, n3个c
+ *  n = n1 + n2 + n3
+ *  n! / (n1! * n2! * n3!)
+ *  n! % mod
+ *  (n!)^-1 % mod
+ *  费马定理
+ *  a^(p-1) % p == 1
+ *  a^(p-2)
  */

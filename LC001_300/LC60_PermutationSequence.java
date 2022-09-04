@@ -25,6 +25,7 @@ public class LC60_PermutationSequence {
      * @param k
      * @return
      */
+    // S1:
     // time = O(n^2), space = O(n)
     public String getPermutation(int n, int k) {
         List<Integer> digits = new ArrayList<>();
@@ -51,5 +52,28 @@ public class LC60_PermutationSequence {
             res *= i;
         }
         return res;
+    }
+
+    // S2
+    // time = O(n^2), space = O(1)
+    public String getPermutation2(int n, int k) {
+        StringBuilder sb = new StringBuilder();
+        boolean[] st = new boolean[10];
+        for (int i = 0; i < n; i++) {
+            int fact = 1;
+            for (int j = 1; j <= n - 1 - i; j++) fact *= j;
+
+            for (int j = 1; j <= n; j++) {
+                if (!st[j]) {
+                    if (fact < k) k-= fact;
+                    else {
+                        sb.append(j);
+                        st[j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 }

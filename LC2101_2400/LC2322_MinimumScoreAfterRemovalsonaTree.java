@@ -137,3 +137,7 @@ public class LC2322_MinimumScoreAfterRemovalsonaTree {
         }
     }
 }
+/**
+ * 先枚举下删哪条边，
+ * 然后再建树，在建好的树里再删一条边就好写了
+ */

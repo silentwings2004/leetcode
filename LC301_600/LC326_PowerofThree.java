@@ -30,4 +30,7 @@ public class LC326_PowerofThree {
 
     // S2: Math
     // time = O(1), space = O(1)
+    public boolean isPowerOfThree2(int n) {
+        return n > 0 && (int) Math.pow(3, 19) % n == 0;
+    }
 }

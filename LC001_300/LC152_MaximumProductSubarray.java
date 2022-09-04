@@ -39,4 +39,11 @@ public class LC152_MaximumProductSubarray {
 /**
  * f(i-1):最大  -> f(i)  ai > 0 => ai * f(i-1); ai < 0 => ai * g(i-1); ai == 0 => 0
  * g(i-1):最小 -> g(i)  ai > 0 => ai * g(i-1); ai < 0 => ai * f(i-1)
+ *
+ * 固定右边界，探索左边界
+ * dp[i]: maximum subarray ending at i
+ * x [x x x i] x x
+ * 找一个sum最大的左边界
+ * 突破口就是i
+ * 加和变成陈乘积
  */

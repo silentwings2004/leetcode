@@ -73,6 +73,38 @@ public class LC363_MaxSumofRectangleNoLargerThanK {
         }
         return res;
     }
+
+    // S2: prefix sum
+    // time = O(n^2 * mlogm), space = O(m);
+    int[][] presum;
+    public int maxSumSubmatrix2(int[][] matrix, int k) {
+        int m = matrix.length, n = matrix[0].length;
+        presum = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                presum[i][j] = presum[i - 1][j] + presum[i][j - 1] - presum[i - 1][j - 1] + matrix[i - 1][j - 1];
+            }
+        }
+
+        int res = Integer.MIN_VALUE;
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j <= n; j++) { // 注意： 这里j是从i开始的！！！
+                TreeSet<Integer> set = new TreeSet<>();
+                set.add(0);
+                for (int r = 1; r <= m; r++) {
+                    int s = get(1, i, r, j);
+                    Integer ck = set.ceiling(s - k);
+                    if (ck != null) res = Math.max(res, s - ck);
+                    set.add(s);
+                }
+            }
+        }
+        return res;
+    }
+
+    private int get(int x1, int y1, int x2, int y2) {
+        return presum[x2][y2] - presum[x2][y1 - 1] - presum[x1 - 1][y2] + presum[x1 - 1][y1 - 1];
+    }
 }
 /**
  * ref: LC304

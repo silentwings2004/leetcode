@@ -111,6 +111,31 @@ public class LC792_NumberofMatchingSubsequences {
         }
         return res;
     }
+
+    // S4:
+    // time = O(m + n * k), space = O(n * k)
+    public int numMatchingSubseq4(String s, String[] words) {
+        List<int[]>[] ps = new List[26];
+        for (int i = 0; i < 26; i++) ps[i] = new ArrayList<>();
+        int n = words.length;
+        for (int i = 0; i < n; i++) {
+            ps[words[i].charAt(0) - 'a'].add(new int[]{i, 0});
+        }
+
+        int res = 0;
+        for (char c : s.toCharArray()) {
+            List<int[]> buf = new ArrayList<>();
+            for (int[] p : ps[c - 'a']) {
+                if (p[1] + 1 == words[p[0]].length()) res++;
+                else buf.add(new int[]{p[0], p[1] + 1});
+            }
+            ps[c - 'a'].clear();
+            for (int[] p : buf) {
+                ps[words[p[0]].charAt(p[1]) - 'a'].add(p);
+            }
+        }
+        return res;
+    }
 }
 /**
  * 状态机 state machine

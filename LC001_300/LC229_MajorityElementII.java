@@ -17,44 +17,38 @@ public class LC229_MajorityElementII {
      * @return
      */
     // time = O(n), space = O(1)
-    public static List<Integer> majorityElement(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return new ArrayList<>();
+    public List<Integer> majorityElement(int[] nums) {
+        int r1 = 0, r2 = 0, c1 = 0, c2 = 0, n = nums.length;
+        for (int x : nums) {
+            if (c1 > 0 && x == r1) c1++;
+            else if (c2 > 0 && x == r2) c2++;
+            else if (c1 == 0) {
+                r1 = x;
+                c1++;
+            } else if (c2 == 0) {
+                r2 = x;
+                c2++;
+            } else {
+                c1--;
+                c2--;
+            }
+        }
+
+        c1 = 0;
+        c2 = 0;
+        for (int x : nums) {
+            if (x == r1) c1++;
+            else if (x == r2) c2++;
         }
         List<Integer> res = new ArrayList<>();
-        int number1 = 0, number2 = 0;
-        int count1 = 0, count2 = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == number1) {
-                count1++;
-            } else if (nums[i] == number2) {
-                count2++;
-            } else if (count1 == 0) {
-                number1 = nums[i];
-                count1 = 1;
-            } else if (count2 == 0) {
-                number2 = nums[i];
-                count2 = 1;
-            } else {
-                count1--;
-                count2--;
-            }
-        }
-        count1 = 0;
-        count2 = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == number1) {
-                count1++;
-            } else if (nums[i] == number2) {
-                count2++;
-            }
-        }
-        if (count1 > nums.length / 3) {
-            res.add(number1);
-        }
-        if (count2 > nums.length / 3) {
-            res.add(number2);
-        }
+        if (c1 > n / 3) res.add(r1);
+        if (c2 > n / 3) res.add(r2);
         return res;
     }
 }
+/**
+ * 摩尔投票法
+ * r, c
+ * 扩展到k, 开k - 1个仓库即可
+ * 消耗x0，必定要k-1个元素与它陪葬
+ */

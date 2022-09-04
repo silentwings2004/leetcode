@@ -1,5 +1,5 @@
 package LC2101_2400;
-
+import java.util.*;
 public class LC2313_MinimumFlipsinBinaryTreetoGetResult {
     /**
      * You are given the root of a binary tree with the following properties:
@@ -72,4 +72,62 @@ public class LC2313_MinimumFlipsinBinaryTreetoGetResult {
         }
         return res;
     }
+
+    // S2: dfs
+    // time = O(n), space = O(n)
+    class Solution {
+        HashMap<TreeNode, HashMap<Boolean, Integer>> memo; // memo[node][expected]
+        public int minimumFlips(TreeNode root, boolean result) {
+            memo = new HashMap<>();
+            return dfs(root, result);
+        }
+
+        private int dfs(TreeNode node, boolean expected) {
+            if (node.left == null && node.right == null) {
+                return (node.val == (expected ? 1 : 0)) ? 0 : 1;
+            }
+            if (memo.containsKey(node) && memo.get(node).containsKey(expected)) {
+                return memo.get(node).get(expected);
+            }
+
+            int ans = Integer.MAX_VALUE / 2;
+            if (node.val == 2) {
+                if (expected) {
+                    ans = Math.min(ans, dfs(node.left, true));
+                    ans = Math.min(ans, dfs(node.right, true));
+                } else {
+                    ans = Math.min(ans, dfs(node.left, false) + dfs(node.right, false));
+                }
+            } else if (node.val == 3) {
+                if (expected) {
+                    ans = Math.min(ans, dfs(node.left, true) + dfs(node.right, true));
+                } else {
+                    ans = Math.min(ans, dfs(node.left, false));
+                    ans = Math.min(ans, dfs(node.right, false));
+                }
+            } else if (node.val == 4) {
+                if (expected) {
+                    ans = Math.min(ans, dfs(node.left, false) + dfs(node.right, true));
+                    ans = Math.min(ans, dfs(node.left, true) + dfs(node.right, false));
+                } else {
+                    ans = Math.min(ans, dfs(node.left, false) + dfs(node.right, false));
+                    ans = Math.min(ans, dfs(node.left, true) + dfs(node.right, true));
+                }
+            } else {
+                TreeNode child = node.left != null ? node.left : node.right;
+                if (expected) {
+                    ans = Math.min(ans, dfs(child, false));
+                } else {
+                    ans = Math.min(ans, dfs(child, true));
+                }
+            }
+            memo.putIfAbsent(node, new HashMap<>());
+            memo.get(node).put(expected, ans);
+            return ans;
+        }
+    }
 }
+/**
+ * 递归
+ * 把对根节点的期望转嫁为对2棵子树的期望
+ */

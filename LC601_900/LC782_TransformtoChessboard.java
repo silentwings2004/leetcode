@@ -1,5 +1,5 @@
 package LC601_900;
-
+import java.util.*;
 public class LC782_TransformtoChessboard {
     /**
      * You are given an n x n binary grid board. In each move, you can swap any two rows with each other, or any two
@@ -22,6 +22,8 @@ public class LC782_TransformtoChessboard {
      * @param board
      * @return
      */
+    // S1
+    // time = O(n^2), space = O(1)
     public int movesToChessboard(int[][] board) {
         // corner case
         if (board == null || board.length == 0 || board[0] == null || board[0].length == 0) return 0;
@@ -86,6 +88,45 @@ public class LC782_TransformtoChessboard {
         }
         return res;
     }
+
+    // S2: bit Manipulation
+    // time = O(n^2), space = O(1)
+    final int INF = (int) 1e8;
+    public int movesToChessboard2(int[][] board) {
+        int n = board.length;
+        HashSet<Integer> row = new HashSet<>();
+        HashSet<Integer> col = new HashSet<>();
+
+        for (int i = 0; i < n; i++) {
+            int r = 0, c = 0;
+            for (int j = 0; j < n; j++) {
+                r = r << 1 | board[i][j];
+                c = c << 1 | board[j][i];
+            }
+            row.add(r);
+            col.add(c);
+        }
+        if (row.size() != 2 || col.size() != 2) return -1;
+
+        Iterator<Integer> rs = row.iterator();
+        Iterator<Integer> cs = col.iterator();
+        int r1 = rs.next(), r2 = rs.next();
+        int c1 = cs.next(), c2 = cs.next();
+        if ((r1 ^ r2) != (1 << n) - 1 || ((c1 ^ c2) != (1 << n) - 1)) return -1;
+
+        int s1 = 0;
+        for (int i = 0; i < n; i += 2) s1 |= 1 << i;
+        int s2 = ((1 << n) - 1) ^ s1;
+        int r_cost = Math.min(get(r1, s1), get(r1, s2));
+        int c_cost = Math.min(get(c1, s1), get(c1, s2));
+        int res = r_cost + c_cost;
+        return res >= INF ? -1 : res;
+    }
+
+    private int get(int a, int b) {
+        if (Integer.bitCount(a) != Integer.bitCount(b)) return INF;
+        return Integer.bitCount(a ^ b) / 2;
+    }
 }
 /**
  * 任意交换2行，会有什么发现呢？
@@ -115,4 +156,7 @@ public class LC782_TransformtoChessboard {
  * 如果j是偶数，j % 2 == 0，强制这一格为0，不是的话就表示放错了
  * countDiff不管在什么情况下，必须是偶数
  * 因为mismatch只能发生在一对放错的0和1之间发生，所以奇数是不行的，奇数那种pattern是不可能实现的，只有偶数的情况才能实现。
+ *
+ * 1. 只有2种不同行，进一步这两种行互补
+ * 2. 行列操作独立，因此可以分别独立考虑行和列
  */

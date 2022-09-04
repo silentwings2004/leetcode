@@ -28,32 +28,21 @@ public class LC13_RomantoInteger {
      */
     // time = O(n), space = O(1)
     public int romanToInt(String s) {
-        // corner case
         if (s == null || s.length() == 0) return 0;
 
-        int res = toNumber(s.charAt(0));
+        HashMap<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
 
-        for (int i = 1; i < s.length(); i++) {
-            if (toNumber(s.charAt(i)) > toNumber(s.charAt(i - 1))) {
-                res += toNumber(s.charAt(i)) - 2 * toNumber(s.charAt(i - 1)); // 注意因为前面已经加过第i - 1位，所以这里要减去2倍的上一位
-            } else {
-                res += toNumber(s.charAt(i));
-            }
-        }
-        return res;
-    }
-
-    private int toNumber(char c) {
-        int res = 0;
-
-        switch (c) {
-            case 'I': return 1;
-            case 'V': return 5;
-            case 'X': return 10;
-            case 'L': return 50;
-            case 'C': return 100;
-            case 'D': return 500;
-            case 'M': return 1000;
+        int n = s.length(), res = 0;
+        for (int i = 0; i < n; i++) {
+            if (i + 1 < n && map.get(s.charAt(i)) < map.get(s.charAt(i + 1))) res -= map.get(s.charAt(i));
+            else res += map.get(s.charAt(i));
         }
         return res;
     }

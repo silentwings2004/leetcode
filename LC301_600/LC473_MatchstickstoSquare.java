@@ -60,6 +60,46 @@ public class LC473_MatchstickstoSquare {
         }
         return false;
     }
+
+    // S2
+    // time = O(4^n), space = O(n)
+    int[] nums;
+    boolean[] st;
+    public boolean makesquare2(int[] matchsticks) {
+        int n = matchsticks.length;
+        nums = matchsticks;
+        st = new boolean[n];
+
+        Arrays.sort(nums);
+        int i = 0, j = n - 1;
+        while (i < j) {
+            int t = nums[i];
+            nums[i++] = nums[j];
+            nums[j--] = t;
+        }
+
+        int sum = 0;
+        for (int x : nums) sum += x;
+        if (sum % 4 != 0) return false;
+        return dfs(0, 0, sum / 4, 0);
+    }
+
+    private boolean dfs(int idx, int curLen, int len, int group) {
+        if (group == 3) return true;
+        if (curLen == len) return dfs(0, 0, len, group + 1);
+
+        for (int i = idx; i < nums.length; i++) {
+            if (st[i]) continue;
+            if (curLen + nums[i] <= len) {
+                st[i] = true;
+                if (dfs(i + 1, curLen + nums[i], len, group)) return true;
+                st[i] = false;
+            }
+            if (curLen == 0 || curLen + nums[i] == len) return false;
+            while (i + 1 < nums.length && nums[i + 1] == nums[i]) i++;
+        }
+        return false;
+    }
 }
 /**
  * ref: LC698 一模一样

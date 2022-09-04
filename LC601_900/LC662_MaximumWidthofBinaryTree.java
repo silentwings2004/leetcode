@@ -21,6 +21,7 @@ public class LC662_MaximumWidthofBinaryTree {
      * @param root
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int widthOfBinaryTree(TreeNode root) {
         if (root == null) return 0;
@@ -44,6 +45,37 @@ public class LC662_MaximumWidthofBinaryTree {
                     deque.offer(cur.right);
                 }
             }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int widthOfBinaryTree2(TreeNode root) {
+        if (root == null) return 0;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        root.val = 1;
+        queue.offer(root);
+        int res = 1;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            int l = queue.peek().val, r = 0;
+            while (size-- > 0) {
+                TreeNode cur = queue.poll();
+                int p = cur.val - l + 1; // calculate dist
+                r = cur.val;
+                if (cur.left != null) {
+                    cur.left.val = p * 2; // each level starts with idx = 1 including null
+                    queue.offer(cur.left);
+                }
+                if (cur.right != null) {
+                    cur.right.val = p * 2 + 1;
+                    queue.offer(cur.right);
+                }
+            }
+            res = Math.max(res, r - l + 1);
         }
         return res;
     }

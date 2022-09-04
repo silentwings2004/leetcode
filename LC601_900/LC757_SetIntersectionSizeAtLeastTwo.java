@@ -48,6 +48,7 @@ public class LC757_SetIntersectionSizeAtLeastTwo {
 /**
  * ref: LC452
  * 每个区间至少射2箭，看要多少箭把区间都射掉
+ * 右端点相同的时候，优先考虑短的区间，左端点要从大到小来排
  * maximum number of non-overlapping intervals => sort by ending point
  * 选区间的最后2个点，更有可能与后面的区间重合
  * 1. 新区间已经和之前最大2点重合了 => 啥都不用做

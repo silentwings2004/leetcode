@@ -24,20 +24,30 @@ public class LC565_ArrayNesting {
      */
     // time = O(n), space = O(1)
     public int arrayNesting(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         int n = nums.length, res = 0;
         for (int i = 0; i < n; i++) {
-            int next = i, count = 0;
-            while (nums[next] != -1) {
-                int temp = next;
-                count++;
-                next = nums[next];
-                nums[temp] = -1; // 把走过的node都设置成-1
+            if (nums[i] != -1) {
+                int count = 0;
+                int j = i;
+                while (nums[j] != -1) {
+                    count++;
+                    int next = nums[j];
+                    nums[j] = -1; // 把走过的node都设置成-1
+                    j = next;
+                }
+                res = Math.max(res, count);
             }
-            res = Math.max(res, count);
         }
         return res;
     }
 }
+/**
+ * 每个点只有一个入度和一个出度
+ * 一定没有链
+ * 这样的图必然是若干个环
+ * 每个集合就是一个环
+ * 本质就是找一个最大的环
+ * 从前往后遍历每个元素，遍历到第一个没有遍历过的元素，必然在一个新的环上
+ * 从这个点出发，沿着边走，回到自己的时候，环就找到了。
+ * 每找一个点标记下，表示遍历过了。
+ */

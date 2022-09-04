@@ -31,7 +31,6 @@ public class LC869_ReorderedPowerof2 {
         return false;
     }
 }
-
 /**
  * 2^N 总共就32个数，找出所有的，然后sort，看是否match
  * 找数目比较少的来进行遍历

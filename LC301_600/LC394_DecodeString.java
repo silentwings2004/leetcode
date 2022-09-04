@@ -24,6 +24,7 @@ public class LC394_DecodeString {
      * @param s
      * @return
      */
+    // S1: two stacks
     // time = O(n), space = O(n)
     public String decodeString(String s) {
         Stack<Integer> numStack = new Stack<>();
@@ -46,5 +47,30 @@ public class LC394_DecodeString {
             } else strStack.peek().append(c);
         }
         return strStack.peek().toString();
+    }
+
+    // S2: dfs
+    // time = O(maxK * n), space = O(n)
+    int u = 0;
+    public String decodeString2(String s) {
+        return dfs(s);
+    }
+
+    private String dfs(String s) {
+        int n = s.length();
+        StringBuilder sb = new StringBuilder();
+        while (u < n && s.charAt(u) != ']') {
+            if (Character.isLowerCase(s.charAt(u))) sb.append(s.charAt(u++));
+            else if (Character.isDigit(s.charAt(u))) {
+                int k = u;
+                while (k < n && Character.isDigit(s.charAt(k))) k++;
+                int x = Integer.valueOf(s.substring(u, k));
+                u = k + 1;
+                String y = dfs(s);
+                while (x-- > 0) sb.append(y);
+                u++; // 过滤掉右括号
+            }
+        }
+        return sb.toString();
     }
 }

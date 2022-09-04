@@ -24,11 +24,11 @@ public class LC1574_ShortestSubarraytobeRemovedtoMakeArraySorted {
         // corner case
         if (arr == null || arr.length == 0) return 0;
 
-        int n = arr.length, res = n - 1;
+        int n = arr.length, res = n - 1; // 可以最多删掉n-1个数，最后只保留一个数，肯定是一个解。
         // 从后往前找一个最长的递减区间
         int j = n - 1;
         while (j - 1 >= 0 && arr[j] >= arr[j - 1]) j--;
-        res = Math.min(res, j);
+        res = Math.min(res, j); // 可以删掉[0,j)，只保留[j,n-1]是一个解
         if (res == 0) return 0; // [1,2,3] 直接返回0！
 
         // 下面一定是三段论的模型，i != j，否则 j - i - 1 = -1 < 0，前提是i与j必须错开，不能相等

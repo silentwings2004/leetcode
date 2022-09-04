@@ -14,8 +14,31 @@ public class LC1302_DeepestLeavesSum {
      * @param root
      * @return
      */
+    // S1: dfs
     // time = O(n), space = O(n)
+    int deepest = 0, res = 0;
     public int deepestLeavesSum(TreeNode root) {
+        if (root == null) return 0;
+
+        dfs(root, 0);
+        return res;
+    }
+
+    private void dfs(TreeNode node, int depth) {
+        if (node == null) return;
+
+        if (depth > deepest) {
+            deepest = depth;
+            res = node.val;
+        } else if (depth == deepest) res += node.val;
+
+        dfs(node.left, depth + 1);
+        dfs(node.right, depth + 1);
+    }
+
+    // S2: bfs
+    // time = O(n), space = O(n)
+    public int deepestLeavesSum2(TreeNode root) {
         // corner case
         if (root == null) throw new IllegalArgumentException();
 

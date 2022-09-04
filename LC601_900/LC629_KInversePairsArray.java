@@ -19,6 +19,7 @@ public class LC629_KInversePairsArray {
      * @param k
      * @return
      */
+    // S1: dp
     // time = O(n * k), space = O(n * k)
     public int kInversePairs(int n, int k) {
         long[][] dp = new long[n + 1][k + 1];
@@ -32,6 +33,43 @@ public class LC629_KInversePairsArray {
             }
         }
         return (int)dp[n][k];
+    }
+
+    // S2: dp (TLE!!!)
+    // time = O(n^2 * k), space = O(n * k)
+    public int kInversePairs2(int n, int k) {
+        long[][] f = new long[n + 1][k + 1]; // f[i][j]表示1~i这些数的全排列中，逆序对数量为k的方案数量
+        f[1][0] = 1; // 表示1~1,即数1的全排列逆序对数量为0
+        long M = (long)(1e9 + 7);
+
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j <= k; j++) {
+                for (int u = 0; u < i; u++) {
+                    if (j - (i - 1 - u) >= 0) {
+                        f[i][j] = (f[i][j] + f[i - 1][j - (i - 1 - u)]) % M;
+                    }
+                }
+            }
+        }
+        return (int) f[n][k];
+    }
+
+    // S2.2 dp (optimized)
+    // time = O(n * k), space = O(n * k)
+    public int kInversePairs3(int n, int k) {
+        long[][] f = new long[n + 1][k + 1];
+        f[1][0] = 1;
+        long M = (long)(1e9 + 7);
+
+        for (int i = 2; i <= n; i++) {
+            long s = 0;
+            for (int j = 0; j <= k; j++) {
+                s += f[i - 1][j];
+                if (j - i >= 0) s -= f[i - 1][j - i];
+                f[i][j] = s % M;
+            }
+        }
+        return (int) f[n][k];
     }
 }
 /**
@@ -57,4 +95,16 @@ public class LC629_KInversePairsArray {
  * y x x x x x
  *
  * i = 1, j = 1 => dp[1][1] = dp[1][0] + dp[0][1] - dp[0][0] = 1 + 0 - 1 = 0
+ *
+ * dp
+ * 1. 状态表示 f[i][j]
+ * 集合：所有由1~i构成的包含j个逆序对的所有排列
+ * 属性：个数
+ * 2. 状态计算 —— 集合划分
+ * 第i个数的位置来划分
+ * 0 ~ i-1 => i - 1 - k 个逆序对， j - (i - 1 - k) => f[i-1][j-(i-1-k)]  k = 0,1,2,...i-1
+ * f[i][j] = f[i-1][j] + f[i-1][j-1] + ... + f[i-1][j-(i-1)]  从j开始向前循环i个数
+ * f[i][j+1] = f[i-1][j+1] + f[i-1][j] + ... + f[i-1][j+1-(i-1)]
+ * => f[i][j+1] - f[i][j] = f[i-1][j+1] - f[i-1][j-(i-1)]
+ * => f[i][j] = s + f[i-1][j] - f[i-1][j-i]
  */

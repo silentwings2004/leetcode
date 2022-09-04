@@ -45,3 +45,10 @@ public class LC72_EditDistance {
         return dp[m][n];
     }
 }
+/**
+ * 状态表示：f(i,j)
+ * 集合：将A[1~i]变成B[1~j]的所有按顺序操作的方案
+ * 属性：min
+ *
+ * 状态计算：f(i,j)
+ */

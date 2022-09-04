@@ -118,7 +118,7 @@ public class LC2333_MinimumSumofSquaredDifference {
         for (int i = 0; i < n; i++) presum[i] = (i == 0 ? 0 : presum[i - 1]) + nums.get(i);
 
         int i = 0, k = k1 + k2;
-        if (presum[n - 1] <= k) return 0;
+        if (presum[n - 1] <= k) return 0; // 所有数都可以减为0，直接输出即可，否则下面可能会搞出负数来！
         while (i < n && presum[i] - (i + 1) * nums.get(i) <= k) i++;
         i--;
 

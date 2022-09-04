@@ -21,25 +21,15 @@ public class LC45_JumpGameII {
      * @return
      */
     // S1: DP
-    // time = O(n^2), space = O(n)
+    // time = O(n), space = O(n)
     public int jump(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         int n = nums.length;
-        int[] dp = new int[n];
-        dp[0] = 0;
-
-        for (int i = 1; i < n; i++) {
-            dp[i] = Integer.MAX_VALUE;
-            for (int j = 0; j < i; j++) {
-                if (j + nums[j] >= i) {
-                    dp[i] = Math.min(dp[i], dp[j]);
-                }
-            }
-            dp[i] += 1;
+        int[] f = new int[n];
+        for (int i = 1, j = 0; i < n; i++) {
+            while (j + nums[j] < i) j++;
+            f[i] = f[j] + 1;
         }
-        return dp[n - 1];
+        return f[n - 1];
     }
 
     // S2: Greedy
@@ -85,4 +75,9 @@ public class LC45_JumpGameII {
  * 类似于一个贪心
  * [x] (x x) (o o) (* * * * * *)
  * 最少多少步 -> 层级遍历bfs -> 虚拟的遍历一遍就可以了，只要头和尾
+ *
+ * dp:
+ * f[i]: 表示从i到终点的最短距离
+ * 倒推一遍 => f[0] => O(n^2)
+ * 优化？f[i] -> 单调的
  */

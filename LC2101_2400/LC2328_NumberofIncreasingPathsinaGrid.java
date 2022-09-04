@@ -71,6 +71,7 @@ public class LC2328_NumberofIncreasingPathsinaGrid {
  * 5大类：不走 上 右 下 左
  * 拓扑序 -> 严格递增来走，所以不存在环 => 一定不重复
  *
+ * ref: LC329
  * 循环依赖
  * 单调递增
  * 10^5 -> 排序，小的元素为首元素
@@ -81,4 +82,5 @@ public class LC2328_NumberofIncreasingPathsinaGrid {
  * dp[x][y] += 1
  * sum{dp[x][y]}
  * 可以从矩阵里的任意一个位置开始想
+ * 并不需要排序
  */

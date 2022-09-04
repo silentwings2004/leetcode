@@ -52,23 +52,23 @@ public class LC528_RandomPickwithWeight {
     }
 
     // S2: TreeMap
-    TreeMap<Integer, Integer> map;
-    Random rand;
-    int total = 0;
-    // time = O(nlogn), space = O(n)
-    public Solution(int[] w) {
-        map = new TreeMap<>();
-        rand = new Random();
-        for (int i = 0; i < w.length; i++) {
-            total += w[i];
-            map.put(total, i);
-        }
-    }
-    // time = O(logn), space = O(n)
-    public int pickIndex2() {
-        int r = rand.nextInt(total) + 1;
-        return map.get(map.ceilingKey(r));
-    }
+//    TreeMap<Integer, Integer> map;
+//    Random rand;
+//    int total = 0;
+//    // time = O(nlogn), space = O(n)
+//    public Solution(int[] w) {
+//        map = new TreeMap<>();
+//        rand = new Random();
+//        for (int i = 0; i < w.length; i++) {
+//            total += w[i];
+//            map.put(total, i);
+//        }
+//    }
+//    // time = O(logn), space = O(n)
+//    public int pickIndex2() {
+//        int r = rand.nextInt(total) + 1;
+//        return map.get(map.ceilingKey(r));
+//    }
 }
 
 /**

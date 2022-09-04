@@ -18,11 +18,21 @@ public class LC1344_AngleBetweenHandsofaClock {
      * @param minutes
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public double angleClock(int hour, int minutes) {
         double h = hour * (360.0 / 12) + minutes * (360.0 / 720); // 12 hour = 12 * 60 = 720 min -> 360 degree
         double m = minutes * (360.0 / 60);
         double diff = Math.abs(h - m);
         return Math.min(diff, 360 - diff);
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public double angleClock2(int hour, int minutes) {
+        hour %= 12;
+        double x = minutes * 360 / 60;
+        double y = hour * 360 / 12 + minutes * 360.0 / (12 * 60);
+        return Math.min(Math.abs(x - y), 360 - Math.abs(x - y));
     }
 }

@@ -122,4 +122,71 @@ public class LC641_DesignCircularDeque {
             this.val = val;
         }
     }
+
+    // S2
+    class MyCircularDeque {
+        // time = O(1), space = O(k)
+        int[] q;
+        int hh, tt;
+        public MyCircularDeque(int k) {
+            q = new int[k + 1];
+            hh = 0;
+            tt = 0;
+        }
+
+        public boolean insertFront(int value) {
+            if (isFull()) return false;
+            hh = get(hh - 1);
+            q[hh] = value;
+            return true;
+        }
+
+        public boolean insertLast(int value) {
+            if (isFull()) return false;
+            q[tt++] = value;
+            tt = get(tt);
+            return true;
+        }
+
+        public boolean deleteFront() {
+            if (isEmpty()) return false;
+            hh = get(hh + 1);
+            return true;
+        }
+
+        public boolean deleteLast() {
+            if (isEmpty()) return false;
+            tt = get(tt - 1);
+            return true;
+        }
+
+        public int getFront() {
+            if (isEmpty()) return -1;
+            return q[hh];
+        }
+
+        public int getRear() {
+            if (isEmpty()) return -1;
+            return q[get(tt - 1)];
+        }
+
+        public boolean isEmpty() {
+            return hh == tt;
+        }
+
+        public boolean isFull() {
+            return get(hh - 1) == tt;
+        }
+
+        private int get(int x) {
+            return (x + q.length) % q.length;
+        }
+    }
 }
+/**
+ * [h, t]
+ * 1. 队列为空 => h == t
+ * 2. 队列已满 => t == h - 1
+ * 在取模意义下相等
+ * 3. [h, t)
+ */

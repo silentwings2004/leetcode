@@ -72,4 +72,7 @@ public class LC2335_MinimumAmountofTimetoFillCups {
  * if a == kb => k == k
  * if a = kb + r  (1 <= r <= b - 1)  => b <= r + b - 1 <= 2b - 2
  * k + 1 == k + 1
+ *
+ * 1. a >= total / 2 + 1 => a
+ * 2. a < total / 2 + 1 => (total + 1) / 2
  */

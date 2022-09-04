@@ -19,6 +19,7 @@ public class LC984_StringWithoutAAAorBBB {
      * @param b
      * @return
      */
+    // S1
     // time = (a + b)log(a + b), space = O(a + b)
     public String strWithout3a3b(int a, int b) {
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o2[0] - o1[0] : o1[1] - o2[1]);
@@ -46,6 +47,39 @@ public class LC984_StringWithoutAAAorBBB {
             if (x[0] > 0) pq.offer(x);
             if (y[0] > 0) pq.offer(y);
         }
+        return sb.toString();
+    }
+
+    // S2
+    // time = O(a + b), space = O(1)
+    public String strWithout3a3b2(int a, int b) {
+        StringBuilder sb = new StringBuilder();
+        if (a >= b) {
+            while (a > 0 || b > 0) {
+                if (a > b) {
+                    sb.append("aab");
+                    a -= 2;
+                    b--;
+                } else {
+                    sb.append("ab");
+                    a--;
+                    b--;
+                }
+            }
+        } else {
+            while (a > 0 || b > 0) {
+                if (b > a) {
+                    sb.append("bba");
+                    a--;
+                    b -= 2;
+                } else {
+                    sb.append("ba");
+                    a--;
+                    b--;
+                }
+            }
+        }
+        for (int i = 0; i < Math.abs(a + b); i++) sb.setLength(sb.length() - 1);
         return sb.toString();
     }
 }

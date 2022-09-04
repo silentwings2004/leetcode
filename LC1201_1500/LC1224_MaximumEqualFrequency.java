@@ -52,4 +52,12 @@ public class LC1224_MaximumEqualFrequency {
  * E.g. [1,1,1,2,2,3]
  * When the iteration is at index 4, the count will be equal to (length - 1).
  * It should update the result with length as it fulfil the condition.
+ *
+ * 1. 只有一种高度的柱子
+ * (1) 柱子数 > 1 => 高度必为1
+ * (2) 柱子数 = 1 => 成立
+ * 2. 有2种高度的柱子
+ * (1) 有1种柱子只出现1次，且高度=1
+ * (2) 高 = 低 + 1 且高柱子只有1个
+ * 3. > 2种，必不成立
  */

@@ -37,6 +37,7 @@ public class LC343_IntegerBreak {
     }
 
     // S2: Math
+    // time = O(1), space = O(1)
     public int integerBreak2(int n) {
         if (n == 2) return 1;
         if (n == 3) return 2;
@@ -44,6 +45,18 @@ public class LC343_IntegerBreak {
         if (n % 3 == 0) return (int) Math.pow(3, n / 3);
         else if (n % 3 == 1) return (int) Math.pow(3, n / 3 - 1) * 4; // 乘以1永远都是不合算的！
         return (int) Math.pow(3, n / 3) * 2;
+    }
+
+    // S3: Math
+    // time = O(1), space = O(1)
+    public int integerBreak3(int n) {
+        if (n <= 3) return 1 * (n - 1);
+        int p = 1;
+        while (n >= 5) {
+            n -= 3;
+            p *= 3;
+        }
+        return p * n;
     }
 }
 /**
@@ -54,4 +67,11 @@ public class LC343_IntegerBreak {
  * M -> M/2 * M/2
  * M, n => pow(M/n, n)
  * M / n = e = 2.73
+ *
+ * 尽可能分成3和2，最多只能有2个2
+ * n = a1 + a2 + ... + ak
+ * 1. ai >= 5 => ai = 3 + (ai - 3),
+ * 2. 不包含1
+ * 3. ai = 4 = 2 + 2 => 不包含4
+ * 如果多于2个2，随意找出3个2， 2 + 2 + 2 = 6 = 3 + 3，分成2个3更好
  */

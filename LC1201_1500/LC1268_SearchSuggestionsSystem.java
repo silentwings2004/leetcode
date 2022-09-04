@@ -99,36 +99,27 @@ public class LC1268_SearchSuggestionsSystem {
         }
     }
 
-    // S2: Sort + B.S.
-    // time = O((m + n) * logn), space = O(n * k + m)
+    // S2: sort
+    // time = O(nlogn), space = O(n)
     public List<List<String>> suggestedProducts2(String[] products, String searchWord) {
-        List<List<String>> res = new ArrayList<>();
-
         Arrays.sort(products); // O(nlogn)
 
-        int n = products.length;
+        List<List<String>> res = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
+        int k = 0, n = products.length;
         for (char c : searchWord.toCharArray()) { // O(m)
+            List<String> t = new ArrayList<>();
             sb.append(c);
-            int idx = upperBound(products, sb.toString()); // O(logn)
-            List<String> path = new ArrayList<>();
-            for (int i = idx; i < Math.min(idx + 3, n); i++) {
-                if (products[i].length() < sb.length()) break;
-                if (products[i].substring(0, sb.length()).equals(sb.toString())) path.add(products[i]);
+            while (k < n && products[k].compareTo(sb.toString()) < 0) k++;
+            for (int i = k; i < Math.min(n, k + 3); i++) {
+                int m = products[i].length();
+                if (products[i].substring(0, Math.min(m, sb.length())).equals(sb.toString())) {
+                    t.add(products[i]);
+                }
             }
-            res.add(new ArrayList<>(path));
+            res.add(t);
         }
         return res;
-    }
-
-    private int upperBound(String[] nums, String t) {
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid].compareTo(t) < 0) left = mid + 1;
-            else right = mid;
-        }
-        return nums[left].compareTo(t) >= 0 ? left : left + 1;
     }
 
     // S3: TreeMap

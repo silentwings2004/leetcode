@@ -54,39 +54,40 @@ public class LC706_DesignHashMap {
         }
     }
 
-    // S2
+    // S2: 拉链法
     class MyHashMap {
-        int n = 19997;
-        List<int[]>[] buckets;
+        // time = O(n), space = O(n)
+        final int N = 19997;
+        List<int[]>[] h;
         public MyHashMap() {
-            buckets = new List[n];
-            for (int i = 0; i < n; i++) buckets[i] = new ArrayList<>();
+            h = new List[N];
+            for (int i = 0; i < N; i++) h[i] = new ArrayList<>();
         }
 
         public void put(int key, int value) {
-            int t = key % n;
-            int k = find(buckets[t], key);
-            if (k == -1) buckets[t].add(new int[]{key, value});
-            else buckets[t].get(k)[1] = value;
+            int t = key % N;
+            int k = find(h[t], key);
+            if (k == -1) h[t].add(new int[]{key, value});
+            else h[t].get(k)[1] = value;
         }
 
         public int get(int key) {
-            int t = key % n;
-            int k = find(buckets[t], key);
+            int t = key % N;
+            int k = find(h[t], key);
             if (k == -1) return -1;
-            return buckets[t].get(k)[1];
+            return h[t].get(k)[1];
         }
 
         public void remove(int key) {
-            int t = key % n;
-            int k = find(buckets[t], key);
-            if (k != -1) buckets[t].remove(k);
+            int t = key % N;
+            int k = find(h[t], key);
+            if (k != -1) h[t].remove(k);
         }
 
-        private int find(List<int[]> bucket, int key) {
-            int t = key % n;
-            for (int i = 0; i < bucket.size(); i++) {
-                if (bucket.get(i)[0] == key) return i;
+        private int find(List<int[]> h, int x) {
+            int n = h.size();
+            for (int i = 0; i < n; i++) {
+                if (h.get(i)[0] == x) return i;
             }
             return -1;
         }

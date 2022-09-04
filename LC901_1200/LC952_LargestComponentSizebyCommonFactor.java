@@ -88,6 +88,52 @@ public class LC952_LargestComponentSizebyCommonFactor {
         }
         return primes;
     }
+
+    // S2: Union Find
+    // time = O(n * sqrt(n)), space = O(n)
+    int[] p, s;
+    public int largestComponentSize2(int[] nums) {
+        int n = nums.length;
+        p = new int[n];
+        s = new int[n];
+        for (int i = 0; i < n; i++) {
+            p[i] = i;
+            s[i] = 1;
+        }
+
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            for (int j = 1; j <= x / j; j++) {
+                if (x % j == 0) {
+                    if (j > 1) {
+                        map.putIfAbsent(j, new ArrayList<>());
+                        map.get(j).add(i);
+                    }
+                    map.putIfAbsent(x / j, new ArrayList<>());
+                    map.get(x / j).add(i);
+                }
+            }
+        }
+
+        int res = 1;
+        for (List<Integer> v : map.values()) {
+            for (int i = 1; i < v.size(); i++) {
+                int a = v.get(0), b = v.get(i);
+                if (find(a) != find(b)) {
+                    s[find(a)] += s[find(b)];
+                    p[find(b)] = find(a);
+                    res = Math.max(res, s[find(a)]);
+                }
+            }
+        }
+        return res;
+    }
+
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
+    }
 }
 /**
  * union find
@@ -107,4 +153,9 @@ public class LC952_LargestComponentSizebyCommonFactor {
  * 做配对的话是O(n^2 * logM)
  * primes = [ ]  O(Mloglogn) 非常高效的算法，非常接近于线性时间复杂度
  * 因式分解部分比较慢
+ *
+ * 枚举公约数
+ * sqrt(n)
+ * 将每一个数都挂到所有大于1的约数下面，然后再去枚举公约数
+ * 将每一个公约数下面挂的所有点用并查集合并起来即可。
  */

@@ -17,6 +17,7 @@ public class LC793_PreimageSizeofFactorialZeroesFunction {
      * @param k
      * @return
      */
+    // S1
     // time = O((logk)^2), space = O(logk)
     public int preimageSizeFZF(int k) {
         long left = 1, right = 5 * (long)1e9; // left从1开始，因为即使是0! = 1
@@ -36,6 +37,31 @@ public class LC793_PreimageSizeofFactorialZeroesFunction {
             count += x / i;
         }
         return count;
+    }
+
+    // S2
+    // time = O((logk)^2), space = O(1)
+    public int preimageSizeFZF2(int k) {
+        return (int)(calc(k) - calc(k - 1));
+    }
+
+    private long calc(int k) {
+        long l = -1, r = (long) 1e18;
+        while (l < r) {
+            long mid = l + r + 1 >> 1;
+            if (helper(mid) <= k) l = mid;
+            else r = mid - 1;
+        }
+        return r;
+    }
+
+    private long helper(long x) {
+        long res = 0;
+        while (x > 0) {
+            res += x / 5;
+            x /= 5;
+        }
+        return res;
     }
 }
 /**

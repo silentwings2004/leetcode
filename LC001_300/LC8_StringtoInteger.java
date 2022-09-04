@@ -18,6 +18,7 @@ public class LC8_StringtoInteger {
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int myAtoi(String s) {
         s = s.trim();
@@ -41,5 +42,34 @@ public class LC8_StringtoInteger {
             if (res * sign < Integer.MIN_VALUE) return Integer.MIN_VALUE;
         }
         return (int) res * sign;
+    }
+
+    // S2:
+    // time = O(n), space = O(1)
+    public int myAtoi2(String s) {
+        if (s == null) return 0;
+        s = s.trim();
+        int n = s.length();
+        if (n == 0) return 0;
+
+        int sign = 1, k = 0;
+        if (s.charAt(0) == '+') k++;
+        else if (s.charAt(0) == '-') {
+            k++;
+            sign = -1;
+        }
+
+        int res = 0;
+        while (k < n && Character.isDigit(s.charAt(k))) {
+            int x = s.charAt(k) - '0';
+            // res = res * 10 + x > INT_MAX
+            if (sign > 0 && res > (Integer.MAX_VALUE - x) / 10) return Integer.MAX_VALUE;
+            // -res * 10 - x < INT_MIN
+            if (sign < 0 && -res < (Integer.MIN_VALUE + x) / 10) return Integer.MIN_VALUE;
+            if (-res * 10 - x == Integer.MIN_VALUE) return Integer.MIN_VALUE;
+            res = res * 10 + x;
+            k++;
+        }
+        return res * sign;
     }
 }

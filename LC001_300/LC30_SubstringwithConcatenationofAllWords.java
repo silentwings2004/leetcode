@@ -22,7 +22,7 @@ public class LC30_SubstringwithConcatenationofAllWords {
      * @param words
      * @return
      */
-    // time = O(n * l * w), space = O(n * w)    l: length of string s, n: words.length
+    // time = O((m + n) * w), space = O(n * w)    m: length of string s, n: words.length
     public List<Integer> findSubstring(String s, String[] words) {
         List<Integer> res = new ArrayList<>();
         // corner case

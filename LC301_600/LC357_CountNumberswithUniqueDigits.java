@@ -17,14 +17,25 @@ public class LC357_CountNumberswithUniqueDigits {
      */
     // time = O(n), space = O(1)
     public int countNumbersWithUniqueDigits(int n) {
-        if (n == 0) return 1;
-        if (n == 1) return 10;
+        int res = 1; // 0
+        for (int len = 1; len <= n; len++) {
+            res += A(10, len) - A(9, len - 1);
+        }
+        return res;
+    }
 
-        int res = 10, cur = 9;
-        for (int i = 0; i < n - 1; i++) {
-            cur *= 9 - i;
-            res += cur;
+    private int A(int m, int n) {
+        int res = 1;
+        for (int i = 0; i < n; i++) {
+            res *= m - i;
         }
         return res;
     }
 }
+/**
+ * xxxxxxxx => 0 ~ 9 => A(10, 8) - A(9, 7) 不能有leading zero
+ * xxxx => A(10, len) - A(9, len - 1)
+ * xx
+ * x => 允许有leading 0 => 0, 1~9 单独处理下 => A(10, 1) - A(9,0) = 10 - 1 = 9
+ * 0 => 1
+ */

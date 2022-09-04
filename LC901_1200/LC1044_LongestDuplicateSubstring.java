@@ -18,6 +18,7 @@ public class LC1044_LongestDuplicateSubstring {
      * @param s
      * @return
      */
+    // S1: rolling hash
     // time = O(nlogn), space = O(n)
     HashMap<Integer, Integer> map;
     public String longestDupSubstring(String s) {
@@ -51,6 +52,52 @@ public class LC1044_LongestDuplicateSubstring {
             }
         }
         return false;
+    }
+
+    // S2: string hash
+    // time = O(nlogn), space = O(n)
+    final int N = 30010, P = 131;
+    long[] h, p;
+    int n, start;
+    public String longestDupSubstring2(String s) {
+        if (s == null || s.length() == 0) return "";
+        n = s.length();
+
+        h = new long[N];
+        p = new long[N];
+        p[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            p[i] = p[i - 1] * P;
+            h[i] = h[i - 1] * P + s.charAt(i - 1);
+        }
+
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (check(mid)) l = mid;
+            else r = mid - 1;
+        }
+
+        check(l);
+        return s.substring(start - 1, start - 1 + l);
+    }
+
+    private boolean check(int t) {
+        HashSet<Long> set = new HashSet<>();
+        for (int i = 1; i + t - 1 <= n; i++) {
+            long v = get(i, i + t - 1);
+            if (set.contains(v)) {
+                start = i;
+                return true;
+            }
+            set.add(v);
+        }
+        return false;
+    }
+
+    private long get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
     }
 }
 /**

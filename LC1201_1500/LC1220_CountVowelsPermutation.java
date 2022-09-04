@@ -43,6 +43,35 @@ public class LC1220_CountVowelsPermutation {
         for (long x : dp) res = (res + x) % M;
         return (int) res;
     }
+
+    // S2: dp
+    // time = O(n), space = O(n)
+    public int countVowelPermutation2(int n) {
+        int mod = (int)(1e9 + 7);
+        int[][] f = new int[n + 1][5];
+        boolean[][] g = new boolean[5][5];
+        g[0][1] = true;
+        g[1][0] = g[1][2] = true;
+        g[2][0] = g[2][1] = g[2][3] = g[2][4] = true;
+        g[3][2] = g[3][4] = true;
+        g[4][0] = true;
+
+        for (int i = 0; i < 5; i++) f[1][i] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+                    if (g[k][j]) {
+                        f[i][j] = (f[i][j] + f[i - 1][k]) % mod;
+                    }
+                }
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < 5; i++) {
+            res = (res + f[n][i]) % mod;
+        }
+        return res;
+    }
 }
 /**
  * ref:LC935
@@ -51,4 +80,11 @@ public class LC1220_CountVowelsPermutation {
  * dp[i]['a'] = dp[i+1]['e']
  * dp[i]['e'] = dp[i+1]['a'] + dp[i+1]['i']
  * 从后往前构造
+ *
+ * dp:
+ * 状态表示f[i,j]
+ * 1. 集合：所有长度为i，最后1位位j的合法序列的集合
+ * 2. 属性：数量
+ *
+ * 状态计算：按照倒数第二位来分类，一共5种：a e i o u
  */

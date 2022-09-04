@@ -154,4 +154,66 @@ public class LC2277_ClosestNodetoPathinTree {
         }
         return false;
     }
+
+    // S3: pre-processing 2d dist matrix
+    // time = O(n^2), space = O(n^2)
+    List<Integer>[] graph;
+    int[][] matrix;
+    int dist, res;
+    public int[] closestNode3(int n, int[][] edges, int[][] query) {
+        graph = new List[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        matrix = new int[n][n];
+
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            graph[a].add(b);
+            graph[b].add(a);
+        }
+
+        for (int i = 0; i < n; i++) dfs2(i, i, 0);
+
+        int m = query.length;
+        int[] ans = new int[m];
+        for (int i = 0; i < m; i++) {
+            int start = query[i][0], end = query[i][1], node = query[i][2];
+            dist = Integer.MAX_VALUE;
+            res = 0;
+            solve(start, end ,node);
+            ans[i] = res;
+        }
+        return ans;
+    }
+
+    private void dfs2(int root, int cur, int d) {
+        for (int next : graph[cur]) {
+            if (next != root && matrix[root][next] == 0) {
+                matrix[root][next] = d + 1;
+                dfs2(root, next, d + 1);
+            }
+        }
+    }
+
+    private void solve(int cur, int end, int node) {
+        if (matrix[cur][node] < dist) {
+            dist = matrix[cur][node];
+            res = cur;
+        }
+
+        for (int next : graph[cur]) {
+            if (matrix[cur][end] == matrix[next][end] + 1) {
+                solve(next, end, node);
+                break;
+            }
+        }
+    }
 }
+/**
+ * 本题的时间复杂度要求是O(N^2)，所以常规解法是，从node开始dfs得到所有节点到node的距离dist2node。
+ * 然后从start开始dfs整棵树，对于能够通往end的这个分支上的节点，取最小的dist2node。
+ *
+ * 本题还有一种比较精彩的解法。
+ * 先遍历所有的点作为起点，dfs整棵树，这样得到全局的matrix[i][j]表示任意两点之间的距离。
+ * 然后对于start，我们遍历它的邻居j，发现如果有matrix[start][end]==matrix[j][end]+1，说明j是位于从start到end的路径上。
+ * 依次递归下去，就能直接从start走向end，沿途中取最小的matrix[j][node].
+ */

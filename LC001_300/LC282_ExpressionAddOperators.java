@@ -91,6 +91,45 @@ public class LC282_ExpressionAddOperators {
             }
         }
     }
+
+    // S3: DFS
+    // time = O(4^n), space = O(n)
+    List<String> res;
+    char[] path;
+    public List<String> addOperators3(String num, int target) {
+        res = new ArrayList<>();
+        path = new char[100];
+
+        dfs(num, target, 0, 0, 0, 1);
+        return res;
+    }
+
+    private void dfs(String num, int t, int idx, int len, long a, long b) {
+        if (idx == num.length()) {
+            if (a == t) res.add(new String(path, 0, len - 1));
+            return;
+        }
+        long c = 0;
+        for (int i = idx; i < num.length(); i++) {
+            c = c * 10 + num.charAt(i) - '0';
+            path[len++] = num.charAt(i);
+
+            // +
+            path[len] = '+';
+            dfs(num, t, i + 1, len + 1, a + b * c, 1);
+
+            if (i + 1 < num.length()) {
+                // -
+                path[len] = '-';
+                dfs(num, t, i + 1, len + 1, a + b * c, -1);
+
+                // *
+                path[len] = '*';
+                dfs(num, t, i + 1, len + 1, a, b * c);
+            }
+            if (num.charAt(idx) == '0') break; // 只进行第一轮的单独是个0的情况，如果一旦要拼上第二个数，就要提前break!
+        }
+    }
 }
 /**
  * 靠的就是暴力搜索

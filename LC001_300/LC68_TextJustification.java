@@ -38,6 +38,7 @@ public class LC68_TextJustification {
      * @param maxWidth
      * @return
      */
+    // S1
     // time = O(n), space = O(n)   n: 数组 words 中所有字符串的长度之和
     public List<String> fullJustify(String[] words, int maxWidth) {
         List<String> res = new ArrayList<>();
@@ -96,6 +97,43 @@ public class LC68_TextJustification {
         for (int i = 0; i < k; i++) sb.append(" ");
         return sb.toString();
     }
+
+    // S2
+    // time = O(n), space = O(n)   n: 数组 words 中所有字符串的长度之和
+    public List<String> fullJustify2(String[] words, int maxWidth) {
+        List<String> res = new ArrayList<>();
+        int n = words.length;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1, len = words[i].length();
+            while (j < n && len + 1 + words[j].length() <= maxWidth) {
+                len += 1 + words[j++].length();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            if (j == n || j == i + 1) { // 左对齐
+                sb.append(words[i]);
+                for (int k = i + 1; k < j; k++) {
+                    sb.append(' ').append(words[k]);
+                }
+                while (sb.length() < maxWidth) sb.append(' ');
+            } else { // 左右对齐
+                int cnt = j - i - 1, r = maxWidth - len + cnt;
+                sb.append(words[i]);
+                int k = 0;
+                while (k < r % cnt) { // 处理空格多1的情况
+                    sb.append(" ".repeat(r / cnt + 1)).append(words[i + k + 1]);
+                    k++;
+                }
+                while (k < cnt) { // 处理不多一个空格的情况
+                    sb.append(" ".repeat(r / cnt)).append(words[i + k + 1]);
+                    k++;
+                }
+            }
+            res.add(sb.toString());
+            i = j - 1;
+        }
+        return res;
+    }
 }
 /**
  * 两端对齐
@@ -106,4 +144,11 @@ public class LC68_TextJustification {
  * |xx  xx  xx xx xx xx|
  * 6 / 4 = 1 ... 2
  * 如果是最后一行，就不需要做两端对齐，正常输出即可，空格都放到最后面。
+ *
+ * 1. 最后一行：左对齐
+ * 2. 只包含一个单词：左对齐
+ * 3. 一般情况：左右对齐
+ * r应该是rest的缩写，表示这一行（除了words)剩下的字符（即空格），cnt就是间隙数。
+ * 第一个while循环就是处理空格多1的情况，比如y总举的例子，11个空格，3个间隙，那么前两个间隙就是4个空格；
+ * 第二个while循环就是不多一个空格，也就是例子中的第三个间隙只有3个空格。
  */
