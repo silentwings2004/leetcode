@@ -1,4 +1,4 @@
-package LC2101_2400;
+package LC2401_2700;
 
 public class LC2401_LongestNiceSubarray {
     /**
