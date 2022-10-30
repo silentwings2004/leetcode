@@ -57,4 +57,7 @@ public class LC902_NumbersAtMostNGivenDigitSet {
  * 当选择的第i位上的数字确定为num[i]的时候，我们就递归处理下一位即可。
  * 注意在边界条件，当处理完所有的K位之后，这意味一路都是贴着上限走过来的，必须还要count+=1。
  * 这个代表着恰好所构造出来的上限N。
+ *
+ * 数位dp
+ *
  */

@@ -19,23 +19,23 @@ public class LC372_SuperPow {
      * @return
      */
     // time = O(sum(logbi)), space = O(1)
-    long M = 1337;
+    final long p = 1337;
     public int superPow(int a, int[] b) {
         if (a == 1) return 1;
 
         long res = 1;
-        for (int e : b) {
-            res = quickPow(res, 10) * quickPow(a, e) % M;
+        for (int x : b) {
+            res = qmi(res, 10) * qmi(a, x) % p;
         }
         return (int) res;
     }
 
-    private long quickPow(long x, long y) {
-        long res = 1, cur = x;
-        while (y > 0) {
-            if ((y & 1) == 1) res = res * cur % M;
-            cur = cur * cur % M;
-            y >>= 1;
+    private long qmi(long a, long k) {
+        long res = 1;
+        while (k > 0) {
+            if ((k & 1) == 1) res = res * a % p;
+            a = a * a % p;
+            k >>= 1;
         }
         return res;
     }

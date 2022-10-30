@@ -31,6 +31,7 @@ public class LC2204_DistancetoaCycleinUndirectedGraph {
      * @param edges
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int[] distanceToCycle(int n, int[][] edges) {
         List<Integer>[] graph = new List[n];
@@ -96,4 +97,60 @@ public class LC2204_DistancetoaCycleinUndirectedGraph {
         status[cur] = 2;
         return false;
     }
+
+    // S2: Topological Sort
+    // time = O(n), space = O(n)
+    public int[] distanceToCycle2(int n, int[][] edges) {
+        List<Integer>[] graph = new List[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        int[] degree = new int[n];
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            graph[a].add(b);
+            graph[b].add(a);
+            degree[a]++;
+            degree[b]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i< n; i++) {
+            if (degree[i] == 1) queue.offer(i);
+        }
+
+        int[] res = new int[n];
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            res[cur] = -1;
+
+            for (int next : graph[cur]) {
+                degree[next]--;
+                if (degree[next] == 1) queue.offer(next);
+            }
+        }
+
+        queue.clear();
+        for (int i = 0; i < n; i++) {
+            if (res[i] == 0) queue.offer(i);
+        }
+
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            for (int next : graph[cur]) {
+                if (res[next] != -1) continue;
+                res[next] = res[cur] + 1;
+                queue.offer(next);
+            }
+        }
+        return res;
+    }
 }
+/**
+ * 无向图
+ * 没有入度和出度之分
+ * 度为1
+ * 我们首先将所有度为1的点放入队列，按照层级遍历的顺序BFS：
+ * 每弹出一个节点A，就考察其邻接节点并将度减去1，如果邻接节点度降为了1，就将其加入队列。
+ * 持续BFS直至队列为空。
+ * 此时所有未曾访问的点都一定是在环上。
+ * 我们再将这些点作为初始点放入队列中，重新开始BFS，就可以得到所有非环节点距离环的最短距离。
+ */

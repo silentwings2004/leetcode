@@ -1,5 +1,7 @@
 package LC601_900;
 
+import java.util.HashSet;
+
 public class LC718_MaximumLengthofRepeatedSubarray {
     /**
      * Given two integer arrays nums1 and nums2, return the maximum length of a subarray that appears in both arrays.
@@ -15,6 +17,7 @@ public class LC718_MaximumLengthofRepeatedSubarray {
      * @param nums2
      * @return
      */
+    // S1: DP
     // time = O(m * n), space = O(m * n)
     public int findLength(int[] nums1, int[] nums2) {
         int m = nums1.length, n = nums2.length;
@@ -30,6 +33,44 @@ public class LC718_MaximumLengthofRepeatedSubarray {
             }
         }
         return res;
+    }
+
+    // S2: BS + hash
+    // time = O(m + nlogn), space = O(m + n)
+    final int P = 131;
+    int n, m;
+    long[] ha, hb, p;
+    public int findLength2(int[] nums1, int[] nums2) {
+        n = nums1.length;
+        m = nums2.length;
+        ha = new long[n + 1];
+        hb = new long[m + 1];
+        p = new long[n + 1];
+        for (int i = 1; i <= n; i++) ha[i] = ha[i - 1] * P + nums1[i - 1];
+        for (int i = 1; i <= m; i++) hb[i] = hb[i - 1] * P + nums2[i - 1];
+        p[0] = 1;
+        for (int i = 1; i <= n; i++) p[i] = p[i - 1] * P;
+
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (check(mid)) l = mid;
+            else r = mid - 1;
+        }
+        return r;
+    }
+
+    private long get(long[] h, int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+
+    private boolean check(int mid) {
+        HashSet<Long> set = new HashSet<>();
+        for (int i = mid; i <= n; i++) set.add(get(ha, i - mid + 1, i));
+        for (int i = mid; i <= m; i++) {
+            if (set.contains(get(hb, i - mid + 1, i))) return true;
+        }
+        return false;
     }
 }
 /**

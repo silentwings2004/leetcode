@@ -82,6 +82,34 @@ public class LC1235_MaximumProfitinJobScheduling {
         }
         return dp.get(left)[0] <= t ? left : left - 1;
     }
+
+    // S3: DP
+    // time = O(nlogn), space = O(n)
+    public int jobScheduling3(int[] startTime, int[] endTime, int[] profit) {
+        int n = startTime.length;
+        int[][] jobs = new int[n][3];
+        for (int i = 0; i < n; i++) {
+            jobs[i] = new int[]{startTime[i], endTime[i], profit[i]};
+        }
+        Arrays.sort(jobs, (o1, o2) -> o1[1] - o2[1]);
+
+        int[] f = new int[n];
+        f[0] = jobs[0][2];
+
+        for (int i = 1; i < n; i++) {
+            f[i] = Math.max(f[i - 1], jobs[i][2]);
+            if (jobs[0][1] <= jobs[i][0]) {
+                int l = 0, r = i - 1;
+                while (l < r) {
+                    int mid = l + r + 1 >> 1;
+                    if (jobs[mid][1] <= jobs[i][0]) l = mid;
+                    else r = mid - 1;
+                }
+                f[i] = Math.max(f[i], f[r] + jobs[i][2]);
+            }
+        }
+        return f[n - 1];
+    }
 }
 /**
  * ref: 435

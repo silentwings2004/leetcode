@@ -26,18 +26,17 @@ public class LC1328_BreakaPalindrome {
      */
     // time = O(n), space = O(n)
     public String breakPalindrome(String palindrome) {
-        // corner case
-        if (palindrome == null || palindrome.length() <= 1) return ""; // 注意当len == 1时无论如何都是palin，只能返回""
-
-        int n = palindrome.length();
         char[] chars = palindrome.toCharArray();
+        int n = chars.length;
+        if (n == 1) return "";
+
         for (int i = 0; i < n / 2; i++) {
             if (chars[i] != 'a') {
                 chars[i] = 'a';
                 return String.valueOf(chars);
             }
         }
-        chars[n - 1] = (char)(chars[n - 1] + 1);
+        chars[n - 1] = 'b';
         return String.valueOf(chars);
     }
 }

@@ -78,71 +78,38 @@ public class LC1970_LastDayWhereYouCanStillCross {
 
     // S2: Union Find
     // time = O(m * n * a(m * n)), space = O(m * n)
-    private int[] parent;
+    int[] p;
+    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int latestDayToCross2(int row, int col, int[][] cells) {
         int m = row, n = col;
-        parent = new int[m * n + 2];
-        for (int i = 0; i < m * n + 2; i++) parent[i] = i;
+        p = new int[m * n + 2];
+        for (int i = 0; i < m * n + 2; i++) p[i] = i;
+        int start = m * n, end = m * n + 1;
+        boolean[][] grid = new boolean[m][n];
 
-        // build matrix
-        int[][] mat = new int[m][n]; // 0 is land, init -> all 0
-        for (int[] cell : cells) {
-            mat[cell[0] - 1][cell[1] - 1] = 1;
-        }
+        for (int d = cells.length - 1; d >= 0; d--) {
+            int x = cells[d][0] - 1, y = cells[d][1] - 1;
+            int u = x * n + y;
+            if (x == 0) p[find(u)] = start;
+            if (x == m - 1) p[find(u)] = end;
+            grid[x][y] = true;
 
-        for (int j = 0; j < n; j++) {
-            union(0 * n + j, m * n); // top
-        }
-
-        for (int j= 0; j < n; j++) {
-            union((m - 1) * n + j, m * n + 1); // bottom
-        }
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (mat[i][j] == 1) continue;
-                for (int[] dir : DIRECTIONS) {
-                    int x = i + dir[0];
-                    int y = j + dir[1];
-                    if (x < 0 || x >= m || y < 0 || y >= n) continue;
-                    if (mat[x][y] == 1) continue;
-                    if (findParent(i * n + j) != findParent(x * n + y)) {
-                        union(i * n + j, x * n + y);
-                    }
-                }
+            for (int[] dir : directions) {
+                int i = x + dir[0];
+                int j = y + dir[1];
+                if (i < 0 || i >= m || j < 0 || j >= n) continue;
+                if (!grid[i][j]) continue;
+                int v = i * n + j;
+                if (find(u) != find(v)) p[find(u)] = find(v);
             }
-        }
-
-        // 时光倒流
-        for (int t = cells.length - 1; t >= 0; t--) {
-            if (findParent(m * n) == findParent(m * n + 1)) return t + 1;
-            // recover the box
-            int i = cells[t][0] - 1;
-            int j = cells[t][1] - 1;
-            mat[i][j] = 0; // water -> land
-            for (int[] dir : DIRECTIONS) {
-                int x = i + dir[0];
-                int y = j + dir[1];
-                if (x < 0 || x >= m || y < 0 || y >= n) continue;
-                if (mat[x][y] == 1) continue;
-                if (findParent(i * n + j) != findParent(x * n + y)) {
-                    union(i * n + j, x * n + y);
-                }
-            }
+            if (find(start) == find(end)) return d;
         }
         return 0;
     }
 
-    private int findParent(int x) {
-        if (parent[x] != x) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

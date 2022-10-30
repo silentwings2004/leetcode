@@ -22,6 +22,7 @@ public class LC484_FindPermutation {
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int[] findPermutation(String s) {
         int n = s.length();
@@ -47,4 +48,26 @@ public class LC484_FindPermutation {
             nums[j--] = t;
         }
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int[] findPermutation2(String s) {
+        s = "I" + s;
+        int n = s.length();
+
+        int max = 0, idx = 0;
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && s.charAt(j) == 'D') j++;
+            int count = j - i;
+            for (int k = max + count; k >= max + 1; k--) res[idx++] = k;
+            max += count;
+            i = j - 1;
+        }
+        return res;
+    }
 }
+/**
+ * same as LC2375
+ */

@@ -70,4 +70,5 @@ public class LC85_MaximalRectangle {
  * 拍的时候只要从下往上拍，能顶多少顶多少
  * 找以它为base的histogram
  *
+ * 逐行遍历，把每一行作为地板，然后调用LC84的代码
  */

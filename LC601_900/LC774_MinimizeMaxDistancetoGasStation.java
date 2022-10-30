@@ -49,6 +49,30 @@ public class LC774_MinimizeMaxDistancetoGasStation {
         }
         return count <= k;
     }
+
+    // S2: PQ
+    // time = O(klogn), space = O(n)
+    public double minmaxGasDist2(int[] stations, int k) {
+        PriorityQueue<double[]> pq = new PriorityQueue<>((o1, o2) -> Double.compare(o2[0], o1[0]));
+        int n = stations.length;
+
+        double ub = (stations[n - 1] - stations[0]) * 1.0 / (k + 1);
+
+        for (int i = 1; i < n; i++) {
+            double dist = stations[i] - stations[i - 1];
+            double t = Math.max(1, Math.floor(dist / ub));
+            pq.offer(new double[]{dist / t, t});
+            k -= t - 1;
+        }
+
+        while (k > 0) {
+            double[] x = pq.poll();
+            double space = x[0], parts = x[1];
+            pq.offer(new double[]{space * parts / (parts + 1), parts + 1});
+            k--;
+        }
+        return pq.peek()[0];
+    }
 }
 /**
  * 正着想比较难，反着想比较容易
@@ -58,4 +82,12 @@ public class LC774_MinimizeMaxDistancetoGasStation {
  * 1.5 -> 2 -> 1
  * 2.1 -> 3 -> 2
  * 2 -> 2 -> 1
+ *
+ * S2: PQ + greedy
+ * N -> N + 1
+ * {space, parts}
+ * 当前谁最大就切谁
+ * 一个个加效率有点低，有些可以提前分配好
+ * 假设没有老加油站，直接分布新加油站，让它平均分布
+ * 初始化的时候，可以提前分配一波
  */

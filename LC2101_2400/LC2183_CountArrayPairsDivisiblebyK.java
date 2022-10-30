@@ -99,6 +99,23 @@ public class LC2183_CountArrayPairsDivisiblebyK {
         }
         return count;
     }
+
+    // S3
+    // time = O(n + klogk), space = O(k)
+    public long countPairs3(int[] nums, int k) {
+        long[] count = new long[k + 1];
+        int n = nums.length;
+        for (int i = 0; i < n; i++) count[gcd(nums[i], k)]++;
+
+        long res = 0;
+        for (int i = 1; i <= k; i++) {
+            if (count[i] == 0) continue;
+            if ((long) i * i % k == 0) res += count[i] * (count[i] - 1) / 2;
+            int div = k / i, start = i - i % div + div; // i 是从小到大遍历的，所以我们开始遍历的div一定要在i之后，比i小的都遍历过了！
+            for (int j = start; j <= k; j += div) res += count[i] * count[j];
+        }
+        return res;
+    }
 }
 /**
  * (i, j) O(N) -> log(N)

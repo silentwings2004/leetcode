@@ -69,6 +69,28 @@ public class LC1987_NumberofUniqueGoodSubsequences {
         }
         return (ends0 + ends1 + has0) % M;
     }
+
+    // S3: dp
+    // time = O(n), space = O(1)
+    public int numberOfUniqueGoodSubsequences3(String binary) {
+        long mod = (long)(1e9 + 7);
+        long[] f = new long[2];
+
+        int n = binary.length(), k = 0;
+        while (k < n && binary.charAt(k) == '0') k++;
+        if (k == n) return 1;
+
+        for (int i = k; i < n; i++) {
+            int x = binary.charAt(i) - '0';
+            long sum = x;
+            for (int j = 0; j <= 1; j++) sum = (sum + f[j]) % mod;
+            f[x] = sum;
+        }
+
+        long res = 0;
+        for (int i = 0; i <= 1; i++) res = (res + f[i]) % mod;
+        return (int) res + (binary.contains("0") ? 1 : 0);
+    }
 }
 /**
  * ref: LC940 follow-up
@@ -111,5 +133,4 @@ public class LC1987_NumberofUniqueGoodSubsequences {
  * else
  *      dp[i][1] = dp[i - 1][0] + dp[i - 1][1] + 1; // 类似，+1是因为1可以自立门户，长度为1的subsequence
  * 这个理解有问题，但这个0不一定结尾在最后这个i上，虽然没有漏算，但是解释并没有那么容易
- *
  */

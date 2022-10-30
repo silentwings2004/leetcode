@@ -21,8 +21,34 @@ public class LC1854_MaximumPopulationYear {
      * @param logs
      * @return
      */
-    // time = O(n), space = O(1)
+    // S1: diff Array
+    // time = O(nlogn), space = O(n)
     public int maximumPopulation(int[][] logs) {
+        List<int[]> diff = new ArrayList<>();
+        for (int[] x : logs) {
+            int a = x[0], b = x[1];
+            diff.add(new int[]{a, 1});
+            diff.add(new int[]{b, -1});
+        }
+
+        Collections.sort(diff, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int sum = 0, max = 0, res = 0;
+        for (int[] x : diff) {
+            sum += x[1];
+            if (x[1] > 0) {
+                if (sum > max) {
+                    max = sum;
+                    res = x[0];
+                }
+            }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int maximumPopulation2(int[][] logs) {
         // corner case
         if (logs == null || logs.length == 0 || logs[0] == null || logs[0].length == 0) return 0;
 

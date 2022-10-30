@@ -21,6 +21,7 @@ public class LC856_ScoreofParentheses {
      * @param s
      * @return
      */
+    // S1: Stack
     // time = O(n), space = O(n)
     public int scoreOfParentheses(String s) {
         Stack<Integer> stack = new Stack<>();
@@ -39,6 +40,25 @@ public class LC856_ScoreofParentheses {
         }
         return cur;
     }
+
+    // S2: stack
+    // time = O(n), space = O(n)
+    public int scoreOfParentheses2(String s) {
+        Stack<Integer> stk = new Stack<>();
+        stk.push(0);
+
+        for (char c : s.toCharArray()) {
+            if (c == '(') stk.push(0);
+            else {
+                int t = stk.pop();
+                if (t == 0) t = 1;
+                else t *= 2;
+                int x = stk.pop();
+                stk.push(x + t);
+            }
+        }
+        return stk.peek();
+    }
 }
 /**
  * use stack
@@ -46,4 +66,6 @@ public class LC856_ScoreofParentheses {
  * 括号的规则稍微有些不同，对同一个层级，结束之后，脱括号的时候里面数值翻一番
  * 如果里面是空的，就不是x2，脱出来是1
  * (C(A)) -> (C 2A)
+ *
+ * 栈：找到匹配的左右括号
  */

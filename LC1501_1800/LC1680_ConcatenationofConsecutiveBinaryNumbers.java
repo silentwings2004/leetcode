@@ -18,6 +18,7 @@ public class LC1680_ConcatenationofConsecutiveBinaryNumbers {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int concatenatedBinary(int n) {
         long res = 1;
@@ -27,7 +28,18 @@ public class LC1680_ConcatenationofConsecutiveBinaryNumbers {
             res = ((res << len) + i) % M;
             res %= M;
         }
-        return (int)res;
+        return (int) res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int concatenatedBinary2(int n) {
+        long res = 0, mod = (long) 1e9 + 7;
+        for (int i = 1; i <= n; i++) {
+            int m = Integer.toBinaryString(i).length();
+            res = ((res << m) + i) % mod;
+        }
+        return (int) res;
     }
 }
 

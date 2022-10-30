@@ -24,16 +24,12 @@ public class LC1591_StrangePrinterII {
      * @param targetGrid
      * @return
      */
+    // S1: dfs
     // time = O(V + E) = O(k * m * n), space = O(k)    k: number of colors
+    List<Integer>[] graph;
+    int[] st;
     public boolean isPrintable(int[][] targetGrid) {
-        // corner case
-        if (targetGrid == null || targetGrid.length == 0 || targetGrid[0] == null || targetGrid[0].length == 0) {
-            return false;
-        }
-
         int m = targetGrid.length, n = targetGrid[0].length;
-
-        // init four boundaries
         int[] left = new int[61];
         int[] right = new int[61];
         int[] top = new int[61];
@@ -43,7 +39,6 @@ public class LC1591_StrangePrinterII {
         Arrays.fill(top, m);
         Arrays.fill(bottom, -1);
 
-        // draw the boundaries for each color in the target grid
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 int color = targetGrid[i][j];
@@ -54,117 +49,103 @@ public class LC1591_StrangePrinterII {
             }
         }
 
-        // build the graph
-        HashMap<Integer, List<Integer>> graph = new HashMap<>();
+        graph = new List[61];
+        for (int i = 0; i < 61; i++) graph[i] = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 for (int color = 1; color <= 60; color++) {
                     if (i >= top[color] && i <= bottom[color] && j >= left[color] && j <= right[color]) {
-                        if (color != targetGrid[i][j]) {
-                            graph.putIfAbsent(targetGrid[i][j], new ArrayList<>());
-                            graph.get(targetGrid[i][j]).add(color);
+                        if (targetGrid[i][j] != color) {
+                            graph[targetGrid[i][j]].add(color);
                         }
                     }
                 }
             }
         }
 
-        int[] status = new int[61];
+        st = new int[61];
         for (int i = 1; i <= 60; i++) {
-            if (dfs(graph, status, i)) return false;
+            if (dfs(i)) return false;
         }
         return true;
     }
 
-    // topological sort
-    private boolean dfs(HashMap<Integer, List<Integer>> graph, int[] status, int cur) {
-        if (status[cur] == 1) return true;
-        if (status[cur] == 2) return false;
+    private boolean dfs(int cur) {
+        if (st[cur] == 2) return false;
+        if (st[cur] == 1) return true;
 
-        status[cur] = 1;
-        if (graph.containsKey(cur)) {
-            for (int next : graph.get(cur)) {
-                if (dfs(graph, status, next)) return true;
-            }
+        st[cur] = 1;
+
+        for (int next : graph[cur]) {
+            if (dfs(next)) return true;
         }
-        status[cur] = 2;
+        st[cur] = 2;
         return false;
     }
 
-    // S2: BFS
-    // time = O(k * m * n), space = O(k)
-    public boolean isPrintable2(int[][] targetGrid) {
-        // corner case
-        if (targetGrid == null || targetGrid.length == 0 || targetGrid[0] == null || targetGrid[0].length == 0) {
-            return false;
-        }
+    // S2: bfs
+    // time = O(V + E) = O(k * m * n), space = O(k)    k: number of colors
+    class Solution {
+        List<Integer>[] graph;
+        int[] indegree;
+        public boolean isPrintable(int[][] targetGrid) {
+            int m = targetGrid.length, n = targetGrid[0].length;
+            int[] u = new int[61];
+            int[] d = new int[61];
+            int[] l = new int[61];
+            int[] r = new int[61];
+            Arrays.fill(u, m);
+            Arrays.fill(d, -1);
+            Arrays.fill(l, n);
+            Arrays.fill(r, -1);
 
-        int m = targetGrid.length, n = targetGrid[0].length;
-        int[] left = new int[61];
-        int[] right = new int[61];
-        int[] top = new int[61];
-        int[] bottom = new int[61];
-        Arrays.fill(left, n);
-        Arrays.fill(right, -1);
-        Arrays.fill(top, m);
-        Arrays.fill(bottom, -1);
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                int color = targetGrid[i][j];
-                left[color] = Math.min(left[color], j);
-                right[color] = Math.max(right[color], j);
-                top[color] = Math.min(top[color], i);
-                bottom[color] = Math.max(bottom[color], i);
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    int c = targetGrid[i][j];
+                    u[c] = Math.min(u[c], i);
+                    d[c] = Math.max(d[c], i);
+                    l[c] = Math.min(l[c], j);
+                    r[c] = Math.max(r[c], j);
+                }
             }
-        }
 
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= 60; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int c = 1; c <= 60; c++) {
-                    if (i >= top[c] && i <= bottom[c] && j >= left[c] && j <= right[c]) {
-                        if (targetGrid[i][j] != c) {
-                            graph.get(targetGrid[i][j]).add(c);
+            graph = new List[61];
+            indegree = new int[61];
+            for (int i = 0; i <= 60; i++) graph[i] = new ArrayList<>();
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    for (int c = 1; c <= 60; c++) {
+                        if (i >= u[c] && i <= d[c] && j >= l[c] && j <= r[c]) {
+                            if (targetGrid[i][j] != c) {
+                                graph[targetGrid[i][j]].add(c);
+                                indegree[c]++;
+                            }
                         }
                     }
                 }
             }
+
+            if (bfs()) return false;
+            return true;
         }
 
-        int nodes = 61;
-        return bfs(graph, nodes);
-    }
-
-    private boolean bfs(List<List<Integer>> graph, int n) {
-        int[] indegree = new int[n];
-        int count = 0;
-        for (List<Integer> next : graph) {
-            for (int num : next) {
-                indegree[num]++;
+        private boolean bfs() {
+            Queue<Integer> queue = new LinkedList<>();
+            for (int i = 1; i <= 60; i++) {
+                if (indegree[i] == 0) queue.offer(i);
             }
-        }
 
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            if (indegree[i] == 0) {
-                queue.offer(i);
-                count++;
-            }
-        }
+            int cnt = 0;
+            while (!queue.isEmpty()) {
+                int t = queue.poll();
+                cnt++;
 
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            for (int next : graph.get(cur)) {
-                indegree[next]--;
-                if (indegree[next] == 0) {
-                    queue.offer(next);
-                    count++;
+                for (int next : graph[t]) {
+                    if (--indegree[next] == 0) queue.offer(next);
                 }
             }
+            return cnt != 60;
         }
-        return count == n;
     }
 }
 /**
@@ -186,4 +167,5 @@ public class LC1591_StrangePrinterII {
  *
  * 2, 1, 3, 4   取决于要求彼此是否有矛盾 => course schedule -> topological sort 判断是否有环！
  * 先后依赖的关系，不能相互矛盾 -> 构成了一个有向图，不能有环
+ * 循环依赖 => 拓扑排序
  */

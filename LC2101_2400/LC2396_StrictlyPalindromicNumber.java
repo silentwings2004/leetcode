@@ -21,6 +21,7 @@ public class LC2396_StrictlyPalindromicNumber {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public boolean isStrictlyPalindromic(int n) {
         for (int i = 2; i <= n - 2; i++) {
@@ -49,4 +50,14 @@ public class LC2396_StrictlyPalindromicNumber {
         }
         return true;
     }
+
+    // S2:
+    // time = O(1), space = O(1)
+    public boolean isStrictlyPalindromic2(int n) {
+        return false;
+    }
 }
+/**
+ * 数字 44 在二进制下不是回文的。对于 n ≥ 5，它们的 (n−2) 进制表示都是 12，因此也都不是回文的。直接返回 false 即可。
+ * 1 * (n - 2) + 2 = n
+ */

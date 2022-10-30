@@ -24,7 +24,7 @@ public class LC1638_CountSubstringsThatDifferbyOneCharacter {
      * @param t
      * @return
      */
-    // time = O(n^2), space = O(n^2)
+    // time = O(m * n), space = O(m * n)
     public int countSubstrings(String s, String t) {
         int m = s.length(), n = t.length();
         s = "#" + s + "#";

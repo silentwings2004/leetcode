@@ -29,19 +29,20 @@ public class LC2345_FindingtheNumberofVisibleMountains {
     // time = O(nlogn), space = O(n)
     public int visibleMountains(int[][] peaks) {
         Arrays.sort(peaks, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-        int n = peaks.length, res = 0;
+        int n = peaks.length, res = 0, cnt = 0;
         Stack<Integer> stack = new Stack<>();
 
         for (int i = 0; i < n; i++) {
             int x = peaks[i][0], y = peaks[i][1];
             if (i > 0 && peaks[i][0] == peaks[i - 1][0] && peaks[i][1] == peaks[i - 1][1]) {
-                if (!stack.isEmpty() && stack.peek() == i - 1) stack.pop();
+                if (!stack.isEmpty() && stack.peek() == i - 1) cnt++;
                 continue;
             }
             while (!stack.isEmpty() && y - peaks[stack.peek()][1] >= x - peaks[stack.peek()][0]) stack.pop();
             if (!stack.isEmpty() && peaks[stack.peek()][1] - y >= x - peaks[stack.peek()][0]) continue;
             stack.push(i);
         }
-        return stack.size();
+
+        return stack.size() - cnt;
     }
 }

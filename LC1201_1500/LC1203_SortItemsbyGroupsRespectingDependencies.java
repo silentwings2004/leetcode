@@ -31,6 +31,7 @@ public class LC1203_SortItemsbyGroupsRespectingDependencies {
      * @param beforeItems
      * @return
      */
+    // S1
     // time = O(m + n^2 + Egroup + Eitem), space = O(m + n^2)
     public int[] sortItems(int n, int m, int[] group, List<List<Integer>> beforeItems) {
         HashMap<Integer, List<Integer>> groupToItem = new HashMap<>();
@@ -118,6 +119,78 @@ public class LC1203_SortItemsbyGroupsRespectingDependencies {
         }
         return res.size() == list.size() ? res : new ArrayList<>();
     }
+
+    // S2: double topsort
+    // time = O(m + n^2 + Egroup + Eitem), space = O(m + n^2)
+    public int[] sortItems2(int n, int m, int[] group, List<List<Integer>> beforeItems) {
+        int k = 0;
+        for (int x : group) k += x == -1 ? 1 : 0;
+        int[] gc = new int[n + k];
+        for (int i = 0; i < n; i++) {
+            int id = group[i];
+            if (id != -1) gc[id]++;
+            else {
+                gc[m]++;
+                group[i] = m++;
+            }
+        }
+
+        List<Integer>[] g1 = new List[n]; // item inside the group
+        List<Integer>[] g2 = new List[m]; // group
+        for (int i = 0; i < n; i++) g1[i] = new ArrayList<>();
+        for (int i = 0; i < m; i++) g2[i] = new ArrayList<>();
+        int[] d1 = new int[n];
+        int[] d2 = new int[m];
+
+        for (int i = 0; i < n; i++) {
+            for (int j : beforeItems.get(i)) {
+                g1[j].add(i);
+                d1[i]++;
+                int a = group[i], b = group[j];
+                if (a != b) {
+                    g2[b].add(a);
+                    d2[a]++;
+                }
+            }
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            if (d2[i] == 0) queue.offer(i);
+        }
+
+        int cnt = 0, cur = 0;
+        int[] pos = new int[m]; // 求一下每一组的起点
+        while (!queue.isEmpty()) {
+            int t = queue.poll();
+            cnt++;
+            pos[t] = cur;
+            cur += gc[t];
+
+            for (int j : g2[t]) {
+                if (--d2[j] == 0) queue.offer(j);
+            }
+        }
+        if (cnt != m) return new int[0];
+
+        for (int i = 0; i < n; i++) {
+            if (d1[i] == 0) queue.offer(i);
+        }
+
+        cnt = 0;
+        int[] res = new int[n];
+        while (!queue.isEmpty()) {
+            int t = queue.poll();
+            cnt++;
+            k = group[t]; // belong to which group
+            res[pos[k]++] = t;
+
+            for (int j : g1[t]) {
+                if (--d1[j] == 0) queue.offer(j);
+            }
+        }
+        return cnt == n ? res : new int[0];
+    }
 }
 /**
  * 本题本质是两遍拓扑排序
@@ -128,4 +201,8 @@ public class LC1203_SortItemsbyGroupsRespectingDependencies {
  * for group : groupOrdered
  *      for node in group
  *          res += node
+ *
+ * 先把组分好，然后再将组内分好
+ * 类似缩点的概念
+ * 2遍拓扑排序 -> 线性
  */

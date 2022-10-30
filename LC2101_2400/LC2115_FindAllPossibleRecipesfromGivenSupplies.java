@@ -69,7 +69,7 @@ public class LC2115_FindAllPossibleRecipesfromGivenSupplies {
     }
 
     // S2: Topological Sort (BFS)
-    // time = O(V + E), space = O(V + E)
+    // time = O(dn + m), space = O(dn + m)
     public List<String> findAllRecipes2(String[] recipes, List<List<String>> ingredients, String[] supplies) {
         HashMap<String, List<String>> map = new HashMap<>();
         HashMap<String, Integer> indegree = new HashMap<>();

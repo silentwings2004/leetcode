@@ -71,6 +71,35 @@ public class LC639_DecodeWaysII {
         }
         return (int)dp[n];
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int numDecodings2(String s) {
+        int n = s.length();
+        s = '#' + s;
+        int[] f = new int[n + 1];
+        f[0] = 1;
+
+        long mod = (long)(1e9 + 7);
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= 26; j++) {
+                char a = s.charAt(i);
+                if (j <= 9) {
+                    if (a == (char)('0' + j) || a == '*') f[i] += f[i - 1];
+                } else {
+                    if (i > 1) {
+                        char b = s.charAt(i - 1);
+                        int y = j / 10, x = j % 10;
+                        if ((y == b - '0' || b == '*' && y != 0) && (x == a - '0' || a == '*' && x != 0)) {
+                            f[i] += f[i - 2];
+                        }
+                    }
+                }
+                f[i] %= mod;
+            }
+        }
+        return (int) f[n];
+    }
 }
 /**
  * 引入通配符，* only stands for 1 ~ 9， not including 0

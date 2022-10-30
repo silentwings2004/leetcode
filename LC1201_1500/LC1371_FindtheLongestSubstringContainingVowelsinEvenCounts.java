@@ -51,6 +51,24 @@ public class LC1371_FindtheLongestSubstringContainingVowelsinEvenCounts {
         }
         return key;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int findTheLongestSubstring2(String s) {
+        int[] cnt = new int[32]; // 总共2^5 = 32 种状态
+        Arrays.fill(cnt, -2);
+        cnt[0] = -1;
+        String cs = "aeiou";
+        int n = s.length(), res = 0, state = 0;
+
+        for (int i = 0; i < n; i++) {
+            int k = cs.indexOf(s.charAt(i));
+            if (k != -1) state ^= 1 << k; // 变换奇偶性
+            if (cnt[state] != -2) res = Math.max(res, i - cnt[state]);
+            else cnt[state] = i;
+        }
+        return res;
+    }
 }
 /**
  * substring, subarray -> prefix (词频统计，求sum，...）

@@ -83,6 +83,34 @@ public class LC828_CountUniqueCharactersofAllSubstringsofaGivenString {
         }
         return res;
     }
+
+    // S4
+    // time = O(n), space = O(n)
+    public int uniqueLetterString4(String s) {
+        int n = s.length();
+        int[] l = new int[n], r = new int[n];
+        int[] p = new int[26];
+        Arrays.fill(p, -1);
+
+        for (int i = 0; i < n; i++) {
+            int k = s.charAt(i) - 'A';
+            l[i] = p[k];
+            p[k] = i;
+        }
+
+        Arrays.fill(p, n);
+        for (int i = n - 1; i >= 0; i--) {
+            int k = s.charAt(i) - 'A';
+            r[i] = p[k];
+            p[k] = i;
+        }
+
+        long mod = (long)(1e9 + 7), res = 0;
+        for (int i = 0; i < n; i++) {
+            res = (res + (long)(i - l[i]) * (r[i] - i)) % mod;
+        }
+        return (int) res;
+    }
 }
 /**
  * "ABCBD"

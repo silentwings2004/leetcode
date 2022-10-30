@@ -21,6 +21,7 @@ public class LC38_CountandSay {
      * @param n
      * @return
      */
+    // S1
     // time = O(2^n), space = O(2^(n - 1)) for space of sb
     public String countAndSay(int n) {
         int i = 1;
@@ -44,5 +45,23 @@ public class LC38_CountandSay {
             i++;
         }
         return res;
+    }
+
+    // S2: simulation
+    // time = O(n * m), space = O(m)  n: 给定的正整数， m: 生成的字符串中的最大长度
+    public String countAndSay2(int n) {
+        String s = "1";
+        for (int i = 0; i < n - 1; i++) {
+            StringBuilder sb = new StringBuilder();
+            int j = 0, m = s.length();
+            while (j < m) {
+                int k = j + 1;
+                while (k < m && s.charAt(k) == s.charAt(j)) k++;
+                sb.append(k - j).append(s.charAt(j));
+                j = k;
+            }
+            s = sb.toString();
+        }
+        return s;
     }
 }

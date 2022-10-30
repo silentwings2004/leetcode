@@ -24,6 +24,7 @@ public class LC2397_MaximumRowsCoveredbyColumns {
      * mat[i][j] is either 0 or 1.
      * 1 <= cols <= n
      */
+    // S1
     // time = O(2^n * n), space = O(n)
     int res = 0;
     public int maximumRows(int[][] mat, int cols) {
@@ -46,5 +47,29 @@ public class LC2397_MaximumRowsCoveredbyColumns {
         for (int i = cur + 1; i < nums.length; i++) {
             dfs(nums, i, sum | nums[i], cnt + 1, cols);
         }
+    }
+
+    // S2
+    // time = O(2^n * m * n), space = O(1)
+    public int maximumRows2(int[][] mat, int cols) {
+        int m = mat.length, n = mat[0].length, res = 0;
+        for (int state = 0; state < (1 << n); state++) {
+            int cnt = Integer.bitCount(state);
+            if (cnt != cols) continue;
+
+            int total = 0;
+            for (int i = 0; i < m; i++) {
+                boolean flag = true;
+                for (int j = 0; j < n; j++) {
+                    if (mat[i][j] == 1 && (state >> j & 1) != 1) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) total++;
+            }
+            res = Math.max(res, total);
+        }
+        return res;
     }
 }

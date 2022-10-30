@@ -67,4 +67,6 @@ public class LC1562_FindLatestGroupofSizeM {
  * 如何求出一个固定区间里的最大值 => day数组的最大值
  * sliding window maximum => deque
  *
+ * 需要维护所有连续的1 => ref: LC352
+ * 实时维护双链表
  */

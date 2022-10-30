@@ -67,6 +67,40 @@ public class LC927_ThreeEqualParts {
 
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int[] threeEqualParts2(int[] arr) {
+        int n = arr.length, ones = 0;
+        for (int x : arr) {
+            if (x == 1) ones++;
+        }
+        if (ones == 0) return new int[]{0, 2};
+        if (ones % 3 != 0) return new int[]{-1, -1};
+        int k = ones / 3;
+        int[] s = new int[]{1, k, k + 1, k * 2, k * 2 + 1, k * 3};
+        int[] p = new int[6];
+
+        int j = 0, c = 0;
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == 0) continue;
+            c++;
+            while (j < 6 && s[j] == c) p[j++] = i;
+        }
+
+        int zero = n - 1 - p[5];
+        if (p[4] - p[3] - 1 < zero || p[2] - p[1] - 1 < zero) return new int[]{-1, -1};
+        if (!check(arr, p[0], p[1] + zero, p[2], p[3] + zero)) return new int[]{-1, -1};
+        if (!check(arr, p[2], p[3] + zero, p[4], n - 1)) return new int[]{-1, -1};
+        return new int[]{p[1] + zero, p[3] + zero + 1};
+    }
+
+    private boolean check(int[] arr, int a, int b, int c, int d) {
+        for (int i = a, j = c; i <= b; i++, j++) {
+            if (arr[i] != arr[j]) return false;
+        }
+        return true;
+    }
 }
 /**
  * 000[1xxxx] 000000 (1xxxx) 000000[1xxxx]

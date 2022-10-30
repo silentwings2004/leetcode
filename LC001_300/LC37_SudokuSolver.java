@@ -97,6 +97,87 @@ public class LC37_SudokuSolver {
         }
         return true;
     }
+
+    // S3: bit optimization
+    // time = O(1), space = O(1)
+    class Solution {
+        final int N = 9, M = 1 << N;
+        char[][] board;
+        int[] row, col, ones, map;
+        int[][] cell;
+        public void solveSudoku(char[][] board) {
+            this.board = board;
+            row = new int[N];
+            col = new int[N];
+            ones = new int[M];
+            map = new int[M];
+            cell = new int[3][3];
+
+            // init
+            for (int i = 0; i < N; i++) row[i] = col[i] = M - 1;
+            for (int i = 0; i < 3; i++) Arrays.fill(cell[i], M - 1);
+            for (int i = 0; i < N; i++) map[1 << i] = i;
+            for (int i = 0; i < M; i++) ones[i] = Integer.bitCount(i);
+
+            int cnt = 0;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (board[i][j] != '.') {
+                        int t = board[i][j] - '1';
+                        draw(i, j, t, true);
+                    } else cnt++;
+                }
+            }
+            dfs(cnt);
+        }
+
+        private void draw(int x, int y, int t, boolean flag) {
+            if (flag) board[x][y] = (char)(t + '1');
+            else board[x][y] = '.';
+
+            int v = 1 << t;
+            if (!flag) v = -v;
+
+            row[x] -= v;
+            col[y] -= v;
+            cell[x / 3][y / 3] -= v;
+        }
+
+        private boolean dfs(int cnt) {
+            if (cnt == 0) return true;
+
+            int minv = 10, x = -1, y = -1;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (board[i][j] == '.') {
+                        int state = get(i, j);
+                        if (ones[state] < minv) {
+                            minv = ones[state];
+                            x = i;
+                            y = j;
+                        }
+                    }
+                }
+            }
+
+            int state = get(x, y);
+            for (int i = state; i > 0; i -= lowbit(i)) {
+                int t = map[lowbit(i)];
+                draw(x, y, t, true);
+                if (dfs(cnt - 1)) return true;
+                draw(x, y, t, false);
+            }
+            return false;
+        }
+
+        private int get(int x, int y) {
+            return row[x] & col[y] & cell[x / 3][y / 3];
+        }
+
+        private int lowbit(int x) {
+            return x & -x;
+        }
+    }
 }
 /**
  * 暴力搜搜

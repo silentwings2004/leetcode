@@ -62,4 +62,55 @@ public class LC2398_MaximumNumberofRobotsWithinBudget {
         }
         return res;
     }
+
+    // S2: Two Pointers
+    // time = O(n), space = O(n)
+    public int maximumRobots2(int[] chargeTimes, int[] runningCosts, long budget) {
+        int n = chargeTimes.length, res = 0;
+        Deque<Integer> deque = new LinkedList<>();
+        long sum = 0;
+
+        for (int i = 0, j = 0; i < n; i++) {
+            sum += runningCosts[i];
+            while (!deque.isEmpty() && chargeTimes[deque.peekLast()] <= chargeTimes[i]) deque.pollLast();
+            deque.offerLast(i);
+            while (!deque.isEmpty() && sum * (i - j + 1) + chargeTimes[deque.peekFirst()] > budget) {
+                sum -= runningCosts[j];
+                if (j == deque.peekFirst()) deque.pollFirst();
+                j++;
+            }
+            res = Math.max(res, i - j + 1);
+        }
+        return res;
+    }
+
+    // follow-up: 非连续选择机器人
+    public int maximumRobotsX(int[] chargeTimes, int[] runningCosts, long budget) {
+        int n = chargeTimes.length;
+        int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) arr[i] = new int[]{chargeTimes[i], runningCosts[i]};
+        Arrays.sort(arr, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (check(arr, mid, budget)) l = mid;
+            else r = mid - 1;
+        }
+        return r;
+    }
+
+    private boolean check(int[][] arr, int t, long m) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        long sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (i >= t - 1) {
+                if ((sum + arr[i][1]) * t + arr[i][0] <= m) return true;
+            }
+            pq.offer(arr[i][1]);
+            sum += arr[i][1];
+            if (pq.size() >= t) sum -= pq.poll();
+        }
+        return false;
+    }
 }

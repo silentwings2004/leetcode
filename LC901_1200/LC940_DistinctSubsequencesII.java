@@ -19,6 +19,7 @@ public class LC940_DistinctSubsequencesII {
      * @param s
      * @return
      */
+    // S1
     // time = O(n_, space = O(n)
     public int distinctSubseqII(String s) {
         // corner case
@@ -37,6 +38,23 @@ public class LC940_DistinctSubsequencesII {
             last[s.charAt(i) - 'a'] = i;
         }
         return (int) dp[n] - 1; // dp本身包括null，题目要求非空，所以这里要-1
+    }
+
+    // S2: dp
+    // time = O(n), space = O(n)
+    public int distinctSubseqII2(String s) {
+        int mod = (int) 1e9 + 7;
+        int[] f = new int[26];
+        for (char c : s.toCharArray()) {
+            int x = c - 'a', sum = 1;
+            for (int i = 0; i < 26; i++) {
+                sum = (sum + f[i]) % mod;
+            }
+            f[x] = sum;
+        }
+        int res = 0;
+        for (int i = 0; i < 26; i++) res = (res + f[i]) % mod;
+        return res;
     }
 }
 /**
@@ -74,5 +92,13 @@ public class LC940_DistinctSubsequencesII {
  * ...
  * j = last[s[i]]
  * # a b c
- * dp[3] = dp[2] * 2 - dp[0 - 1]   c之前没有任何重复 -> 无影响，不会造成任何重复，-> 0
+ * dp[3] = dp[2] * 2 - dp[0 - 1]   c之前没有任何重复 -> 无影响，不会造成任何重复 -> 0
+ *
+ * DP:
+ * 状态表示 f(i,j)
+ * 集合：所有由前i个字母构成且结尾为j的所有不同方案的集合
+ * 属性：数量
+ * 状态计算：
+ * (1) ai !=j => f(i,j) = f(i-1,j)
+ * (2) ai == j
  */

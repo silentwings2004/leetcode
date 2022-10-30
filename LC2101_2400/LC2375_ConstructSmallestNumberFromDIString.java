@@ -25,6 +25,7 @@ public class LC2375_ConstructSmallestNumberFromDIString {
      * @param pattern
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public String smallestNumber(String pattern) {
         int n = pattern.length();
@@ -51,8 +52,37 @@ public class LC2375_ConstructSmallestNumberFromDIString {
             chars[j--] = t;
         }
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public String smallestNumber2(String pattern) {
+        pattern = "I" + pattern;
+        int n = pattern.length();
+
+        int max = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && pattern.charAt(j) == 'D') j++;
+            int count = j - i;
+            for (int k = max + count; k >= max + 1; k--) sb.append(k);
+            max = max + count;
+            i = j - 1;
+        }
+        return sb.toString();
+    }
 }
 /**
  * same as LC484
  * LC942的follow-up
+ *
+ * 1 ~ 9,每个字符只能用1次，最长不会超过9
+ * 在pattern前面加一个"I"
+ *
+ * 首先我们知道，必须将尽量小的字符放在前面使用。
+ * 我们将pattern前加上一个“I”，这样pattern的长度就与字符串相等。
+ * 我们发现，将每个“IDD...D”视作一个section，那么后一个section必然要完全高于前一个section。
+ * IDD | I | ID | I | I | IDDD...
+ * 我们虚拟地令当前的最大字符是0，然后把后续整个字符串的相对走势都表达出来后（必然都大于0），得到的就是用1~9组成的字典序最小的字符串。
+ * 注：本题是942. DI String Match的follow-up，并且和484.Find-Permutation一模一样
  */

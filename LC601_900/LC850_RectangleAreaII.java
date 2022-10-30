@@ -179,7 +179,6 @@ public class LC850_RectangleAreaII {
             }
         }
         return (int) res;
-
     }
 
     private class Diff2d {

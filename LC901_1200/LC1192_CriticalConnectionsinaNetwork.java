@@ -110,6 +110,53 @@ public class LC1192_CriticalConnectionsinaNetwork {
             low[cur] = Math.min(low[cur], low[next]);
         }
     }
+
+    // S3: tarjan
+    // time = O(V + E), space = O(E)
+    int n, m;
+    int idx, timestamp;
+    int[] h, e, ne;
+    int[] dfn, low;
+    List<List<Integer>> res;
+    public List<List<Integer>> criticalConnections3(int n, List<List<Integer>> connections) {
+        res = new ArrayList<>();
+        this.n = n;
+        m = connections.size();
+        h = new int[n];
+        e = new int[m * 2];
+        ne = new int[m * 2];
+        dfn = new int[n];
+        low = new int[n];
+        idx = 0;
+        timestamp = 0;
+
+        Arrays.fill(h, -1);
+        for (List<Integer> connection : connections) {
+            int a = connection.get(0), b = connection.get(1);
+            add(a, b);
+            add(b, a);
+        }
+        tarjan(0, -1);
+        return res;
+    }
+
+    private void tarjan(int u, int from) {
+        dfn[u] = low[u] = ++timestamp;
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (dfn[j] == 0) {
+                tarjan(j, i);
+                low[u] = Math.min(low[u], low[j]);
+                if (dfn[u] < low[j]) res.add(Arrays.asList(u, j));
+            } else if (i != (from ^ 1)) low[u] = Math.min(low[u], low[j]);
+        }
+    }
+
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * 本题本质就是图论中的经典问题，如何求一个无向图中的割边（critical edge）或者叫做桥（bridge）。

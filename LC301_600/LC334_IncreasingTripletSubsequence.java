@@ -50,6 +50,20 @@ public class LC334_IncreasingTripletSubsequence {
         }
         return false;
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    public boolean increasingTriplet3(int[] nums) {
+        int[] q = new int[2];
+        Arrays.fill(q, Integer.MAX_VALUE);
+        for (int x : nums) {
+            int k = 2;
+            while (k > 0 && q[k - 1] >= x) k--;
+            if (k == 2) return true;
+            q[k] = x;
+        }
+        return false;
+    }
 }
 /**
  * ref: LC300

@@ -41,7 +41,44 @@ public class LC2102_SequentiallyOrdinalRankTracker {
      * At any time, the number of calls to get does not exceed the number of calls to add.
      * At most 4 * 104 calls in total will be made to add and get.
      */
-    // S1: TreeMap + B.S.
+    // S1: dual PQ
+    PriorityQueue<String[]> minHeap;
+    PriorityQueue<String[]> maxHeap;
+    public LC2102_SequentiallyOrdinalRankTracker() {
+        minHeap = new PriorityQueue<>((o1, o2) -> Integer.parseInt(o1[0]) != Integer.parseInt(o2[0]) ? Integer.parseInt(o1[0]) - Integer.parseInt(o2[0]) : o2[1].compareTo(o1[1]));
+        maxHeap = new PriorityQueue<>((o1, o2) -> Integer.parseInt(o1[0]) != Integer.parseInt(o2[0]) ? Integer.parseInt(o2[0]) - Integer.parseInt(o1[0]) : o1[1].compareTo(o2[1]));
+    }
+
+    public void add(String name, int score) {
+        minHeap.offer(new String[]{score + "", name});
+        maxHeap.offer(minHeap.poll());
+    }
+
+    public String get() {
+        String res = maxHeap.peek()[1];
+        minHeap.offer(maxHeap.poll());
+        return res;
+    }
+
+    // S2
+    class SORTracker {
+        TreeSet<String[]> set;
+        Iterator<String[]> iter;
+        public SORTracker() {
+            set = new TreeSet<>((o1, o2) -> Integer.parseInt(o1[0]) != Integer.parseInt(o2[0]) ? Integer.parseInt(o2[0]) - Integer.parseInt(o1[0]) : o1[1].compareTo(o2[1]));
+            iter = set.iterator();
+        }
+
+        public void add(String name, int score) {
+            set.add(new String[]{score + "", name});
+        }
+
+        public String get() {
+            return iter.next()[1];
+        }
+    }
+
+    // S2: TreeMap + B.S.
 //    TreeMap<Integer, List<String>> map;
 //    int count = 0;
 //    public LC2102_SequentiallyOrdinalRankTracker() {
@@ -83,54 +120,6 @@ public class LC2102_SequentiallyOrdinalRankTracker {
 //        }
 //        return list.get(left).compareTo(t) >= 0 ? left : left + 1;
 //    }
-
-    // S2
-    int count = 1;
-    PriorityQueue<Pair> minHeap;
-    PriorityQueue<Pair> maxHeap;
-    public LC2102_SequentiallyOrdinalRankTracker() {
-        minHeap = new PriorityQueue<>((o1, o2) -> o1.score != o2.score ? o1.score - o2.score : o2.name.compareTo(o1.name));
-        maxHeap = new PriorityQueue<>((o1, o2) -> o1.score != o2.score ? o2.score - o1.score : o1.name.compareTo(o2.name));
-    }
-
-    // time = O(logn), space = O(n)
-    public void add(String name, int score) {
-        Pair p = new Pair(score, name);
-
-        if (minHeap.isEmpty()) maxHeap.offer(p);
-        else if (maxHeap.isEmpty()) minHeap.offer(p);
-        else {
-            Pair top = minHeap.peek();
-            if (helper(top, p)) minHeap.offer(p);
-            else maxHeap.offer(p);
-        }
-    }
-
-    // time = O(logn), space = O(n)
-    public String get() {
-        while (minHeap.size() > count) maxHeap.offer(minHeap.poll());
-        while (minHeap.size() < count && maxHeap.size() > 0) minHeap.offer(maxHeap.poll());
-
-        count++;
-        Pair p = minHeap.peek();
-        return p.name;
-    }
-
-    private boolean helper(Pair p1, Pair p2) {
-        if (p2.score > p1.score) return true;
-        if (p2.score < p1.score) return false;
-        if (p2.name.compareTo(p1.name) > 0) return false;
-        return true;
-    }
-
-    private class Pair {
-        private int score;
-        private String name;
-        public Pair(int score, String name) {
-            this.score = score;
-            this.name = name;
-        }
-    }
 }
 /**
  * 如果要实时排序并同时要随机访问的话，几乎是不可能同时实现的

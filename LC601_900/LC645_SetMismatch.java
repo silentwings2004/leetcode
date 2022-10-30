@@ -70,6 +70,26 @@ public class LC645_SetMismatch {
         nums[i] = nums[j];
         nums[j] = temp;
     }
+
+    // S3: 取反
+    // time = O(n), space = O(1)
+    public int[] findErrorNums3(int[] nums) {
+        int[] res = new int[2];
+        for (int x : nums) {
+            int k = Math.abs(x);
+            if (nums[k - 1] < 0) res[0] = k;
+            nums[k - 1] *= -1;
+        }
+
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0 && i + 1 != res[0]) {
+                res[1] = i + 1;
+                break;
+            }
+        }
+        return res;
+    }
 }
 /**
  * indexing sort

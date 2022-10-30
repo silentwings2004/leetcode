@@ -41,3 +41,10 @@ public class LC115_DistinctSubsequences {
         return dp[m][n];
     }
 }
+/**
+ * 状态表示：
+ * 集合：s[1:i]的所有和t[1:j]相等的子序列
+ * 属性：数量 => f[m][n]
+ * 状态计算:
+ *
+ */

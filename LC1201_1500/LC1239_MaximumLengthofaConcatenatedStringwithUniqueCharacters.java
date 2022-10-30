@@ -91,6 +91,42 @@ public class LC1239_MaximumLengthofaConcatenatedStringwithUniqueCharacters {
             }
         }
     }
+
+    // S3: Bit mask
+    // time = O(2^n), space = O(n)
+    public int maxLength3(List<String> arr) {
+        int n = arr.size();
+        List<Integer> state = new ArrayList<>();
+        for (String str : arr) {
+            int s = 0;
+            for (char c : str.toCharArray()) {
+                int t = c - 'a';
+                if ((s >> t & 1) == 1) {
+                    s = -1;
+                    break;
+                }
+                s |= 1 << t;
+            }
+            state.add(s);
+        }
+
+        int res = 0;
+        for (int i = 0; i < 1 << n; i++) {
+            int s = 0, len = 0;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) {
+                    if (state.get(j) == -1 || (s & state.get(j)) != 0) {
+                        len = -1;
+                        break;
+                    }
+                    s |= state.get(j);
+                    len += arr.get(j).length();
+                }
+            }
+            res = Math.max(res, len);
+        }
+        return res;
+    }
 }
 /**
  * 本题就是一个基本的DFS爆搜。注意不要误认为是LIS。

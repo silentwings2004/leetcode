@@ -73,4 +73,69 @@ public class LC827_MakingALargeIsland {
         }
         return area;
     }
+
+    // S2: Union Find
+    class Solution {
+        // time = O(n^2), space = O(n^2)
+        int n;
+        int[] p, sz;
+        private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        public int largestIsland(int[][] grid) {
+            n = grid.length;
+            p = new int[n * n];
+            sz = new int[n * n];
+            for (int i = 0; i < n * n; i++) {
+                p[i] = i;
+                sz[i] = 1;
+            }
+
+            int res = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (grid[i][j] == 1) {
+                        int a = i * n + j;
+                        for (int[] dir : directions) {
+                            int x = i + dir[0];
+                            int y = j + dir[1];
+                            if (x < 0 || x >= n || y < 0 || y >= n) continue;
+                            if (grid[x][y] == 0) continue;
+                            int b = x * n + y;
+                            if (find(a) != find(b)) {
+                                sz[find(b)] += sz[find(a)];
+                                p[find(a)] = find(b);
+                            }
+                        }
+                        res = Math.max(res, sz[find(a)]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    HashMap<Integer, Integer> map = new HashMap<>();
+                    if (grid[i][j] == 0) {
+                        int a = i * n + j;
+                        for (int[] dir : directions) {
+                            int x = i + dir[0];
+                            int y = j + dir[1];
+                            if (x < 0 || x >= n || y < 0 || y >= n) continue;
+                            if (grid[x][y] == 0) continue;
+                            int b = x * n + y;
+                            map.put(find(b), sz[find(b)]);
+                        }
+                        int s = 1;
+                        for (int k : map.keySet()) s += map.get(k);
+                        res = Math.max(res, s);
+                    }
+                }
+            }
+            return res;
+        }
+
+        private int find(int x) {
+            if (x != p[x]) p[x] = find(p[x]);
+            return p[x];
+        }
+    }
+
 }

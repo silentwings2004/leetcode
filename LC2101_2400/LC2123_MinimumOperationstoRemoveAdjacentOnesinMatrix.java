@@ -21,90 +21,46 @@ public class LC2123_MinimumOperationstoRemoveAdjacentOnesinMatrix {
      * @param grid
      * @return
      */
-    List<Integer>[] next;
+    // S1: 匈牙利算法
+    // time = O(V * E), space = O(m * n)
+    int[][] grid;
     int[] match;
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    HashSet<Integer> set;
+    int m, n;
+    int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int minimumOperations(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        next = new List[m * n];
-        for (int i = 0; i < m * n; i++) next[i] = new ArrayList<>();
-        match = new int[m * n];
-        Arrays.fill(match, -1);
-
-        // construct next[]
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) continue;
-                for (int[] dir : directions) {
-                    int x = i + dir[0];
-                    int y = j + dir[1];
-                    if (x < 0 || x >= m || y < 0 || y >= n) continue;
-                    if (grid[x][y] != 1) continue;
-                    next[i * n + j].add(x * n + y);
-                }
-            }
-        }
-
-        int t = m * n;
-        boolean[] visited = new boolean[t];
-        int count = 0;
-        for (int i = 0; i < t; i++) {
-            if (match[i] != -1) continue;
-            Arrays.fill(visited, false);
-            if (dfs(i, visited)) count++;
-        }
-        return count;
-    }
-
-    private boolean dfs(int i, boolean[] visited) {
-        for (int j : next[i]) {
-            if (visited[j]) continue;
-            visited[j] = true;
-            if (match[j] == -1 || dfs(match[j], visited)) {
-                match[i] = j;
-                match[j] = i;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // S2:
-    private int[][] dirs = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    private int[][] grid;
-    private int m, n;
-    private HashSet<Integer> vis;
-    private int[] link;
-    public int minimumOperations2(int[][] grid) {
         this.grid = grid;
         m = grid.length;
         n = grid[0].length;
-        vis = new HashSet<>();
-        link = new int[m * n];
-        int cnt = 0;
-        for (int i = 0; i < m;i++) {
+        match = new int[m * n];
+        Arrays.fill(match, -1);
+        set = new HashSet<>();
+
+        int res = 0;
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if ((i + j) % 2 == 0 || grid[i][j] == 0) continue;
-                if (dfs(i * n + j)) cnt++;
+                if ((i + j) % 2 == 1 || grid[i][j] == 0) continue;
+                set.clear();
+                if (find(i * n + j)) res++;
             }
         }
-        return cnt;
+        return res;
     }
 
-    private boolean dfs(int k) {
-        int i = k / n, j = k % n;
-        for (int[] dir : dirs) {
-            int x = i + dir[0], y = j + dir[1];
-            if (x < 0 || x >= m || y < 0 || y >= n || grid[x][y] == 0) continue;
-            int z = x * n + y;
-            if (!vis.contains(z)) {
-                vis.add(z);
-                if (link[z] == 0 || dfs(link[z])) {
-                    link[z] = k;
-                    vis.remove(z);
-                    return true;
-                }
-                vis.remove(z);
+    private boolean find(int u) {
+        int x = u / n, y = u % n;
+        for (int[] dir : directions) {
+            int i = x + dir[0];
+            int j = y + dir[1];
+            if (i < 0 || i >= m || j < 0 || j >= n) continue;
+            int v = i * n + j;
+            if (set.contains(v)) continue;
+            if (grid[i][j] == 0) continue;
+            set.add(v);
+            int t = match[v];
+            if (t == -1 || find(t)) {
+                match[v] = u;
+                return true;
             }
         }
         return false;

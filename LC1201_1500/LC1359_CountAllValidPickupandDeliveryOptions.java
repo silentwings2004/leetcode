@@ -18,12 +18,25 @@ public class LC1359_CountAllValidPickupandDeliveryOptions {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int countOrders(int n) {
         long res = 1;
         long M = (long)(1e9 + 7);
         for (int i = 1; i <= n; i++) res = res * i % M;
         for (int i = 2 * n - 1; i >= 1; i -= 2) res = res * i % M;
+        return (int) res;
+    }
+
+    // S2: Math
+    // time = O(n), space = O(1)
+    public int countOrders2(int n) {
+        long mod = (long)(1e9 + 7);
+        long res = 1;
+        for (int i = 1; i <= n * 2; i++) {
+            if (i % 2 == 1) res = res * i % mod;
+            else res = i / 2 * res % mod;
+        }
         return (int) res;
     }
 }
@@ -35,4 +48,6 @@ public class LC1359_CountAllValidPickupandDeliveryOptions {
  * 然后第二单的递送安排在什么位置呢？只要安排在当前任意一个未被占据的位置即可，也就是有2*n-3种可能。
  * 以此类推，最后一单的下单和递送位置其实都是没有选择余地的。
  * 所以综上，答案应该是A(n,n)*(2n-1)*(2n-3)*...*1
+ *
+ * (2n)! / (2^n)
  */

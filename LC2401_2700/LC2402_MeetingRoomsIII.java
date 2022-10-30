@@ -35,33 +35,33 @@ public class LC2402_MeetingRoomsIII {
      * @param meetings
      * @return
      */
-    // time = O(nlogn), space = O(n)
+    // time = O(m * nlogn), space = O(n)
     public int mostBooked(int n, int[][] meetings) {
-        Arrays.sort(meetings,((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]));
+        Arrays.sort(meetings, (o1, o2) -> o1[0] - o2[0]);
+        PriorityQueue<Integer> free = new PriorityQueue<>();
+        PriorityQueue<int[]> busy = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
         int[] cnt = new int[n];
-        TreeSet<Integer> set = new TreeSet<>();
-        for (int i = 0; i < n; i++) set.add(i);
-        PriorityQueue<int[]> pq = new PriorityQueue<>(((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1])); // {end, id}
 
+        for (int i = 0; i < n; i++) free.offer(i);
         for (int[] x : meetings) {
             int start = x[0], end = x[1];
-            while (!pq.isEmpty() && pq.peek()[0] <= start) {
-                int[] t = pq.poll();
-                set.add(t[1]);
+            while (!busy.isEmpty() && busy.peek()[0] <= start) {
+                free.offer(busy.poll()[1]);
             }
-            if (set.size() == 0) {
-                int[] t = pq.poll();
-                pq.offer(new int[]{t[0] + x[1] - x[0], t[1]});
-                cnt[t[1]]++;
+
+            if (!free.isEmpty()) {
+                int idx = free.poll();
+                cnt[idx]++;
+                busy.offer(new int[]{end, idx});
             } else {
-                int id = set.first();
-                set.remove(id);
-                pq.offer(new int[]{x[1], id});
-                cnt[id]++;
+                int[] t = busy.poll();
+                int time = t[0], idx = t[1];
+                cnt[idx]++;
+                busy.offer(new int[]{time + end - start, idx});
             }
         }
 
-        int max = 0, res = 0;
+        int res = 0, max = 0;
         for (int i = 0; i < n; i++) {
             if (cnt[i] > max) {
                 max = cnt[i];
@@ -71,3 +71,11 @@ public class LC2402_MeetingRoomsIII {
         return res;
     }
 }
+/**
+ * ref: LC1882
+ * for meeting : meetings
+ *      if there are free rooms
+ *          pick the lowest number one
+*       else
+ *          wait until the next available room
+ */

@@ -299,6 +299,39 @@ public class LC218_TheSkylineProblem {
         }
         return res;
     }
+
+    // S6
+    // time = O(nlogn), space = O(n)
+    public List<List<Integer>> getSkyline6(int[][] buildings) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<int[]> points = new ArrayList<>();
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int[] b : buildings) {
+            points.add(new int[]{b[0], -b[2]});
+            points.add(new int[]{b[1], b[2]});
+        }
+
+        Collections.sort(points, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        // x-axis needs to be added into res
+        map.put(0, 1);
+        for (int[] p : points) {
+            int x = p[0], h = Math.abs(p[1]);
+            if (p[1] < 0) { // left point
+                if (h > map.lastKey()) {
+                    res.add(Arrays.asList(x, h));
+                }
+                map.put(h, map.getOrDefault(h, 0) + 1);
+            } else { // right point
+                map.put(h, map.get(h) - 1);
+                if (map.get(h) == 0) map.remove(h);
+                if (h > map.lastKey()) {
+                    res.add(Arrays.asList(x, map.lastKey()));
+                }
+            }
+        }
+        return res;
+    }
 }
 /**
  * sweep line 扫描线算法
@@ -324,4 +357,21 @@ public class LC218_TheSkylineProblem {
  * 用一个set，每次遇到边界点，就把高度加入set
  * 上升沿加入
  * 遇到下降沿再剔除掉
+ *
+ * 输出每个轮廓"横边"的起点
+ * 切割成若干个扫描线
+ * 我们只要关注每个长条最上面的那条边
+ * 排序
+ * 左边：入点，右边：出点
+ * 所有入点出点找出来，排个序
+ * 枚举下所有相邻两点之间的长条
+ * 每个长条内部最上面那条边在什么地方
+ * 情况1：当前这个点是左端点(入点)的话，高度为当前长条内最高的一个 => multi-set => h > 最大值
+ * check下当前插入的这个高度是否为最高的一个，入点的高度比multi-set里所有的高度要大
+ * 情况2：如果是出点的话，下面这个点可能出现在轮廓线，就是删掉最高的边，下面这个点所在的边要加进去  => h > 最大值
+ * 如果2个左端点高度一样，优先先加高度大的排在前面；
+ * 如果2个右端点高度一样，那么先把较小的值删除
+ * 如果左右端点重合的话，应该左端点排在前，右端点排在后
+ * 排序用一个pair来排，双关键字排序
+ * 左端点的话，存-h，右端点的话存h，这样就实现上面的排序要求
  */

@@ -20,26 +20,35 @@ public class LC1360_NumberofDaysBetweenTwoDates {
      * @return
      */
     // time = O(1), space = O(1)
+    private final int[] months = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public int daysBetweenDates(String date1, String date2) {
-        return Math.abs(helper(date1) - helper(date2));
+        return Math.abs(get(date1) - get(date2));
     }
 
-    private int helper(String s) {
-        String[] strs = s.split("-");
+    private int get(String date) {
+        String[] strs = date.split("-");
         int year = Integer.parseInt(strs[0]);
         int month = Integer.parseInt(strs[1]);
         int day = Integer.parseInt(strs[2]);
 
         int res = 0;
-        int[] months = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        for (int i = 1971; i < year; i++) res += isLeapYear(i) ? 366 : 365;
-        for (int i = 1; i < month; i++) res += months[i - 1];
-        res += day;
-        if (isLeapYear(year) && month > 2) res++;
-        return res;
+        for (int i = 1971; i < year; i++) res += 365 + is_leap(i);
+
+        for (int i = 1; i < month; i++) res += get_days(year, i);
+        return res + day;
     }
 
-    private boolean isLeapYear(int year) {
-        return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+    private int is_leap(int year) {
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) return 1;
+        return 0;
+    }
+
+    private int get_days(int year, int month) {
+        if (month != 2) return months[month];
+        return is_leap(year) + 28;
     }
 }
+/**
+ * 1971.1.1 - d1
+ * 1971.1.1 - d2
+ */

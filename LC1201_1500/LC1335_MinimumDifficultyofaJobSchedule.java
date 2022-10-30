@@ -28,30 +28,6 @@ public class LC1335_MinimumDifficultyofaJobSchedule {
     // time = O(n^2 * d), space = O(n * d)
     public int minDifficulty(int[] jobDifficulty, int d) {
         int n = jobDifficulty.length;
-        int[] nums = new int[n + 1];
-        for (int i = 0; i < n; i++) nums[i + 1] = jobDifficulty[i];
-        int[][] dp = new int[n + 1][d + 1];
-        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], Integer.MAX_VALUE / 2);
-
-        // init
-        dp[0][0] = 0;
-
-        for (int i = 1; i <= n; i++) {
-            for (int k = 1; k <= Math.min(d, i); k++) {
-                int max = nums[i];
-                for (int j = i; j >= k; j--) { // 从后往前遍历就能够顺便求出max[i:j]
-                    max = Math.max(max, nums[j]);
-                    dp[i][k] = Math.min(dp[i][k], dp[j - 1][k - 1] + max); // j - 1 >= k - 1 => j >= k
-                }
-            }
-        }
-        return dp[n][d] == Integer.MAX_VALUE / 2 ? -1 : dp[n][d];
-    }
-
-    // S1.2: use the original array
-    // time = O(n^2 * d), space = O(n * d)
-    public int minDifficulty2(int[] jobDifficulty, int d) {
-        int n = jobDifficulty.length;
         int[][] dp = new int[n + 1][d + 1];
         for (int i = 0; i <= n; i++) {
             Arrays.fill(dp[i], Integer.MAX_VALUE / 2);
@@ -68,6 +44,26 @@ public class LC1335_MinimumDifficultyofaJobSchedule {
             }
         }
         return dp[n][d] == Integer.MAX_VALUE / 2 ? -1 : dp[n][d];
+    }
+
+    // S2
+    // time = O(n^2 * d), space = O(n * d)
+    public int minDifficulty2(int[] jobDifficulty, int d) {
+        int n = jobDifficulty.length, INF = (int) 1e8;
+        int[][] f = new int[n + 1][d + 1];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], INF);
+        f[0][0] = 0;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= Math.min(i, d); j++) {
+                int cost = 0;
+                for (int k = 1; k <= i; k++) {
+                    cost = Math.max(cost, jobDifficulty[i - k]);
+                    f[i][j] = Math.min(f[i][j], f[i - k][j - 1] + cost);
+                }
+            }
+        }
+        return f[n][d] == INF ? -1 : f[n][d];
     }
 }
 /**

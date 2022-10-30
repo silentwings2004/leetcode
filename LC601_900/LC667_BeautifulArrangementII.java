@@ -21,8 +21,23 @@ public class LC667_BeautifulArrangementII {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int[] constructArray(int n, int k) {
+        int[] res = new int[n];
+        for (int i = 0; i < n - k - 1; i++) res[i] = i + 1;
+        int u = n - k - 1;
+        int i = n - k, j = n;
+        while (u < n) {
+            res[u++] = i++;
+            if (u < n) res[u++] = j--; // 有可能u在上一轮已经走到头了
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int[] constructArray2(int n, int k) {
         // corner case
         if (n <= k) return null; // 题目给定限制条件 n > k
 
@@ -43,3 +58,9 @@ public class LC667_BeautifulArrangementII {
         return res;
     }
 }
+/**
+ * 思维题
+ * 1 2 3 ... n  1  共1种
+ * 1 n 2  n-1 3 n-2 4 ... 共n-1种
+ * 1 2 ... n-k-1 n-k n n-k+1 n-1
+ */

@@ -30,44 +30,39 @@ public class LC2282_NumberofPeopleThatCanBeSeeninaGrid {
     // time = O(m * n), space = O(m * n)
     public int[][] seePeople(int[][] heights) {
         int m = heights.length, n = heights[0].length;
-        int[][] right = new int[m][n]; // nextGreaterOrEqual
-        int[][] below = new int[m][n];
+        int[][] res = new int[m][n];
 
-        Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < m; i++) {
-            stack.clear();
-            for (int j = n - 1; j >= 0; j--) {
-                int count = 0;
-                while (!stack.isEmpty() && heights[i][stack.peek()] < heights[i][j]) {
-                    count++;
-                    stack.pop();
+            Stack<Integer> stk = new Stack<>();
+            for (int j = 0; j < n; j++) {
+                int lastRemoved = -1;
+                while (!stk.isEmpty() && heights[i][j] >= heights[i][stk.peek()]) {
+                    lastRemoved = heights[i][stk.peek()];
+                    res[i][stk.pop()]++;
                 }
-                if (!stack.isEmpty()) count++;
-                right[i][j] = count;
-                if (stack.isEmpty() || heights[i][j] != heights[i][stack.peek()]) stack.push(j);
+                if (!stk.isEmpty() && heights[i][j] != lastRemoved) res[i][stk.peek()]++;
+                stk.push(j);
             }
         }
 
         for (int j = 0; j < n; j++) {
-            stack.clear();
-            for (int i = m - 1; i >= 0; i--) {
-                int count = 0;
-                while (!stack.isEmpty() && heights[stack.peek()][j] < heights[i][j]) {
-                    count++;
-                    stack.pop();
+            Stack<Integer> stk = new Stack<>();
+            for (int i = 0; i < m; i++) {
+                int lastRemoved = -1;
+                while (!stk.isEmpty() && heights[i][j] >= heights[stk.peek()][j]) {
+                    lastRemoved = heights[stk.peek()][j];
+                    res[stk.pop()][j]++;
                 }
-                if (!stack.isEmpty()) count++;
-                below[i][j] = count;
-                if (stack.isEmpty() || heights[i][j] != heights[stack.peek()][j]) stack.push(i);
-            }
-        }
-
-        int[][] res = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                res[i][j] = right[i][j] + below[i][j];
+                if (!stk.isEmpty() && heights[i][j] != lastRemoved) res[stk.peek()][j]++;
+                stk.push(i);
             }
         }
         return res;
     }
 }
+/**
+ * ref: LC1944
+ * 单调栈
+ * 允许相同元素 => 3,1,1。第二个1会把第一个1弹出再入栈，但是注意3虽然大于第二个1，可它是看不到第二个1的。
+ * 如果新元素nums[i]如果从栈顶刚弹出了与自己相同的元素，那么它就不能再被此时栈顶的大元素的计数器所加1（虽然大于nums[i]).
+ */

@@ -29,7 +29,27 @@ public class LC1694_ReformatPhoneNumber {
      * @param number
      * @return
      */
+    // time = O(n), space = O(n)
     public String reformatNumber(String number) {
-
+        int n = number.length(), cnt = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            char c = number.charAt(i);
+            if (c == ' ' || c == '-') continue;
+            else {
+                sb.append(c);
+                cnt++;
+                if (cnt == 3) {
+                    sb.append('-');
+                    cnt = 0;
+                }
+            }
+        }
+        if (cnt == 0) sb.setLength(sb.length() - 1);
+        else if (cnt == 1) {
+            sb.deleteCharAt(sb.length() - 2);
+            sb.insert(sb.length() - 2, '-');
+        }
+        return sb.toString();
     }
 }

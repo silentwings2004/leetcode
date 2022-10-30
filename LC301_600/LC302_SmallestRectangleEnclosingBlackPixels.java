@@ -30,84 +30,79 @@ public class LC302_SmallestRectangleEnclosingBlackPixels {
      */
     // time = O(nlogm + mlogn), space = O(1)
     public int minArea(char[][] image, int x, int y) {
-        // corner case
-        if (image == null || image.length == 0 || image[0] == null || image[0].length == 0) return 0;
-
         int m = image.length, n = image[0].length;
-
-        int up = upRegion(image, 0, x, 0, n - 1);
-        int down = downRegion(image, x, m - 1, 0, n - 1);
-        int left = leftRegion(image, 0, m - 1, 0, y);
-        int right = rightRegion(image, 0, m - 1, y, n - 1);
-
-        return (down - up + 1) * (right - left + 1);
+        int u = up(image, 0, x, 0, n - 1);
+        int d = down(image, x, m - 1, 0, n - 1);
+        int l = left(image, 0, m - 1, 0, y);
+        int r = right(image, 0, m - 1, y, n - 1);
+        return (r - l + 1) * (d - u + 1);
     }
 
-    private int upRegion(char[][] image, int xl, int xr, int yl, int yr) {
-        int left = xl, right = xr;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
+    private int up(char[][] image, int rmin, int rmax, int cmin, int cmax) {
+        int l = rmin, r = rmax;
+        while (l < r) {
+            int mid = l + r >> 1;
             boolean flag = false;
-            for (int i = yl; i <= yr; i++) {
+            for (int i = cmin; i <= cmax; i++) {
                 if (image[mid][i] == '1') {
                     flag = true;
                     break;
                 }
             }
-            if (!flag) left = mid + 1;
-            else right = mid;
+            if (!flag) l = mid + 1;
+            else r = mid;
         }
-        return left;
+        return r;
     }
 
-    private int downRegion(char[][] image, int xl, int xr, int yl, int yr) {
-        int left = xl, right = xr;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
+    private int down(char[][] image, int rmin, int rmax, int cmin, int cmax) {
+        int l = rmin, r = rmax;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
             boolean flag = false;
-            for (int i = yl; i <= yr; i++) {
+            for (int i = cmin; i <= cmax; i++) {
                 if (image[mid][i] == '1') {
                     flag = true;
                     break;
                 }
             }
-            if (!flag) right = mid - 1;
-            else left = mid;
+            if (!flag) r = mid - 1;
+            else l = mid;
         }
-        return left;
+        return r;
     }
 
-    private int leftRegion(char[][] image, int xl, int xr, int yl, int yr) {
-        int left = yl, right = yr;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
+    private int left(char[][] image, int rmin, int rmax, int cmin, int cmax) {
+        int l = cmin, r = cmax;
+        while (l < r) {
+            int mid = l + r >> 1;
             boolean flag = false;
-            for (int i = xl; i <= xr; i++) {
+            for (int i = rmin; i <= rmax; i++) {
                 if (image[i][mid] == '1') {
                     flag = true;
                     break;
                 }
             }
-            if (!flag) left = mid + 1;
-            else right = mid;
+            if (!flag) l = mid + 1;
+            else r = mid;
         }
-        return left;
+        return r;
     }
 
-    private int rightRegion(char[][] image, int xl, int xr, int yl, int yr) {
-        int left = yl, right = yr;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
+    private int right(char[][] image, int rmin, int rmax, int cmin, int cmax) {
+        int l = cmin, r = cmax;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
             boolean flag = false;
-            for (int i = xl; i <= xr; i++) {
+            for (int i = rmin; i <= rmax; i++) {
                 if (image[i][mid] == '1') {
                     flag = true;
                     break;
                 }
             }
-            if (!flag) right = mid - 1;
-            else left = mid;
+            if (!flag) r = mid - 1;
+            else l = mid;
         }
-        return left;
+        return r;
     }
 }

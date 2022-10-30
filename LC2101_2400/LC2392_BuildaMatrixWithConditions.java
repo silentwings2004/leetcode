@@ -38,6 +38,7 @@ public class LC2392_BuildaMatrixWithConditions {
      * @param colConditions
      * @return
      */
+    // S1
     // time = O(k^2), space = O(k)
     int n;
     public int[][] buildMatrix(int k, int[][] rowConditions, int[][] colConditions) {
@@ -85,6 +86,51 @@ public class LC2392_BuildaMatrixWithConditions {
         }
         return res;
     }
+
+    // S1.2
+    // time = O(k^2), space = O(k)
+    public int[][] buildMatrix2(int k, int[][] rowConditions, int[][] colConditions) {
+        int[] row = topo(k, rowConditions);
+        int[] col = topo(k, colConditions);
+        if (row.length == 0 || col.length == 0) return new int[][]{};
+
+        int[][] pos = new int[k + 1][2]; // p[v]: (x, y) of v
+        for (int i = 0; i < k; i++) pos[row[i]][0] = i;
+        for (int j = 0; j < k; j++) pos[col[j]][1] = j;
+
+        int[][] matrix = new int[k][k];
+        for (int v = 1; v <= k; v++) matrix[pos[v][0]][pos[v][1]] = v;
+        return matrix;
+    }
+
+    private int[] topo(int k, int[][] conditions) {
+        List<Integer>[] graph = new List[k + 1];
+        for (int i = 0; i <= k; i++) graph[i] = new ArrayList<>();
+        int[] indegree = new int[k + 1];
+        for (int[] x : conditions) {
+            int a = x[0], b = x[1];
+            graph[a].add(b);
+            indegree[b]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 1; i <= k; i++) {
+            if (indegree[i] == 0) queue.offer(i);
+        }
+
+        int[] res = new int[k];
+        int idx = 0, cnt = 0;
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            res[idx++] = cur;
+            cnt++;
+            for (int next : graph[cur]) {
+                indegree[next]--;
+                if (indegree[next] == 0) queue.offer(next);
+            }
+        }
+        return cnt == k ? res : new int[0];
+    }
 }
 /**
  * 行和列是完全独立的
@@ -92,4 +138,7 @@ public class LC2392_BuildaMatrixWithConditions {
  * 先去定义在行方向上的顺序，列方向上的顺序可以任意排
  * 行列分别去考虑
  * 拓扑排序问题
+ *
+ * 一系列约束 -> 节点关系转化成图，本质上就是个有向图
+ * 观察入度为0的节点
  */

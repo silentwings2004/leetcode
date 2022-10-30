@@ -165,6 +165,38 @@ public class LC838_PushDominoes {
         }
         return String.valueOf(chars);
     }
+
+    // S4
+    // time = O(n), space = O(n)
+    public String pushDominoes4(String dominoes) {
+        dominoes = "L" + dominoes + 'R';
+        int n = dominoes.length();
+        int[] l = new int[n], r = new int[n];
+
+        for (int i = 0, j = 0; i < n; i++) {
+            if (dominoes.charAt(i) != '.') j = i;
+            l[i] = j;
+        }
+
+        for (int i = n - 1, j = 0; i >= 0; i--) {
+            if (dominoes.charAt(i) != '.') j = i;
+            r[i] = j;
+        }
+
+        char[] chars = new char[n];
+        for (int i = 0; i < n; i++) {
+            char lc = dominoes.charAt(l[i]), rc = dominoes.charAt(r[i]);
+            if (lc == 'L' && rc == 'R') chars[i] = '.';
+            else if (lc == 'L' && rc == 'L') chars[i] = 'L';
+            else if (lc == 'R' && rc == 'R') chars[i] = 'R';
+            else {
+                if (i - l[i] > r[i] - i) chars[i] = 'L';
+                else if (i - l[i] < r[i] - i) chars[i] = 'R';
+                else chars[i] = '.';
+            }
+        }
+        return String.valueOf(chars).substring(1, n - 1);
+    }
 }
 /**
  * 根据题意，我们按照回合的顺序进行BFS模拟。队列的初始，放入所有被推导的骨牌。

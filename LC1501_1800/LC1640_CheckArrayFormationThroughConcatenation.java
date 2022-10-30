@@ -32,18 +32,17 @@ public class LC1640_CheckArrayFormationThroughConcatenation {
     // time = O(n), space = O(n)
     public boolean canFormArray(int[] arr, int[][] pieces) {
         HashMap<Integer, int[]> map = new HashMap<>();
-        for (int[] p : pieces) map.put(p[0], p);
+        for (int[] x : pieces) map.put(x[0], x);
 
-        int i = 0;
-        while (i < arr.length) {
+        int i = 0, n = arr.length;
+        while (i < n) {
             if (!map.containsKey(arr[i])) return false;
-            int[] piece = map.get(arr[i]);
-            for (int p : piece) {
-                if (p != arr[i]) return false;
+            for (int x : map.get(arr[i])) {
+                if (arr[i] != x) return false;
                 i++;
             }
         }
-        return false;
+        return true;
     }
 
     // S2: HashMap + Stack

@@ -64,4 +64,12 @@ public class LC857_MinimumCosttoHireKWorkers {
  *
  * pq.size() > k => pq.poll()
  * wageSum = unitWage * quality_sum
+ *
+ * qi * t >= wi => t >= wi/qi
+ * t 取最大值 => t * (q1+q2+...+qk)
+ * 枚举答案 => 枚举比值wi/qi是可以做的
+ * 左边的工人随便选，一定可以满足条件
+ * 从左边选k个工人，使总和最小 => 选最小的k个数
+ * 比值从小到大枚举
+ * 动态维护k个最小数 => 用pq来做
  */

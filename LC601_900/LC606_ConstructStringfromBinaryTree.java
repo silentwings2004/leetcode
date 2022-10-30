@@ -31,13 +31,12 @@ public class LC606_ConstructStringfromBinaryTree {
 
     private void dfs(TreeNode node) {
         if (node == null) return;
+
         sb.append(node.val);
-        if (node.left != null) {
+        if (node.left != null || node.right != null) {
             sb.append('(');
             dfs(node.left);
             sb.append(')');
-        } else if (node.right != null) {
-            sb.append('(').append(')');
         }
 
         if (node.right != null) {
@@ -47,3 +46,7 @@ public class LC606_ConstructStringfromBinaryTree {
         }
     }
 }
+/**
+ * 如果2个孩子都是空的，或者右孩子是空的，就可以省略空括号
+ * 但如果左边是空的，右边非空，则一定要把空括号创建出来
+ */

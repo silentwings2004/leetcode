@@ -100,6 +100,33 @@ public class LC1882_ProcessTasksUsingServers {
         }
         return res;
     }
+
+    // S3
+    // time = O((m + n) * logm), space = O(m)
+    public int[] assignTasks3(int[] servers, int[] tasks) {
+        PriorityQueue<int[]> busy = new PriorityQueue<>((o1, o2) -> o1[2] != o2[2] ? o1[2] - o2[2] : (o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]));
+        PriorityQueue<int[]> free = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int m = servers.length, n = tasks.length;
+        int[] res = new int[n];
+        for (int i = 0; i < m; i++) free.offer(new int[]{servers[i], i});
+        for (int i = 0; i < n; i++) {
+            while (!busy.isEmpty() && busy.peek()[2] <= i) {
+                int[] t = busy.poll();
+                free.offer(new int[]{t[0], t[1]});
+            }
+            if (!free.isEmpty()) {
+                int[] t = free.poll();
+                res[i] = t[1];
+                busy.offer(new int[]{t[0], t[1], i + tasks[i]});
+            } else {
+                int[] t = busy.poll();
+                res[i] = t[1];
+                busy.offer(new int[]{t[0], t[1], t[2] + tasks[i]});
+            }
+        }
+        return res;
+    }
 }
 /**
  * FreePQ{weight, idx}   已经开工的

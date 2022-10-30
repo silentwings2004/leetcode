@@ -43,6 +43,29 @@ public class LC393_UTF8Validation {
         }
         return left == 0;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public boolean validUtf82(int[] data) {
+        int n = data.length;
+        for (int i = 0; i < n; i++) {
+            if (get(data[i], 7) == 0) continue;
+            int k = 0;
+            while (k <= 4 && get(data[i], 7 - k) == 1) k++;
+            if (k == 1 || k > 4) return false;
+            for (int j = 0; j < k - 1; j++) {
+                int t = i + 1 + j;
+                if (t >= n) return false;
+                if (!(get(data[t], 7) == 1 && get(data[t], 6) == 0)) return false;
+            }
+            i += k - 1;
+        }
+        return true;
+    }
+
+    private int get(int x, int k) {
+        return x >> k & 1;
+    }
 }
 /**
  * how to check the prefix in bianry format?

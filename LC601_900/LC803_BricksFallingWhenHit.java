@@ -187,6 +187,101 @@ public class LC803_BricksFallingWhenHit {
         }
         return count;
     }
+
+    // S3: Union Find
+    class Solution {
+        // time = O((k + m * n) * log(m * n)), space = O(m * n)
+        int n, m;
+        int[] p, sz;
+        public int[] hitBricks(int[][] grid, int[][] hits) {
+            n = grid.length;
+            m = grid[0].length;
+
+            int S = n * m;
+            p = new int[S + 1];
+            sz = new int[S + 1];
+            for (int i = 0; i <= S; i++) {
+                p[i] = i;
+                sz[i] = 1;
+            }
+
+            boolean[] st = new boolean[hits.length];
+            int idx = 0;
+            for (int[] p : hits) {
+                int x = p[0], y = p[1];
+                if (grid[x][y] != 0) {
+                    grid[x][y] = 0;
+                    st[idx++] = true;
+                } else st[idx++] = false;
+            }
+
+            int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (grid[i][j] != 0) {
+                        int a = get(i, j);
+                        if (i == 0) {
+                            if (find(S) != find(a)) {
+                                sz[find(S)] += sz[find(a)];
+                                p[find(a)] = find(S);
+                            }
+                        }
+
+                        for (int k = 0; k < 4; k++) {
+                            int x = i + dx[k], y = j + dy[k];
+                            if (x >= 0 && x < n && y >= 0 && y < m && grid[x][y] == 1) {
+                                int b = get(x, y);
+                                if (find(a) != find(b)) {
+                                    sz[find(b)] += sz[find(a)];
+                                    p[find(a)] = find(b);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            int[] res = new int[hits.length];
+            int last = sz[find(S)];
+            for (int i = hits.length - 1; i >= 0; i--) {
+                if (st[i]) {
+                    int x = hits[i][0], y = hits[i][1];
+                    grid[x][y] = 1;
+                    int a = get(x, y);
+                    if (x == 0) {
+                        if (find(S) != find(a)) {
+                            sz[find(S)] += sz[find(a)];
+                            p[find(a)] = find(S);
+                        }
+                    }
+
+                    for (int j = 0; j < 4; j++) {
+                        int c = x + dx[j], d = y + dy[j];
+                        if (c >= 0 && c < n && d >= 0 && d < m && grid[c][d] == 1) {
+                            int b = get(c, d);
+                            if (find(a) != find(b)) {
+                                sz[find(b)] += sz[find(a)];
+                                p[find(a)] = find(b);
+                            }
+                        }
+                    }
+                    res[i] = Math.max(0, sz[find(S)] - last - 1); // -1 not include itself
+                    last = sz[find(S)];
+                }
+            }
+            return res;
+        }
+
+        private int get(int x, int y) {
+            return x * m + y;
+        }
+
+        private int find(int x) {
+            if (x != p[x]) p[x] = find(p[x]);
+            return p[x];
+        }
+    }
 }
 /**
  * ref: LC1970 时光倒流

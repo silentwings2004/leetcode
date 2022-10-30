@@ -39,6 +39,7 @@ public class LC2334_SubarrayWithElementsGreaterThanVaryingThreshold {
             q.add(i);
             s[i] = 1;
         }
+        q.remove(q.size() - 1);
 
         Collections.sort(q, (o1, o2) -> nums[o2] - nums[o1]);
         for (int k = 1, i = 0; k <= n; k++) {

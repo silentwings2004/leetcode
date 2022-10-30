@@ -57,9 +57,4 @@ public class LC112_PathSum {
         }
         return false;
     }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
-    }
 }

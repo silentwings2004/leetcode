@@ -32,20 +32,18 @@ public class LC1372_LongestZigZagPathinaBinaryTree {
     public int longestZigZag(TreeNode root) {
         if (root == null) return 0;
 
-        dfs(root, 0, 0);
-        dfs(root, 1, 0);
+        dfs(root, -1);
         return res;
     }
 
-    private void dfs(TreeNode node, int dir, int sum) {
-        res = Math.max(res, sum);
+    private int dfs(TreeNode node, int dir) {
+        if (node == null) return 0;
 
-        if (dir == 0) {
-            if (node.left != null) dfs(node.left, 1, sum + 1);
-            if (node.right != null) dfs(node.right, 0, 1);
-        } else {
-            if (node.right != null) dfs(node.right, 0, sum + 1);
-            if (node.left != null) dfs(node.left, 1, 1);
-        }
+        int l = dfs(node.left, 0);
+        int r = dfs(node.right, 1);
+
+        res = Math.max(res, Math.max(l, r));
+        if (dir == 0) return r + 1;
+        return l + 1;
     }
 }

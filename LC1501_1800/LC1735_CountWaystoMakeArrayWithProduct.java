@@ -23,6 +23,7 @@ public class LC1735_CountWaystoMakeArrayWithProduct {
      * @param queries
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     // 10^4，质因数最小为2，如果全是2，那么也就log2(10^4) = log(10^4) / log(2) = 4/log(2) = 13.29 = 14个
     private long[][] comb = new long[10015][15];
@@ -60,6 +61,54 @@ public class LC1735_CountWaystoMakeArrayWithProduct {
                 ans = ans * comb[count + n - 1][count] % M; // 可能会溢出
             }
             res[idx++] = (int)ans;
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    final int N = 10010, mod = (int) 1e9 + 7;
+    long[] fact, infact;
+    public int[] waysToFillArray2(int[][] queries) {
+        fact = new long[N];
+        infact = new long[N];
+        fact[0] = infact[0] = 1;
+        for (int i = 1; i < N; i++) {
+            fact[i] = fact[i - 1] * i % mod;
+            infact[i] = qmi(fact[i], mod - 2);
+        }
+
+        int n = queries.length;
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            int a = queries[i][0], b = queries[i][1];
+            long t = 1;
+            for (int j = 2; j <= b / j; j++) {
+                if (b % j == 0) {
+                    int s = 0;
+                    while (b % j == 0) {
+                        s++;
+                        b /= j;
+                    }
+                    t = t * C(a + s - 1, a - 1) % mod;
+                }
+            }
+            if (b > 1) t = t * C(a, a - 1) % mod;
+            res[i] = (int) t;
+        }
+        return res;
+    }
+
+    private long C(int a, int b) {
+        return fact[a] * infact[b] % mod * infact[a - b] % mod;
+    }
+
+    private long qmi(long a, long k) {
+        long res = 1;
+        while (k > 0) {
+            if ((k & 1) == 1) res = res * a % mod;
+            a = a * a % mod;
+            k >>= 1;
         }
         return res;
     }
@@ -121,5 +170,10 @@ public class LC1735_CountWaystoMakeArrayWithProduct {
  *     return cnt;
  * }
  *
+ * 将S个苹果分给n个小朋友，共有多少种分法？
+ * x1 + x2 + ... + xn = S  => 不定方程的非负整数解的个数
+ * 令xi' = xi + 1
+ * x1' + x2' + ... + xn' = S + n   隔板法
+ * C(n+s-1, n-1)
  */
 

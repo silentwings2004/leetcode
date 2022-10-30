@@ -48,3 +48,15 @@ public class LC2355_MaximumNumberofBooksYouCanTake {
         return res;
     }
 }
+/**
+ * dp[i]: the maximum number of books you can take from an subarray ending at i
+ * 找一个左边界 => 严格递增
+ * x x x x [x 3 9 9 i] x
+ *            j     i
+ *            3 7 8 9
+ * dp[i] = dp[j] + sum{deng cha shu lie}
+ * L = i - j
+ * (books[i] + books[i] - L + 1) * L / 2
+ * dp[i] = dp[j] + sum
+ * stack => 
+ */

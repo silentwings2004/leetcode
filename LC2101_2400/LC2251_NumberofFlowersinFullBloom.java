@@ -56,42 +56,37 @@ public class LC2251_NumberofFlowersinFullBloom {
 
     // S2: BIT
     // time = O((m + n) * logm), space = O(m)
+    final int INF = 0x3f3f3f3f;
+    HashMap<Integer, Integer> tr;
     public int[] fullBloomFlowers2(int[][] flowers, int[] persons) {
-        int n = persons.length;
-        BIT bit = new BIT();
+        tr = new HashMap<>();
 
         for (int[] x : flowers) {
-            int a = x[0], b = x[1] + 1;
-            bit.update(a + 1, 1);
-            bit.update(b + 1, -1);
+            int a = x[0], b = x[1];
+            add(a, 1);
+            add(b + 1, -1);
         }
 
+        int n = persons.length;
         int[] res = new int[n];
         for (int i = 0; i < n; i++) {
-            res[i] = bit.query(persons[i] + 1);
+            res[i] = sum(persons[i]);
         }
         return res;
     }
 
-    private class BIT {
-        HashMap<Integer, Integer> bitree;
-        public BIT() {
-            this.bitree = new HashMap<>();
-        }
+    private int lowbit(int x) {
+        return x & -x;
+    }
 
-        private void update(int x, int delta) {
-            for (int i = x; i <= (int) 1e9 + 1; i += i & (-i)) {
-                bitree.put(i, bitree.getOrDefault(i, 0) + delta);
-            }
-        }
+    private void add(int x, int c) {
+        for (int i = x; i <= INF; i += lowbit(i)) tr.put(i, tr.getOrDefault(i, 0) + c);
+    }
 
-        private int query(int x) {
-            int res = 0;
-            for (int i = x; i > 0; i -= i & (-i)) {
-                res += bitree.getOrDefault(i, 0);
-            }
-            return res;
-        }
+    private int sum(int x) {
+        int res = 0;
+        for (int i = x; i > 0; i -= lowbit(i)) res += tr.getOrDefault(i, 0);
+        return res;
     }
 
     // S3: diff array
@@ -118,6 +113,32 @@ public class LC2251_NumberofFlowersinFullBloom {
         for (int i = 0; i < n; i++) {
             while (j < diff.size() && diff.get(j)[0] <= p.get(i)[0]) sum += diff.get(j++)[1];
             res[p.get(i)[1]] = sum;
+        }
+        return res;
+    }
+
+    // S4: diff array
+    // time = O(mlogm + nlogn), space = O(m + n)
+    public int[] fullBloomFlowers4(int[][] flowers, int[] persons) {
+        List<int[]> diff = new ArrayList<>();
+        for (int[] x : flowers) {
+            int a = x[0], b = x[1];
+            diff.add(new int[]{a, 1});
+            diff.add(new int[]{b + 1, -1});
+        }
+        Collections.sort(diff, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int n = persons.length;
+        int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) p[i] = new int[]{persons[i], i};
+        Arrays.sort(p, (o1, o2) -> o1[0] - o2[0]);
+
+        int[] res = new int[n];
+        int sum = 0, idx = 0;
+        for (int[] x : diff) {
+            int t = x[0], v = x[1];
+            while (idx < n && p[idx][0] < t) res[p[idx++][1]] = sum;
+            sum += v;
         }
         return res;
     }
