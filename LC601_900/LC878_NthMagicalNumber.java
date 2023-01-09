@@ -45,23 +45,25 @@ public class LC878_NthMagicalNumber {
         return (int) ((lcm * p % M + remainder) % M);
     }
 
-    private int gcd(int a ,int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b);
+    private int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     // S2: BS
-    // time = O(log(n * min(a, b)), space = O(1)
+    // time = O((logn)^2), space = O(1)
     public int nthMagicalNumber2(int n, int a, int b) {
-        long M = (long)(1e9 + 7);
-        long lcm = a * b / gcd(a, b);
-        long left = 0, right = Long.MAX_VALUE;
-        while (left < right) {
-            long mid = left + (right - left) / 2;
-            if (mid / a + mid / b - mid / lcm < n) left = mid + 1;
-            else right = mid;
+        long mod = (long)(1e9 + 7);
+        long l = 1, r = (long) 4e13;
+        while (l < r) {
+            long mid = l + r >> 1;
+            if (get(mid, a, b) >= n) r = mid;
+            else l = mid + 1;
         }
-        return (int)(left % M);
+        return (int)(r % mod);
+    }
+
+    private long get(long mid, int a, int b) {
+        return mid / a + mid / b - mid / (a * b / gcd(a, b));
     }
 }
 /**

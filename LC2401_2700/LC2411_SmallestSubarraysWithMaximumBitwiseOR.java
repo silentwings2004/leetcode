@@ -70,6 +70,43 @@ public class LC2411_SmallestSubarraysWithMaximumBitwiseOR {
         }
         return true;
     }
+
+    // S3
+    // time = O(nlogn), space = O(n)
+    public int[] smallestSubarrays3(int[] nums) {
+        int n = nums.length;
+        HashMap<Integer, TreeSet<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            for (int j = 0; j < 31; j++) {
+                if ((x >> j & 1) == 1) {
+                    map.putIfAbsent(j, new TreeSet<>());
+                    map.get(j).add(i);
+                }
+            }
+        }
+
+        int[] res = new int[n];
+        res[n - 1] = 1;
+        int s = nums[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            s |= nums[i];
+            int x = s - nums[i];
+            if (x == 0) {
+                res[i] = 1;
+                continue;
+            }
+            int max = i;
+            for (int j = 0; j < 31; j++) {
+                if ((x >> j & 1) == 1) {
+                    Integer hk = map.get(j).higher(i);
+                    max = Math.max(max, hk);
+                }
+            }
+            res[i] = max - i + 1;
+        }
+        return res;
+    }
 }
 /**
  * 求每一位最小在什么位置

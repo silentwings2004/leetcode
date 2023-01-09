@@ -29,11 +29,11 @@ public class LC2401_LongestNiceSubarray {
     // S1: Two Pointers
     // time = O(n), space = O(1)
     public int longestNiceSubarray(int[] nums) {
-        int n = nums.length, res = 0;
+        int n = nums.length, res = 0, count = 0, j = 0;
         for (int i = 0; i < n; i++) {
-            int j = i, sum = 0;
-            while (j >= 0 && (sum & nums[j]) == 0) sum |= nums[j--];
-            res = Math.max(res, i - j);
+            while (j < n && (count & nums[j]) == 0) count += nums[j++];
+            res = Math.max(res, j - i);
+            count -= nums[i];
         }
         return res;
     }
@@ -43,9 +43,7 @@ public class LC2401_LongestNiceSubarray {
     public int longestNiceSubarray2(int[] nums) {
         int n = nums.length, res = 0;
         for (int i = 0, j = 0, state = 0; i < n; i++) {
-            while ((state & nums[i]) != 0) {
-                state ^= nums[j++];
-            }
+            while ((state & nums[i]) != 0) state ^= nums[j++];
             state |= nums[i];
             res = Math.max(res, i - j + 1);
         }
@@ -102,3 +100,13 @@ public class LC2401_LongestNiceSubarray {
         return res;
     }
 }
+/**
+ * 每1位上最多只能有1个1 => 双指针
+ * x x x [x x x x] x..
+ *        i        j
+ * if (count & nums[j]) == 0
+ *      count += nums[j]
+ * else {
+ *     count -= nums[i];
+ * }
+ */

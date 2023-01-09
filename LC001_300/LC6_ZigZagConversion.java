@@ -24,23 +24,24 @@ public class LC6_ZigZagConversion {
      */
     // time = O(n), space = O(n)
     public String convert(String s, int numRows) {
-        if (numRows == 1) return s;
+        int m = numRows;
+        if (m == 1) return s; // 必须特判，否则m = 1会导致下面死循环！
 
-        StringBuilder[] arr = new StringBuilder[numRows];
-        for (int i = 0; i < numRows; i++) arr[i] = new StringBuilder();
-
-        int n = s.length(), p = numRows * 2 - 2;
-        for (int i = 0; i < n; i++) {
-            int idx = i % p;
-            idx = idx < numRows ? idx : p - idx;
-            arr[idx].append(s.charAt(i));
+        int n = s.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < m; i++) {
+            if (i == 0 || i == m - 1) {
+                for (int j = i; j < n; j += 2 * m - 2) {
+                    sb.append(s.charAt(j));
+                }
+            } else {
+                for (int j = i, k = 2 * m - 2 - i; j < n || k < n; j += 2 * m - 2, k += 2 * m - 2) {
+                    if (j < n) sb.append(s.charAt(j));
+                    if (k < n) sb.append(s.charAt(k));
+                }
+            }
         }
-
-        String res = "";
-        for (int i = 0; i < numRows; i++) {
-            res += arr[i].toString();
-        }
-        return res;
+        return sb.toString();
     }
 }
 /**

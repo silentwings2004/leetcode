@@ -45,4 +45,27 @@ public class LC77_Combinations {
             path.remove(path.size() - 1);
         }
     }
+
+    // S2: Math + Gosper's Hack
+    // time = O(2^k * k), space = O(k)
+    public List<List<Integer>> combine2(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+
+        int state = (1 << k) - 1;
+        while (state < (1 << n)) {
+            List<Integer> path = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                if ((state >> i & 1) == 1) path.add(i + 1);
+            }
+            res.add(path);
+
+            int c = state & -state;
+            int r = state + c;
+            state = (((r ^ state) >> 2) / c) | r;
+        }
+        return res;
+    }
 }
+/**
+ * 人为规定一个顺序，从头往后选即可
+ */

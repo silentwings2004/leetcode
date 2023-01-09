@@ -22,68 +22,58 @@ public class LC795_NumberofSubarrayswithBoundedMaximum {
      * @param right
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
-    public int numSubarrayBoundedMax(int[] nums, int left, int right) {
-        // corner case
-        if (nums == null || nums.length == 0 ) return 0;
-
-        return helper(nums, right) - helper(nums, left - 1);
-    }
-
-    private int helper(int[] nums, int limit) {
-        int res = 0, cur = 0;
-        for (int n : nums) {
-            cur = n <= limit ? cur + 1 : 0;
-            res += cur;
+    public int numSubarrayBoundedMax4(int[] nums, int left, int right) {
+        int n = nums.length, res = 0, cnt = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            if (nums[i] > right) j = i + 1;
+            if (nums[i] >= left) cnt = i - j + 1;
+            res += cnt;
         }
         return res;
     }
 
     // S2: monotonic stack
     // time = O(n), space = O(n)
+    final int N = 100010;
     public int numSubarrayBoundedMax2(int[] nums, int left, int right) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length;
-        int[] prevGreaterOrEqual = new int[n];
-        Arrays.fill(prevGreaterOrEqual, -1); // [1, 2, 3] 对3而言数组里面没有比它大的，所以设为-1，注意这里放的都是idx！！！
+        int n = nums.length, tt = 0;
+        int[] stk = new int[N];
+        int[] prevGreater = new int[n];
         int[] nextGreater = new int[n];
-        Arrays.fill(nextGreater, n); // 初始化idx = n，代表一个不存在的idx
+        Arrays.fill(prevGreater, -1);
+        Arrays.fill(nextGreater, n);
 
-        Stack<Integer> stack = new Stack<>();
-        // find all of the nextGreater elements
         for (int i = 0; i < n; i++) {
-            while (!stack.isEmpty() && nums[stack.peek()] < nums[i]) {
-                nextGreater[stack.pop()] = i;
+            while (tt > 0 && nums[stk[tt]] < nums[i]) {
+                nextGreater[stk[tt--]] = i;
             }
-            stack.push(i);
+            stk[++tt] = i;
         }
 
-        stack.clear(); // clear the stack
-        // find all of the prevGreaterOrEqual elements
+        stk = new int[N];
+        tt = 0;
         for (int i = n - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) {
-                nextGreater[stack.pop()] = i;
+            while (tt > 0 && nums[stk[tt]] <= nums[i]) {
+                prevGreater[stk[tt--]] = i;
             }
-            stack.push(i);
+            stk[++tt] = i;
         }
 
         int res = 0;
         for (int i = 0; i < n; i++) {
-            int j = prevGreaterOrEqual[i];
-            int k = nextGreater[i];
-            res += (i - j) * (k - i);
+            if (nums[i] >= left && nums[i] <= right) {
+                int l = prevGreater[i], r = nextGreater[i];
+                res += (i - l) * (r - i);
+            }
         }
-        return res;
+        return (int) res;
     }
 
     // S3: Two Pointers
     // time = O(n), space = O(1)
     public int numSubarrayBoundedMax3(int[] nums, int left, int right) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         int n = nums.length, start = -1, j = -1, res = 0;
         for (int i = 0; i < n; i++) {
             if (nums[i] > right) {

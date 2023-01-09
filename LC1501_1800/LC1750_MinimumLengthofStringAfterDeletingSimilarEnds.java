@@ -24,17 +24,14 @@ public class LC1750_MinimumLengthofStringAfterDeletingSimilarEnds {
      * @return
      */
     // time = O(n), space = O(1)
-    public static int minimumLength(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int i = 0, j = s.length() - 1;
-        while (i < j && s.charAt(i) == s.charAt(j)) {
-            char c = s.charAt(i++);
-            while (i < s.length() && s.charAt(i) == c) i++;
-            while (i < j && s.charAt(j) == c) j--;
+    public int minimumLength(String s) {
+        int n = s.length(), i = 0, j = n - 1;
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) break;
+            char c = s.charAt(i);
+            while (i <= j && s.charAt(i) == c) i++;
+            while (i <= j && s.charAt(j) == c) j--;
         }
-        if (i > j) return 0;
         return j - i + 1;
     }
 }

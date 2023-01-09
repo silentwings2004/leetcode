@@ -24,20 +24,41 @@ public class LC75_SortColors {
      */
     // time = O(n), space = O(1)
     public void sortColors(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return;
-
-        int left = 0, right = nums.length - 1, cur = 0;
-        while (cur <= right) {
-            if (nums[cur] == 0) swap(nums, left++, cur++);
-            else if (nums[cur] == 2) swap(nums, right--, cur);
-            else cur++;
+        int n = nums.length;
+        int i = 0, j = n - 1, t = i;
+        while (t <= j) {
+            if (nums[t] == 0) swap(nums, t++, i++);
+            else if (nums[t] == 2) swap(nums, t, j--);
+            else t++;
         }
     }
 
     private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
+        int t = nums[i];
         nums[i] = nums[j];
-        nums[j] = temp;
+        nums[j] = t;
+    }
+
+    // S2: quick sort
+    // time = O(nlogn), space = O(1)
+    public void sortColors2(int[] nums) {
+        quick_sort(nums, 0, nums.length - 1);
+    }
+
+    private void quick_sort(int[] q, int l, int r) {
+        if (l >= r) return;
+
+        int x = q[l + r >> 1], i = l - 1, j = r + 1;
+        while (i < j) {
+            while (q[++i] < x);
+            while (q[--j] > x);
+            if (i < j) {
+                int t = q[i];
+                q[i] = q[j];
+                q[j] = t;
+            }
+        }
+        quick_sort(q, l, j);
+        quick_sort(q, j + 1, r);
     }
 }

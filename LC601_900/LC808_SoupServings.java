@@ -27,6 +27,7 @@ public class LC808_SoupServings {
      * @param n
      * @return
      */
+    // S1: dfs
     // time = O(1), space = O(1)
     HashMap<String, Double> map;
     public double soupServings(int n) {
@@ -49,6 +50,29 @@ public class LC808_SoupServings {
         double val4 = dfs(a - 25, b - 75);
         map.put(key, 0.25 * (val1 + val2 + val3 + val4));
         return map.get(key);
+    }
+
+    // S2: DP
+    // time = O(500^2), space = O(500^2)
+    public double soupServings2(int n) {
+        n = (n + 24) / 25;
+        if (n >+ 500) return 1;
+        double[][] f = new double[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) f[i][j] = 0.5;
+                if (i > 0 && j == 0) f[i][j] = 0;
+                else if (i == 0 && j > 0) f[i][j] = 1;
+                else {
+                    f[i][j] = (f[g(i - 4)][j] + f[g(i -3)][g(j - 1)] + f[g(i - 2)][g(j - 2)] + f[g(i - 1)][g(j - 3)]) / 4;
+                }
+            }
+        }
+        return f[n][n];
+    }
+
+    private int g(int x) {
+        return Math.max(0, x);
     }
 }
 /**

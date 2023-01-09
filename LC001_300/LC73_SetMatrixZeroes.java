@@ -23,19 +23,16 @@ public class LC73_SetMatrixZeroes {
      */
     // time = O(m * n), space = O(1)
     public void setZeroes(int[][] matrix) {
-        // corner case
-        if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) return;
-
         int m = matrix.length, n = matrix[0].length;
-        boolean row = false, col = false;
+        boolean r0 = false, c0 = false;
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (matrix[i][j] == 0) {
-                    matrix[0][j] = 0;
                     matrix[i][0] = 0;
-                    if (i == 0) row = true;
-                    if (j == 0) col = true;
+                    matrix[0][j] = 0;
+                    if (i == 0) r0 = true;
+                    if (j == 0) c0 = true;
                 }
             }
         }
@@ -56,13 +53,13 @@ public class LC73_SetMatrixZeroes {
             }
         }
 
-        if (row) {
+        if (r0) {
             for (int j = 0; j < n; j++) {
                 matrix[0][j] = 0;
             }
         }
 
-        if (col) {
+        if (c0) {
             for (int i = 0; i < m; i++) {
                 matrix[i][0] = 0;
             }

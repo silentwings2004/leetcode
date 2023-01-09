@@ -93,7 +93,7 @@ public class LC2025_MaximumNumberofWaystoPartitionanArray {
         }
 
         int res0 = 0;
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1; i++) { // 特别注意：这里只能遍历到最后第二个点，因为必须要分成前后两半，后半段不能为空！
             if (sum % 2 == 0 && pre[i] == sum / 2) res0++;
         }
 

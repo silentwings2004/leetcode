@@ -20,16 +20,14 @@ public class LC930_BinarySubarraysWithSum {
      */
     // time = O(n), space = O(n)
     public int numSubarraysWithSum(int[] nums, int goal) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length, sum = 0, res = 0;
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(0, 1);
 
-        for (int j = 0; j < n; j++) {
-            sum += nums[j];
-            if (map.containsKey(sum - goal)) res += map.get(sum - goal);
+        int n = nums.length, sum = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            int diff = sum - goal;
+            res += map.getOrDefault(diff, 0);
             map.put(sum, map.getOrDefault(sum, 0) + 1);
         }
         return res;

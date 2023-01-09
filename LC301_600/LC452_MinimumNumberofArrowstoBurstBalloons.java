@@ -25,28 +25,54 @@ public class LC452_MinimumNumberofArrowstoBurstBalloons {
      */
     // time = O(nlogn), space = O(1)
     public int findMinArrowShots(int[][] points) {
-        // corner case
-        if (points == null || points.length == 0 || points[0] == null || points[0].length == 0) return 0;
+        // 注意：这里不能直接用o1[1] - o2[1],因为会越界
+        // 或者也可以写成 Arrays.sort(points, (o1, o2) -> Long.compare(o1[1], o2[1]));
+        Arrays.sort(points, (o1, o2) -> {
+            if (o1[1] < o2[1]) return -1;
+            if (o1[1] > o2[1]) return 1;
+            return 0;
+        }); // 注意：这里不能直接用o1[1] - o2[1],因为会越界
 
-        Arrays.sort(points, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                if (o1[1] == o2[1]) return 0;
-                if (o1[1] < o2[1]) return -1;
-                return 1;
+        int res = 1, r = points[0][1];
+        for (int i = 1; i < points.length; i++) {
+            if (points[i][0] > r) {
+                res++;
+                r = points[i][1];
             }
-        });
-        // We can't simply use the o1[1] - o2[1] trick, as this will cause an integer overflow for very large or small values.
-
-        int n = points.length;
-        int i = 0, count = 0;
-        while (i < n) {
-            count++;
-            int j = i + 1;
-            while (j < n && points[j][0] <= points[i][1]) j++;
-            i = j;
         }
-        return count;
+        return res;
+    }
+
+    // S2: 手写quick_sort(最优解)
+    // time = O(nlogn), space = O(1)
+    public int findMinArrowShots2(int[][] points) {
+        int n = points.length;
+        quick_sort(points, 0, n - 1);
+        int res = 1, r = points[0][1];
+        for (int i = 1; i < n; i++) {
+            if (points[i][0] > r) {
+                res++;
+                r = points[i][1];
+            }
+        }
+        return res;
+    }
+
+    private void quick_sort(int[][] q, int l, int r) {
+        if (l >= r) return;
+
+        int x = q[l + r >> 1][1], i = l - 1, j = r + 1;
+        while (i < j) {
+            while (q[++i][1] < x);
+            while (q[--j][1] > x);
+            if (i < j) {
+                int[] t = q[i];
+                q[i] = q[j];
+                q[j] = t;
+            }
+        }
+        quick_sort(q, l, j);
+        quick_sort(q, j + 1, r);
     }
 }
 /**
@@ -58,4 +84,8 @@ public class LC452_MinimumNumberofArrowstoBurstBalloons {
  * 只有选中某些特定的m个non-overlapping intervals才能把其他overlapping的intervals射穿
  * 射在区间的右端点，目的是等更多的区间出现来射穿，一箭多雕
  * ref: LC435，解法是一模一样的
+ * ref: AC905 区间选点
+ * 1. 先将所有区间按照右端点来排序
+ * 2. 排完之后从左往右扫描，每次选当前区间的右端点,看下个区间是否和当前这个区间有交集
+ * 有交集就跳过
  */

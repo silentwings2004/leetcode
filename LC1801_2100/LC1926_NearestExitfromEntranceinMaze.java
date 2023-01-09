@@ -29,29 +29,31 @@ public class LC1926_NearestExitfromEntranceinMaze {
      * @param entrance
      * @return
      */
-    // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    // time = O(m * n) space = O(m * n)
     public int nearestExit(char[][] maze, int[] entrance) {
         int m = maze.length, n = maze[0].length;
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(entrance[0] * n + entrance[1]);
-        boolean[][] visited = new boolean[m][n];
-        visited[entrance[0]][entrance[1]] = true;
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(entrance);
+        boolean[][] st = new boolean[m][n];
+        st[entrance[0]][entrance[1]] = true;
 
         int step = 0;
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
         while (!queue.isEmpty()) {
             int size = queue.size();
             while (size-- > 0) {
-                int cur = queue.poll();
-                int i = cur / n, j = cur % n;
-                if (isExit(maze, entrance, i, j)) return step;
-                for (int[] dir : DIRECTIONS) {
-                    int ii = i + dir[0];
-                    int jj = j + dir[1];
-                    if (ii >= 0 && ii < m && jj >= 0 && jj < n && !visited[ii][jj] && maze[ii][jj] != '+') {
-                        queue.offer(ii * n + jj);
-                        visited[ii][jj] = true;
-                    }
+                int[] t = queue.poll();
+                int x = t[0], y = t[1];
+                if (isDest(maze, entrance, x, y)) return step;
+
+                for (int k = 0; k < 4; k++) {
+                    int i = x + dx[k];
+                    int j = y + dy[k];
+                    if (i < 0 || i >= m || j < 0 || j >= n) continue;
+                    if (maze[i][j] == '+') continue;
+                    if (st[i][j]) continue;
+                    queue.offer(new int[]{i, j});
+                    st[i][j] = true;
                 }
             }
             step++;
@@ -59,11 +61,11 @@ public class LC1926_NearestExitfromEntranceinMaze {
         return -1;
     }
 
-    private boolean isExit(char[][] maze, int[] entrance, int i, int j) {
+    private boolean isDest(char[][] maze, int[] entrance, int x, int y) {
         int m = maze.length, n = maze[0].length;
-        if (i == entrance[0] && j == entrance[1]) return false;
-        if ((i == 0 || i == m - 1) && maze[i][j] == '.') return true;
-        if ((j == 0 || j == n - 1) && maze[i][j] == '.') return true;
+        if (maze[x][y] == '+') return false;
+        if (x == entrance[0] && y == entrance[1]) return false;
+        if (x == 0 || x == m - 1 || y == 0 || y == n - 1) return true;
         return false;
     }
 }

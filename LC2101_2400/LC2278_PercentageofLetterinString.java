@@ -19,10 +19,10 @@ public class LC2278_PercentageofLetterinString {
      */
     // time = O(n), space = O(1)
     public int percentageLetter(String s, char letter) {
-        int count = 0, n = s.length();
-        for (char c : s.toCharArray()) {
-            if (c == letter) count++;
+        int n = s.length(), cnt = 0;
+        for (int i = 0; i < n; i++) {
+            cnt += s.charAt(i) == letter ? 1 : 0;
         }
-        return count * 100 / n;
+        return cnt * 100 / n;
     }
 }

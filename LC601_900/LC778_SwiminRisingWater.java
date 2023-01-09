@@ -25,6 +25,7 @@ public class LC778_SwiminRisingWater {
      * @param grid
      * @return
      */
+    // S1: PQ
     // time = O(n^2 * logn), space = O(n^2)
     private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int swimInWater(int[][] grid) {
@@ -53,6 +54,47 @@ public class LC778_SwiminRisingWater {
             }
         }
         return -1;
+    }
+
+    // S2: flood fill + binary search
+    // time = O(n^2 * logn), space = O(n^2)
+    int[][] g;
+    boolean[][] st;
+    int n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    public int swimInWater2(int[][] grid) {
+        g = grid;
+        n = g.length;
+        st = new boolean[n][n];
+
+        int l = 0, r = n * n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (check(mid)) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+
+    private boolean check(int mid) {
+        if (g[0][0] > mid) return false;
+        for (int i = 0; i < n; i++) Arrays.fill(st[i], false);
+        return dfs(0, 0, mid);
+    }
+
+    private boolean dfs(int x, int y, int mid) {
+        if (x == n - 1 && y == n - 1) return true;
+        st[x][y] = true;
+
+        for (int k = 0; k < 4; k++) {
+            int i = x + dx[k];
+            int j = y + dy[k];
+            if (i < 0 || i >= n || j < 0 || j >= n) continue;
+            if (st[i][j]) continue;
+            if (g[i][j] > mid) continue;
+            if (dfs(i, j, mid)) return true;
+        }
+        return false;
     }
 }
 /**

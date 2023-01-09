@@ -21,16 +21,15 @@ public class LC2027_MinimumMovestoConvertString {
      */
     // time = O(n), space = O(1)
     public int minimumMoves(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int n = s.length(), count = 0;
+        int n = s.length(), cnt = 0;
         for (int i = 0; i < n; i++) {
-            if (s.charAt(i) == 'X') {
+            char c = s.charAt(i);
+            if (c == 'O') continue;
+            else {
+                cnt++;
                 i += 2;
-                count++;
             }
         }
-        return count;
+        return cnt;
     }
 }

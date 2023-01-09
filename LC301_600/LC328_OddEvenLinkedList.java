@@ -27,20 +27,20 @@ public class LC328_OddEvenLinkedList {
         // corner case
         if (head == null || head.next == null) return head;
 
-        ListNode h1 = head, h2 = head.next;
-        ListNode cur1 = h1, cur2 = h2;
-
-        while (cur1 != null && cur2 != null) {
-            if (cur2.next == null) break;
-            cur1.next = cur2.next;
-            cur1 = cur1.next;
-            if (cur1 != null) {
-                cur2.next = cur1.next;
-                cur2 = cur2.next;
+        ListNode oh = head, ot = oh;
+        ListNode eh = head.next, et = eh;
+        for (ListNode p = head.next.next; p != null;) {
+            ot.next = p;
+            ot = ot.next;
+            p = p.next;
+            if (p != null) {
+                et.next = p;
+                et = et.next;
+                p = p.next;
             }
         }
-
-        cur1.next = h2;
-        return h1;
+        ot.next = eh;
+        et.next = null;
+        return oh;
     }
 }

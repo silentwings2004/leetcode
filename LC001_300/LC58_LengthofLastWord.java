@@ -17,27 +17,15 @@ public class LC58_LengthofLastWord {
      * @param s
      * @return
      */
-    // S1
-    // time = O(n), space = O(n)
-    public int lengthOfLastWord(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        String[] strs = s.split(" ");
-        return strs.length == 0 ? 0 : strs[strs.length - 1].length();
-    }
-
-    // S2: 从后往前遍历直到看见第一个单词后的空格为止！(最优解！！！)
     // time = O(n), space = O(1)
-    public int lengthOfLastWord2(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int i = s.length() - 1, res = 0;
-        while (i >= 0) {
-            if (s.charAt(i--) != ' ') res++;
-            else break;
+    public int lengthOfLastWord(String s) {
+        int n = s.length();
+        for (int i = n - 1; i >= 0; i--) {
+            if (s.charAt(i) == ' ') continue;
+            int j = i - 1;
+            while (j >= 0 && s.charAt(j) != ' ') j--;
+            return i - j;
         }
-        return res;
+        return 0;
     }
 }

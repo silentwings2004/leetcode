@@ -23,26 +23,18 @@ public class LC150_EvaluateReversePolishNotation {
      */
     // time = O(n), space = O(n)
     public int evalRPN(String[] tokens) {
-        // corner case
-        if (tokens == null || tokens.length == 0) return 0;
-
-        Stack<Integer> stack = new Stack<>();
-
+        Stack<Integer> stk = new Stack<>();
         for (String s : tokens) {
-            if (s.equals("+")) {
-                stack.push(stack.pop() + stack.pop());
-            } else if (s.equals("-")) {
-                int b = stack.pop();
-                int a = stack.pop();
-                stack.push(a - b);
-            } else if (s.equals("*")) {
-                stack.push(stack.pop() * stack.pop());
-            } else if (s.equals("/")) {
-                int b = stack.pop();
-                int a = stack.pop();
-                stack.push(a / b);
-            } else stack.push(Integer.valueOf(s));
+            if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/")) {
+                int b = stk.pop();
+                int a = stk.pop();
+                if (s.equals("+")) a += b;
+                else if (s.equals("-")) a -= b;
+                else if (s.equals("*")) a *= b;
+                else a /= b;
+                stk.push(a);
+            } else stk.push(Integer.parseInt(s));
         }
-        return stack.pop();
+        return stk.peek();
     }
 }

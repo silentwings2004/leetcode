@@ -89,6 +89,68 @@ public class LC864_ShortestPathtoGetAllKeys {
         }
         return -1;
     }
+
+    // S2
+    // time = O(m * n), space = O(m * n)
+    public int shortestPathAllKeys2(String[] grid) {
+        int m = grid.length, n = grid[0].length();
+        int INF = 0x3f3f3f3f;
+        int[][][] dist = new int[m][n][1 << 6];
+        for (int i = 0; i< m; i++) {
+            for (int j = 0; j < n; j++) {
+                Arrays.fill(dist[i][j], INF);
+            }
+        }
+
+        Queue<int[]> queue = new LinkedList<>();
+        int key = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i].charAt(j) == '@') {
+                    queue.offer(new int[]{i, j, 0});
+                    dist[i][j][0] = 0;
+                } else if (Character.isUpperCase(grid[i].charAt(j))) key++;
+            }
+        }
+
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        while (!queue.isEmpty()) {
+            int[] t = queue.poll();
+            int x = t[0], y = t[1], cnt = t[2];
+            int d = dist[x][y][cnt];
+
+            for (int k = 0; k < 4; k++) {
+                int i = x + dx[k];
+                int j = y + dy[k];
+                if (i < 0 || i >= m || j < 0 || j >= n) continue;
+                if (grid[i].charAt(j) == '#') continue;
+                char c = grid[i].charAt(j);
+                if (Character.isLowerCase(c)) {
+                    int s = cnt | 1 << (c - 'a');
+                    if (dist[i][j][s] > d + 1) {
+                        dist[i][j][s] = d + 1;
+                        if (s == (1 << key) - 1) return d + 1;
+                        queue.offer(new int[]{i, j, s});
+                    }
+                } else if (Character.isUpperCase(c)) {
+                    int s = cnt;
+                    if ((s >> (c - 'A') & 1) == 1) {
+                        if (dist[i][j][s] > d + 1) {
+                            dist[i][j][s] = d + 1;
+                            queue.offer(new int[]{i, j, s});
+                        }
+                    }
+                } else {
+                    int s = cnt;
+                    if (dist[i][j][s] > d + 1) {
+                        dist[i][j][s] = d + 1;
+                        queue.offer(new int[]{i, j, s});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
 }
 /**
  * ref: LC847

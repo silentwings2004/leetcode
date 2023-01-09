@@ -16,18 +16,38 @@ public class LC279_PerfectSquares {
      * @param n
      * @return
      */
-    // time = O(n^2), space = O(n)
+    // S1: DP
+    // time = O(n * sqrt(n)), space = O(n)
     public int numSquares(int n) {
-        int[] dp = new int[n + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
-        dp[0] = 0;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MAX_VALUE);
+        f[0] = 0;
 
         for (int i = 1; i <= n; i++) {
-            for (int x = 1; x <= Math.sqrt(i); x++) {
-                dp[i] = Math.min(dp[i], dp[i - x * x] + 1);
+            for (int j = 1; j <= (int) Math.sqrt(i); j++) {
+                f[i] = Math.min(f[i], f[i - j * j] + 1);
             }
         }
-        return dp[n];
+        return f[n];
+    }
+
+    // S2: Math
+    // time = O(sqrt(n) + logn), space = O(1)
+    public int numSquares2(int n) {
+        if (check(n)) return 1;
+
+        for (int i = 1; i <= n / i; i++) {
+            if (check(n - i * i)) return 2;
+        }
+
+        while (n % 4 == 0) n /= 4;
+        if (n % 8 != 7) return 3;
+        return 4;
+    }
+
+    private boolean check(int x) {
+        int r = (int) Math.sqrt(x);
+        return r * r == x;
     }
 }
 /**
@@ -35,4 +55,6 @@ public class LC279_PerfectSquares {
  * n = a^2 + b^2 + ... + x^2
  * dp[i]: the least number of perfect square numbers which sum to i
  * dp[n] = Math.min{}dp[n - x^2] + 1} for all x => O(n^2)
+ *
+ * 当成完全背包来做
  */

@@ -116,7 +116,7 @@ public class LC587_ErecttheFence {
  * => cross product = (x2 - x1) * (y3 - y2) - (x3 - x2) * (y2 - y1) > 0 逆时针 来判断qr是在pr的左边还是右边
  *                                                                  < 0 顺时针
  * 求凸包 -> 二维叉积
- * a * b = |a| x |b| x sinø = 2 * S = x1y2 - x2y1
+ * a * b = |a| x |b| x sinø = 2 * S = x1y2 - x2y1  三角形面积的2倍
  * 求凸包的2种算法，基本等价：
  * Graham
  * Andrew ->

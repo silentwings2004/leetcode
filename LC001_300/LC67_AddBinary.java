@@ -22,25 +22,14 @@ public class LC67_AddBinary {
      */
     // time = O(max(m, n)), space = O(max(m, n))
     public String addBinary(String a, String b) {
-        // corner case
-        if (a == null || a.length() == 0 || b == null || b.length() == 0) {
-            return "";
-        }
-
-        int i = a.length() - 1, j = b.length() - 1;
-        int carry = 0;
         StringBuilder sb = new StringBuilder();
-        while (i >= 0 || j >= 0) {
-            if (i >= 0) {
-                carry += a.charAt(i--) - '0';
-            }
-            if (j >= 0) {
-                carry += b.charAt(j--) - '0';
-            }
-            sb.append(carry % 2);
-            carry = carry / 2;
+        int m = a.length(), n = b.length(), t = 0;
+        for (int i = m - 1, j = n - 1; i >= 0 || j >= 0 || t > 0; i--, j--) {
+            if (i >= 0) t += a.charAt(i) - '0';
+            if (j >= 0) t += b.charAt(j) - '0';
+            sb.append(t % 2);
+            t /= 2;
         }
-        if (carry > 0) sb.append(carry);
         return sb.reverse().toString();
     }
 }

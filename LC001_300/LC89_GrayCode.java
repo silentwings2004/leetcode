@@ -2,14 +2,20 @@ package LC001_300;
 import java.util.*;
 public class LC89_GrayCode {
     /**
-     * The gray code is a binary numeral system where two successive values differ in only one bit.
+     * An n-bit gray code sequence is a sequence of 2n integers where:
      *
-     * Given an integer n representing the total number of bits in the code, return any sequence of gray code.
-     *
-     * A gray code sequence must begin with 0.
+     * Every integer is in the inclusive range [0, 2n - 1],
+     * The first integer is 0,
+     * An integer appears no more than once in the sequence,
+     * The binary representation of every pair of adjacent integers differs by exactly one bit, and
+     * The binary representation of the first and last integers differs by exactly one bit.
+     * Given an integer n, return any valid n-bit gray code sequence.
      *
      * Input: n = 2
      * Output: [0,1,3,2]
+     *
+     * Input: n = 1
+     * Output: [0,1]
      *
      * Constraints:
      *
@@ -17,6 +23,7 @@ public class LC89_GrayCode {
      * @param n
      * @return
      */
+    // S1
     // time = O(2^n), space = O(1)
     public List<Integer> grayCode(int n) {
         List<Integer> res = new ArrayList<>();
@@ -28,6 +35,21 @@ public class LC89_GrayCode {
             int len = res.size();
             for (int j = len - 1; j >= 0; j--) {
                 res.add(res.get(j) | (1 << i));
+            }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(2^n), space = O(1)
+    public List<Integer> grayCode2(int n) {
+        List<Integer> res = new ArrayList<>();
+        res.add(0);
+        while (n-- > 0) {
+            for (int i = res.size() - 1; i >= 0; i--) {
+                int t = res.get(i);
+                res.set(i, t << 1);
+                res.add((t << 1) + 1);
             }
         }
         return res;
@@ -47,4 +69,17 @@ public class LC89_GrayCode {
  *                 111
  *                 101
  *                 100
+ *
+ * S2: 通过递归来生成
+ * n = 0       0
+ * n = 1       0
+ *             1
+ * n = 2       0 0
+ *             1 0
+ *             1 1
+ *             0 1
+ *
+ * n = k
+ * 2^(k-1)
+ * 2^(k-1)
  */

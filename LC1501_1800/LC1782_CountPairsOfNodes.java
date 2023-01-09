@@ -71,6 +71,47 @@ public class LC1782_CountPairsOfNodes {
         }
         return res;
     }
+
+    // S2: 容斥原理
+    // time = O(nlogn + m * n), space = O(n)
+    public int[] countPairs2(int n, int[][] edges, int[] queries) {
+        int[] d = new int[n];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int[] e : edges) {
+            int a = e[0] - 1, b = e[1] - 1;
+            if (a > b) {
+                int t = a;
+                a = b;
+                b = t;
+            }
+            int hash = a * 100000 + b;
+            map.put(hash, map.getOrDefault(hash, 0) + 1);
+            d[a]++;
+            d[b]++;
+        }
+        int[] ds = d.clone();
+        Arrays.sort(ds);
+
+        int m = queries.length;
+        int[] res = new int[m];
+        for (int t = 0; t < m; t++) {
+            int q = queries[t];
+            int s1 = 0, s2 = 0, s3 = 0;
+            for (int k : map.keySet()) {
+                int v = map.get(k);
+                int a = k / 100000, b = k % 100000;
+                if (d[a] + d[b] - v > q) s1++;
+                if (d[a] + d[b] > q) s2++;
+            }
+
+            for (int i = n - 1, j = 0; i >= j; i--) {
+                while (j < i && ds[i] + ds[j] <= q) j++;
+                if (j < i && ds[i] + ds[j] > q) s3 += i - j; // 求的是pair,所以配对数量是i- j
+            }
+            res[t] = s1 + s3 - s2;
+        }
+        return res;
+    }
 }
 /**
  * {a,b}
@@ -96,4 +137,8 @@ public class LC1782_CountPairsOfNodes {
  * 20 * (1e5 + 1e5) => 1e6
  * idx = a * m + b  (m = 10^4)
  * a = idx / m, b = idx % m
+ *
+ * d[a] + d[b] - d[a,b] > cnt
+ * d[a,b] > 0 => S1
+ * d[a,b] == 0 => S3 - S2
  */

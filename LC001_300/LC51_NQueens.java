@@ -123,20 +123,20 @@ public class LC51_NQueens {
     }
 
     // S3: dfs
-    // time = O(n!), space = O(n)
+    // time = O(n!), space = O(n^2)
     int n;
     boolean[] col, dg, udg;
-    char[][] grid;
     List<List<String>> res;
+    char[][] g;
     public List<List<String>> solveNQueens3(int n) {
         this.n = n;
         col = new boolean[n];
-        dg = new boolean[2 * n];
-        udg = new boolean[2 * n];
-        grid = new char[n][n];
+        dg = new boolean[n * 2];
+        udg = new boolean[n * 2];
         res = new ArrayList<>();
+        g = new char[n][n];
 
-        for (int i = 0; i < n; i++) Arrays.fill(grid[i], '.');
+        for (int i = 0; i < n; i++) Arrays.fill(g[i], '.');
 
         dfs(0);
         return res;
@@ -144,23 +144,22 @@ public class LC51_NQueens {
 
     private void dfs(int u) {
         if (u == n) {
-            List<String> temp = new ArrayList<>();
-            for (int i = 0; i < n; i++) temp.add(String.valueOf(grid[i]));
-            res.add(temp);
+            List<String> path = new ArrayList<>();
+            for (int i = 0; i < n; i++) path.add(String.valueOf(g[i]));
+            res.add(path);
             return;
         }
 
         for (int i = 0; i < n; i++) {
-            if (!col[i] && !dg[i - u + n] && !udg[i + u]) {
-                col[i] = dg[i - u + n] = udg[u + i] = true;
-                grid[u][i] = 'Q';
+            if (!col[i] && !dg[u - i + n] && !udg[u + i]) {
+                g[u][i] = 'Q';
+                col[i] = dg[u - i + n] = udg[u + i] = true;
                 dfs(u + 1);
-                grid[u][i] = '.';
-                col[i] = dg[i - u + n] = udg[u + i] = false;
+                g[u][i] = '.';
+                col[i] = dg[u - i + n] = udg[u + i] = false;
             }
         }
     }
-
 }
 /**
  * N个皇后，每行只能选一个

@@ -48,27 +48,24 @@ public class LC54_SpiralMatrix {
 
     // S2
     // time = O(m * n), space = O(1)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public List<Integer> spiralOrder2(int[][] matrix) {
         List<Integer> res = new ArrayList<>();
-        // corner case
-        if (matrix == null || matrix.length == 0) return res;
+        int n = matrix.length, m = matrix[0].length;
 
-        int m = matrix.length, n = matrix[0].length;
-        int i = 0, j = 0, d = 1;
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
 
-        for (int k = 0; k < m * n; k++) {
-            res.add(matrix[i][j]);
-            matrix[i][j] = Integer.MAX_VALUE;
-            int x = i + directions[d][0];
-            int y = j + directions[d][1];
-            if (x < 0 || x >= m || y < 0 || y >= n || matrix[x][y] == Integer.MAX_VALUE) {
+        for (int i = 0, x = 0, y = 0, d = 1; i < n * m; i++) { // 注意：d要从1开始，先走右边！
+            res.add(matrix[x][y]);
+            matrix[x][y] = Integer.MAX_VALUE;
+
+            int a = x + dx[d], b = y + dy[d];
+            if (a < 0 || a >= n || b < 0 || b >= m || matrix[a][b] == Integer.MAX_VALUE) {
                 d = (d + 1) % 4;
-                x = i + directions[d][0];
-                y = j + directions[d][1];
+                a = x + dx[d];
+                b = y + dy[d];
             }
-            i = x;
-            j = y;
+            x = a;
+            y = b;
         }
         return res;
     }

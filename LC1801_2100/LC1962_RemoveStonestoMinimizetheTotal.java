@@ -26,19 +26,13 @@ public class LC1962_RemoveStonestoMinimizetheTotal {
      */
     // time = O(nlogn), space = O(n)
     public int minStoneSum(int[] piles, int k) {
-        // corner case
-        if (piles == null || piles.length == 0 || k <= 0) return 0;
-
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        for (int p : piles) pq.offer(p);
+        for (int x : piles) pq.offer(x);
 
-        while (!pq.isEmpty()) {
-            int cur = pq.poll();
-            cur -= cur / 2;
-            pq.offer(cur);
-            k--;
+        while (k-- > 0) {
+            int t = pq.poll();
+            pq.offer(t - t / 2);
         }
-
         int res = 0;
         while (!pq.isEmpty()) res += pq.poll();
         return res;

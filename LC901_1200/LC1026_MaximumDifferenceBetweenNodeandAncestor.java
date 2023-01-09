@@ -18,22 +18,21 @@ public class LC1026_MaximumDifferenceBetweenNodeandAncestor {
      * @return
      */
     // time = O(n), space = O(n)
+    int res = 0;
     public int maxAncestorDiff(TreeNode root) {
         if (root == null) return 0;
 
-        int left = helper(root.left, root.val, root.val);
-        int right = helper(root.right, root.val, root.val);
-        return Math.max(left, right);
+        dfs(root, root.val, root.val);
+        return res;
     }
 
-    private int helper(TreeNode node, int min, int max) {
-        if (node == null) return 0;
+    private void dfs(TreeNode node, int min, int max) {
+        if (node == null) return;
 
-        int ans1 = Math.abs(node.val - min);
-        int ans2 = Math.abs(node.val - max);
-        int ans = Math.max(ans1, ans2);
-        min = Math.min(node.val, min);
-        max = Math.max(node.val, max);
-        return Math.max(ans, Math.max(helper(node.left, min, max), helper(node.right, min, max)));
+        max = Math.max(max, node.val);
+        min = Math.min(min, node.val);
+        res = Math.max(res, max - min);
+        dfs(node.left, min, max);
+        dfs(node.right, min, max);
     }
 }

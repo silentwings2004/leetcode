@@ -13,7 +13,6 @@ public class LC46_Permutations {
      * 1 <= nums.length <= 6
      * -10 <= nums[i] <= 10
      * All the integers of nums are unique.
-     *
      * @param nums
      * @return
      */
@@ -52,34 +51,30 @@ public class LC46_Permutations {
 
     // S2: dfs
     // time = O(n * n!), space = O(n)
-    class Solution {
-        List<List<Integer>> res;
-        List<Integer> path;
-        boolean[] visited;
-        int n;
-        public List<List<Integer>> permute(int[] nums) {
-            n = nums.length;
-            res = new ArrayList<>();
-            path = new ArrayList<>();
-            visited = new boolean[n];
+    List<List<Integer>> res;
+    List<Integer> path;
+    boolean[] st;
+    public List<List<Integer>> permute2(int[] nums) {
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        st = new boolean[nums.length];
+        dfs(nums, 0);
+        return res;
+    }
 
-            dfs(nums, 0);
-            return res;
+    private void dfs(int[] nums, int u) {
+        if (u == nums.length) {
+            res.add(new ArrayList<>(path));
+            return;
         }
 
-        private void dfs(int[] nums, int idx) {
-            if (idx == n) {
-                res.add(new ArrayList<>(path));
-                return;
-            }
-
-            for (int i = 0; i < n; i++) {
-                if (visited[i]) continue;
-                visited[i] = true;
+        for (int i = 0; i < nums.length; i++) {
+            if (!st[i]) {
+                st[i] = true;
                 path.add(nums[i]);
-                dfs(nums, idx + 1);
+                dfs(nums, u + 1);
                 path.remove(path.size() - 1);
-                visited[i] = false;
+                st[i] = false;
             }
         }
     }

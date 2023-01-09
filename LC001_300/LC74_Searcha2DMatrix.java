@@ -22,22 +22,28 @@ public class LC74_Searcha2DMatrix {
      * @param target
      * @return
      */
+    // S1: 二分
     // time = O(log(m * n)), space = O(1)
     public boolean searchMatrix(int[][] matrix, int target) {
-        // corner case
-        if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
-            return false;
-        }
-
         int m = matrix.length, n = matrix[0].length;
-        int start = 0, end = m * n - 1;
+        int l = 0, r = m * n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (matrix[mid / n][mid % n] < target) l = mid + 1;
+            else r = mid;
+        }
+        return matrix[r / n][r % n] == target;
+    }
 
-        while (start <= end) {
-            int mid = start + (end - start) / 2;
-            int i = mid / n, j = mid % n;
+    // S2
+    // time = O(m + n), space = O(1)
+    public boolean searchMatrix2(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int i = m - 1, j = 0;
+        while (i >= 0 && j < n) {
             if (matrix[i][j] == target) return true;
-            if (matrix[i][j] < target) start = mid + 1;
-            else end = mid - 1;
+            if (matrix[i][j] > target) i--;
+            else j++;
         }
         return false;
     }

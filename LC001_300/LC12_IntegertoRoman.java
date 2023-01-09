@@ -31,7 +31,6 @@ public class LC12_IntegertoRoman {
      * Constraints:
      *
      * 1 <= num <= 3999
-     *
      * @param num
      * @return
      */
@@ -51,3 +50,11 @@ public class LC12_IntegertoRoman {
         return sb.toString();
     }
 }
+/**
+ * 每1位可能有几个字符
+ * 模拟查表
+ * 从千位开始看，从高位开始拼接
+ * 100，200，300 | 600，700，800 + C
+ * 没有规律的几个记录下来
+ * 从大到小
+ */

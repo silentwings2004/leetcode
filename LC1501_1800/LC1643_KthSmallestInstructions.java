@@ -32,30 +32,30 @@ public class LC1643_KthSmallestInstructions {
      */
     // time = O(n * m), space = O(n)
     public String kthSmallestPath(int[] destination, int k) {
-        int v = destination[0];
-        int h = destination[1];
-        int n = h + v;
+        int V = destination[0];
+        int H = destination[1];
+        int n = H + V;
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) { // O(n)
-            if (h == 0) {
+        for (int i = 0; i < n; i++) {
+            if (H == 0) {
                 sb.append('V');
-                v--;
+                V--;
                 continue;
-            } else if (v == 0) {
+            } else if (V == 0) {
                 sb.append('H');
-                h--;
+                H--;
                 continue;
             }
 
-            int c = comb(h - 1 + v, v);
+            int c = comb(H - 1 + V, V);
             if (k <= c) {
-                h--;
+                H--;
                 sb.append('H');
             } else {
-                sb.append('V');
-                v--;
+                V--;
                 k -= c;
+                sb.append('V');
             }
         }
         return sb.toString();

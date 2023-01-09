@@ -47,4 +47,38 @@ public class LC2438_RangeProductQueriesofPowers {
         }
         return res;
     }
+
+    // S2: presum
+    // time = O(m), space = O(n)
+    public int[] productQueries2(int n, int[][] queries) {
+        List<Integer> exp = new ArrayList<>();
+        for (int i = 0; i < 32; i++) {
+            if (n % 2 != 0) exp.add(i);
+            n /= 2;
+            if (n == 0) break;
+        }
+
+        int m = exp.size();
+        int[] s = new int[m + 1];
+        for (int i = 1; i <= m; i++) s[i] = s[i - 1] + exp.get(i - 1);
+
+        long[] power = new long[32 * 32];
+        power[0] = 1;
+        long mod = (long) (1e9 + 7);
+        for (int i = 1; i < power.length; i++) power[i] = power[i - 1] * 2 % mod;
+
+        m = queries.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) {
+            int l = queries[i][0], r = queries[i][1];
+            int sum = s[r + 1] - s[l];
+            res[i] = (int) power[sum];
+        }
+        return res;
+    }
 }
+/**
+ * 110101 = 2^0 + 2^2 + 2^4 + 2^5
+ *           0     2     4     5
+ * 2^x * 2^y = 2^(x+y)
+ */

@@ -25,27 +25,26 @@ public class LC39_CombinationSum {
      * @return
      */
     // time = O(n^(t/m + 1)), space = O(n^(t/m))  t: target, m: minimal val in candidates
+    List<List<Integer>> res;
+    List<Integer> path;
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        List<List<Integer>> res = new ArrayList<>();
-        // corner case
-        if (candidates == null || candidates.length == 0) return res;
-
-        dfs(candidates, target, 0, 0, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        dfs(candidates, 0, target);
         return res;
     }
 
-    private void dfs(int[] candidates, int target, int idx, int sum, List<Integer> path, List<List<Integer>> res) {
-        // base case - success
-        if (sum == target) {
+    private void dfs(int[] a, int u, int t) {
+        if (t == 0) {
             res.add(new ArrayList<>(path));
             return;
         }
-        // base case - fail;
-        if (idx == candidates.length || sum > target) return;
 
-        for (int i = idx; i < candidates.length; i++) {
-            path.add(candidates[i]);
-            dfs(candidates, target, i, sum + candidates[i], path, res);
+        if (t < 0) return;
+
+        for (int i = u; i < a.length; i++) {
+            path.add(a[i]);
+            dfs(a, i, t - a[i]);
             path.remove(path.size() - 1);
         }
     }

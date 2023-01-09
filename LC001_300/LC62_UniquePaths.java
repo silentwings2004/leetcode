@@ -38,23 +38,16 @@ public class LC62_UniquePaths {
         return f[m - 1][n - 1];
     }
 
-    // S2
-    // time = O(m * n), space = O(m * n)
+    // S2: Math
+    // time = O(m), space = O(1)
     public int uniquePaths2(int m, int n) {
-        int[][] dp = new int[m][n];
-
-        // init
-        for (int i = 0; i < m; i++) dp[i][0] = 1;
-        for (int j = 0; j < n; j++) dp[0][j] = 1;
-
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-            }
+        long res = 1;
+        for (int i = n, j = 1; j < m; i++, j++) {
+            res = res * i / j;
         }
-        return dp[m - 1][n - 1];
+        return (int) res;
     }
-
-    // S2: dp
-
 }
+/**
+ * 组合数学问题 C(m+n-2,m-1)
+ */

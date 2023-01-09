@@ -23,11 +23,10 @@ public class LC63_UniquePathsII {
      * @param obstacleGrid
      * @return
      */
-    // S1: DP
     // time = O(m * n), space = O(m * n)
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
         int m = obstacleGrid.length, n = obstacleGrid[0].length;
-        int[][] f = new int[m + 1][n + 1];
+        int[][] f = new int[m][n];
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -41,32 +40,5 @@ public class LC63_UniquePathsII {
             }
         }
         return f[m - 1][n - 1];
-    }
-
-    // S2:
-    public int uniquePathsWithObstacles2(int[][] obstacleGrid) {
-        // corner case
-        if (obstacleGrid == null || obstacleGrid.length == 0 || obstacleGrid[0] == null || obstacleGrid[0].length == 0) {
-            return 0;
-        }
-
-        int m = obstacleGrid.length, n = obstacleGrid[0].length;
-        int[][] dp = new int[m][n];
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (obstacleGrid[i][j] == 1) {
-                    dp[i][j] = 0;
-                    continue;
-                }
-                if (i == 0 && j == 0) {
-                    dp[i][j] = 1;
-                    continue;
-                }
-                if (i > 0) dp[i][j] += dp[i - 1][j];
-                if (j > 0) dp[i][j] += dp[i][j - 1];
-            }
-        }
-        return dp[m - 1][n - 1];
     }
 }

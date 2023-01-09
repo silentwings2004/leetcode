@@ -32,6 +32,7 @@ public class LC1766_TreeofCoprimes {
      * @param edges
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int[] getCoprimes(int[] nums, int[][] edges) {
         List<Integer> path = new ArrayList<>(); // path[i] is the i-th node idx along the dfs path
@@ -75,6 +76,70 @@ public class LC1766_TreeofCoprimes {
     private int gcd(int a, int b) {
         if (b == 0) return a;
         return gcd(b, a % b);
+    }
+
+    // S2
+    final int N = 100010, M = N * 2;
+    int idx;
+    int[] h, e, ne, w;
+    int[] depth, pos;
+    int[] ans;
+    List<Integer>[] g;
+    public int[] getCoprimes2(int[] nums, int[][] edges) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        depth = new int[N];
+        pos = new int[N];
+        w = nums;
+        int n = w.length;
+        ans = new int[n];
+        Arrays.fill(ans, -1);
+        Arrays.fill(h, -1);
+        idx = 0;
+        g = new List[55];
+        for (int i = 0; i < 55; i++) g[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            add(a, b);
+            add(b, a);
+        }
+
+        for (int i = 1; i <= 50; i++) {
+            for (int j = 1; j <= 50; j++) {
+                if (gcd(i, j) == 1) g[i].add(j);
+            }
+        }
+
+        Arrays.fill(pos, -1);
+        dfs(0, -1);
+        return ans;
+    }
+
+    private void dfs(int u, int fa) {
+        int x = w[u];
+        for (int y : g[x]) {
+            if (pos[y] != -1) {
+                if (ans[u] == -1 || depth[ans[u]] < depth[pos[y]]) ans[u] = pos[y];
+            }
+        }
+
+        int t = pos[x];
+        pos[x] = u;
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (j == fa) continue;
+            depth[j] = depth[u] + 1;
+            dfs(j, u);
+        }
+        pos[x] = t;
+    }
+
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
     }
 }
 /**

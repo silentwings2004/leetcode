@@ -23,29 +23,20 @@ public class LC57_InsertInterval {
      */
     // time = O(n), space = O(n)
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        // corner case
-        if (intervals == null || intervals.length == 0 || intervals[0] == null || intervals[0].length == 0) {
-            return new int[][]{newInterval};
-        }
-
-        List<List<Integer>> res = new ArrayList<>();
-        for (int[] interval : intervals) {
-            if (interval[1] < newInterval[0]) {
-                res.add(Arrays.asList(interval[0], interval[1]));
-            } else if (interval[0] > newInterval[1]) {
-                res.add(Arrays.asList(newInterval[0], newInterval[1]));
-                newInterval = interval;
-            } else if (interval[0] < newInterval[1] || interval[1] > newInterval[0]) {
-                newInterval = new int[]{Math.min(interval[0], newInterval[0]), Math.max(interval[1], newInterval[1])};
+        int n = intervals.length;
+        List<int[]> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (intervals[i][0] > newInterval[1]) {
+                res.add(newInterval);
+                newInterval = intervals[i];
+            } else if (intervals[i][1] < newInterval[0]) res.add(intervals[i]);
+            else {
+                newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+                newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
             }
         }
-        res.add(Arrays.asList(newInterval[0], newInterval[1]));
-        int[][] ans = new int[res.size()][2];
-        for (int i = 0; i < res.size(); i++) {
-            ans[i][0] = res.get(i).get(0);
-            ans[i][1] = res.get(i).get(1);
-        }
-        return ans;
+        res.add(newInterval);
+        return res.toArray(new int[res.size()][]);
     }
 
     // S2: sweep line

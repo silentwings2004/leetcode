@@ -33,6 +33,7 @@ public class LC71_SimplifyPath {
      * @param path
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public String simplifyPath(String path) {
         // corner case
@@ -54,6 +55,35 @@ public class LC71_SimplifyPath {
             sb.insert(0, stack.pop()).insert(0, "/");
         }
         return sb.length() == 0 ? "/" : sb.toString();
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    final int N = 3010;
+    public String simplifyPath2(String path) {
+        char[] stk = new char[N];
+        int tt = 0;
+        StringBuilder sb = new StringBuilder();
+
+        if (path.charAt(path.length() - 1) != '/') path += '/';
+        for (char c : path.toCharArray()) {
+            if (c != '/') sb.append(c);
+            else {
+                String s = sb.toString();
+                if (s.equals("..")) {
+                    while (tt > 0 && stk[tt] != '/') tt--;
+                    if (tt > 0) tt--; // remove '/'
+                } else if (!s.equals(".") && !s.equals("")) {
+                    stk[++tt] = '/';
+                    for (int i = 0; i < s.length(); i++) stk[++tt] = s.charAt(i);
+                }
+                sb = new StringBuilder();
+            }
+        }
+        if (tt == 0) stk[++tt] = '/';
+        sb = new StringBuilder();
+        for (int i = 1; i <= tt; i++) sb.append(stk[i]);
+        return sb.toString();
     }
 }
 /**

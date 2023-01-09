@@ -21,23 +21,21 @@ public class LC1339_MaximumProductofSplittedBinaryTree {
      * @return
      */
     // time = O(n), space = O(n)
-    private long res, total;
+    long tot, res;
     public int maxProduct(TreeNode root) {
-        // corner case
-        if (root == null) return 0;
-
-        long M = (long)(1e9 + 7);
-        total = dfs(root);
+        tot = dfs(root);
         dfs(root);
-
-        return (int)(res % M);
+        long mod = (long)(1e9 + 7);
+        return (int)(res % mod);
     }
 
-    private long dfs(TreeNode cur) {
-        if (cur == null) return 0;
+    private long dfs(TreeNode node) {
+        if (node == null) return 0;
 
-        long sub = dfs(cur.left) + dfs(cur.right) + cur.val;
-        res = Math.max(res, (total - sub) * sub);
-        return sub;
+        long l = dfs(node.left);
+        long r = dfs(node.right);
+        long sum = l + r + node.val;
+        res = Math.max(res, sum * (tot - sum));
+        return sum;
     }
 }

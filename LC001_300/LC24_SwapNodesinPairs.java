@@ -31,21 +31,15 @@ public class LC24_SwapNodesinPairs {
     // S2: iteration --> 最优解！！！
     // time = O(n), space = O(1)
     public ListNode swapPairs2(ListNode head) {
-        // corner case
-        if (head == null || head.next == null) return head;
-
         ListNode dummy = new ListNode(0);
         dummy.next = head;
-        ListNode prev = dummy;
-        ListNode cur = head;
 
-        while (cur != null && cur.next != null) {
-            ListNode next = cur.next.next; // next: 3
-            cur.next.next = cur; // 2 -> 1
-            prev.next = cur.next; // dummy -> 2
-            cur.next = next; // 1 -> 3
-            prev = cur; // prev: 1
-            cur = next; // cur : 3
+        for (ListNode p = dummy; p.next != null && p.next.next != null;) {
+            ListNode a = p.next, b = p.next.next;
+            p.next = b;
+            a.next = b.next;
+            b.next = a;
+            p = a;
         }
         return dummy.next;
     }

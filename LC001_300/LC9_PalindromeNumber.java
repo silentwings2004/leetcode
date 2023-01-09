@@ -16,16 +16,14 @@ public class LC9_PalindromeNumber {
      * @param x
      * @return
      */
-    // time = O(logx), space = O(1)
+    // time = O(logn), space = O(1)
     public boolean isPalindrome(int x) {
-        // corner case
         if (x < 0) return false;
-
-        int backup = x, rev = 0;
+        long res = 0, y = x;
         while (x > 0) {
-            rev = rev * 10 + x % 10;
+            res = res * 10 + x % 10;
             x /= 10;
         }
-        return rev == backup;
+        return res == y;
     }
 }

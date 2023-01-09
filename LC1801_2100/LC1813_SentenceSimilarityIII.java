@@ -26,7 +26,8 @@ public class LC1813_SentenceSimilarityIII {
      * @param sentence2
      * @return
      */
-    // time = O(min(m, n)), space = O(1)
+    // S1
+    // time = O(min(m, n)), space = O(m + n)
     public boolean areSentencesSimilar(String sentence1, String sentence2) {
         String[] strs1 = sentence1.split(" "), strs2 = sentence2.split(" ");
         int i = 0, len1 = strs1.length, len2 = strs2.length;
@@ -36,4 +37,28 @@ public class LC1813_SentenceSimilarityIII {
         while (i < len2 && strs2[i].equals(strs1[len1 - len2 + i])) i++;
         return i == len2;
     }
+
+    // S2
+    // time = O(min(m, n)), space = O(m + n)
+    public boolean areSentencesSimilar2(String sentence1, String sentence2) {
+        String[] str1 = sentence1.split(" ");
+        String[] str2 = sentence2.split(" ");
+        int m = str1.length, n = str2.length;
+        if (m < n) return areSentencesSimilar(sentence2, sentence1);
+
+        int i = 0, j = n - 1;
+        for (int k = 0; k < m && i < n; k++) {
+            if (str1[k].equals(str2[i])) i++;
+            else break;
+        }
+        for (int k = m - 1; k >= 0 && j >= 0; k--) {
+            if (str1[k].equals(str2[j])) j--;
+            else break;
+        }
+        return i > j; // 前后缀完美覆盖较短的串
+    }
 }
+/**
+ * 短句子能否分成两段，分别是长句子的前缀和长句子的后缀
+ * 看前缀和后缀能否把短串覆盖掉
+ */

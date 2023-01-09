@@ -15,30 +15,27 @@ public class LC17_LetterCombinationsofaPhoneNumber {
      * @param digits
      * @return
      */
-    // S1: DFS
-    // time = O(n * 4^n), space = O(n)
-    // 选定一位一种情况 => 走下去n层完成 => O(n) ==> 目前一共n位，每位最多4种可能性 => 4^n 种，每种O(n) => time = O(n * 4^n)
-    // space = recursion stack + StringBuilder + String[] = O(n) + O(n) + O(1) = O(n)
-    String[] mapping = new String[]{"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    // time = O(4^n * n), space = O(n)
+    String[] strs = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    List<String> res;
     public List<String> letterCombinations(String digits) {
-        List<String> res = new ArrayList<>();
-        // corner case
-        if (digits == null || digits.length() == 0) return res;
+        res = new ArrayList<>();
+        if (digits.length() == 0) return res;
 
-        dfs(digits, 0, new StringBuilder(), res);
+        dfs(digits, 0, new StringBuilder());
         return res;
     }
 
-    private void dfs(String digits, int idx, StringBuilder sb, List<String> res) {
-        // base case
-        if (idx == digits.length()) {
+    private void dfs(String s, int u, StringBuilder sb) {
+        if (u == s.length()) {
             res.add(sb.toString());
             return;
         }
 
-        for (char c : mapping[digits.charAt(idx) - '0'].toCharArray()) { // O(4)
+        int i = s.charAt(u) - '0';
+        for (char c : strs[i].toCharArray()) {
             sb.append(c);
-            dfs(digits, idx + 1, sb, res);
+            dfs(s, u + 1, sb);
             sb.setLength(sb.length() - 1);
         }
     }

@@ -16,21 +16,17 @@ public class LC2180_CountIntegersWithEvenDigitSum {
      * @param num
      * @return
      */
-    // time = O(n), space = O(1)
+    // time = O(nlogn), space = O(1)
     public int countEven(int num) {
-        int count = 0;
+        int res = 0;
         for (int i = 1; i <= num; i++) {
-            if (helper(i)) count++;
+            int t = i, sum = 0;
+            while (t > 0) {
+                sum += t % 10;
+                t /= 10;
+            }
+            if (sum % 2 == 0) res++;
         }
-        return count;
-    }
-
-    private boolean helper(int num) {
-        int sum = 0;
-        while (num > 0) {
-            sum += num % 10;
-            num /= 10;
-        }
-        return sum % 2 == 0;
+        return res;
     }
 }

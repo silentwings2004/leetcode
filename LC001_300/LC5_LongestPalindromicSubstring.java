@@ -18,23 +18,24 @@ public class LC5_LongestPalindromicSubstring {
     // S1: DP
     // time = O(n^2), space = O(n^2)
     public String longestPalindrome(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
+        int n = s.length();
+        boolean[][] g = new boolean[n + 1][n + 1];
 
-        int len = s.length();
-        int max = 0;
-        String res = "";
-        boolean[][] dp = new boolean[len][len];
-
-        for (int j = 0; j < len; j++) {
-            for (int i = 0; i <= j; i++) {
-                if (s.charAt(i) == s.charAt(j) && ((j - i <= 2) || dp[i + 1][j - 1])) {
-                    dp[i][j] = true;
+        for (int len = 1; len <= n; len++) {
+            for (int i = 1; i + len - 1 <= n; i++) {
+                int j = i + len - 1;
+                if (s.charAt(i - 1) == s.charAt(j - 1) && (len <= 2 || g[i + 1][j - 1])) {
+                    g[i][j] = true;
                 }
-                if (dp[i][j]) {
-                    if (j - i + 1 > max) {
-                        max = j - i + 1;
-                        res = s.substring(i, j + 1);
+            }
+        }
+
+        String res = "";
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j <= n; j++) {
+                if (g[i][j]) {
+                    if (j - i + 1 > res.length()) {
+                        res = s.substring(i - 1, j);
                     }
                 }
             }
@@ -45,26 +46,24 @@ public class LC5_LongestPalindromicSubstring {
     // S2: 中心扩散法
     // time = O(n^2), space = O(1)
     public String longestPalindrome2(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
         String res = "";
-        for (int i = 0; i < s.length(); i++) { // O(n)
-            res = helper(s, res, i, i);
-            res = helper(s, res, i , i + 1);
-        }
-        return res;
-    }
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            int l = i - 1, r = i + 1;
+            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+                l--;
+                r++;
+            }
+            if (res.length() < r - l - 1) res = s.substring(l + 1, r);
 
-    private String helper(String s, String res, int left, int right) {
-        int len = s.length();
-        while (left >= 0 && right < len && s.charAt(left) == s.charAt(right)) { // O(n)
-            left--;
-            right++;
+            l = i;
+            r = i + 1;
+            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+                l--;
+                r++;
+            }
+            if (res.length() < r - l - 1) res = s.substring(l + 1, r);
         }
-        // 出loop时，left与right分别多-1和多+1，所以起点是left + 1，终点是right - 1
-        String cur = s.substring(left + 1, right);
-        if (cur.length() > res.length()) res = cur; // 找到更长的则更新res
         return res;
     }
 

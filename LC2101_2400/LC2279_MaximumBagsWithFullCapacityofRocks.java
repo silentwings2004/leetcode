@@ -23,21 +23,17 @@ public class LC2279_MaximumBagsWithFullCapacityofRocks {
      * @param additionalRocks
      * @return
      */
-    // time = O(nlogn), space = O(n)
+    // time = O(nlogn), space = O(1)
     public int maximumBags(int[] capacity, int[] rocks, int additionalRocks) {
-        int n = capacity.length;
-        int[] diff = new int[n];
-        for (int i = 0; i < n; i++) diff[i] = capacity[i] - rocks[i];
-
-        Arrays.sort(diff);
-
-        int count = 0;
-        for (int x : diff) {
-            if (additionalRocks >= x) {
-                additionalRocks -= x;
-                count++;
+        int n = capacity.length, k = additionalRocks, res = 0;
+        for (int i = 0; i < n; i++) capacity[i] -= rocks[i];
+        Arrays.sort(capacity);
+        for (int x : capacity) {
+            if (k >= x) {
+                k -= x;
+                res++;
             } else break;
         }
-        return count;
+        return res;
     }
 }

@@ -16,6 +16,7 @@ public class LC69_Sqrtx {
      * @param x
      * @return
      */
+    // S1: 整数二分
     // time = O(logn), space = O(1)
     public int mySqrt(int x) {
         int l = 0, r = x;
@@ -25,5 +26,18 @@ public class LC69_Sqrtx {
             else r = mid - 1;
         }
         return l;
+    }
+
+    // S2: 浮点数二分
+    final double eps = 1e-6;
+    public int mySqrt2(int x) {
+        double y = x;
+        double l = 0, r = y;
+        while (r - l > eps) {
+            double mid = (l + r) / 2;
+            if (mid * mid < y) l = mid;
+            else r = mid;
+        }
+        return (int) r;
     }
 }

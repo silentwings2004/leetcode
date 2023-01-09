@@ -23,6 +23,7 @@ public class LC1478_AllocateMailboxes {
      * @param k
      * @return
      */
+    // S1
     // time = O(n^3), space = O(n^2)
     public int minDistance(int[] houses, int k) {
         // corner case
@@ -56,6 +57,34 @@ public class LC1478_AllocateMailboxes {
         }
         return dp[n][k];
     }
+
+    // S1.2
+    // time = O(n^3), space = O(n^2)
+    final int INF = (int) 1e8;
+    public int minDistance2(int[] houses, int k) {
+        Arrays.sort(houses);
+        int n = houses.length;
+        int[][] f = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], INF);
+        int[][] cost = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                for (int s = i; s <= j; s++) {
+                    cost[i][j] += Math.abs(houses[s] - houses[i + (j - i + 1) /2]);
+                }
+            }
+        }
+
+        f[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= k; j++) {
+                for (int s = 1; s <= i; s++) {
+                    f[i][j] = Math.min(f[i][j], f[s - 1][j - 1] + cost[s - 1][i - 1]);
+                }
+            }
+        }
+        return f[n][k];
+    }
 }
 /**
  * 二分猜值行不行？不行，total distance,没法进一步判断这个答案是猜大还是猜小了
@@ -73,4 +102,11 @@ public class LC1478_AllocateMailboxes {
  * 对于不合适的j，整个dp[j][k-1] + range[j+1][i]都会偏大。
  * 只有遍历到最合适的j，就能得到dp[j][k-1] + range[j+1][i]的最小值，即最小化dp[i][k]。
  * 只有个别的j才是合法的
+ *
+ * 如果只有1个邮筒的话，那就放到正中间 => 绝对值不等式
+ * 先划定势力范围，每个势力范围里再考虑放置1个邮箱 => 放到中位数即可
+ * 高效从n个房子里，划分到k个势力范围里 => dp
+ * f(i,j) 1~i个房子，最多划分成j部分的最小距离和
+ * 最后一部分是k~i => cost(k,i) 排序+中位数来求,前面f(k-1,j-1)
+ * cost先预处理下，枚举下i,j2个端点，用O(n^3)来处理
  */

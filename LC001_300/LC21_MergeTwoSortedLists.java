@@ -17,35 +17,29 @@ public class LC21_MergeTwoSortedLists {
      * -100 <= Node.val <= 100
      * Both l1 and l2 are sorted in non-decreasing order.
      *
-     * @param l1
-     * @param l2
+     * @param list1
+     * @param list2
      * @return
      */
     // time = O(n), space = O(1)
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        // corner case
-        if (l1 == null) return l2;
-        if (l2 == null) return l1;
-
-        // step 1: init
-        ListNode dummy = new ListNode(0);
-        ListNode cur = dummy;
-
-        // step 2: iterate through both lists
-        while (l1 != null && l2 != null) {
-            if (l1.val < l2.val) {
-                cur.next = l1;
-                l1 = l1.next;
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode(-1), cur = dummy;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                cur.next = list1;
+                list1 = list1.next;
             } else {
-                cur.next = l2;
-                l2 = l2.next;
+                cur.next = list2;
+                list2 = list2.next;
             }
             cur = cur.next;
         }
-
-        // step 3: post-processing
-        if (l1 != null) cur.next = l1;
-        if (l2 != null) cur.next = l2;
+        if (list1 != null) cur.next = list1;
+        if (list2 != null) cur.next = list2;
         return dummy.next;
     }
 }
+/**
+ * 经典的二路归并思想
+ * 凡是需要特判头结点或者需要改变头结点的 => 建立一个虚拟头结点
+ */

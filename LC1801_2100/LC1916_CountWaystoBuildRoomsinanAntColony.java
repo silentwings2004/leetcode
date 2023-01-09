@@ -27,6 +27,8 @@ public class LC1916_CountWaystoBuildRoomsinanAntColony {
      * @param prevRoom
      * @return
      */
+    // S1
+    // time = O(nlogn), space = O(n)
     long M = (long)(1e9 + 7);
     public int waysToBuildRooms(int[] prevRoom) {
         // corner case
@@ -91,6 +93,68 @@ public class LC1916_CountWaystoBuildRoomsinanAntColony {
         }
         return s;
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    final int N = 100010;
+    final long mod = (long)(1e9 + 7);
+    long[] f, g, s;
+    int[] sz;
+    int[] h, e, ne;
+    int idx;
+    public int waysToBuildRooms2(int[] prevRoom) {
+        f = new long[N];
+        g = new long[N];
+        s = new long[N];
+        sz = new int[N];
+        h = new int[N];
+        e = new int[N];
+        ne = new int[N];
+        idx = 0;
+        Arrays.fill(h, -1);
+
+        int n = prevRoom.length;
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            f[i] = f[i - 1] * i % mod;
+            g[i] = qmi(f[i], mod - 2, mod);
+        }
+
+        for (int i = 1; i < n; i++) add(prevRoom[i], i);
+        return dfs(0);
+    }
+
+    private int dfs(int u) {
+        sz[u] = 0;
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            dfs(j);
+            sz[u] += sz[j];
+        }
+        s[u] = f[sz[u]];
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            s[u] = s[u] * g[sz[j]] % mod * s[j] % mod;
+        }
+        sz[u]++;
+        return (int) s[u];
+    }
+
+    private long qmi(long a, long k, long p) {
+        long res = 1;
+        while (k > 0) {
+            if ((k & 1) == 1) res = res * a % p;
+            a = a * a % p;
+            k >>= 1;
+        }
+        return res;
+    }
+
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * 0#### => 2x 2y 6种全排列  把同组内的不同元素都看成对等不加区分的元素，比如1-3 => x, 2-4 => y
@@ -121,4 +185,10 @@ public class LC1916_CountWaystoBuildRoomsinanAntColony {
  * dp[node] = num[node] ! / (num[child1]! * num[child2]! * ... * num[childk]!) * dp[child1] * dp[child2] * ... * dp[childk]
  * 注意到上述的式子中含有除法，对大数取模的过程遇到除法需要用到逆元运算，即
  * (a / b) % M = a * inv(b, M)
+ *
+ * 求有多少种不同的拓扑排序
+ * 保序归并
+ * (Sa + Sb + Sc)!  不考虑每个集合内部的顺序
+ * Sa! * Sb! * Sc!
+ * 可重集排列问题 => (Sa + Sb + Sc)! / (Sa! * Sb! * Sc!) * S[a] * S[b] * S[c] (拓扑排序的数量)
  */

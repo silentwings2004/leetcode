@@ -17,15 +17,12 @@ public class LC70_ClimbingStairs {
      */
     // time = O(n), space = O(1)
     public int climbStairs(int n) {
-        // corner case
-        if (n == 1 || n == 2) return n;
-        int lo = 1, hi = 2;
-        int res = 0;
-        for (int i = 3; i <= n; i++) {
-            res = lo + hi;
-            lo = hi;
-            hi = res;
+        int a = 1, b = 1;
+        while (--n > 0) {
+            int c = a + b;
+            a = b;
+            b = c;
         }
-        return res;
+        return b;
     }
 }

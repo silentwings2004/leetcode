@@ -30,7 +30,7 @@ public class LC2422_MergeOperationstoTurnArrayIntoaPalindrome {
             if (left == right) {
                 i++;
                 j--;
-                left = nums[i];
+                left = nums[i]; // 注意这里要记得更新left和right!
                 right = nums[j];
             } else if (left < right) {
                 i++;

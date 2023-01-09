@@ -54,23 +54,21 @@ public class LC76_MinimumWindowSubstring {
         HashMap<Character, Integer> hs = new HashMap<>();
         HashMap<Character, Integer> ht = new HashMap<>();
 
+        int m = s.length(), n = t.length();
         for (char c : t.toCharArray()) ht.put(c, ht.getOrDefault(c, 0) + 1);
 
         String res = "";
-        int m = s.length(), n = t.length();
-        int cnt = 0, j = 0;
-        for (int i = 0; i < m; i++) { // i: right pointer
+        int cnt = 0;
+        for (int i = 0, j = 0; i < m; i++) {
             char c = s.charAt(i);
             hs.put(c, hs.getOrDefault(c, 0) + 1);
             if (hs.get(c) <= ht.getOrDefault(c, 0)) cnt++;
-
-            while (j < m && hs.getOrDefault(s.charAt(j), 0) > ht.getOrDefault(s.charAt(j), 0)) {
-                c = s.charAt(j);
-                hs.put(c, hs.get(c) - 1);
+            while (j <= i && hs.getOrDefault(s.charAt(j), 0) > ht.getOrDefault(s.charAt(j), 0)) {
+                hs.put(s.charAt(j), hs.get(s.charAt(j)) - 1);
                 j++;
             }
             if (cnt == n) {
-                if (res.length() == 0 || i - j + 1 < res.length()) res = s.substring(j, i + 1);
+                if (res.length() == 0 || res.length() > i - j + 1) res = s.substring(j, i + 1);
             }
         }
         return res;

@@ -26,80 +26,66 @@ public class LC87_ScrambleString {
      * @param s2
      * @return
      */
-    // time = O(n!), space = O(n)
+    // S1: DFS + Memo
+    // time = O(5^n), space = O(n)
     HashMap<String, Boolean> map = new HashMap<>();
     public boolean isScramble(String s1, String s2) {
-        // corner case
-        if (s1 == null || s2 == null) return false;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(s1);
-        sb.append(s2);
-        String key = sb.toString();
-
-        if (map.containsKey(key)) return map.get(key);
-
+        String h = s1 + "#" + s2;
+        if (map.containsKey(h)) return map.get(h);
         if (s1.equals(s2)) {
-            map.put(key, true);
+            map.put(h, true);
             return true;
         }
 
-        int[] letters = new int[26];
-        for (int i = 0; i < s1.length(); i++) {
-            letters[s1.charAt(i) - 'a']++;
-            letters[s2.charAt(i) - 'a']--;
-        }
-
+        int n = s1.length();
+        int[] cnt = new int[26];
+        for (int i = 0; i < n; i++) cnt[s1.charAt(i) - 'a']++;
+        for (int i = 0; i < n; i++) cnt[s2.charAt(i) - 'a']--;
         for (int i = 0; i < 26; i++) {
-            if (letters[i] != 0) {
-                map.put(key, false);
+            if (cnt[i] != 0) {
+                map.put(h, false);
                 return false;
             }
         }
-        int len = s1.length();
-        for (int i = 1; i < s1.length(); i++) {
-            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
-                map.put(key, true);
+
+        for (int i = 1; i < n; i++) {
+            if (isScramble(s1.substring(0, i), s2.substring(0, i)) &&
+                    isScramble(s1.substring(i), s2.substring(i))) {
+                map.put(h, true);
                 return true;
             }
-            if (isScramble(s1.substring(0, i), s2.substring(len - i)) && isScramble(s1.substring(i), s2.substring(0, len - i))) {
-                map.put(key, true);
+            if (isScramble(s1.substring(0, i), s2.substring(n - i)) &&
+                    isScramble(s1.substring(i), s2.substring(0, n - i))) {
+                map.put(h, true);
                 return true;
             }
         }
-        map.put(key, false);
+        map.put(h, false);
         return false;
     }
 
     // S2: DP
     // time = O(n^4), space = O(n^3)
     public boolean isScramble2(String s1, String s2) {
-        char[] t1 = s1.toCharArray();
-        char[] t2 = s2.toCharArray();
-        int m = t1.length, n = t2.length;
-        if (m != n) return false;
+        int n = s1.length();
+        boolean[][][] f = new boolean[n][n][n + 1];
 
-        boolean[][][] dp = new boolean[n][n][n + 1];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                dp[i][j][1] = t1[i] == t2[j];
-            }
-        }
-
-        for (int k = 2; k <= n; k++) {
-            for (int i = 0; i <= n - k; i++) { // start position of s1 [i...i+k-1]
-                for (int j = 0; j <= n - k; j++) { // start position of s2 [j...j+k-1]
-                    dp[i][j][k] = false;
-                    for (int w = 1; w <= k - 1; w++) { // length, where to split
-                        if (dp[i][j][w] && dp[i + w][j + w][k - w] || dp[i][j + k - w][w] && dp[i + w][j][k - w]) {
-                            dp[i][j][k] = true;
-                            break;
+        for (int k = 1; k <= n; k++) {
+            for (int i = 0; i + k - 1 < n; i++) {
+                for (int j = 0; j + k - 1 < n; j++) {
+                    if (k == 1) f[i][j][k] = (s1.charAt(i) == s2.charAt(j));
+                    else {
+                        for (int u = 1; u < k; u++) {
+                            if (f[i][j][u] && f[i + u][j + u][k - u] || f[i][j + k - u][u] && f[i + u][j][k - u]) {
+                                f[i][j][k] = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-        return dp[0][0][n];
+        return f[0][0][n];
     }
 }
 /**
@@ -107,4 +93,14 @@ public class LC87_ScrambleString {
  * (1). S1的左边和S2的左边是IsScramble， S1的右边和S2的右边是IsScramble
  * (2). S1的左边和S2的右边是IsScramble， S1的右边和S2的左边是IsScramble （实际上是交换了S1的左右子树）
  * 我们可以在递归中加适当的剪枝：在进入递归前，先把2个字符串排序，再比较，如果不相同，则直接退出掉。
+ *
+ * 状态表示：f[i, j, k]
+ * 1.1 集合：s1[i ~ i + k - 1]与s2[j, j + k - 1]所有匹配方案的集合
+ * 1.2 属性：集合是否非空
+ * 状态计算
+ * 将f[i, j, k]表示的集合按s1第一段的长度划分划分成k - 1类。
+ * 设s1第一段的长度为u。则s1[i ~ i + k - 1]与s2[j, j + k - 1]有两种匹配方案，分别判断即可：
+ * (1) f[i][j][u] && f[i + u][j + u][k - u]
+ * (2) f[i][j + k - u][u] && f[i + u][j][k - u]
+ * 时间复杂度分析：状态数 O(n3)O(n3)，状态转移计算量为 O(n)O(n)，所以总时间复杂度为 O(n4)O(n4)。
  */

@@ -24,21 +24,15 @@ public class LC1_TwoSum {
      */
     // time = O(n), space = O(n)
     public int[] twoSum(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return new int[0];
-
         HashMap<Integer, Integer> map = new HashMap<>();
-
+        int n = nums.length;
         int[] res = new int[2];
-        for (int i = 0; i < nums.length; i++) {
-            int diff = target - nums[i];
-            if (!map.containsKey(diff)) {
-                map.put(nums[i], i);
-            } else {
-                res[0] = map.get(diff);
-                res[1] = i;
+        for (int i = 0; i < n; i++) {
+            int x = target - nums[i];
+            if (map.containsKey(x)) {
+                res = new int[]{map.get(x), i};
                 break;
-            }
+            } else map.put(nums[i], i);
         }
         return res;
     }

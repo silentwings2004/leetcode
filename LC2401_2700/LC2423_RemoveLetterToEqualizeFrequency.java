@@ -1,5 +1,5 @@
 package LC2401_2700;
-
+import java.util.*;
 public class LC2423_RemoveLetterToEqualizeFrequency {
     /**
      * ou are given a 0-indexed string word, consisting of lowercase English letters. You need to select one index and
@@ -73,5 +73,41 @@ public class LC2423_RemoveLetterToEqualizeFrequency {
             if (cnt[i] < maxf - 1) return false;
         }
         return m2 == 1 && maxf == 2 || m1 == 1 || m2 == 0 && maxf == 1;
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    public boolean equalFrequency3(String word) {
+        HashMap<Character, Integer> map = new HashMap<>(); // {val, cnt}
+        HashMap<Integer, Integer> cnt = new HashMap<>(); // {cnt, amount}
+
+        for (char c : word.toCharArray()) {
+            if (map.containsKey(c)) {
+                int f = map.get(c);
+                cnt.put(f, cnt.get(f) - 1);
+                if (cnt.get(f) == 0) cnt.remove(f);
+            }
+            map.put(c, map.getOrDefault(c, 0) + 1);
+            int f = map.get(c);
+            cnt.put(f, cnt.getOrDefault(f, 0) + 1);
+        }
+
+        if (cnt.size() == 1) {
+            for (int key : cnt.keySet()) {
+                if (key == 1 || cnt.get(key) == 1) return true;
+            }
+        } else if (cnt.size() == 2) {
+            int[][] tmp = new int[2][2];
+            int k = 0;
+            for (int key : cnt.keySet()) tmp[k++] = new int[]{key, cnt.get(key)};
+            if (tmp[0][0] > tmp[1][0]) {
+                int[] t = tmp[0];
+                tmp[0] = tmp[1];
+                tmp[1] = t;
+            }
+            if (tmp[0][0] == 1 && tmp[0][1] == 1) return true;
+            if (tmp[1][0] == tmp[0][0] + 1 && tmp[1][1] == 1) return true;
+        }
+        return false;
     }
 }

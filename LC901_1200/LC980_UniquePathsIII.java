@@ -26,42 +26,48 @@ public class LC980_UniquePathsIII {
      * @return
      */
     // time = O(3^n), space = O(n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-    private int res = 0;
+    int n, m, k;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    int[][] g;
     public int uniquePathsIII(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        int count = 0, sx = -1, sy = -1, tx = -1, ty = -1;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) count++;
-                if (grid[i][j] == 1) {
+        g = grid;
+        n = g.length;
+        m = g[0].length;
+        k = 0;
+        int sx = 0, sy = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (g[i][j] == 1) {
                     sx = i;
                     sy = j;
-                }
+                    k++;
+                } else if (g[i][j] == 0) k++;
             }
         }
-        boolean[][] visited = new boolean[m][n];
-        visited[sx][sy] = true;
-        dfs(grid, sx, sy, count, visited);
+        return dfs(sx, sy);
+    }
+
+    private int dfs(int x, int y) {
+        if (g[x][y] == 2) {
+            if (k == 0) return 1;
+            return 0;
+        }
+
+        g[x][y] = -1;
+        k--;
+        int res = 0;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a >= 0 && a < n && b >= 0 && b < m && g[a][b] != -1) {
+                res += dfs(a, b);
+            }
+        }
+        g[x][y] = 0;
+        k++;
         return res;
     }
-
-    private void dfs(int[][] grid, int x, int y, int count, boolean[][] visited) {
-        int m = grid.length, n = grid[0].length;
-
-        for (int[] dir : directions) {
-            int i = x + dir[0];
-            int j = y + dir[1];
-            if (i < 0 || i >= m || j < 0 || j >= n) continue;
-            if (visited[i][j]) continue;
-            if (grid[i][j] == -1) continue;
-            if (grid[i][j] == 2 && count == 0) {
-                res++;
-                return;
-            }
-            visited[i][j] = true;
-            dfs(grid, i, j, count - 1, visited);
-            visited[i][j] = false;
-        }
-    }
 }
+/**
+ * 求哈密顿路径数
+ * 正解：连通性dp问题 -> 插头dp
+ */

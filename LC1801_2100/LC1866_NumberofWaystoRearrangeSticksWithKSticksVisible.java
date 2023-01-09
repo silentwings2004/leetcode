@@ -107,4 +107,6 @@ public class LC1866_NumberofWaystoRearrangeSticksWithKSticksVisible {
  * dp[i-1][j-1]
  * 2. If i-th element is part of the previous j intervals,
  * dp[i-1][j] * (i-1) 只有i-1种加法加入进来，总是能插入后调整为j个合法的区间
+ *
+ * 第一类斯特林数
  */

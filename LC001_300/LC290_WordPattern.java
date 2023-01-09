@@ -22,24 +22,44 @@ public class LC290_WordPattern {
      * @param s
      * @return
      */
-    // time = O(n), space = O(n)
+    // S1: one hashmap
+    // time = O(n^2), space = O(n)
     public boolean wordPattern(String pattern, String s) {
-        // corner case
-        if (pattern == null || pattern.length() == 0 || s == null || s.length() == 0) return false;
-
-        String[] dict = s.split(" ");
-        if (pattern.length() != dict.length) return false;
-
         HashMap<Character, String> map = new HashMap<>();
-        for (int i = 0; i < dict.length; i++) {
-            char ch = pattern.charAt(i);
-            if (map.containsKey(ch)) {
-                if (!map.get(ch).equals(dict[i])) return false;
-            } else {
-                if (map.containsValue(dict[i])) return false; // 注意加入新映射前要check是否value已经被其他char映射过了！
-                map.put(ch, dict[i]);
-            }
+        String[] strs = s.split(" ");
+        if (pattern.length() != strs.length) return false;
+
+        int n = pattern.length();
+        for (int i = 0; i < n; i++) {
+            char c = pattern.charAt(i);
+            if (!map.containsKey(c)) {
+                if (map.containsValue(strs[i])) return false;
+                map.put(c, strs[i]);
+            } else if (!map.get(c).equals(strs[i])) return false;
+        }
+        return true;
+    }
+
+    // S2: two hashmap
+    // time = O(n), space = O(n)
+    public boolean wordPattern2(String pattern, String s) {
+        String[] strs = s.split(" ");
+        int n = pattern.length(), m = strs.length;
+        if (n != m) return false;
+        HashMap<Character, String> cs = new HashMap<>();
+        HashMap<String, Character> sc = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            char c = pattern.charAt(i);
+            String b = strs[i];
+            if (cs.containsKey(c) && !cs.get(c).equals(b)) return false;
+            if (sc.containsKey(b) && sc.get(b) != c) return false;
+            cs.put(c, b);
+            sc.put(b, c);
         }
         return true;
     }
 }
+/**
+ * 对于映射 f: A -> B
+ * f 既是单射，又是满射
+ */

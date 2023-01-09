@@ -126,4 +126,15 @@ public class LC1235_MaximumProfitinJobScheduling {
  * dp[t]: by the time of t, the maximum profit
  * t 是离散来看的，都是每个ending point
  * 如何找到这个t呢？=> 恰好比start point小的t => 二分 (因为是递增的)
+ *
+ * 按照时间来dp
+ * f[i]: 枚举最后一个区间选谁
+ * f[i] = f[i - 1]
+ * 所有以i为右端点的区间：profit + f[L]
+ * 离散化？
+ * 用到的i一定是区间的结束，先排序
+ * 从前i个区间里选，最多可以选多少价值
+ * 不选：f[i] = f[i-1]
+ * 选：f[i] = f[j] = w[i]
+ * 取max => 二分找j
  */

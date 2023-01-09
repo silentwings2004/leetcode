@@ -21,28 +21,29 @@ public class LC90_SubsetsII {
      * @return
      */
     // time = O(n * 2^n), space = O(n)
+    List<List<Integer>> res;
+    List<Integer> path;
+    int[] nums;
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        // corner case
-        if (nums == null || nums.length == 0) return res;
-
-        // step 1: sort the array!!!
-        Arrays.sort(nums); // O(nlogn)
-
-        // step 2: DFS
-        dfs(nums, 0, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        this.nums = nums;
+        Arrays.sort(nums);
+        dfs(0);
         return res;
     }
 
-    private void dfs(int[] nums, int idx, List<Integer> list, List<List<Integer>> res) {
-        res.add(new ArrayList<>(list));
+    private void dfs(int u) {
+        res.add(new ArrayList<>(path));
 
-        for (int i = idx; i < nums.length; i++) {
-            // deduplication
-            if (i != idx && nums[i] == nums[i - 1]) continue;
-            list.add(nums[i]);
-            dfs(nums, i + 1, list, res);
-            list.remove(list.size() - 1);
+        for (int i = u; i < nums.length; i++) {
+            if (i > u && nums[i] == nums[i - 1]) continue;
+            path.add(nums[i]);
+            dfs(i + 1);
+            path.remove(path.size() - 1);
         }
     }
 }
+/**
+ * 时间复杂度分析：不同子集的个数最多有 2^n 个，另外存储答案时还需要 O(n) 的计算量，所以时间复杂度是 O(n*2^n)。
+ */

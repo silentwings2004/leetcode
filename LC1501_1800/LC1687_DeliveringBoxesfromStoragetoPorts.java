@@ -75,6 +75,42 @@ public class LC1687_DeliveringBoxesfromStoragetoPorts {
         }
         return dp[n];
     }
+
+    // S2: DP + 单调队列优化
+    // time = O(n), space = O(n)
+    int[] s;
+    public int boxDelivering2(int[][] boxes, int portsCount, int maxBoxes, int maxWeight) {
+        int n = boxes.length;
+        s = new int[n + 2];
+        for (int i = 1; i <= n; i++) {
+            s[i] = s[i - 1];
+            if (i == 1 || boxes[i - 1][0] != boxes[i - 2][0]) s[i]++;
+        }
+
+        int[] f = new int[n + 1];
+        Deque<Integer> dq = new LinkedList<>();
+        dq.offer(0);
+        for (int i = 1, j = 1, w = 0; i <= n; i++) {
+            w += boxes[i - 1][1];
+            while (w > maxWeight || i - j + 1 > maxBoxes) {
+                w -= boxes[j - 1][1];
+                j++;
+            }
+            while (dq.peekFirst() < j - 1) dq.pollFirst(); // k最小取到j-1,注意这里是while!
+            int k = dq.peekFirst();
+            f[i] = f[k] + cost(k, i) + 1;
+            // i 只要取的比b大就可以了，这里可以取i + 1
+            while (!dq.isEmpty() && f[dq.peekLast()] >= f[i] + cost(i, i + 1) - cost(dq.peekLast(), i + 1)) {
+                dq.pollLast();
+            }
+            dq.offerLast(i);
+        }
+        return f[n];
+    }
+
+    private int cost(int l, int r) {
+        return s[r] - s[l] + (s[l] != s[l + 1] ? 0 : 1);
+    }
 }
 /**
  * 一次装得越多越好？=> 省trip的数量
@@ -124,4 +160,16 @@ public class LC1687_DeliveringBoxesfromStoragetoPorts {
  * 一个是用尽船的容量
  * 另一个则是归并忍一忍放到下一次一起装船
  * 其他方案都不是最优的
+ *
+ * 状态表示f(i)：
+ * 1. 集合：运完前i个货物的所有方案
+ * 2. 属性：最小值
+ * 状态计算：最后运的一批货物是哪些
+ * f[i] = f[k] + cost[k+1~i] => O(n^2) => TLE! 需要优化
+ * 情况1：第一个分界点不是区间左端点:分界点数+1
+ * 情况2：第一个分界点是区间左端点：分界点数
+ * 快速统计分界点用前缀和
+ * s[i]:前i个数中有多少个分界点 => (L,R] 分界点数 = SR - SL,判断L+1是否为分界点 S[L+1] == S[L]
+ * f(a) >= f(b) + cost(b+1,i) - cost(a+1,i) => 只要发现f(a) >= f(b) 那么后面也一定能保持这个关系
+ * 就一定能把前面的f(a)舍弃掉，最后队头就是一个最小值 => 维护的是个单调递增的队列 => 单调队列去优化
  */

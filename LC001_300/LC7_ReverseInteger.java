@@ -19,15 +19,30 @@ public class LC7_ReverseInteger {
      * @param x
      * @return
      */
-    // time = O(logx), space = O(1)
+    // time = O(logn) space = O(1)
     public int reverse(int x) {
-        long res = 0;
-
+        int r = 0;
         while (x != 0) {
-            res = res * 10 + x % 10;
+            if (r > 0 && r > (Integer.MAX_VALUE - x % 10) / 10) return 0;
+            if (r < 0 && r < (Integer.MIN_VALUE - x % 10) / 10) return 0;
+            r = r * 10 + x % 10;
             x /= 10;
-            if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE) return 0;
         }
-        return (int) res;
+        return r;
     }
 }
+/**
+ * 把每一位抠出来
+ *
+ * 从个位开始抠
+ * x % 10
+ * x /= 10
+ *
+ * r = 0
+ * r = r * 10 + 4 = 4
+ * r = r * 10 + 3 = 43
+ * r = r * 10 + 2 = 432
+ * ....
+ *
+ * 秦九韶算法
+ */

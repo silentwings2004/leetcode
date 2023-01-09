@@ -28,18 +28,17 @@ public class LC2256_MinimumAverageDifference {
     // time = O(n), space = O(n)
     public int minimumAverageDifference(int[] nums) {
         int n = nums.length;
-        long[] presum = new long[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + nums[i - 1];
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
 
-        long min = Long.MAX_VALUE;
-        int res = -1;
-        for (int i = 0; i < n; i++) {
-            long val1 = presum[i + 1] / (i + 1);
-            long val2 = n - i - 1 == 0 ? 0 : (presum[n] - presum[i + 1]) / (n - i - 1);
-            long diff = Math.abs(val1 - val2);
-            if (diff < min) {
-                min = diff;
-                res = i;
+        int min = Integer.MAX_VALUE, res = -1;
+        for (int i = 1; i <= n; i++) {
+            long a = s[i] ;
+            long b = s[n] - s[i];
+            long x = a / i, y = (i == n ? 0 : b / (n - i));
+            if (min > (int) Math.abs(x - y)) {
+                min = (int) Math.abs(x - y);
+                res = i - 1;
             }
         }
         return res;

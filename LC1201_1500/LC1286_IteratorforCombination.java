@@ -24,6 +24,7 @@ public class LC1286_IteratorforCombination {
      * @param characters
      * @param combinationLength
      */
+    // S1
     // time = O(k), space = O(k)
     private String cur, end;
     private boolean flag = true;

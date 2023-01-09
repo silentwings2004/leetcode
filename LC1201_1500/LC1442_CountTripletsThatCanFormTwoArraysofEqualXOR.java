@@ -61,6 +61,9 @@ public class LC1442_CountTripletsThatCanFormTwoArraysofEqualXOR {
     }
 }
 /**
+ * if a==b then a xor b =0
+ * We have to find subarrays where xor of all elements is 0.
+ *
  * x x [i x x] [j x k] x x x
  * x x [i x x j x k] x x x
  * A^A = 0

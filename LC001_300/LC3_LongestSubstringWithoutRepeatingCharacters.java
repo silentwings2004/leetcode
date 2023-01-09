@@ -9,61 +9,21 @@ public class LC3_LongestSubstringWithoutRepeatingCharacters {
      *
      * Constraints:
      *
-     * 0 <= s.length <= 5 * 104
+     * 0 <= s.length <= 5 * 10^4
      * s consists of English letters, digits, symbols and spaces.
      *
      * @param s
      * @return
      */
-    // S1: HashMap + Sliding Window
-    // time = O(n), space = O(n)
+    // time = O(n), space = O(1)
     public int lengthOfLongestSubstring(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
+        int[] cnt = new int[128];
 
-        HashMap<Character, Integer> map = new HashMap<>();
-        int max = 0, start = 0;
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (map.containsKey(c)) {
-                if (map.get(c) >= start) start = map.get(c) + 1;
-            }
-            map.put(c, i);
-            max = Math.max(max, i - start + 1);
-        }
-        return max;
-    }
-
-    // S2: int[128] 最优解！！！
-    // time = O(n), space = O(1)
-    public int lengthOfLongestSubstring2(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int[] index = new int[128]; // ASCII
-        Arrays.fill(index, -1); // O(1), 初始化为一个invalid的值
-        int max = 0, start = 0;
-
-        for (int i = 0; i < s.length(); i++) { // O(n)
-            char c = s.charAt(i);
-            if (index[c] != -1) { // 如果invalid，表明之前没遇到和记录过该char
-                if (index[c] >= start) start = index[c] + 1;
-            }
-            index[c] = i;
-            max = Math.max(max, i - start + 1);
-        }
-        return max;
-    }
-
-    // S3
-    // time = O(n), space = O(1)
-    public int lengthOfLongestSubstring3(String s) {
-        int[] count = new int[128];
         int n = s.length(), res = 0;
         for (int i = 0, j = 0; i < n; i++) {
-            count[s.charAt(i)]++;
-            while (count[s.charAt(i)] > 1) count[s.charAt(j++)]--;
+            int c = s.charAt(i);
+            cnt[c]++;
+            while (cnt[c] > 1) cnt[s.charAt(j++)]--;
             res = Math.max(res, i - j + 1);
         }
         return res;

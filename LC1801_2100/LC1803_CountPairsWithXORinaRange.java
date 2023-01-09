@@ -86,6 +86,58 @@ public class LC1803_CountPairsWithXORinaRange {
             this.count = 0;
         }
     }
+
+    // S2: Trie
+    // time = O(nlogC), space = O(nlogC)
+    class Solution {
+        TrieNode root;
+        public int countPairs(int[] nums, int low, int high) {
+            root = new TrieNode();
+            int res = 0;
+            for (int x : nums) {
+                res += query(x, high) - query(x, low - 1);
+                insert(x);
+            }
+            return res;
+        }
+
+        private int query(int x, int t) {
+            TrieNode node = root;
+            int res = 0;
+            for (int i = 31; i >= 0; i--) {
+                int a = x >> i & 1, b = t >> i & 1;
+                if (b == 1) {
+                    if (node.next[a] != null) res += node.next[a].cnt;
+                    if (node.next[1 - a] == null) return res;
+                    node = node.next[1 - a];
+                } else {
+                    if (node.next[a] == null) return res;
+                    node = node.next[a];
+                }
+            }
+            res += node.cnt;
+            return res;
+        }
+
+        private void insert(int x) {
+            TrieNode node = root;
+            for (int i = 31; i >= 0; i--) {
+                int u = x >> i & 1;
+                if (node.next[u] == null) node.next[u] = new TrieNode();
+                node = node.next[u];
+                node.cnt++;
+            }
+        }
+
+        private class TrieNode {
+            private TrieNode[] next;
+            private int cnt;
+            public TrieNode() {
+                this.next = new TrieNode[2];
+                this.cnt = 0;
+            }
+        }
+    }
 }
 /**
  * 2 * 10^4 => O(n^2) 做不了

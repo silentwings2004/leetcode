@@ -34,29 +34,33 @@ public class LC53_MaximumSubarray {
     // S2: Divide & Conquer (Segment Tree)
     // time = O(n), space = O(logn)
     public int maxSubArray2(int[] nums) {
-        int res = Integer.MIN_VALUE;
-        for (int x : nums) res = Math.max(res, x);
-        if (res < 0) return res;
-        int[] ans = build(nums, 0, nums.length - 1); // res: sum, s, ls, rs
-        return ans[1];
+        Node t = build(nums, 0, nums.length - 1);
+        return t.s;
     }
 
-    private int[] build(int[]nums, int l, int r) {
-        if (l == r) {
-            int v = Math.max(nums[l], 0);
-            return new int[]{nums[l], v, v, v};
-        }
+    private Node build(int[] nums, int l, int r) {
+        if (l == r) return new Node(nums[r], nums[r], nums[r], nums[r]);
 
-        int mid = l + (r - l) / 2;
-        int[] left = build(nums, l, mid);
-        int[] right = build(nums, mid + 1, r);
+        int mid = l + r >> 1;
+        Node L = build(nums, l, mid);
+        Node R = build(nums, mid + 1, r);
 
-        int[] res = new int[4];
-        res[0] = left[0] + right[0];
-        res[1] = Math.max(Math.max(left[1], right[1]), left[3] + right[2]); // 左，右以及横跨左右这3种情况
-        res[2] = Math.max(left[2], left[0] + right[2]); // 前缀：左前缀，左边和+右前缀
-        res[3] = Math.max(right[3], right[0] + left[3]); // 后缀：右后缀，左后缀+右边和
+        Node res = new Node(0, 0, 0, 0);
+        res.sum = L.sum + R.sum;
+        res.s = Math.max(Math.max(L.s, R.s), L.rs + R.ls);
+        res.ls = Math.max(L.ls, L.sum + R.ls);
+        res.rs = Math.max(R.rs, L.rs + R.sum);
         return res;
+    }
+
+    private class Node {
+        private int sum, s, ls, rs;
+        public Node(int sum, int s, int ls, int rs) {
+            this.sum = sum;
+            this.s = s;
+            this.ls = ls;
+            this.rs = rs;
+        }
     }
 }
 /**
@@ -69,10 +73,13 @@ public class LC53_MaximumSubarray {
  * 滚动
  *
  * S2: 分治
+ * 可以变复杂 => 支持修改操作！
+ * 先递归下左边，再递归右边
  * 1. 最大子段和
  * 2. 最大前缀
  * 3. 最大后缀
  * 4. 总和
+ * ref: AC245 => 线段树
  *
  * Kadane
  * dp[i]: 以i为结尾的subarray sum最大为多少，长度不确定，关注以i结尾

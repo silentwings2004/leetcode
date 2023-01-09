@@ -24,7 +24,7 @@ public class LC816_AmbiguousCoordinates {
      * @param s
      * @return
      */
-    // time = O(n^3), space = O(n)
+    // time = O(n^3), space = O(n^3)
     public List<String> ambiguousCoordinates(String s) {
         List<String> res = new ArrayList<>();
         // corner case
@@ -62,6 +62,34 @@ public class LC816_AmbiguousCoordinates {
 
         // case 4: all other normal cases
         for (int i = 1; i < n; i++) res.add(s.substring(0, i) + '.' + s.substring(i));
+        return res;
+    }
+
+    // S2
+    // time = O(n^3), space = O(n^3)
+    public List<String> ambiguousCoordinates2(String s) {
+        List<String> res = new ArrayList<>();
+        s = s.substring(1, s.length() - 1);
+        for (int i = 1; i < s.length(); i++) {
+            List<String> l = get(s.substring(0, i)), r = get(s.substring(i));
+            for (String x : l) {
+                for (String y : r) {
+                    res.add("(" + x + ", " + y + ")");
+                }
+            }
+        }
+        return res;
+    }
+
+    private List<String> get(String s) {
+        List<String> res = new ArrayList<>();
+        if (s.length() == 1 || s.charAt(0) != '0') res.add(s);
+        for (int i = 1; i < s.length(); i++) {
+            String a = s.substring(0, i), b = s.substring(i);
+            if (a.length() > 1 && a.charAt(0) == '0') continue;
+            if (b.charAt(b.length() - 1) == '0') continue;
+            res.add(a + '.' + b);
+        }
         return res;
     }
 }

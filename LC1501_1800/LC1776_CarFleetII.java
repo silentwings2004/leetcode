@@ -102,6 +102,35 @@ public class LC1776_CarFleetII {
         }
         return res;
     }
+
+    // S3: convex hull + stack
+    // time = O(n), space = O(n)
+    public double[] getCollisionTimes3(int[][] cars) {
+        int n = cars.length, tt = 0;
+        double[][] stk = new double[n + 1][2];
+        double[] res = new double[n];
+
+        for (int i = n - 1; i >= 0; i--) {
+            double[] p = new double[]{cars[i][0], cars[i][1]};
+            while (tt >= 2 && area(p, stk[tt], stk[tt - 1]) <= 0) tt--;
+            if (tt == 0) res[i] = -1;
+            else {
+                double[] q = stk[tt];
+                if (q[1] >= p[1]) res[i] = -1;
+                else res[i] = (q[0] - p[0]) / (p[1] - q[1]);
+            }
+            stk[++tt] = p;
+        }
+        return res;
+    }
+
+    private double cross(double x1, double y1, double x2, double y2) {
+        return x1 * y2 - x2 * y1;
+    }
+
+    private double area(double[] a, double[] b, double[] c) {
+        return cross(b[0] - a[0], b[1] - a[1], c[0] - a[0], c[1] - a[1]);
+    }
 }
 /**
  * 追击问题：t = ds/dv
@@ -127,4 +156,10 @@ public class LC1776_CarFleetII {
  * 尝试若干个区间段，一直找到上述条件满足为止，否则追的车跑的还不够
  * 假设t到t3的时候满足上述条件，v*(t2+dt) = v0*(t1-0)+v1*(t2-t1)+v2*dt+∆S
  * 相撞后，{0,v},{t,v2},{t3,v3},...后面照抄
+ *
+ * (vi - vj) / (pi - pj) => 小于0的最小数
+ * 只要求下凸包第一个碰到的点，不可能碰到凸包内部的点，只可能是碰到凸包边上的点
+ * 最优解必定在凸包上，斜率先变小再变大的过程 => 找拐点即可。
+ * Graham求凸包
+ * 斜率优化问题
  */

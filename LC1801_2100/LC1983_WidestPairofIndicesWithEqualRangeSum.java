@@ -69,4 +69,6 @@ public class LC1983_WidestPairofIndicesWithEqualRangeSum {
  * [1,1,0,1]    1  x x x  => 1 + X
  * [0,1,1,0]    0  x x x  => 0 + Y
  * X == Y (diff不变)  => 左开右闭区间 => len = i - map.get(diff)
+ * 令arr数组表示arr[i]=nums1[i]-nums2[i]，那么本题的本质就是在arr数组里找最大的subarray，
+ * 使得其区间和是0.
  */

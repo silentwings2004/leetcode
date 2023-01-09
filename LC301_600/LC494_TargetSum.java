@@ -26,23 +26,19 @@ public class LC494_TargetSum {
      */
     // time = O(n * k), space = O(n * k)  k: sum of the array
     public int findTargetSumWays(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length, sum = 0;
-        for (int x : nums) sum += x;
-        if (target > sum || target < -sum) return 0;
-
-        int[][] dp = new int[n + 1][2 * sum + 1];
-        dp[0][sum] = 1;
+        int n = nums.length;
+        int[][] f = new int[25][2010];
+        int offset = 1000;
+        f[0][offset] = 1;
 
         for (int i = 1; i <= n; i++) {
-            for (int j = -sum; j <= sum; j++) {
-                if (j - nums[i - 1] >= -sum) dp[i][j + sum] += dp[i - 1][j + sum - nums[i - 1]];
-                if (j + nums[i - 1] <= sum) dp[i][j + sum] += dp[i - 1][j + sum + nums[i - 1]];
+            for (int j = -1000; j <= 1000; j++) {
+                int a = j - nums[i - 1], b = j + nums[i - 1];
+                if (a >= -1000 && a <= 1000) f[i][j + offset] += f[i - 1][a + offset];
+                if (b >= -1000 && b <= 1000) f[i][j + offset] += f[i - 1][b + offset];
             }
         }
-        return dp[n][target + sum];
+        return f[n][target + offset];
     }
 }
 /**

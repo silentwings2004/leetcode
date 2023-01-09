@@ -27,20 +27,20 @@ public class LC446_ArithmeticSlicesIISubsequence {
     // S1: DP
     // time = O(n^2), space = O(n^2)
     public int numberOfArithmeticSlices(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
+        int n = nums.length;
+        HashMap<Long, Integer>[] f = new HashMap[n];
+        for (int i = 0; i < n; i++) f[i] = new HashMap<>();
 
-        int n = nums.length, res = 0;
-        HashMap<Long, Integer>[] dp = new HashMap[n];
-        for (int i = 0; i < n; i++) dp[i] = new HashMap<>(); // 注意：这里不能用Arrays.fill(dp, new HashMap<>());
-
+        int res = 0;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                long diff = (long)nums[i] - (long)nums[j]; // 与前面的数组成各种diff
-                // 可能选不同的j对应同一个diff，对于dp[i][diff]并不区分不同的j，最后都累加到同一个diff[i][diff]
-                // 比如1 3 5 7 7 9中，两个7对应两个不同的j，所以这里必须是dp[i][diff] += dp[j][diff] + 1
-                dp[i].put(diff, dp[i].getOrDefault(diff, 0) + dp[j].getOrDefault(diff, 0) + 1);
-                res += dp[j].getOrDefault(diff, 0); // 最后那个79不算，必须>=3，所以我们只要加dp[j][diff]即可！
+            for (int k = 0; k < i; k++) {
+                long j = (long) nums[i] - nums[k];
+                int t = 0;
+                if (f[k].containsKey(j)) {
+                    t = f[k].get(j);
+                    res += t;
+                }
+                f[i].put(j, f[i].getOrDefault(j, 0) + t + 1);
             }
         }
         return res;
@@ -118,4 +118,10 @@ public class LC446_ArithmeticSlicesIISubsequence {
  * 1. dp[i][diff] 就能确定一个等差数列
  * 2. dp[j][i] 末两项，同样可以确定一个等差数列，找到k得到末尾三项
  * 这2个方法基本思想等价
+ *
+ * dp：
+ * 状态表示：f[i,j]
+ * 集合：所有以ai结尾且公差为j的长度 >= 2的等差数列
+ * 属性：个数
+ * 状态计算：
  */

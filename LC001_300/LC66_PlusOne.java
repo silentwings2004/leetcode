@@ -19,40 +19,17 @@ public class LC66_PlusOne {
      * @param digits
      * @return
      */
-    // S1
     // time = O(n), space = O(n)
     public int[] plusOne(int[] digits) {
-        // corner case
-        if (digits == null || digits.length == 0) return new int[0];
-
-        for (int i = digits.length - 1; i >= 0; i--) {
-            if (digits[i] < 9) {
-                digits[i]++;
-                return digits; // if not all the digits are 9, then + 1 and return
-            } else digits[i] = 0;
+        int n = digits.length, t = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            t += digits[i];
+            digits[i] = t % 10;
+            t /= 10;
         }
-
-        int[] res = new int[digits.length + 1];
-        res[0] = 1; // otherwise add a new digit 1 at the beginning, and the other digits are all 0
-        return res;
-    }
-
-    // S2
-    // time = O(n), space = O(n)
-    public int[] plusOne2(int[] digits) {
-        // corner case
-        if (digits == null || digits.length == 0) return new int[0];
-
-        List<Integer> list = new LinkedList<>();
-        int carry = 1;
-        for (int i = digits.length - 1; i >= 0; i--) {
-            int sum = digits[i] + carry;
-            list.add(0, sum % 10);
-            carry = sum / 10;
-        }
-        if (carry != 0) list.add(0, carry);
-        int[] res = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) res[i] = list.get(i);
+        if (t == 0) return digits;
+        int[] res = new int[n + 1];
+        res[0] = 1;
         return res;
     }
 }

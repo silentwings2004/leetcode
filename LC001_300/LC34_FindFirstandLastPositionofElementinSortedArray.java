@@ -26,68 +26,26 @@ public class LC34_FindFirstandLastPositionofElementinSortedArray {
     // S1: BS
     // time = O(logn), space = O(1)
     public int[] searchRange(int[] nums, int target) {
-        int[] res = new int[2];
-        // corner case
-        if (nums == null || nums.length == 0) {
-            return new int[]{-1, -1}; // be careful of this corner case!!!
-        }
-
-        // step 1: find the 1st position
-        int start = 0, end = nums.length - 1;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] == target) end = mid; // 1st position, move end
-            else if (nums[mid] < target) start = mid;
-            else end = mid;
-        }
-        if (nums[start] == target) res[0] = start; // 1st pos -> check start 1st
-        else if (nums[end] == target) res[0] = end;
-        else res[0] = -1;
-
-        // step 2：find the last position
-        start = 0;
-        end = nums.length - 1;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] == target) start = mid; // last position, move start
-            else if (nums[mid] < target) start = mid;
-            else end = mid;
-        }
-        if (nums[end] == target) res[1] = end; // last pos -> check end 1st
-        else if (nums[start] == target) res[1] = start;
-        else res[1] = -1;
-
-        return res;
-    }
-
-    // S2: BS
-    // time = O(logn), space = O(1)
-    public int[] searchRange2(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return new int[]{-1, -1};
+        int[] res = new int[]{-1, -1};
+        if (nums == null || nums.length == 0) return res;
 
         int n = nums.length;
-        int[] res = new int[2];
-
-        // find first pos
-        int left = 0, right = n - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) left = mid + 1;
-            else right = mid;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] >= target) r = mid;
+            else l = mid + 1;
         }
-        res[0] = (nums[left] == target ? left : -1);
+        res[0] = nums[r] == target ? r : -1;
 
-        // find last pos
-        left = 0;
-        right = n - 1;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
-            if (nums[mid] <= target) left = mid;
-            else right = mid - 1;
+        l = 0;
+        r = n - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (nums[mid] <= target) l = mid;
+            else r = mid - 1;
         }
-        res[1] = (nums[left] == target ? left : -1);
-
+        res[1] = nums[r] == target ? r : -1;
         return res;
     }
 }

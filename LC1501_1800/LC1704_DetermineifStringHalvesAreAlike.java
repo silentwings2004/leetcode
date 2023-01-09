@@ -23,18 +23,15 @@ public class LC1704_DetermineifStringHalvesAreAlike {
      */
     // time = O(n), space = O(1)
     public boolean halvesAreAlike(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return true;
-
-        String dict = "aeiouAEIOU";
-        int first = 0, second = 0;
-        int i = 0, j = s.length() - 1;
-
-        while (i < j) {
-            char c1 = s.charAt(i++), c2 = s.charAt(j--);
-            if (dict.indexOf(c1) != -1) first++;
-            if (dict.indexOf(c2) != -1) second++;
+        String vowel = "aeiouAEIOU";
+        int a = 0, b = 0, n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (vowel.indexOf(c) != -1) {
+                if (i < n / 2) a++;
+                else b++;
+            }
         }
-        return first == second;
+        return a == b;
     }
 }

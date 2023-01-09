@@ -20,6 +20,7 @@ public class LC790_DominoandTrominoTiling {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int numTilings(int n) {
         long M = (long)(1e9 + 7);
@@ -32,6 +33,24 @@ public class LC790_DominoandTrominoTiling {
             dp[i][1] = (dp[i - 2][0] + dp[i - 1][1]) % M;
         }
         return (int) dp[n][0];
+    }
+
+    // S2: dp
+    // time = O(n), space = O(n)
+    public int numTilings2(int n) {
+        int[][] w = new int[][]{{1, 1, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}, {1, 0, 0, 0}};
+        int[][] f = new int[n + 1][4];
+        int mod = (int)(1e9 + 7);
+        f[0][0] = f[0][3] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    f[i][j] = (f[i][j] + f[i - 1][k] * w[j][k]) % mod;
+                }
+            }
+        }
+        return f[n][3];
     }
 }
 /**

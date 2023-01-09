@@ -14,7 +14,7 @@ public class LC4_MedianofTwoSortedArrays {
      * 0 <= m <= 1000
      * 0 <= n <= 1000
      * 1 <= m + n <= 2000
-     * -106 <= nums1[i], nums2[i] <= 106
+     * -106 <= nums1[i], nums2[i] <= 10^6
      *
      *
      * Follow up: The overall run time complexity should be O(log (m+n)).
@@ -23,91 +23,53 @@ public class LC4_MedianofTwoSortedArrays {
      * @return
      */
     // S1: Recursion
-    // time = O(log(m + n)), space = O(log(min(m, n)))
+    // time = O(log(m + n)), space = O(1)
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int m = nums1.length, n = nums2.length;
-        if ((m + n) % 2 == 1) return findKthElement(nums1, 0, nums2, 0, (m + n) / 2 + 1);
-        else return (findKthElement(nums1, 0, nums2, 0, (m + n) / 2) + findKthElement(nums1, 0, nums2, 0, (m + n) / 2 + 1)) / 2.0;
+        int tot = nums1.length + nums2.length;
+        if (tot % 2 == 0) {
+            int left = find(nums1, 0, nums2, 0, tot / 2);
+            int right = find(nums1, 0, nums2, 0, tot / 2 + 1);
+            return (left + right) / 2.0;
+        }
+        return find(nums1, 0, nums2, 0, tot / 2 + 1) * 1.0;
     }
 
-    private int findKthElement(int[] nums1, int a, int[] nums2, int b, int k) {
+    private int find(int[] nums1, int i, int[] nums2, int j, int k) {
         int m = nums1.length, n = nums2.length;
-        // base case
-        if (m - a > n - b) return findKthElement(nums2, b, nums1, a, k); // 看还剩下谁长，短的在前，长的在后
+        if (m - i > n - j) return find(nums2, j, nums1, i, k);
+        if (i == m) return nums2[j + k - 1];
+        if (k == 1) return Math.min(nums1[i], nums2[j]);
 
-        if (a == m) return nums2[b + k - 1]; // 第一个走到头了，到第二个里找
-        if (k == 1) return Math.min(nums1[a], nums2[b]); // 这两个里选一个最小的
-
-        int k1, k2;
-        if (a + k / 2 >= m) k1 = m - a;
-        else k1 = k / 2;
-        k2 = k - k1;
-
-        if (nums1[a + k1 - 1] < nums2[b + k2 - 1]) {
-            return findKthElement(nums1, a + k1, nums2, b, k - k1);
-        } else {
-            return findKthElement(nums1, a, nums2, b + k2, k - k2);
+        int k1 = Math.min(m - i, k / 2);
+        int k2 = k - k1;
+        if (nums1[i + k1 - 1] > nums2[j + k2 -1]) {
+            return find(nums1, i, nums2, j + k2, k - k2);
         }
+        return find(nums1, i + k1, nums2, j, k - k1);
     }
 
     // S2: 最优解！！！
     // time = O(log(min(m, n))), space = O(1)
-    public double findMedianSortedArrays2(int[] nums1, int[] nums2) {
-        if (nums1.length > nums2.length) return findMedianSortedArrays2(nums2, nums1);
+    class Solution {
+        public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+            int m = nums1.length, n = nums2.length;
+            if (m < n) return findMedianSortedArrays(nums2, nums1);
 
-        int len = nums1.length + nums2.length;
-        int cut1 = 0, cut2 = 0;
-        int cutL = 0, cutR = nums1.length;
+            int l = 0, r = n * 2;
+            while (l <= r) {
+                int mid2 = l + r >> 1;
+                int mid1 = m + n - mid2;
 
-        while (cut1 <= nums1.length) {
-            cut1 = (cutR - cutL) / 2 + cutL;
-            cut2 = len / 2 - cut1;
+                double L1 = (mid1 == 0) ? Integer.MIN_VALUE : nums1[(mid1 - 1) / 2];
+                double L2 = (mid2 == 0) ? Integer.MIN_VALUE : nums2[(mid2 - 1) / 2];
+                double R1 = (mid1 == m * 2) ? Integer.MAX_VALUE : nums1[mid1 / 2];
+                double R2 = (mid2 == n * 2) ? Integer.MAX_VALUE : nums2[mid2 / 2];
 
-            double L1 = (cut1 == 0) ? Integer.MIN_VALUE : nums1[cut1 - 1];
-            double L2 = (cut2 == 0) ? Integer.MIN_VALUE : nums2[cut2 - 1];
-            double R1 = (cut1 == nums1.length) ? Integer.MAX_VALUE : nums1[cut1];
-            double R2 = (cut2 == nums2.length) ? Integer.MAX_VALUE : nums2[cut2];
-
-            if (L1 > R2) cutR = cut1 - 1;
-            else if (L2 > R1) cutL = cut1 + 1;
-            else {
-                if (len % 2 == 0) {
-                    L1 = L1 > L2 ? L1 : L2;
-                    R1 = R1 < R2 ? R1 : R2;
-                    return (L1 + R1) / 2;
-                } else {
-                    R1 = R1 < R2 ? R1 : R2;
-                    return R1;
-                }
+                if (L1 > R2) l = mid2 + 1;
+                else if (L2 > R1) r = mid2 - 1;
+                else return (Math.max(L1, L2) + Math.min(R1, R2)) / 2;
             }
-        }
-        return -1;
-    }
-
-    // S1.2
-    // time = O(log(m + n)), space = O(log(min(m, n)))
-    public double findMedianSortedArrays12(int[] A, int[] B) {
-        int n = A.length + B.length;
-        if (n % 2 == 1) {
-            return findKth(A, 0, B, 0, n / 2 + 1);
-        } else {
-            return (findKth(A, 0, B, 0, n / 2) + findKth(A, 0, B, 0, n / 2 + 1)) / 2.0;
-        }
-    }
-
-    // find kth number of two sorted array
-    private int findKth(int[] A, int A_start, int[] B, int B_start, int k) {
-        if (A_start >= A.length) return B[B_start + k - 1];
-        if (B_start >= B.length) return A[A_start + k - 1];
-        if (k == 1) return Math.min(A[A_start], B[B_start]);
-
-        int A_key = A_start + k / 2 - 1 < A.length ? A[A_start + k / 2 - 1] : Integer.MAX_VALUE;
-        int B_key = B_start + k / 2 - 1 < B.length ? B[B_start + k / 2 - 1] : Integer.MAX_VALUE;
-
-        if (A_key < B_key) {
-            return findKth(A, A_start + k / 2, B, B_start, k - k / 2);
-        } else {
-            return findKth(A, A_start, B, B_start + k / 2, k - k / 2);
+            return -1;
         }
     }
 }

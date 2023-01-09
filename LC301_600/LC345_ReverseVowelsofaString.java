@@ -18,23 +18,16 @@ public class LC345_ReverseVowelsofaString {
      */
     // time = O(n), space = O(n)
     public String reverseVowels(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
-        String vowels = "aeiouAEIOU";
-        int left = 0, right = s.length() - 1;
+        String vowel = "aeiouAEIOU";
         char[] chars = s.toCharArray();
-        while (left < right) {
-            while (left < right && vowels.indexOf(chars[left]) == -1) left++;
-            while (left < right && vowels.indexOf(chars[right]) == -1) right--;
-            swap(chars, left++, right--);
+        int n = chars.length, i = 0, j = n - 1;
+        while (i < j) {
+            while (i < j && vowel.indexOf(chars[i]) == -1) i++;
+            while (i < j && vowel.indexOf(chars[j]) == -1) j--;
+            char c = chars[i];
+            chars[i++] = chars[j];
+            chars[j--] = c;
         }
         return String.valueOf(chars);
-    }
-
-    private void swap(char[] chars, int i, int j) {
-        char temp = chars[i];
-        chars[i] = chars[j];
-        chars[j] = temp;
     }
 }

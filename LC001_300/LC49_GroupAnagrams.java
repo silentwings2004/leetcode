@@ -49,21 +49,17 @@ public class LC49_GroupAnagrams {
         return new ArrayList<>(map.values());
     }
 
-    // S2: time = O(n * k * logk), space = O(n * k)
+    // S2
+    // time = O(n * klogk), space = O(n * k)
     public List<List<String>> groupAnagrams2(String[] strs) {
         HashMap<String, List<String>> map = new HashMap<>();
-        for (String s : strs) { // O(n)
-            char[] chars = s.toCharArray();
-            Arrays.sort(chars); // O(klogk)
-            String str = String.valueOf(chars);
-            map.putIfAbsent(str, new ArrayList<>());
-            map.get(str).add(s);
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = String.valueOf(chars);
+            map.putIfAbsent(key, new ArrayList<>());
+            map.get(key).add(str);
         }
-
-        List<List<String>> res = new ArrayList<>();
-        for (String key : map.keySet()) {
-            res.add(map.get(key));
-        }
-        return res;
+        return new ArrayList<>(map.values());
     }
 }

@@ -23,40 +23,17 @@ public class LC1749_MaximumAbsoluteSumofAnySubarray {
      * @param nums
      * @return
      */
-    // S1: max + min
     // time = O(n), space = O(1)
     public int maxAbsoluteSum(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int max = 0, min = 0;
-        int res = 0;
-
-        for (int n : nums) {
-            max = Math.max(n, max + n); // 截止到n为止的max subarray sum
-            min = Math.min(n, min + n);
-            res = Math.max(res, Math.abs(max));
-            res = Math.max(res, Math.abs(min));
-        }
-        return res;
-    }
-
-    // S2: Prefix
-    // time = O(n), space = O(1)
-    public int maxAbsoluteSum2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int prefix_max = 0, prefix_min = 0;
-        int prefix = 0;
-        int res = 0;
-
+        int minv = 0, maxv = 0, max = Integer.MIN_VALUE, min = Integer.MAX_VALUE, sum = 0;
         for (int x : nums) {
-            prefix += x;
-            prefix_max = Math.max(prefix_max, prefix);
-            prefix_min = Math.min(prefix_min, prefix);
+            sum += x;
+            max = Math.max(max, Math.max(sum, sum - minv));
+            min = Math.min(min, Math.min(sum, sum - maxv));
+            maxv = Math.max(maxv, sum);
+            minv = Math.min(minv, sum);
         }
-        return prefix_max - prefix_min;
+        return Math.max(Math.abs(max), Math.abs(min));
     }
 }
 

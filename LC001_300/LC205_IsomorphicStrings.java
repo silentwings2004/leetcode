@@ -44,15 +44,16 @@ public class LC205_IsomorphicStrings {
     // S2
     // time = O(n), space = O(1)
     public boolean isIsomorphic2(String s, String t) {
-        if (s.length() != t.length()) return false;
+        int n = s.length(), m = t.length();
+        if (n != m) return false;
 
-        int[] schar = new int[256];
-        int[] tchar = new int[256];
+        char[] f = new char[256];
+        char[] g = new char[256];
 
-        int n = s.length();
         for (int i = 0; i < n; i++) {
-            if (schar[s.charAt(i)] != tchar[t.charAt(i)]) return false;
-            else schar[s.charAt(i)] = tchar[t.charAt(i)] = t.charAt(i);
+            char a = s.charAt(i), b = t.charAt(i);
+            if (f[a] != g[b]) return false;
+            f[a] = g[b] = b;
         }
         return true;
     }

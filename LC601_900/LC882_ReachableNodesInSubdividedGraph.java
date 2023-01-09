@@ -83,6 +83,76 @@ public class LC882_ReachableNodesInSubdividedGraph {
         }
         return count;
     }
+
+    // S2: spfa
+    final int N = 3010, M = 20010, INF = 0x3f3f3f3f;
+    int[] h, e, ne, w;
+    int[] dist, q;
+    boolean[] st;
+    int idx;
+    public int reachableNodes2(int[][] edges, int maxMoves, int n) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        w = new int[M];
+        dist = new int[N];
+        q = new int[N];
+        st = new boolean[N];
+        Arrays.fill(h, -1);
+        idx = 0;
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            add(a, b, c + 1);
+            add(b, a, c + 1);
+        }
+
+        spfa();
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (dist[i] <= maxMoves) res++;
+        }
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            int x = Math.max(0, maxMoves - dist[a]), y = Math.max(0, maxMoves - dist[b]);
+            res += Math.min(x + y, c);
+        }
+        return res;
+    }
+
+    private void spfa() {
+        Arrays.fill(dist, INF);
+        dist[0] = 0;
+        int hh = 0, tt = 1;
+        q[0] = 0;
+
+        while (hh != tt) {
+            int t = q[hh++];
+            if (hh == N) hh = 0;
+            st[t] = false;
+
+            for (int i = h[t]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] > dist[t] + w[i]) {
+                    dist[j] = dist[t] + w[i];
+                    if (!st[j]) {
+                        q[tt++] = j;
+                        if (tt == N) tt = 0;
+                        st[j] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void add(int a, int b, int c) {
+        e[idx] = b;
+        w[idx] = c;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * Dijkstra = bfs + pq
@@ -95,4 +165,11 @@ public class LC882_ReachableNodesInSubdividedGraph {
  * 比较直观的方法：0 ~ maxMoves
  * x + y <= cnt
  * 查看每条边，maxMoves - dist[0] ...  maxMoves - dist[1]... 再加起来就可以知道可以访问哪些点
+ *
+ * 将点分成2大类，大点和小点
+ * 大点：单源最短路 -> dijkstra or spfa  dist[a] <= max
+ * 小点：要么经过a,要么经过b
+ * 如果经过a的话，x + dist[a] <= max => x <= max - dist[a]
+ * 如果经过b的话，y + dist[b] <= max => y <= max - dist[b]
+ * 取x与y的交集即可 => min(x + y, c - 1}
  */

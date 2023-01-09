@@ -35,7 +35,7 @@ public class LC2131_LongestPalindromebyConcatenatingTwoLetterWords {
             if (!map.containsKey(word)) continue;
             if (word.charAt(0) == word.charAt(1)) { // xx
                 int count = map.get(word);
-                res += count / 2 * 2 * 2;
+                res += count / 2 * 2 * 2; // 一定要先求出一共有多少"对"，即count / 2!!!
                 if (count % 2 == 1) flag = true; // 有落单的xx,标记下，因为只能使用1次放在正中间！
                 map.remove(word);
             } else { // ab and ba
@@ -69,14 +69,14 @@ public class LC2131_LongestPalindromebyConcatenatingTwoLetterWords {
             if (str.equals(str2)) count3.put(str, count3.getOrDefault(str, 0) + 1);
             else {
                 String key = str.compareTo(str2) < 0 ? str : str2;
-                if (key.equals(str)) count1.put(key, count1.getOrDefault(key, 0) + 1);
-                else count2.put(key, count1.getOrDefault(key, 0) + 1);
+                if (key.equals(str)) count1.put(key, count1.getOrDefault(key, 0) + 1); // ab的个数
+                else count2.put(key, count2.getOrDefault(key, 0) + 1); // ba的个数
             }
         }
 
         int res = 0;
         for (String key : count1.keySet()) {
-            int a = count1.get(key), b = count2.get(key);
+            int a = count1.get(key), b = count2.getOrDefault(key, 0);
             int k = Math.min(a, b);
             res += k * 2 * 2;
         }

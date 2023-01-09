@@ -61,28 +61,19 @@ public class LC1971_FindifPathExistsinGraph {
 
     // S2: Union Find
     // time = O(nlogn), space = O(n)
-    private int[] parent;
-    public boolean validPath2(int n, int[][] edges, int start, int end) {
-        parent = new int[n];
-        for (int i = 0; i < n; i++) parent[i] = i;
-
-        for (int[] edge : edges) {
-            if (findParent(edge[0]) != findParent(edge[1])) {
-                union(edge[0], edge[1]);
-            }
+    int[] p;
+    public boolean validPath2(int n, int[][] edges, int source, int destination) {
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            if (find(a) != find(b)) p[find(a)] = find(b);
         }
-        return findParent(start) == findParent(end);
+        return find(source) == find(destination);
     }
 
-    private int findParent(int x) {
-        if (parent[x] != x) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }

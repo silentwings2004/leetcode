@@ -18,24 +18,42 @@ public class LC78_Subsets {
      * @param nums
      * @return
      */
+    // S1: dfs
     // time = O(n * 2^n), space = O(n)
+    List<List<Integer>> res;
+    List<Integer> path;
+    int[] nums;
     public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        // corner case
-        if (nums == null || nums.length == 0) return res;
-
-        dfs(nums, 0, new ArrayList<>(), res);
+        this.nums = nums;
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        dfs(0);
         return res;
     }
 
-    private void dfs(int[] nums, int idx, List<Integer> list, List<List<Integer>> res) {
-        res.add(new ArrayList<>(list)); // O(n)
+    private void dfs(int u) {
+        res.add(new ArrayList<>(path));
 
-        for (int i = idx; i < nums.length; i++) { // O(n)
-            list.add(nums[i]);
-            dfs(nums, i + 1, list, res);
-            list.remove(list.size() - 1);
+        for (int i = u; i < nums.length; i++) {
+            path.add(nums[i]);
+            dfs(i + 1);
+            path.remove(path.size() - 1);
         }
+    }
+
+    // S2: state compression
+    // time = O(2^n * n), space = O(n)
+    public List<List<Integer>> subsets2(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        for (int state = 0; state < (1 << n); state++) {
+            List<Integer> path = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                if ((state >> i & 1) == 1) path.add(nums[i]);
+            }
+            res.add(path);
+        }
+        return res;
     }
 }
 

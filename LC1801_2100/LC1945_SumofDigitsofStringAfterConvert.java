@@ -28,7 +28,7 @@ public class LC1945_SumofDigitsofStringAfterConvert {
      * @return
      */
     // S1
-    // time = O(k * n), space = O(1)
+    // time = O(k * n), space = O(n)
     public int getLucky(String s, int k) {
         StringBuilder sb = new StringBuilder();
         for (char c : s.toCharArray()) sb.append(c - 'a' + 1);

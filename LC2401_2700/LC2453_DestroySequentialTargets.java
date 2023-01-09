@@ -34,14 +34,14 @@ public class LC2453_DestroySequentialTargets {
     public int destroyTargets(int[] nums, int space) {
         HashMap<Integer, Integer> map = new HashMap<>();
         Arrays.sort(nums);
-        int n = nums.length, res = -1, s = 0;
+        int n = nums.length, s = 0, res = -1;
         for (int i = n - 1; i >= 0; i--) {
             int r = nums[i] % space;
-            if (map.getOrDefault(r, 0) >= s) {
-                s = map.getOrDefault(r, 0);
+            map.put(r, map.getOrDefault(r, 0) + 1);
+            if (map.get(r) >= s) {
+                s = map.get(r);
                 res = nums[i];
             }
-            map.put(r, map.getOrDefault(r, 0) + 1);
         }
         return res;
     }

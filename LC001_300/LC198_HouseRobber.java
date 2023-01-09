@@ -37,34 +37,19 @@ public class LC198_HouseRobber {
         return dp[n];
     }
 
-    // S1.2: rolling matrix
+    // S2: rolling matrix
     // time = O(n), space = O(1)
     public int rob2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-        if (nums.length == 1) return nums[0];
-
         int n = nums.length;
-        int old = 0, now = nums[0];
+        int[][] f = new int[2][2];
+        f[0][0] = 0;
+        f[0][1] = nums[0];
 
-        for (int i = 2; i <= n; i++) {
-            int dp = Math.max(now, old + nums[i - 1]);
-            old = now;
-            now = dp;
+        for (int i = 1; i < n; i++) {
+            f[i & 1][0] = Math.max(f[i - 1 & 1][0], f[i - 1 & 1][1]);
+            f[i & 1][1] = f[i - 1 & 1][0] + nums[i];
         }
-        return now;
-    }
-
-    // S2: dp
-    // time = O(n), space = O(1)
-    public int rob3(int[] nums) {
-        int preNo = 0, preYes = 0;
-        for (int i = 0; i < nums.length; i++) {
-            int temp = preNo;
-            preNo = Math.max(preNo, preYes);
-            preYes = temp + nums[i];
-        }
-        return Math.max(preNo, preYes);
+        return Math.max(f[n - 1 & 1][0], f[n - 1 & 1][1]);
     }
 
     // S3: dp

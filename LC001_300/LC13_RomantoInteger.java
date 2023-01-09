@@ -47,3 +47,7 @@ public class LC13_RomantoInteger {
         return res;
     }
 }
+/**
+ * 特判下前面的字母比后面的要小 => 减去
+ * 如果>= => 直接加上去即可
+ */

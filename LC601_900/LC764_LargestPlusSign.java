@@ -74,4 +74,59 @@ public class LC764_LargestPlusSign {
         }
         return res;
     }
+
+    // S3
+    // time = O(n^2), space = O(n^2)
+    int[][] f;
+    boolean[][] g;
+    public int orderOfLargestPlusSign3(int n, int[][] mines) {
+        f = new int[n][n];
+        g = new boolean[n][n];
+        for (int i = 0; i < n; i++) Arrays.fill(g[i], true);
+        for (int[] x : mines) g[x[0]][x[1]] = false;
+
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int j = 0; j < n; j++) {
+                if (g[i][j]) s++;
+                else s = 0;
+                f[i][j] = s;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int j = n - 1; j >= 0; j--) {
+                if (g[i][j]) s++;
+                else s = 0;
+                f[i][j] = Math.min(f[i][j], s);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int j = 0; j < n; j++) {
+                if (g[j][i]) s++;
+                else s = 0;
+                f[j][i] = Math.min(f[j][i], s);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int j = n - 1; j >= 0; j--) {
+                if (g[j][i]) s++;
+                else s = 0;
+                f[j][i] = Math.min(f[j][i], s);
+            }
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                res = Math.max(res, f[i][j]);
+            }
+        }
+        return res;
+    }
 }

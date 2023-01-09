@@ -19,57 +19,17 @@ public class LC86_PartitionList {
      * @param x
      * @return
      */
-    // S1
     // time = O(n), space = O(1)
     public ListNode partition(ListNode head, int x) {
-        // corner case
-        if (head == null || head.next == null) return head;
+        ListNode h1 = new ListNode(-1), p1 = h1;
+        ListNode h2 = new ListNode(-1), p2 = h2;
 
-        ListNode smallHead = new ListNode(0);
-        ListNode bigHead = new ListNode(0);
-        ListNode small = smallHead;
-        ListNode big = bigHead;
-
-        ListNode cur = head;
-        while (cur != null) {
-            if (cur.val < x) {
-                small.next = cur;
-                small = small.next;
-            } else {
-                big.next = cur;
-                big = big.next;
-            }
-            cur = cur.next;
+        for (ListNode p = head; p != null; p = p.next) {
+            if (p.val < x) p1 = p1.next = p;
+            else p2 = p2.next = p;
         }
-        small.next = bigHead.next;
-        big.next = null;
-        return smallHead.next;
-    }
-
-    // S2
-    // time = O(n), space = O(1)
-    public ListNode partition2(ListNode head, int x) {
-        // corner case
-        if (head == null || head.next == null) return head;
-
-        ListNode h1 = new ListNode(0);
-        ListNode h2 = new ListNode(0);
-        ListNode p = h1, q = h2;
-        ListNode cur = head;
-
-        while (cur != null) {
-            if (cur.val < x) {
-                p.next = cur;
-                p = p.next;
-            } else {
-                q.next = cur;
-                q = q.next;
-            }
-            cur = cur.next;
-        }
-
-        p.next = h2.next;
-        q.next = null;
+        p1.next = h2.next;
+        p2.next = null;
         return h1.next;
     }
 }

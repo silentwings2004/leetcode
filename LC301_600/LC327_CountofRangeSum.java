@@ -94,4 +94,10 @@ public class LC327_CountofRangeSum {
  * A: [x x x x x || x x x x x]
  *         i          j
  * B: [x x x x x]  C: [x x x x x]
+ *
+ * S2:
+ * 离散化 + 树状数组
+ * lower <= Si - Sj <= upper
+ * Si - upper <= Sj <= Si - upper
+ * f(1~Si-lower) - f(1~Si-upper-1)
  */

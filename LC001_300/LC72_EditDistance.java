@@ -44,11 +44,30 @@ public class LC72_EditDistance {
         }
         return dp[m][n];
     }
+
+    // time = O(n * m), space = O(n * m)
+    public int minDistance2(String a, String b) {
+        int n = a.length(), m = b.length();
+        a = "#" + a;
+        b = "#" + b;
+
+        int[][] f = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) f[i][0] = i;
+        for (int i = 0; i <= m; i++) f[0][i] = i;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                f[i][j] = Math.min(f[i - 1][j], f[i][j - 1]) + 1;
+                int t = a.charAt(i) != b.charAt(j) ? 1 : 0;
+                f[i][j] = Math.min(f[i][j], f[i - 1][j - 1] + t);
+            }
+        }
+        return f[n][m];
+    }
 }
 /**
  * 状态表示：f(i,j)
  * 集合：将A[1~i]变成B[1~j]的所有按顺序操作的方案
  * 属性：min
- *
  * 状态计算：f(i,j)
  */

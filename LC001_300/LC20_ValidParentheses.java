@@ -24,13 +24,13 @@ public class LC20_ValidParentheses {
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public boolean isValid(String s) {
         // corner case
         if (s == null || s.length() == 0) return false;
 
         Stack<Character> stack = new Stack<>();
-
         for (char c : s.toCharArray()) {
             if (c == '(') stack.push(')'); // trick: 如果是左括号，则压入其对应的右括号以便下面直接比较是否相等来判断！
             else if (c == '[') stack.push(']');
@@ -40,5 +40,20 @@ public class LC20_ValidParentheses {
             }
         }
         return stack.isEmpty(); // 注意最后要check stack是否为空！！！
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public boolean isValid2(String s) {
+        Stack<Character> stk = new Stack<>();
+
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '[' || c == '{') stk.push(c);
+            else {
+                if (!stk.isEmpty() && Math.abs(stk.peek() - c) <= 2) stk.pop(); // 匹配的ASCII不超过2
+                else return false;
+            }
+        }
+        return stk.isEmpty();
     }
 }

@@ -19,17 +19,27 @@ public class LC80_RemoveDuplicatesfromSortedArrayII {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int removeDuplicates(int[] nums) {
-        // corner case
-        if (nums == null) return 0;
-        if (nums.length <= 2) return nums.length;
-
-        int n = nums.length, j = 1;
-        for (int i = 2; i < n; i++) {
-            if (nums[i] == nums[j] && nums[i] == nums[j - 1]) continue;
-            nums[++j] = nums[i];
+        int k = 0;
+        for (int x : nums) {
+            if (k < 2 || nums[k - 1] != x || nums[k - 2] != x) nums[k++] = x;
         }
-        return j + 1;
+        return k;
+    }
+
+    // S2: Two Pointers
+    // time = O(n), space = O(1)
+    public int removeDuplicates2(int[] nums) {
+        int n = nums.length, k = 0;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && nums[j] == nums[i]) j++;
+            int cnt = j - i;
+            for (int t = 0; t < Math.min(cnt, 2); t++) nums[k++] = nums[i];
+            i = j - 1;
+        }
+        return k;
     }
 }

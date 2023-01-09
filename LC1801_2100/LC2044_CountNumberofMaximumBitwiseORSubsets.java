@@ -26,15 +26,13 @@ public class LC2044_CountNumberofMaximumBitwiseORSubsets {
         // corner case
         if (nums == null || nums.length == 0) return 0;
 
-        int n = nums.length, M = (1 << n);
+        int n = nums.length, M = (1 << 17);
         int[] dp = new int[M + 1]; // dp[val]: how many subsets whose bitwise or == val
-        dp[0] = 1;
+        dp[0] = 1; // 构造0本身的方案数 = 1
 
         for (int x : nums) {
             int[] dp_old = dp.clone();
-//            Arrays.fill(dp, 0); // 不清零就直接继承 -> 根据无后效性，过去推将来，一定要每轮给当前的dp备份后清零！！！
             for (int val = 0; val < M; val++) {
-//                dp[val] += dp_old[val];
                 dp[val | x] += dp_old[val];
             }
         }

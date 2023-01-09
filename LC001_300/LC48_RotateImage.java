@@ -49,23 +49,22 @@ public class LC48_RotateImage {
         }
     }
     // S2: transpose + exchange
-    // time = O(n^2), space = O(1)
+    // time = O(m * n), space = O(1)
     public void rotate2(int[][] matrix) {
-        int n = matrix.length;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) { // 转置一半的点，在这里必须要让 j < i
-                int temp = matrix[i][j];
+        int m = matrix.length, n = matrix[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < i; j++) {
+                int t = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
-
-                matrix[j][i] = temp;
+                matrix[j][i] = t;
             }
         }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n / 2; j++) { // 同样对换一半的点， j < n/2
-                int temp = matrix[i][j];
-                matrix[i][j] = matrix[i][n - 1 - j];
-                matrix[i][n - 1 - j] = temp;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0, k = n - 1; j < k; j++, k--) {
+                int t = matrix[i][j];
+                matrix[i][j] = matrix[i][k];
+                matrix[i][k] = t;
             }
         }
     }
@@ -81,5 +80,8 @@ public class LC48_RotateImage {
  * follow-up:
  * if asked for anti-clockwise, then for transpose:
  * for (int j = 0; j <= n - 1 - i; j++) swap(matrix[i][j], matrix[n - 1 - j][n - 1 - i])
+ *
+ * 第一步：先沿对角线翻转
+ * 第二步：再沿中轴线翻转
  */
 

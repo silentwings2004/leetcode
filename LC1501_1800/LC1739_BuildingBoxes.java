@@ -19,20 +19,19 @@ public class LC1739_BuildingBoxes {
      *
      * Constraints:
      *
-     * 1 <= n <= 109
+     * 1 <= n <= 10^9
      * @param n
      * @return
      */
     // time = O(logn * sqrt(n)), space = O(1)
     public int minimumBoxes(int n) {  // O(logn)
-        int left = 1, right = (int)1e9;
-
-        while (left <= right) { // O(logn)
-            int mid = left + (right - left) / 2;
-            if (cal(mid) >= n) right = mid - 1; // O(d) = O(sqrt(n))
-            else left = mid + 1;
+        int l = 1, r = (int) 1e9;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (cal(mid) >= n) r = mid;
+            else l = mid + 1;
         }
-        return left;
+        return r;
     }
 
     // 等腰三角形 (1 + d) * d / 2 <= area
@@ -49,7 +48,7 @@ public class LC1739_BuildingBoxes {
             a[i] = d - i; // a: 4, 3, 2, 1
         }
         for (int i = 0; i < diff; i++) { // 加上零头
-            a[i] += 1;
+            a[i]++;
         }
 
         long total = 0, sufsum = 0;
@@ -58,6 +57,25 @@ public class LC1739_BuildingBoxes {
             total += sufsum;
         }
         return total;
+    }
+
+    // S2: Math
+    // time = O(n), space = O(1)
+    public int minimumBoxes2(int n) {
+        int sum = 0, k = 1;
+        while (sum + k * (k + 1) / 2 <= n) {
+            sum += k * (k + 1) / 2;
+            k++;
+        }
+
+        int res = k * (k - 1) / 2;
+        k = 1;
+        while (sum < n) {
+            sum += k;
+            res++;
+            k++;
+        }
+        return res;
     }
 }
 
@@ -70,4 +88,6 @@ public class LC1739_BuildingBoxes {
  *    => 等腰三角形
  *    => 尽量在最底层构建一个最大的等腰三角形 => 尽量朝等腰三角形去发展 => 求底边数字是多少
  *    n => area = 13 => d = 4 + 3 => n'   n'太大 -> 缩小底边 => n' >= n => 典型二分搜值
+ *
+ *  任意2个相邻格子之间的高度差最大为1
  */

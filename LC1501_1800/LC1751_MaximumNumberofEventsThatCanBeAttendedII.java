@@ -25,39 +25,30 @@ public class LC1751_MaximumNumberofEventsThatCanBeAttendedII {
      * @param k
      * @return
      */
-    // time = O(n * (k + logn)), space = O(n * k)
+    // time = O(n * k * logn), space = O(n * k)
     public int maxValue(int[][] events, int k) {
-        // corner case
-        if (events == null || events.length == 0 || events[0] == null || events[0].length == 0) return 0;
-
-        Arrays.sort(events, (o1, o2) -> o1[1] - o2[1]); // O(nlogn)
-
         int n = events.length;
-        int[][] dp = new int[n + 1][k + 1];
+        int[][] f = new int[n + 1][k + 1];
+        Arrays.sort(events, (o1, o2) -> o1[1] - o2[1]);
 
-        int[] endTimes = new int[n];
-        for (int i = 0; i < n; i++) endTimes[i] = events[i][1]; // O(n)
-
-        int res = 0;
-        for (int i = 1; i <= n; i++) {  // O(n * k)
-            int idx = lowerBound(endTimes, events[i - 1][0]); // dp_idx = idx + 1   O(logn)
-            for (int t = 1; t <= k; t++) {
-                // compute dp[i][t]
-                dp[i][t] = Math.max(dp[i - 1][t], dp[idx + 1][t - 1] + events[i - 1][2]);
-                res = Math.max(res, dp[i][t]);
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= k; j++) {
+                f[i][j] = f[i - 1][j];
+                int idx = lowerBound(events, events[i - 1][0]);
+                f[i][j] = Math.max(f[i][j], f[idx + 1][j - 1] + events[i - 1][2]);
             }
         }
-        return res;
+        return f[n][k];
     }
 
-    private int lowerBound(int[] endTimes, int t) { // O(logn)
-        int left = 0, right = endTimes.length - 1;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
-            if (endTimes[mid] < t) left = mid; // end day is inclusive: 不能同时参加一个开始日期与另一个结束日期相同的两个会议
-            else right = mid - 1;
+    private int lowerBound(int[][] q, int t) {
+        int l = 0, r = q.length - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (q[mid][1] < t) l = mid;
+            else r = mid - 1;
         }
-        return endTimes[left] < t ? left : left - 1;
+        return q[r][1] < t ? r : r - 1;
     }
 }
 /**

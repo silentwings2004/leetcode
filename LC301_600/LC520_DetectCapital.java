@@ -21,12 +21,15 @@ public class LC520_DetectCapital {
      */
     // time = O(n), space = O(1)
     public boolean detectCapitalUse(String word) {
-        int n = word.length(), count = 0;
-        for (char c : word.toCharArray()) {
-            if (Character.isUpperCase(c)) count++;
+        int n = word.length(), cnt = 0;
+        boolean flag = false;
+        for (int i = 0; i < n; i++) {
+            char c = word.charAt(i);
+            if (Character.isUpperCase(c)) {
+                cnt++;
+                if (i == 0) flag = true;
+            }
         }
-        if (count == n || count == 0) return true;
-        if (count == 1 && Character.isUpperCase(word.charAt(0))) return true;
-        return false;
+        return cnt == 0 || cnt == n || cnt == 1 && flag;
     }
 }

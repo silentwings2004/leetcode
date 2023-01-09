@@ -16,7 +16,7 @@ public class LC1524_NumberofSubarraysWithOddSum {
      * @param arr
      * @return
      */
-    // time = O(1), space = O(1)
+    // time = O(n), space = O(1)
     public int numOfSubarrays(int[] arr) {
         int presum = 0;
         long odd = 0, even = 1, res = 0; // 注意，刚开始sum = 0, even = 1!

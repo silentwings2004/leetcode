@@ -32,6 +32,7 @@ public class LC2354_NumberofExcellentPairs {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public long countExcellentPairs(int[] nums, int k) {
         HashSet<Integer> set = new HashSet<>();
@@ -47,6 +48,30 @@ public class LC2354_NumberofExcellentPairs {
             for (int j = 0; j < 30; j++) {
                 if (i + j >= k) res += (long) cnt[i] * cnt[j];
             }
+        }
+        return res;
+    }
+
+    // S2: Two Pointers
+    // time = O(nlogn), space = O(n)
+    public long countExcellentPairs2(int[] nums, int k) {
+        HashSet<Integer> set = new HashSet<>();
+        for (int x : nums) set.add(x);
+        int n = set.size(), idx = 0;
+        int[] arr = new int[n];
+        for (int x : set) arr[idx++] = Integer.bitCount(x);
+        Arrays.sort(arr);
+
+        long res = 0;
+        for (int i = 0, j = n - 1; i < n; i++) {
+            while (j >= 0 && arr[i] + arr[j] >= k) j--; // 注意：这里是 j >= 0
+            if (j >= i) res += n - j - 1;
+            else res += n - i - 1;
+        }
+        res *= 2;
+
+        for (int x : arr) {
+            if (x * 2 >= k) res++;
         }
         return res;
     }

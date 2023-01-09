@@ -30,20 +30,21 @@ public class LC799_ChampagneTower {
      * @param query_glass
      * @return
      */
-    // time = O(r^2), space = O(r^2)   r: 杯子的层数
+    // time = O(n^2), space = O(n^2)
     public double champagneTower(int poured, int query_row, int query_glass) {
-        double[][] dp = new double[102][102];
-        dp[0][0] = (double) poured;
+        int m = query_row, n = query_glass;
+        double[][] f = new double[m + 1][m + 1];
+        f[0][0] = poured;
 
-        for (int i = 0; i <= query_row; i++) {
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
-                double x = (dp[i][j] - 1.0) / 2.0;
-                if (x > 0) {
-                    dp[i + 1][j] += x;
-                    dp[i + 1][j + 1] += x;
+                if (f[i][j] > 1) {
+                    double x = (f[i][j] - 1) / 2;
+                    f[i + 1][j] += x;
+                    f[i + 1][j + 1] += x;
                 }
             }
         }
-        return Math.min(1.0, dp[query_row][query_glass]);
+        return Math.min(1.0, f[m][n]);
     }
 }

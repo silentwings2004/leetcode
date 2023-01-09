@@ -28,19 +28,24 @@ public class LC1764_FormArraybyConcatenatingSubarraysofAnotherArray {
      * @param nums
      * @return
      */
+    // time = O(m * n), space = O(1)
     public boolean canChoose(int[][] groups, int[] nums) {
-        int i = 0, j = 0;
-        while (i < groups.length && groups[i].length + j <= nums.length) {
-            if (findSub(nums, groups[i], j)) j += groups[i++].length - 1;
-            j++;
+        int m = groups.length, n = nums.length;
+        for (int i = 0, k = 0; i < n; i++) {
+            if (check(groups[k], nums, i)) {
+                i += groups[k].length - 1;
+                k++;
+                if (k == m) return true;
+            }
         }
-        return i == groups.length;
+        return false;
     }
 
-    private boolean findSub(int[] nums, int[] group, int start) {
-        for (int i = 0; i < group.length; i++) {
-            if (group[i] != nums[i + start]) return false;
+    private boolean check(int[] g, int [] nums, int i) {
+        int m = g.length, n = nums.length, k = 0;
+        for (int j = i; k < m && j < n; j++, k++) {
+            if (g[k] != nums[j]) return false;
         }
-        return true;
+        return k == m;
     }
 }

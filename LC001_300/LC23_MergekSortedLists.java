@@ -23,29 +23,22 @@ public class LC23_MergekSortedLists {
      */
     // time = O(nlogk), space = O(k)  k: the number of linked lists, n: total number of nodes
     public ListNode mergeKLists(ListNode[] lists) {
-        // corner case
         if (lists == null || lists.length == 0) return null;
-
         return partition(lists, 0, lists.length - 1);
     }
 
-    private ListNode partition(ListNode[] lists, int start, int end) {
-        if (start == end) return lists[start];
-        int mid = start + (end - start) / 2;
-        ListNode left = partition(lists, start, mid);
-        ListNode right = partition(lists, mid + 1, end);
-        return merge(left, right);
+    private ListNode partition(ListNode[] h, int l, int r) {
+        if (l >= r) return h[r];
+
+        int mid = l + r >> 1;
+        ListNode h1 = partition(h, l, mid);
+        ListNode h2 = partition(h, mid + 1, r);
+
+        return merge(h1, h2);
     }
 
-    // LC21: Merge two sorted lists
-    private ListNode merge(ListNode h1, ListNode h2) { // O(n) n: total number of nnodes
-        // corner case
-        if (h1 == null) return h2;
-        if (h2 == null) return h1;
-
-        ListNode dummy = new ListNode(0);
-        ListNode cur = dummy;
-
+    private ListNode merge(ListNode h1, ListNode h2) {
+        ListNode dummy = new ListNode(-1), cur = dummy;
         while (h1 != null && h2 != null) {
             if (h1.val < h2.val) {
                 cur.next = h1;
@@ -56,20 +49,28 @@ public class LC23_MergekSortedLists {
             }
             cur = cur.next;
         }
-
         if (h1 != null) cur.next = h1;
         if (h2 != null) cur.next = h2;
         return dummy.next;
     }
 
-    /**
-     * Definition for singly-linked list.
-     * public class ListNode {
-     *     int val;
-     *     ListNode next;
-     *     ListNode() {}
-     *     ListNode(int val) { this.val = val; }
-     *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-     * }
-     */
+    // S2: heap
+    // time = O(nlogk), space = O(k) n: total number of nodes
+    public ListNode mergeKLists2(ListNode[] lists) {
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((o1, o2) -> o1.val - o2.val);
+        for (ListNode x : lists) {
+            if (x != null) pq.offer(x);
+        }
+
+        ListNode dummy = new ListNode(-1), cur = dummy;
+        while (!pq.isEmpty()) {
+            ListNode t = pq.poll();
+            cur = cur.next = t;
+            if (t.next != null) pq.offer(t.next);
+        }
+        return dummy.next;
+    }
 }
+/**
+ * 用堆来找最小值 O(nk) -> O(nlogk)
+ */

@@ -16,6 +16,7 @@ public class LC876_MiddleoftheLinkedList {
      * @param head
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public ListNode middleNode(ListNode head) {
         ListNode cur = head;
@@ -29,5 +30,16 @@ public class LC876_MiddleoftheLinkedList {
         cur = head;
         while (k-- > 0) cur = cur.next;
         return cur;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public ListNode middleNode2(ListNode head) {
+        ListNode p = head, q = head;
+        while (q != null && q.next != null) {
+            p = p.next;
+            q = q.next.next;
+        }
+        return p;
     }
 }

@@ -104,27 +104,28 @@ public class LC68_TextJustification {
         List<String> res = new ArrayList<>();
         int n = words.length;
         for (int i = 0; i < n; i++) {
-            int j = i + 1, len = words[i].length();
-            while (j < n && len + 1 + words[j].length() <= maxWidth) {
+            // 当前这一行可以放哪些单词
+            int j = i + 1;
+            int len = words[i].length();
+            while (j < n && len + 1 + words[j].length() <= maxWidth) {// 当前单词 + 空格 + 下个单词
                 len += 1 + words[j++].length();
             }
-
+            // 可以放 i ~ j - 1
             StringBuilder sb = new StringBuilder();
-            if (j == n || j == i + 1) { // 左对齐
+            if (j == n || j == i + 1) { // 最后一行 or 改行只放一个单词 => 左对齐,所有单词用空格隔开即可
                 sb.append(words[i]);
-                for (int k = i + 1; k < j; k++) {
-                    sb.append(' ').append(words[k]);
-                }
-                while (sb.length() < maxWidth) sb.append(' ');
+                for (int k = i + 1; k < j; k++) sb.append(' ').append(words[k]);
+                while (sb.length() < maxWidth) sb.append(' '); // 长度仍然不足，要在后面继续补上空格
             } else { // 左右对齐
-                int cnt = j - i - 1, r = maxWidth - len + cnt;
+                int cnt = j - i - 1; // 一共有j-i个单词，所以就有j-i-1个空隙
+                int r = maxWidth - len + cnt; // len包含了j-i个单词+cnt个空隙，所以后面要把cnt个空隙加回来
                 sb.append(words[i]);
                 int k = 0;
-                while (k < r % cnt) { // 处理空格多1的情况
+                while (k < r % cnt) {
                     sb.append(" ".repeat(r / cnt + 1)).append(words[i + k + 1]);
                     k++;
                 }
-                while (k < cnt) { // 处理不多一个空格的情况
+                while (k < cnt) {
                     sb.append(" ".repeat(r / cnt)).append(words[i + k + 1]);
                     k++;
                 }

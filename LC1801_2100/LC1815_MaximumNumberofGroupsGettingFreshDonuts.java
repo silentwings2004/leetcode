@@ -104,6 +104,58 @@ public class LC1815_MaximumNumberofGroupsGettingFreshDonuts {
         map.put(state, res + bonus);
         return res + bonus;
     }
+
+    // S3: 模拟退火
+    class Solution {
+        int n, m;
+        int[] w;
+        int ans;
+        final int INF = 0x3f3f3f3f;
+        Random random;
+        public int maxHappyGroups(int batchSize, int[] groups) {
+            random = new Random();
+            w = groups;
+            n = w.length;
+            m = batchSize;
+            ans = 0;
+            for (int i = 0; i < 80; i++) simulate_anneal();
+            return ans;
+        }
+
+        private void simulate_anneal() {
+            List<Integer> nums = new ArrayList<>();
+            for (int x : w) nums.add(x);
+            Collections.shuffle(nums);
+            for (int i = 0; i < nums.size(); i++) w[i] = nums.get(i);
+
+            for (double t = 1e6; t > 1e-6; t *= 0.98) {
+                int a = random.nextInt(INF) % n, b = random.nextInt(INF) % n;
+                int x = calc();
+                swap(a, b);
+                int y = calc();
+                int delta = x - y;
+                if (!(Math.exp(-delta / t) > (double) random.nextInt(INF) / INF)) {
+                    swap(a, b);
+                }
+            }
+        }
+
+        private int calc() {
+            int res = 1;
+            for (int i = 0, s = 0; i < n; i++) {
+                s = (s + w[i]) % m;
+                if (s == 0 && i < n - 1) res++;
+            }
+            ans = Math.max(ans, res);
+            return res;
+        }
+
+        private void swap(int i, int j) {
+            int t = w[i];
+            w[i] = w[j];
+            w[j] = t;
+        }
+    }
 }
 /**
  * 1 <= groups.length <= 30 -> 非常少，NP问题，暴力搜索
@@ -120,5 +172,12 @@ public class LC1815_MaximumNumberofGroupsGettingFreshDonuts {
  * 试想一下，如果30个元素属于同一个bin里面，那么其实只有30种key。
  * 综上所述，dfs是复杂度可行的算法。
  * 把int[]count压缩成一个长整型 -> 5个bit位，最多31 (0~31)
+ * 因为count[i]最多30个，用五个bit就能表示（0~32）。batch最多是9，所以总共45位的二进制数就可以表述count数组。
  * 最多9个bin，每5个bit就表示一个bin里的数字 => 5 * 9 = 45 => long state compression 效率非常高
+ *
+ * 模拟退火
+ * 先随机化一个初始序列，然后随机交换2个元素，判断下交换完之后的结果是否比交换前更好；
+ * 如果更好的话，那就必然要把它们交换；如果不如原来的好，那以一定概率交换。
+ * if y > x => 则必不能换
+ * else y <= x => 则以一定概率不换
  */

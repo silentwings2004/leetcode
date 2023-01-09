@@ -90,6 +90,43 @@ public class LC1106_ParsingABooleanExpression {
         }
         return eval(s.charAt(a), nums) == 1 ? true : false;
     }
+
+    // S3: dfs
+    // time = O(n), space = O(n)
+    String str;
+    int k;
+    public boolean parseBoolExpr3(String expression) {
+        str = expression;
+        k = 0;
+        return dfs();
+    }
+
+    private boolean dfs() {
+        if (str.charAt(k) == 't') {
+            k++;
+            return true;
+        }
+        if (str.charAt(k) == 'f') {
+            k++;
+            return false;
+        }
+
+        char op = str.charAt(k);
+        k += 2;
+        boolean res = true;
+        if (op == '|') res = false;
+        while (str.charAt(k) != ')') {
+            if (str.charAt(k) == ',') k++;
+            else {
+                boolean t = dfs();
+                if (op == '|') res |= t;
+                else res &= t;
+            }
+        }
+        k++;
+        if (op == '!') res = !res;
+        return res;
+    }
 }
 /**
  * Similar to LC1096

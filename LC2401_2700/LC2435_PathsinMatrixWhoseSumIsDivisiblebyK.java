@@ -71,3 +71,8 @@ public class LC2435_PathsinMatrixWhoseSumIsDivisiblebyK {
         return (int) f[m][n][0];
     }
 }
+/**
+ * dp[i][j][r]: the number of distinct paths whose sum % k == r
+ * dp[i][j][r] = dp[i-1][j][t] + dp[i][j-1][t]
+ * (t + grid[i][j]) % k = r
+ */

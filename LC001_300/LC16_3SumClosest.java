@@ -17,21 +17,54 @@ public class LC16_3SumClosest {
      * @param target
      * @return
      */
-    // time = O(n^2), space = O(logn)
+    // S1
+    // time = O(n^2), space = O(1)
     public int threeSumClosest(int[] nums, int target) {
         Arrays.sort(nums);
-        int res = nums[0] + nums[1] + nums[2];
 
-        int n = nums.length;
+        int n = nums.length, res = Integer.MAX_VALUE;
         for (int i = 0; i < n - 2; i++) {
-            int start = i + 1, end = n - 1;
-            while (start < end) {
-                int sum = nums[i] + nums[start] + nums[end];
-                if (sum > target) end--;
-                else start++;
-                if (Math.abs(sum - target) < Math.abs(res - target)) res = sum;
+            int j = i + 1, k = n - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == target) return sum;
+                if (Math.abs(sum - target) < Math.abs(res - target)) {
+                    res = sum;
+                }
+                if (sum < target) j++;
+                else k--;
             }
         }
         return res;
     }
+
+    // S2
+    // time = O(n^2), space = O(1)
+    public int threeSumClosest2(int[] nums, int target) {
+        Arrays.sort(nums);
+        int[] res = new int[2];
+        Arrays.fill(res, Integer.MAX_VALUE);
+
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1, k = n - 1; j < k; j++) {
+                while (j < k - 1 && nums[i] + nums[j] + nums[k - 1] >= target) k--;
+                int s = nums[i] + nums[j] + nums[k];
+                if (res[0] > Math.abs(s - target)) {
+                    res = new int[]{Math.abs(s - target), s};
+                }
+                if (k - 1 > j) {
+                    s = nums[i] + nums[j] + nums[k - 1];
+                    if (res[0] > Math.abs(s - target)) {
+                        res = new int[]{Math.abs(s - target), s};
+                    }
+                }
+            }
+        }
+        return res[1];
+    }
 }
+/**
+ * nums[i] + nums[j] + nums[k] >= target
+ * nums[i] + nums[j] + nums[k - 1] < target
+ */

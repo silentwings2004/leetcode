@@ -86,6 +86,39 @@ public class LC1761_MinimumDegreeofaConnectedTrioinaGraph {
         }
         return res == Integer.MAX_VALUE ? -1 : res;
     }
+
+    // S3: Ennumeration (最优解!)
+    // time = O(n^3), space = O(n)
+    final int N = 1000010;
+    public int minTrioDegree3(int n, int[][] edges) {
+        boolean[] st = new boolean[N];
+        int[] d = new int[n + 1];
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            if (a > b) {
+                int t = a;
+                a = b;
+                b = t;
+            }
+            d[a]++;
+            d[b]++;
+            st[a * 1000 + b] = true;
+        }
+
+        int res = Integer.MAX_VALUE;
+        for (int i = 1; i <= n; i++) {
+            for (int j = i + 1; j <= n; j++) {
+                if (st[i * 1000 + j]) {
+                    for (int k = j + 1; k <= n; k++) {
+                        if (st[i * 1000 + k] && st[j * 1000 + k]) {
+                            res = Math.min(res, d[i] + d[j] + d[k] - 6);
+                        }
+                    }
+                }
+            }
+        }
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
 }
 /**
  * 先枚举一个东西，然后再往上面靠拢

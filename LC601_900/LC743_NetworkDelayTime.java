@@ -125,6 +125,65 @@ public class LC743_NetworkDelayTime {
         }
         return res == Integer.MAX_VALUE / 2 ? -1 : res;
     }
+
+    // S4: spfa
+    final int N = 110, M = 6010, INF = 0x3f3f3f3f;
+    int idx;
+    int[] h, e, ne, w;
+    int[] dist;
+    boolean[] st;
+    public int networkDelayTime4(int[][] times, int n, int k) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        w = new int[M];
+        dist = new int[N];
+        st = new boolean[N];
+
+        Arrays.fill(h, -1);
+        idx = 0;
+
+        for (int[] x : times) {
+            int a = x[0], b = x[1], c = x[2];
+            add(a, b, c);
+        }
+
+        spfa(k);
+
+        int res = 1;
+        for (int i = 1; i <= n; i++) res = Math.max(res, dist[i]);
+        return res == INF ? -1 : res;
+    }
+
+    private void spfa(int start) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(start);
+        Arrays.fill(dist, INF);
+        dist[start] = 0;
+
+        while (!queue.isEmpty()) {
+            int t = queue.poll();
+            st[t] = false;
+
+            for (int i = h[t]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] > dist[t] + w[i]) {
+                    dist[j] = dist[t] + w[i];
+                    if (!st[j]) {
+                        queue.offer(j);
+                        st[j] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void add(int a, int b, int c) {
+        e[idx] = b;
+        w[idx] = c;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * single source + non-negative weight

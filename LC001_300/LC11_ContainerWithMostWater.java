@@ -9,33 +9,31 @@ public class LC11_ContainerWithMostWater {
      * Input: height = [1,8,6,2,5,4,8,3,7]
      * Output: 49
      *
+     * Input: height = [1,1]
+     * Output: 1
+     *
      * Constraints:
      *
-     * n = height.length
-     * 2 <= n <= 3 * 104
-     * 0 <= height[i] <= 3 * 104
+     * n == height.length
+     * 2 <= n <= 10^5
+     * 0 <= height[i] <= 10^4
      *
      * @param height
      * @return
      */
     // time = O(n), space = O(1)
     public int maxArea(int[] height) {
-        // corner case
-        if (height == null || height.length == 0) return 0;
-
-        int left = 0, right = height.length - 1;
-        int max = 0, area = 0;
-
-        while (left < right) {
-            if (height[left] < height[right]) {
-                area = (right - left) * height[left];
-                left++; // 谁小移谁
+        int n = height.length, res = 0;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            if (height[l] < height[r]) {
+                res = Math.max(res, height[l] * (r - l));
+                l++;
             } else {
-                area = (right - left) * height[right];
-                right--;
+                res = Math.max(res, height[r] * (r - l));
+                r--;
             }
-            max = Math.max(max, area);
         }
-        return max;
+        return res;
     }
 }

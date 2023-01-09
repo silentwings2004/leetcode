@@ -16,21 +16,33 @@ public class LC83_RemoveDuplicatesfromList {
      * @param head
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public ListNode deleteDuplicates(ListNode head) {
-        // corner case
-        if (head == null) return head;
+        if (head == null || head.next == null) return head;
 
-        ListNode slow = head, fast = head.next;
-        while (fast != null) {
-            if (fast.val != slow.val) {
-                slow = slow.next;
-                slow.val = fast.val;
-            }
-            fast = fast.next;
+        ListNode p = head;
+        while (p != null) {
+            ListNode q = p.next;
+            while (q != null && q.val == p.val) q = q.next;
+            p.next = q;
+            p = q;
         }
-        slow.next = null;
+        return head;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public ListNode deleteDuplicates2(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode cur = head;
+        for (ListNode p = head.next; p != null; p = p.next) {
+            if (p.val != cur.val) {
+                cur = cur.next = p;
+            }
+        }
+        cur.next = null;
         return head;
     }
 }
-

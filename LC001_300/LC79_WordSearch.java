@@ -25,34 +25,35 @@ public class LC79_WordSearch {
      * @return
      */
     // time = O(m * n * 3^k), space = O(m * n) * k
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    char[][] g;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public boolean exist(char[][] board, String word) {
-        int m = board.length, n = board[0].length;
-        boolean[][] visited = new boolean[m][n];
+        g = board;
+        m = g.length;
+        n = g[0].length;
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (dfs(board, i, j, visited, word, 0)) return true;
+                if (dfs(i, j, 0, word)) return true;
             }
         }
         return false;
     }
 
-    private boolean dfs(char[][] board, int x, int y, boolean[][] visited, String word, int curPos) {
-        int m = board.length, n = board[0].length;
-        // base case
-        if (curPos == word.length()) return true;
-        if (x < 0 || x >= m || y < 0 || y >= n) return false;
-        if (visited[x][y]) return false;
-        if (board[x][y] != word.charAt(curPos)) return false;
+    private boolean dfs(int x, int y, int u, String s) {
+        if (g[x][y] != s.charAt(u)) return false;
+        if (u == s.length() - 1) return true;
 
-        visited[x][y] = true;
-        for (int[] dir : directions) {
-            int i = x + dir[0];
-            int j = y + dir[1];
-            if (dfs(board, i, j, visited, word, curPos + 1)) return true;
+        char c = g[x][y];
+        g[x][y] = '#';
+        for (int k = 0; k < 4; k++) {
+            int a = x + dx[k], b = y + dy[k];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == '#') continue;
+            if (dfs(a, b, u + 1, s)) return true;
         }
-        visited[x][y] = false;
+        g[x][y] = c;
         return false;
     }
 }

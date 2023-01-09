@@ -37,6 +37,7 @@ public class LC1786_NumberofRestrictedPathsFromFirsttoLastNode {
      * @param edges
      * @return
      */
+    // S1: Dijkstra + dfs
     // time = O(ElogE) = O(mlogm), space = O(n)
     public int countRestrictedPaths(int n, int[][] edges) {
         List<int[]>[] graph = new List[n];
@@ -86,6 +87,77 @@ public class LC1786_NumberofRestrictedPathsFromFirsttoLastNode {
         }
         pathNum[cur] = sum;
         return sum;
+    }
+
+    // S2: Dijkstra + DP
+    // time = O(nlogn), space = O(n)
+    final int N = 20010, M = 80010, INF = Integer.MAX_VALUE, MOD = (int) 1e9 + 7;
+    int n, idx;
+    int[] h, e, ne, w;
+    int[] dist, f;
+    boolean[] st;
+    public int countRestrictedPaths2(int n, int[][] edges) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        w = new int[M];
+        dist = new int[N];
+        f = new int[N];
+        st = new boolean[N];
+
+        this.n = n;
+        Arrays.fill(h, -1);
+        idx = 0;
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            add(a, b, c);
+            add(b, a, c);
+        }
+
+        dijkstra(n);
+        int[][] vc = new int[n][2];
+        for (int i = 1; i <= n; i++) vc[i - 1] = new int[]{dist[i], i};
+        Arrays.sort(vc, ((o1, o2) -> o1[0] - o2[0]));
+
+        f[n] = 1;
+        for (int[] v : vc) {
+            int u = v[1];
+            for (int i = h[u]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] < dist[u]) f[u] = (f[u] + f[j]) % MOD;
+            }
+        }
+        return f[1];
+    }
+
+    private void dijkstra(int start) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
+        pq.offer(new int[]{0, start});
+        Arrays.fill(dist, INF);
+        dist[start] = 0;
+
+        while (!pq.isEmpty()) {
+            int[] t = pq.poll();
+            int u = t[1];
+            if (st[u]) continue;
+            st[u] = true;
+
+            for (int i = h[u]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] > dist[u] + w[i]) {
+                    dist[j] = dist[u] + w[i];
+                    if (!st[j]) pq.offer(new int[]{dist[j], j});
+                }
+            }
+        }
+    }
+
+    private void add(int a, int b, int c) {
+        e[idx] = b;
+        w[idx] = c;
+        ne[idx] = h[a];
+        h[a] = idx++;
     }
 }
 /**

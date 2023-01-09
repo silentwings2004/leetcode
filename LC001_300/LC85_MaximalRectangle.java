@@ -17,7 +17,8 @@ public class LC85_MaximalRectangle {
      * @param matrix
      * @return
      */
-    // time = O(m * n), space = O(m * n)
+    // S1: Monotonic Stack
+    // time = O(m * n), space = O(n)
     public int maximalRectangle(char[][] matrix) {
         // corner case
         if (matrix == null || matrix.length == 0) return 0;
@@ -53,6 +54,41 @@ public class LC85_MaximalRectangle {
             }
         }
         return area;
+    }
+
+    // S1.2
+    // time = O(m * n), space = O(n)
+    class Solution {
+        final int N = 210;
+        public int maximalRectangle2(char[][] matrix) {
+            int m = matrix.length, n = matrix[0].length;
+            int res = 0;
+            int[] h = new int[n];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (matrix[i][j] == '0') h[j] = 0;
+                    else h[j] += 1;
+                }
+                res = Math.max(res, helper(h));
+            }
+            return res;
+        }
+
+        private int helper(int[] heights) {
+            int[] stk = new int[N];
+            int tt = 0, n = heights.length, res = 0;
+
+            for (int i = 0; i <= n; i++) {
+                int h = i == n ? 0 : heights[i];
+                while (tt > 0 && heights[stk[tt]] >= h) {
+                    int height = heights[stk[tt--]];
+                    int width = tt == 0 ? i : i - stk[tt] - 1;
+                    res = Math.max(res, height * width);
+                }
+                stk[++tt] = i;
+            }
+            return res;
+        }
     }
 }
 /**

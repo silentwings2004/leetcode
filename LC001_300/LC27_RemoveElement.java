@@ -32,10 +32,10 @@ public class LC27_RemoveElement {
      */
     // time = O(n), space = O(1)
     public int removeElement(int[] nums, int val) {
-        int res = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != val) nums[res++] = nums[i];
+        int n = nums.length, k = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != val) nums[k++] = nums[i];
         }
-        return res;
+        return k;
     }
 }

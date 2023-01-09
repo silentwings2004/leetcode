@@ -24,30 +24,53 @@ public class LC29_DivideTwoIntegers {
      * @return
      */
     // S1
-    // time = O(logn), space = O(1)
+    // time = O(logk), space = O(1)
     public int divide(int dividend, int divisor) {
-        long a = (long)dividend;
-        long b = (long)divisor;
+        long a = (long) dividend, b = (long) divisor;
         int sign = 1;
-        if (a < 0) sign *= -1;
-        if (b < 0) sign *= -1;
+        if (a < 0 && b > 0 || a > 0 && b < 0) sign = -1;
 
         a = Math.abs(a);
         b = Math.abs(b);
-        long quotient = 0;
 
+        long res = 0;
         while (a >= b) {
-            long c = b;
-            int count = 1;
+            long c = b, sum = 1;
             while ((c << 1) < a) {
                 c <<= 1;
-                count <<= 1;
+                sum <<= 1;
             }
-            quotient += count;
-            a -= c; // 够减的话，大问题 -> 小问题
+            a -= c;
+            res += sum;
         }
-        if (quotient * sign > Integer.MAX_VALUE) return Integer.MAX_VALUE; // 注意：判断溢出要用quotient * sign
-        else return (int)quotient * sign;
+
+        res *= sign;
+        if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE) return Integer.MAX_VALUE;
+        return (int) res;
+    }
+
+    // S2
+    // time = O(logk), space = O(logk)
+    public int divide2(int dividend, int divisor) {
+        long x = dividend, y = divisor;
+        List<Long> exp = new ArrayList<>();
+        boolean is_minus = false;
+        if (x < 0 && y > 0 || x > 0 && y < 0) is_minus = true;
+
+        long a = Math.abs(x), b = Math.abs(y);
+        for (long i = b; i <= a; i = i + i) exp.add(i);
+
+        long res = 0;
+        for (int i = exp.size() - 1; i >= 0; i--) {
+            if (a >= exp.get(i)) {
+                a -= exp.get(i);
+                res += 1L << i;
+            }
+        }
+
+        if (is_minus) res = -res;
+        if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE) return Integer.MAX_VALUE;
+        return (int) res;
     }
 }
 

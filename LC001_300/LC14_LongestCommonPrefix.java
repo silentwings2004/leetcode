@@ -17,19 +17,39 @@ public class LC14_LongestCommonPrefix {
      * @param strs
      * @return
      */
-    // time = O(n), space = O(1)   n: the sum of all characters in all strings.
+    // time = O(m * n), space = O(m)
     public String longestCommonPrefix(String[] strs) {
-        // corner case
-        if (strs == null || strs.length == 0) return "";
-
-        for (int i = 0; i < strs[0].length(); i++) {
-            char c1 = strs[0].charAt(i);
-            for (int j = 1; j < strs.length; j++) {
-                if (i == strs[j].length() || c1 != strs[j].charAt(i)) { // 先check i 是否已经走到头了，非常重要，防止出界！！！
-                    return strs[0].substring(0, i);
-                }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0;; i++) {
+            if (strs[0].length() <= i) return sb.toString();
+            char c = strs[0].charAt(i);
+            for (String str : strs) {
+                if (str.length() <= i || str.charAt(i) != c) return sb.toString();
             }
+            sb.append(c);
         }
-        return strs[0];
+    }
+
+    // S2
+    // time = O(m * n * log(m)), space = O(1)
+    public String longestCommonPrefix2(String[] strs) {
+        int min = 200;
+        for (String s : strs) min = Math.min(min, s.length());
+
+        int l = 0, r = min;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (check(strs, mid)) l = mid;
+            else r = mid - 1;
+        }
+        return strs[0].substring(0, r);
+    }
+
+    private boolean check(String[] strs, int t) {
+        String s = strs[0].substring(0, t);
+        for (int i = 1; i < strs.length; i++) {
+            if (strs[i].indexOf(s) != 0) return false;
+        }
+        return true;
     }
 }

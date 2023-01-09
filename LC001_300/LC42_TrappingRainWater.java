@@ -94,4 +94,24 @@ public class LC42_TrappingRainWater {
         }
         return res;
     }
+
+    // S4: 单调栈解法2
+    // time = O(n), space = O(n)
+    final int N = 20010;
+    public int trap4(int[] height) {
+        int[] stk = new int[N];
+        int tt = 0, n = height.length;
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            int last = 0;
+            while (tt > 0 && height[stk[tt]] <= height[i]) {
+                res += (height[stk[tt]] - last) * (i - stk[tt] - 1);
+                last = height[stk[tt--]];
+            }
+            if (tt > 0) res += (height[i] - last) * (i - stk[tt] - 1);
+            stk[++tt] = i;
+        }
+        return res;
+    }
 }

@@ -24,6 +24,7 @@ public class LC895_MaximumFrequencyStack {
      The total number of FreqStack.pop calls will not exceed 10000 in a single test case.
      The total number of FreqStack.push and FreqStack.pop calls will not exceed 150000 across all test cases.
      */
+    // S1
     // time = O(1), space = O(n)
     HashMap<Integer, List<Integer>> map;
     HashMap<Integer, Integer> count;
@@ -49,4 +50,36 @@ public class LC895_MaximumFrequencyStack {
         count.put(x, count.get(x) - 1);
         return x;
     }
+
+    // S2: HashMap + stack
+    class FreqStack {
+        // time = O(1), space = O(n)
+        HashMap<Integer, Stack<Integer>> map;
+        HashMap<Integer, Integer> cnt;
+        int n;
+        public FreqStack() {
+            map = new HashMap<>();
+            cnt = new HashMap<>();
+            n = 0;
+        }
+
+        public void push(int val) {
+            cnt.put(val, cnt.getOrDefault(val, 0) + 1);
+            map.putIfAbsent(cnt.get(val), new Stack<>());
+            map.get(cnt.get(val)).push(val);
+            n = Math.max(n, cnt.get(val));
+        }
+
+        public int pop() {
+            int t = map.get(n).pop();
+            cnt.put(t, cnt.get(t) - 1);
+            if (map.get(n).size() == 0) n--;
+            return t;
+        }
+    }
 }
+/**
+ * val, cnt, id
+ * 在cnt最多的元素里，找id最大的 => 线性
+ * 拉链法
+ */

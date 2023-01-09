@@ -19,6 +19,7 @@ public class LC1703_MinimumAdjacentSwapsforKConsecutiveOnes {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int minMoves(int[] nums, int k) {
         // corner case
@@ -49,6 +50,31 @@ public class LC1703_MinimumAdjacentSwapsforKConsecutiveOnes {
             offset += Math.abs(i - k / 2);
         }
         return res - offset;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int minMoves2(int[] nums, int k) {
+        List<Integer> q = new ArrayList<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) q.add(i - q.size());
+        }
+
+        int m = q.size();
+        long[] s = new long[m + 1];
+        for (int i = 1; i <= m; i++) s[i] = s[i - 1] + q.get(i - 1);
+
+        long res = (long) 1e18;
+        for (int i = k; i <= m; i++) {
+            int l = i - k + 1, r = i;
+            int mid = l + r >> 1;
+            int x = q.get(mid - 1);
+            long left = x * (mid - l) - (s[mid - 1] - s[l - 1]);
+            long right = (s[r] - s[mid]) - x * (r - mid);
+            res = Math.min(res, left + right);
+        }
+        return (int) res;
     }
 }
 /**
@@ -87,4 +113,16 @@ public class LC1703_MinimumAdjacentSwapsforKConsecutiveOnes {
  * 4. -(k-1-k/2)*(p[mid+1]-p[mid])
  *   sum2
  * => O(1)就能算出来
+ *
+ * 需要求一个x，使得|a1-x| + |a2-(x+1)| + ... + |ak-(x-k+1)| 最小
+ * 绝对值不等式，这里不是到一个固定点，而是一个等差数列
+ * 得做一个映射：ai' = ai - (i - 1) => 等价ai' = ai - i，只要保证是等差数列即可
+ * a1' = a1
+ * a2' = a2 - 1
+ * a3' = a3 - 2
+ * => |a1'-x| + |a2'-x| + ... + |ak'-x|  use 绝对值不等式求中位数即可
+ * 快速求出当x取中位数的和是多少 => 分成2段，左边每个值都是<= amid => (amid - al) + ... + (amid - amid-1)
+ * => amid * (mid - l) - (s[mid-1]-s[l-1])
+ * => 右边同理：(s[r]-s[mid]) - amid * (r - mid)
+ * 左右两边都可以O(1)时间求
  */

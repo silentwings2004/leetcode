@@ -29,8 +29,35 @@ public class LC2225_FindPlayersWithZeroorOneLosses {
      * @param matches
      * @return
      */
-    // time = O(nlogn), space = O(n)
+    // S1
+    // time = O(n), space = O(n)
+    final int N = 100010;
     public List<List<Integer>> findWinners(int[][] matches) {
+        List<List<Integer>> res = new ArrayList<>();
+        int[] cnt = new int[N];
+        Arrays.fill(cnt, -1);
+        for (int[] x : matches) {
+            int a = x[0], b = x[1];
+            if (cnt[a] == -1) cnt[a] = 0;
+            if (cnt[b] == -1 || cnt[b] == 0) cnt[b] = 1;
+            else cnt[b]++;
+        }
+
+        List<Integer> q1 = new ArrayList<>();
+        List<Integer> q2 = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            if (cnt[i] == -1) continue;
+            else if (cnt[i] == 0) q1.add(i);
+            else if (cnt[i] == 1) q2.add(i);
+        }
+        res.add(q1);
+        res.add(q2);
+        return res;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public List<List<Integer>> findWinners2(int[][] matches) {
         List<List<Integer>> res = new ArrayList<>();
         TreeMap<Integer, Integer> map = new TreeMap<>();
         for (int[] x : matches) {

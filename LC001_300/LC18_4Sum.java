@@ -19,7 +19,7 @@ public class LC18_4Sum {
      * @param target
      * @return
      */
-    // time = O(n^3), space = O(logn)
+    // time = O(n^3), space = O(1)
     public List<List<Integer>> fourSum(int[] nums, int target) {
         List<List<Integer>> res = new ArrayList<>();
         Arrays.sort(nums);
@@ -29,17 +29,40 @@ public class LC18_4Sum {
             if (i > 0 && nums[i] == nums[i - 1]) continue;
             for (int j = i + 1; j < n - 2; j++) {
                 if (j > i + 1 && nums[j] == nums[j - 1]) continue;
-                int left = j + 1, right = n - 1;
-                while (left < right) {
-                    long sum = (long) nums[left] + nums[right] + nums[i] + nums[j];
+                int k = j + 1, t = n - 1;
+                while (k < t) {
+                    long sum = (long) nums[i] + nums[j] + nums[k] + nums[t];
                     if (sum == target) {
-                        res.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
-                        while (left < right && nums[left] == nums[left + 1]) left++;
-                        while (left < right && nums[right] == nums[right - 1]) right--;
-                        left++;
-                        right--;
-                    } else if (sum < target) left++;
-                    else right--;
+                        res.add(Arrays.asList(nums[i], nums[j], nums[k], nums[t]));
+                        while (k < t && nums[k] == nums[k + 1]) k++;
+                        while (k < t && nums[t] == nums[t - 1]) t--;
+                        k++;
+                        t--;
+                    } else if (sum < target) k++;
+                    else t--;
+                }
+            }
+        }
+        return res;
+    }
+
+    // S2: similar to LC15
+    // time = O(n^3), space = O(1)
+    public List<List<Integer>> fourSum2(int[] nums, int target) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+
+        int n = nums.length;
+        for (int i = 0; i < n - 3; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j < n - 2; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                for (int k = j + 1, u = n - 1; k < u; k++) {
+                    if (k > j + 1 && nums[k] == nums[k - 1]) continue;
+                    while (k < u - 1 && (long) nums[i] + nums[j] + nums[k] + nums[u - 1] >= target) u--;
+                    if ((long) nums[i] + nums[j] + nums[k] + nums[u] == target) {
+                        res.add(Arrays.asList(nums[i], nums[j], nums[k], nums[u]));
+                    }
                 }
             }
         }

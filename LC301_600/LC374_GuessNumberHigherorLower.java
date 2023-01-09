@@ -21,16 +21,13 @@ public class LC374_GuessNumberHigherorLower {
      */
     // time = O(logn), space = O(1)
     public int guessNumber(int n) {
-        int start = 1, end = n;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (guess(mid) == 0) return mid;
-            if (guess(mid) == -1) end = mid;
-            else start = mid;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (guess(mid) > 0) l = mid + 1;
+            else r = mid;
         }
-        if (guess(start) == 0) return start;
-        if (guess(end) == 0) return end;
-        throw new RuntimeException("No valid answer!");
+        return r;
     }
 
     /**

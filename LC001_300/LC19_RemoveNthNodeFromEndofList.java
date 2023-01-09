@@ -22,6 +22,7 @@ public class LC19_RemoveNthNodeFromEndofList {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // corner case
@@ -37,6 +38,21 @@ public class LC19_RemoveNthNodeFromEndofList {
             fast = fast.next;
         }
         slow.next = slow.next.next;
+        return dummy.next;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public ListNode removeNthFromEnd2(ListNode head, int n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        int k = 0;
+        for (ListNode p = dummy; p != null; p = p.next) k++;
+
+        ListNode p = dummy;
+        for (int i = 0; i < k - n - 1; i++) p = p.next;
+        p.next = p.next.next;
         return dummy.next;
     }
 }

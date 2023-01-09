@@ -64,4 +64,60 @@ public class LC1820_MaximumNumberofAcceptedInvitations {
         }
         return false;
     }
+
+    // S2: 匈牙利算法
+    // time = O(m * m * n), space = O(m * n)
+    class Solution {
+        // time = O(m * m * n), space = O(m * n)
+        final int N = 210, M = 40010;
+        int m, n, idx;
+        int[] h, e, ne;
+        int[] match;
+        boolean[] st;
+        public int maximumInvitations(int[][] grid) {
+            h = new int[N];
+            e = new int[M];
+            ne = new int[M];
+            match = new int[N];
+            st = new boolean[N];
+
+            m = grid.length;
+            n = grid[0].length;
+            Arrays.fill(h, -1);
+            idx = 0;
+
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (grid[i - 1][j - 1] == 1) add(i, j);
+                }
+            }
+
+            int res = 0;
+            for (int i = 1; i <= m; i++) {
+                Arrays.fill(st, false);
+                if (find(i)) res++;
+            }
+            return res;
+        }
+
+        private boolean find(int u) {
+            for (int i = h[u]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (!st[j]) {
+                    st[j] = true;
+                    if (match[j] == 0 || find(match[j])) {
+                        match[j] = u;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void add(int a, int b) {
+            e[idx] = b;
+            ne[idx] = h[a];
+            h[a] = idx++;
+        }
+    }
 }

@@ -21,64 +21,40 @@ public class LC947_MostStonesRemovedwithSameRoworColumn {
      * @return
      */
     // time = O(nlogk), space = O(k)   n: num of stones; k: different (x,y) numbers of array stones
-    HashMap<Integer, Integer> parent;
-    HashMap<Integer, List<Integer>> mapX;
-    HashMap<Integer, List<Integer>> mapY;
-    int n = 10000;
+    int[] p;
     public int removeStones(int[][] stones) {
-        parent = new HashMap<>();
-        mapX = new HashMap<>();
-        mapY = new HashMap<>();
-        for (int[] x : stones) {
-            int i = x[0], j = x[1];
-            int id = i * n + j;
-            parent.put(id, id);
-            mapX.putIfAbsent(i, new ArrayList<>());
-            mapY.putIfAbsent(j, new ArrayList<>());
-            mapX.get(i).add(id);
-            mapY.get(j).add(id);
+        int n = stones.length;
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+
+        HashMap<Integer, List<Integer>> xMap = new HashMap<>();
+        HashMap<Integer, List<Integer>> yMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int x = stones[i][0], y = stones[i][1];
+            xMap.putIfAbsent(x, new ArrayList<>());
+            yMap.putIfAbsent(y, new ArrayList<>());
+            xMap.get(x).add(i);
+            yMap.get(y).add(i);
         }
 
-        for (int a : mapX.keySet()) {
-            int id0 = mapX.get(a).get(0);
-            for (int i = 1; i < mapX.get(a).size(); i++) {
-                int id = mapX.get(a).get(i);
-                if (findParent(id0) != findParent(id)) {
-                    union(id0, id);
-                }
-            }
+        for (List<Integer> v : xMap.values()) {
+            for (int x : v) p[find(v.get(0))] = find(x);
         }
 
-        for (int a : mapY.keySet()) {
-            int id0 = mapY.get(a).get(0);
-            for (int i = 1; i < mapY.get(a).size(); i++) {
-                int id = mapY.get(a).get(i);
-                if (findParent(id0) != findParent(id)) {
-                    union(id0, id);
-                }
-            }
+        for (List<Integer> v : yMap.values()) {
+            for (int x : v) p[find(v.get(0))] = find(x);
         }
 
-        HashSet<Integer> set = new HashSet<>(); // save each group's ancestor
-        for (int[] x : stones) {
-            int id = x[0] * n + x[1];
-            int id0 = findParent(id);
-            set.add(id0);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (i != p[i]) res++;
         }
-
-        return stones.length - set.size();
+        return res;
     }
 
-    private int findParent(int x) {
-        if (x != parent.get(x)) parent.put(x, findParent(parent.get(x)));
-        return parent.get(x);
-    }
-
-    private void union(int x, int y) {
-        x = parent.get(x);
-        y = parent.get(y);
-        if (x < y) parent.put(y, x);
-        else parent.put(x, y);
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

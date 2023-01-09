@@ -22,32 +22,31 @@ public class LC797_AllPathsFromSourcetoTarget {
      * @param graph
      * @return
      */
-    // time = O(n * 2^n), space = O(n * 2^n)
+    // time = O(n * 2^n), space = O(n)
+    List<List<Integer>> res;
+    int[][] graph;
+    int n;
     public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
-        List<List<Integer>> res = new ArrayList<>();
-        int n = graph.length;
-        boolean[] visited = new boolean[n];
-        dfs(graph, 0, new ArrayList<>(), visited, res);
+        res = new ArrayList<>();
+        this.graph = graph;
+        n = graph.length;
+
+        List<Integer> path = new ArrayList<>();
+        path.add(0);
+        dfs(0, -1, path);
         return res;
     }
 
-    private void dfs(int[][] graph, int cur, List<Integer> path, boolean[] visited, List<List<Integer>> res) {
-        int n = graph.length;
-        // base case
-        if (cur == n - 1) {
-            path.add(n - 1);
+    private void dfs(int u, int fa, List<Integer> path) {
+        if (u == n - 1) {
             res.add(new ArrayList<>(path));
-            path.remove(path.size() - 1);
             return;
         }
 
-        path.add(cur);
-        visited[cur] = true;
-        for (int next : graph[cur]) {
-            if (visited[next]) continue;
-            dfs(graph, next, path, visited, res);
+        for (int j : graph[u]) {
+            path.add(j);
+            dfs(j, u, path);
+            path.remove(path.size() - 1);
         }
-        visited[cur] = false;
-        path.remove(path.size() - 1);
     }
 }

@@ -22,29 +22,22 @@ public class LC1814_CountNicePairsinanArray {
      */
     // time = O(n), space = O(n)
     public int countNicePairs(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        final int MOD = 1000000007;
         HashMap<Integer, Integer> map = new HashMap<>();
-        int res = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-            int diff = nums[i] - rev(nums[i]);
-            map.put(diff, map.getOrDefault(diff, 0) + 1);
-            res = (res + map.get(diff) - 1) % MOD;
+        for (int t : nums) {
+            int x = t;
+            String s = String.valueOf(x);
+            StringBuilder sb = new StringBuilder(s);
+            s = sb.reverse().toString();
+            int y = Integer.parseInt(s);
+            map.put(x - y, map.getOrDefault(x - y, 0) + 1);
         }
-        return res;
+
+        long mod = (long)(1e9 + 7), res = 0;
+        for (int v : map.values()) {
+            res = (res + (long) v * (v - 1) / 2) % mod;
+        }
+        return (int) res;
     }
-
-     private int rev(int num) {
-        int res = 0;
-        while (num > 0) {
-            res = res * 10 + num % 10;
-            num /= 10;
-        }
-        return res;
-     }
 }
 /**
  * nums[i] + rev(nums[j]) == nums[j] + rev(nums[i]) =>

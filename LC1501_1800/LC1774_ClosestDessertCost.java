@@ -62,6 +62,7 @@ public class LC1774_ClosestDessertCost {
     }
 
     // S2: bitmask (三进制)
+    // time = O(3^m * n), space = O(1)
     public int closestCost2(int[] baseCosts, int[] toppingCosts, int target) {
         int m = toppingCosts.length, res = Integer.MAX_VALUE, diff = Integer.MAX_VALUE;
         for (int base : baseCosts) {
@@ -83,8 +84,8 @@ public class LC1774_ClosestDessertCost {
         return res;
     }
 
-    // S3: dfs
-    // time = O(m * 4^n), space = O(n)
+    // S3: dfs (最优解!)
+    // time = O(n * 3^m), space = O(m)
     int diff = Integer.MAX_VALUE, res = 0;
     public int closestCost3(int[] baseCosts, int[] toppingCosts, int target) {
         for (int baseCost : baseCosts) {
@@ -110,6 +111,31 @@ public class LC1774_ClosestDessertCost {
 
         // case 3: pick two current toppings
         dfs(sum + toppingCosts[idx] * 2, idx + 1, toppingCosts, target);
+    }
+
+    // S4: bitmaks (4进制)
+    // time = O(4^m * n), space = O(1)
+    public int closestCost4(int[] baseCosts, int[] toppingCosts, int target) {
+        int n = baseCosts.length, m = toppingCosts.length, res = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            int s = baseCosts[i];
+            for (int state = 0; state < 1 << m * 2; state++) {
+                int r = s;
+                boolean flag = true;
+                for (int k = 0; k < m; k++) {
+                    int t = state >> k * 2 & 3;
+                    if (t == 3) {
+                        flag = false;
+                        break;
+                    }
+                    r += toppingCosts[k] * t;
+                }
+                if (!flag) continue;
+                int a = Math.abs(r - target), b = Math.abs(res - target);
+                if (a < b || a == b && r < res) res = r;
+            }
+        }
+        return res;
     }
 }
 

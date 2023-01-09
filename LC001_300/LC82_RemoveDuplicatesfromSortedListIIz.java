@@ -19,18 +19,17 @@ public class LC82_RemoveDuplicatesfromSortedListIIz {
     // S1
     // time = O(n), space = O(1)
     public ListNode deleteDuplicates(ListNode head) {
-        // corner case
-        if (head == null) return head;
+        if (head == null || head.next == null) return head;
 
-        ListNode dummy = new ListNode(0);
+        ListNode dummy = new ListNode(-1);
         dummy.next = head;
-        ListNode cur = dummy;
 
-        while (cur.next != null && cur.next.next != null) {
-            if (cur.next.val == cur.next.next.val) {
-                int temp = cur.next.val;
-                while (cur.next != null && cur.next.val == temp) cur.next = cur.next.next;
-            } else cur = cur.next;
+        ListNode p = dummy;
+        while (p.next != null) {
+            ListNode q = p.next.next;
+            while (q != null && q.val == p.next.val) q = q.next;
+            if (p.next.next == q) p = p.next;
+            else p.next = q;
         }
         return dummy.next;
     }

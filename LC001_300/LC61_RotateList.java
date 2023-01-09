@@ -18,22 +18,22 @@ public class LC61_RotateList {
      */
     // time = O(n), space = O(1)
     public ListNode rotateRight(ListNode head, int k) {
-        // corner case
-        if (head == null || head.next == null || k <= 0) return head;
-
-        ListNode cur = head;
-        int count = 1;
-        while (cur.next != null) {
-            cur = cur.next;
-            count++;
+        if (head == null || head.next == null) return head;
+        int n = 0;
+        ListNode tail = null;
+        for (ListNode p = head; p != null; p = p.next) {
+            n++;
+            tail = p;
         }
-        cur.next = head;
-        cur = head;
+        k %= n;
 
-        for (int i = 1; i < count - k % count; i++) cur = cur.next;
-        ListNode newHead = cur.next;
-        cur.next = null;
-        return newHead;
+        if (k == 0) return head;
+        ListNode p = head;
+        for (int i = 0; i < n - k - 1; i++) p = p.next;
+        tail.next = head;
+        head = p.next;
+        p.next = null;
+        return head;
     }
 }
 /**

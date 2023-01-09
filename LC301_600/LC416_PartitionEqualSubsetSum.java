@@ -15,123 +15,46 @@ public class LC416_PartitionEqualSubsetSum {
      * @param nums
      * @return
      */
-    // S1： DP
-    // time = O(n * s), space = O(n * s)
-    public boolean canPartition(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return false;
-
-        int sum = 0;
-        for (int num : nums) sum += num;
-        if (sum % 2 != 0) return false;
-
-        boolean[] dp = new boolean[sum / 2 + 1];
-        dp[0] = true;
-
-        for (int x : nums) {
-            boolean[] dp2 = dp.clone();
-            for (int s = 0; s <= sum / 2; s++) {
-                if (s - x >= 0 && dp2[s - x]) {
-                    dp[s] = true;
-                }
-            }
-        }
-        return dp[sum / 2];
-    }
-
-    // S1.2： DP
-    // time = O(n * s), space = O(s)
-    public boolean canPartition2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return false;
-
-        int sum = 0;
-        for (int num : nums) sum += num;
-        if (sum % 2 != 0) return false;
-
-        boolean[] dp = new boolean[sum / 2 + 1];
-        dp[0] = true;
-
-        for (int x : nums) {
-            for (int s = sum / 2; s >= 0; s--) {  // 从大到小更新，就能避免上面由于小的先更新导致大的更新混乱的情况
-                if (s - x >= 0 && dp[s - x]) {
-                    dp[s] = true;
-                }
-            }
-        }
-        return dp[sum / 2];
-    }
-
-    // S2: DP
-    // time = O(n * s), space = O(n * s)
-    public boolean canPartition3(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return false;
-
-        int n = nums.length;
-        int sum = 0;
-        for (int num : nums) sum += num;
-        if (sum % 2 != 0) return false;
-        int k = sum / 2;
-
-        boolean[][] dp = new boolean[n + 1][k + 1];
-        dp[0][0] = true;
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j <= k; j++) {
-                dp[i][j] |= dp[i - 1][j];
-                if (j >= nums[i - 1]) {
-                    dp[i][j] |= dp[i - 1][j - nums[i - 1]];
-                }
-            }
-        }
-        return dp[n][k];
-    }
-
-    // S3: Set + DP
-    // time = O(n * s), space = O(n * s)
-    public boolean canPartition4(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return false;
-
-        int n = nums.length;
-        int sum = 0;
-        for (int num : nums) sum += num;
-        if (sum % 2 != 0) return false;
-        int k = sum / 2;
-
-        HashSet<Integer> dp = new HashSet<>();
-        dp.add(0); // 加入dp的都是true
-
-        for (int x : nums) {
-            List<Integer> temp = new ArrayList<>();
-            for (int s : dp) {
-                if (s + x == sum / 2) return true;
-                temp.add(s + x);
-            }
-            dp.addAll(temp);
-        }
-        return false;
-    }
-
-    // S4: dp
+    // S1: dp
     // time = O(n * target), space = O(target)
-    public boolean canPartition5(int[] nums) {
-        int m = 0;
-        for (int x : nums) m += x;
-        if (m % 2 == 1) return false;
-        m /= 2;
-
-        boolean[] f = new boolean[m + 1];
+    public boolean canPartition(int[] nums) {
+        int t = 0;
+        for (int x : nums) t += x;
+        if (t % 2 != 0) return false;
+        t /= 2;
+        boolean[] f = new boolean[t + 1];
         f[0] = true;
 
         int n = nums.length;
         for (int i = 1; i <= n; i++) {
-            for (int j = m; j >= nums[i - 1]; j--) {
+            for (int j = t; j >= nums[i - 1]; j--) {
                 f[j] |= f[j - nums[i - 1]];
             }
         }
-        return f[m];
+        return f[t];
+    }
+
+    // S2: dp (从现在推将来)
+    // time = O(n * k), space = O(n * k)
+    final int N = 210, M = 20010;
+    public boolean canPartition2(int[] nums) {
+        int sum = 0;
+        for (int x : nums) sum += x;
+        if (sum % 2 == 1) return false;
+
+        boolean[][] f = new boolean[N][M];
+        f[0][0] = true;
+
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            for (int s = 0; s <= sum / 2; s++) {
+                if (f[i][s]) {
+                    f[i + 1][s] = true;
+                    f[i + 1][s + nums[i]] = true;
+                }
+            }
+        }
+        return f[n][sum / 2];
     }
 }
 /**
@@ -160,4 +83,10 @@ public class LC416_PartitionEqualSubsetSum {
  * }
  *
  * dp[100000] => 稀疏，可以改用set来做
+ *
+ * dp[i][s]: from the first i elements, if there is a method to pick some numbers whose sum equals s
+ * 1. dp[i-1][s] = true => dp[i][s] = true;
+ * 2. dp[i-1][s-nums[i]] = true => dp[i][s] = true
+ * dp[i][s] = dp[i-1][s] || (s >= nums[i] && dp[i-1][s-nums[i]])
+ * return dp[n][sum / 2]
  */

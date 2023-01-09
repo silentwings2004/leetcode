@@ -55,14 +55,13 @@ public class LC1981_MinimizetheDifferenceBetweenTargetandChosenElements {
     }
 
     // S2：backpack
-    // time = O(m * n), space = O(m * n)
+    // time = O(m * n * k), space = O(k)
     public int minimizeTheDifference2(int[][] mat, int target) {
         int m = mat.length, n = mat[0].length;
-
         HashSet<Integer> cap = new HashSet<>();
-        cap.add(0); // 目前什么都没选，总重量是0，这是个种子
+        cap.add(0);
 
-        for (int i = 0; i < m; i++) { // O(m)
+        for (int i = 0; i < m; i++) {
             HashSet<Integer> temp = new HashSet<>();
             int great = -1;
             for (int x : cap) {
@@ -74,9 +73,9 @@ public class LC1981_MinimizetheDifferenceBetweenTargetandChosenElements {
                 }
             }
             if (great != -1) temp.add(great);
-            cap.clear();
-            for (int num : temp) cap.add(num);
+            cap = temp;
         }
+
         int diff = Integer.MAX_VALUE;
         for (int x : cap) {
             diff = Math.min(diff, Math.abs(x - target));

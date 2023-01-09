@@ -37,35 +37,36 @@ public class LC1801_NumberofOrdersintheBacklog {
     // S1: PQ
     // time = O(nlogn), space = O(n)
     public int getNumberOfBacklogOrders(int[][] orders) {
-        PriorityQueue<int[]> buy = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]); // {price, amount}
         PriorityQueue<int[]> sell = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
+        PriorityQueue<int[]> buy = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]);
 
-        long res = 0, M = (long)(1e9 + 7);
-        for (int[] order : orders) { // O(n)
-            res = (res + order[1]) % M;
-            if (order[2] == 0) {
-                while (!sell.isEmpty() && sell.peek()[0] <= order[0] && order[1] > 0) {
-                    int[] cur = sell.poll(); // O(logn)
-                    int num = Math.min(cur[1], order[1]);
-                    cur[1] -= num;
-                    order[1] -= num;
-                    res = (res - num * 2 + M) % M; // 可能会减出负数，必须要+M来避免
-                    if (cur[1] > 0) sell.offer(new int[]{cur[0], cur[1]});
+        for (int[] x : orders) {
+            int price = x[0], amount = x[1], op = x[2];
+            if (op == 0) {
+                while (!sell.isEmpty() && sell.peek()[0] <= price && amount > 0) {
+                    int[] y = sell.poll();
+                    if (y[1] > amount) {
+                        sell.offer(new int[]{y[0], y[1] - amount, 1});
+                        amount = 0;
+                    } else amount -= y[1];
                 }
-                if (order[1] > 0) buy.offer(new int[]{order[0], order[1]});
+                if (amount > 0) buy.offer(new int[]{x[0], amount, 0});
             } else {
-                while (!buy.isEmpty() && buy.peek()[0] >= order[0] && order[1] > 0) {
-                    int[] cur = buy.poll();
-                    int num = Math.min(cur[1], order[1]);
-                    cur[1] -= num;
-                    order[1] -= num;
-                    res = (res - num * 2 + M) % M;
-                    if (cur[1] > 0) buy.offer(new int[]{cur[0], cur[1]});
+                while (!buy.isEmpty() && buy.peek()[0] >= price && amount > 0) {
+                    int[] y = buy.poll();
+                    if (y[1] > amount) {
+                        buy.offer(new int[]{y[0], y[1] - amount, 0});
+                        amount = 0;
+                    } else amount -= y[1];
                 }
-                if (order[1] > 0) sell.offer(new int[]{order[0], order[1]});
+                if (amount > 0) sell.offer(new int[]{x[0], amount, 1});
             }
         }
-        return (int)res;
+
+        long mod = (long)(1e9 + 7), res = 0;
+        while (!buy.isEmpty()) res = (res + buy.poll()[1]) % mod;;
+        while (!sell.isEmpty()) res = (res + sell.poll()[1]) % mod;
+        return (int) res;
     }
 
     // S1.2: PQ

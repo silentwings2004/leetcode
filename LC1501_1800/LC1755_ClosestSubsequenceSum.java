@@ -62,10 +62,54 @@ public class LC1755_ClosestSubsequenceSum {
         helper(nums, cur + 1, end, sum, set); // not take
     }
 
-    // S2: Bit Mask
+    // S2: 双向dfs
+    // time = O(2^(n / 2)), space = O(n)
+    final int N = 2000010;
+    int[] q;
+    int n, goal, cnt, ans;
+    public int minAbsDifference2(int[] nums, int goal) {
+        q = new int[N];
+        n = nums.length;
+        this.goal = goal;
+        cnt = 0;
+        ans = Integer.MAX_VALUE;
+
+        dfs1(nums, 0, 0);
+        Arrays.sort(q, 0, cnt);
+        dfs2(nums, (n + 1) / 2, 0);
+        return ans;
+    }
+
+    private void dfs1(int[] nums, int u, int s) {
+        if (u == (n + 1) / 2) {
+            q[cnt++] = s;
+            return;
+        }
+        dfs1(nums, u + 1, s);
+        dfs1(nums, u + 1, s + nums[u]);
+    }
+
+    private void dfs2(int[] nums, int u, int s) {
+        if (u == n) {
+            int l = 0, r = cnt - 1;
+            while (l < r) {
+                int mid = l + r + 1 >> 1;
+                if (q[mid] + s <= goal) l = mid;
+                else r = mid - 1;
+            }
+            ans = Math.min(ans, Math.abs(q[r] + s - goal));
+            if (r + 1 < cnt) ans = Math.min(ans, Math.abs(q[r + 1] + s - goal));
+            return;
+        }
+
+        dfs2(nums, u + 1, s);
+        dfs2(nums, u + 1, s + nums[u]);
+    }
+
+    // S3: Bit Mask
     // time = (2^(n/2) * n), space = O(n)
     private int res = Integer.MAX_VALUE;
-    public int minAbsDifference2(int[] nums, int goal) {
+    public int minAbsDifference3(int[] nums, int goal) {
         // corner case
         if (nums == null || nums.length == 0) return 0;
 
@@ -149,6 +193,9 @@ public class LC1755_ClosestSubsequenceSum {
 //        }
 //        return nums.get(left) >= t ? left : left + 1;
 //    }
+
+
+
 }
 /**
  * pos = -insertionPoint - 1 => insertionPoint = -pos - 1 = -1 * (pos + 1)
@@ -178,4 +225,10 @@ public class LC1755_ClosestSubsequenceSum {
  * sums' = {a1 + nums[i], a2 + nums[i], ... ak + nums[i]} 这些subset都肯定是不一样的
  * 归并排序
  * sums = {b1,b2,...b2k}  => time = O(2^(n/2))
+ *
+ * 双向dfs
+ * 前面选法 + 后面选法拼在一起
+ * SL + SR 与 goal 最接近
+ * SL + SR <= goal => 二分
+ * O(2^22 * 18)
  */

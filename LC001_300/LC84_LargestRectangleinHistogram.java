@@ -63,6 +63,54 @@ public class LC84_LargestRectangleinHistogram {
         }
         return area;
     }
+
+    // S3: 3 pass
+    // time = O(n), space = O(n)
+    public int largestRectangleArea3(int[] heights) {
+        int n = heights.length;
+        int[] left = new int[n], right = new int[n];
+        Stack<Integer> stk = new Stack<>();
+
+        for (int i = 0; i < n; i++) {
+            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) stk.pop();
+            if (stk.isEmpty()) left[i] = -1;
+            else left[i] = stk.peek();
+            stk.push(i);
+        }
+
+        stk.clear();
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) stk.pop();
+            if (stk.isEmpty()) right[i] = n;
+            else right[i] = stk.peek();
+            stk.push(i);
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));
+        }
+        return res;
+    }
+
+    // S1.2
+    // time = O(n), space = O(n)
+    final int N = 100010;
+    public int largestRectangleArea4(int[] heights) {
+        int[] stk = new int[N];
+        int tt = 0, n = heights.length, res = 0;
+
+        for (int i = 0; i <= n; i++) {
+            int h = i == n ? 0 : heights[i];
+            while (tt > 0 && heights[stk[tt]] >= h) {
+                int height = heights[stk[tt--]];
+                int width = tt == 0 ? i : i - stk[tt] - 1;
+                res = Math.max(res, height * width);
+            }
+            stk[++tt] = i;
+        }
+        return res;
+    }
 }
 /**
  * 贪心法的原则是维护一个递增（严格的说是非递减）的栈序列s，s里面是所给数组元素的index（注意不是数组元素本身）。
@@ -86,4 +134,5 @@ public class LC84_LargestRectangleinHistogram {
  *
  * 单调栈经典应用：
  * 求每个数左边第一个比它小的数
+ * 本质上是找左边第一个比它小的数和右边第一个比它小的数
  */

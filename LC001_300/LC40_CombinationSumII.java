@@ -28,30 +28,28 @@ public class LC40_CombinationSumII {
      * @return
      */
     // time = O(2^n), space = O(n)   每个位置上的元素都分取或者不取2种情况，最大深度为n
+    List<List<Integer>> res;
+    List<Integer> path;
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        List<List<Integer>> res = new ArrayList<>();
-        // corner case
-        if (candidates == null || candidates.length == 0) return res;
-
+        res = new ArrayList<>();
+        path = new ArrayList<>();
         Arrays.sort(candidates);
-        dfs(candidates, target, 0, 0, new ArrayList<>(), res);
+        dfs(candidates, 0, target);
         return res;
     }
 
-    private void dfs(int[] candidates, int target, int idx, int sum, List<Integer> path, List<List<Integer>> res) {
-        // base case - success
-        if (sum == target) {
+    private void dfs(int[] a, int u, int t) {
+        if (t == 0) {
             res.add(new ArrayList<>(path));
             return;
         }
 
-        // base case - fail
-        if (idx == candidates.length || sum > target) return;
+        if (t < 0) return;
 
-        for (int i = idx; i < candidates.length; i++) {
-            if (i > idx && candidates[i] == candidates[i - 1]) continue;
-            path.add(candidates[i]);
-            dfs(candidates, target, i + 1, sum + candidates[i], path, res);
+        for (int i = u; i < a.length; i++) {
+            if (i > u && a[i] == a[i - 1]) continue;
+            path.add(a[i]);
+            dfs(a, i + 1, t - a[i]);
             path.remove(path.size() - 1);
         }
     }

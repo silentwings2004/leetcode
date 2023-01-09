@@ -21,35 +21,8 @@ public class LC38_CountandSay {
      * @param n
      * @return
      */
-    // S1
-    // time = O(2^n), space = O(2^(n - 1)) for space of sb
-    public String countAndSay(int n) {
-        int i = 1;
-        String res = "1";
-        while (i < n) {
-            int count = 0;
-            char c = res.charAt(0);
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j <= res.length(); j++) { // 注意这里是<=，最后==的时候要把最后的结果append进入sb，否则最后一组会遗漏
-                if (j != res.length() && res.charAt(j) == c) count++; // 注意j最后会出界的情况！
-                else {
-                    sb.append(count);
-                    sb.append(c);
-                    if (j != res.length()) { // 只要j还没出界，出现下一个不重复的数时就要重新统计count，以及对应的新digit
-                        count = 1;
-                        c = res.charAt(j);
-                    }
-                }
-            }
-            res = sb.toString();
-            i++;
-        }
-        return res;
-    }
-
-    // S2: simulation
     // time = O(n * m), space = O(m)  n: 给定的正整数， m: 生成的字符串中的最大长度
-    public String countAndSay2(int n) {
+    public String countAndSay(int n) {
         String s = "1";
         for (int i = 0; i < n - 1; i++) {
             StringBuilder sb = new StringBuilder();

@@ -38,21 +38,19 @@ public class LC2221_FindTriangularSumofanArray {
     // S2: Math - Combinatorics
     // time = O(n^2), space = O(1)
     public int triangularSum2(int[] nums) {
-        int n = nums.length - 1;
-        long[][] comb = new long[1000][1000];
-        for (int i = 0; i <= n; i++) {
-            comb[i][i] = comb[i][0] = 1;
-            if (i == 0) continue;
-            for (int j = 1; j < i; j++) {
-                comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
-                comb[i][j] %= 10;
+        int N = 1000;
+        int[][] C = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (j == 0) C[i][j] = 1;
+                else C[i][j] = (C[i - 1][j - 1] + C[i - 1][j]) % 10;
             }
         }
-        long res = 0;
-        for (int i = 0; i <= n; i++) {
-            res += nums[i] * comb[n][i] % 10;
-        }
-        return (int) res % 10;
+
+        int res = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) res += nums[i] * C[n - 1][i] % 10;
+        return res % 10;
     }
 }
 /**
