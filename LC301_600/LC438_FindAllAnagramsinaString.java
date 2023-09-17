@@ -20,19 +20,18 @@ public class LC438_FindAllAnagramsinaString {
      * @param p
      * @return
      */
-    // time = O(n + m), space = O(1)
+    // time = O(m + n), space = O(1)
     public List<Integer> findAnagrams(String s, String p) {
         List<Integer> res = new ArrayList<>();
-        int[] pc = new int[26];
-        for (char c : p.toCharArray()) pc[c - 'a']++;
+        int n = s.length(), m = p.length();
+        int[] cnt1 = new int[26];
+        for (int i = 0; i < m; i++) cnt1[p.charAt(i) - 'a']++;
 
-        int[] sc = new int[26];
-        for (int i = 0; i < s.length(); i++) {
-            sc[s.charAt(i) - 'a']++;
-            if (i >= p.length()) {
-                sc[s.charAt(i - p.length()) - 'a']--;
-            }
-            if (Arrays.equals(sc, pc)) res.add(i - p.length() + 1);
+        int[] cnt2 = new int[26];
+        for (int i = 0, j = 0; i < n; i++) {
+            cnt2[s.charAt(i) - 'a']++;
+            if (i - j + 1 > m) cnt2[s.charAt(j++) - 'a']--;
+            if (Arrays.equals(cnt1, cnt2)) res.add(j);
         }
         return res;
     }

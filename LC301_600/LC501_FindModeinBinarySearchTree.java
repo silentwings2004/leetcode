@@ -28,40 +28,28 @@ public class LC501_FindModeinBinarySearchTree {
      * @return
      */
     // time = O(n), space = O(n)
-    int max = 0, count = 1;
-    List<Integer> list;
-    TreeNode prev = null;
+    List<Integer> res;
+    int maxc = 0, curc = 0, last;
     public int[] findMode(TreeNode root) {
-        // corner case
-        if (root == null) return new int[0];
-
-        list = new ArrayList<>();
-        inorder(root);
-        int[] res = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) res[i] = list.get(i);
-        return res;
+        dfs(root);
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            ans[i] = res.get(i);
+        }
+        return ans;
     }
 
-    private void inorder(TreeNode node) {
+    private void dfs(TreeNode node) {
         if (node == null) return;
-
-        inorder(node.left);
-        if (prev == null) {
-            list.add(node.val);
-            max = 1;
-            count = 1;
-        } else {
-            if (prev.val == node.val) count++;
-            else count = 1;
-            if (count >= max) {
-                if (count > max) {
-                    max = count;
-                    list.clear();
-                }
-                list.add(node.val);
-            }
-        }
-        prev = node;
-        inorder(node.right);
+        dfs(node.left);
+        if (curc == 0 || last == node.val) curc++;
+        else curc = 1;
+        last = node.val;
+        if (curc > maxc) {
+            res = new ArrayList<>();
+            res.add(last);
+            maxc = curc;
+        } else if (curc == maxc) res.add(last);
+        dfs(node.right);
     }
 }

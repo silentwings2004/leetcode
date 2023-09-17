@@ -33,12 +33,11 @@ public class LC2379_MinimumRecolorstoGetKConsecutiveBlackBlocks {
     public int minimumRecolors(String blocks, int k) {
         int n = blocks.length(), res = n;
         for (int i = 0, j = 0, cnt = 0; i < n; i++) {
-            if (blocks.charAt(i) == 'W') cnt++;
-            if (j <= i - k) {
-                if (blocks.charAt(j) == 'W') cnt--;
-                j++;
+            cnt += blocks.charAt(i) == 'W' ? 1 : 0;
+            if (i - j + 1 == k) {
+                res = Math.min(res, cnt);
+                cnt -= blocks.charAt(j++) == 'W' ? 1 : 0;
             }
-            if (i >= k - 1) res = Math.min(res, cnt);
         }
         return res;
     }

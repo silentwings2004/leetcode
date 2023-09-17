@@ -19,25 +19,44 @@ public class LC138_CopyListwithRandomPointer {
      * @param head
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public Node copyRandomList(Node head) {
-        // corner case
         if (head == null) return head;
 
-        Node dummy = new Node(0);
-        Node cur1 = head, cur2 = dummy; // 核心思想：采用dummy node！
-
         HashMap<Node, Node> map = new HashMap<>();
+        Node dummy = new Node(-1), cur = dummy;
 
-        while (cur1 != null) {
-            map.putIfAbsent(cur1, new Node(cur1.val)); // copy cur1
-            cur2.next = map.get(cur1); // 连接cur2
-            if (cur1.random != null) {
-                map.putIfAbsent(cur1.random, new Node(cur1.random.val)); // copy cur1.random
-                cur2.next.random = map.get(cur1.random); // 连接cur2.random
+        for (Node p = head; p != null; p = p.next) {
+            map.putIfAbsent(p, new Node(p.val));
+            cur.next = map.get(p);
+            if (p.random != null) {
+                map.putIfAbsent(p.random, new Node(p.random.val));
+                cur.next.random = map.get(p.random);
             }
-            cur1 = cur1.next;
-            cur2 = cur2.next;
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public Node copyRandomList2(Node head) {
+        for (Node p = head; p != null; p = p.next.next) {
+            Node q = new Node(p.val);
+            q.next = p.next;
+            p.next = q;
+        }
+
+        for (Node p = head; p != null; p = p.next.next) {
+            if (p.random != null) p.next.random = p.random.next;
+        }
+
+        Node dummy = new Node(-1), cur = dummy;
+        for (Node p = head; p != null; p = p.next) {
+            Node q = p.next;
+            cur = cur.next = q;
+            p.next = q.next;
         }
         return dummy.next;
     }
@@ -54,3 +73,8 @@ public class LC138_CopyListwithRandomPointer {
         }
     }
 }
+/**
+ * 每个点的clone点都放在它后面
+ * 这样同样可以起到哈希表的作用, .next可以找到克隆点
+ * 先复制random边: p.next.random = q.next
+ */

@@ -26,13 +26,28 @@ public class LC191_Numberof1Bits {
      * @return
      */
     // you need to treat n as an unsigned value
+    // S1
     // time = O(1), space = O(1)
     public int hammingWeight(int n) {
-        int res = 0;
+        int cnt = 0;
         for (int i = 0; i < 32; i++) {
-            res += n & 1;
-            n >>= 1;
+            if ((n >> i & 1) == 1) cnt++;
         }
-        return res;
+        return cnt;
+    }
+
+    // S2: low bit
+    // time = O(1), space = O(1)
+    public int hammingWeight2(int n) {
+        int cnt = 0;
+        while (n != 0) {
+            n -= lowbit(n);
+            cnt++;
+        }
+        return cnt;
+    }
+
+    private int lowbit(int x) {
+        return x & -x;
     }
 }

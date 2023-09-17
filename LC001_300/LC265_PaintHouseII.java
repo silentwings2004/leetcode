@@ -27,107 +27,35 @@ public class LC265_PaintHouseII {
      */
     // S1: DP (最优解！)
     // time = O(n * k), space = O(1)
+    final int INF = (int) 1e8;
     public int minCostII(int[][] costs) {
-        // corner case
-        if (costs == null || costs.length == 0 || costs[0] == null || costs[0].length == 0) return 0;
+        int n = costs.length, m = costs[0].length;
+        int[][] f = new int[n + 1][m];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], INF);
+        for (int i = 0; i < m; i++) f[0][i] = 0;
 
-        int n = costs.length, k = costs[0].length;
-        // min1 is the index of the 1st-smallest cost till previous house
-        // min2 is the index of the 2nd-smallest cost till previous house
-        int min1 = -1, min2 = -1;
-
-        for (int i = 0; i < n; i++) {
-            int last1 = min1, last2 = min2;
-            min1 = -1;
-            min2 = -1;
-            for (int j = 0; j < k; j++) {
-                if (j != last1) { // 与前一所房子为止的最小值不冲突
-                    costs[i][j] += last1 < 0 ? 0 : costs[i - 1][last1];
-                } else { // 冲突的话，只能取次小值
-                    costs[i][j] += last2 < 0 ? 0 : costs[i - 1][last2];
-                }
-                // find the indices of 1st and 2nd smallest cost of painting current house i
-                if (min1 < 0 || costs[i][j] < costs[i][min1]) {
-                    min2 = min1;
-                    min1 = j;
-                } else if (min2 < 0 || costs[i][j] < costs[i][min2]) {
-                    min2 = j;
-                }
-            }
-        }
-        return costs[n - 1][min1];
-    }
-
-    // S2: DP
-    // time = O(n * klogk), space = O(n * k)
-    public int minCostII2(int[][] costs) {
-        // corner case
-        if (costs == null || costs.length == 0 || costs[0] == null || costs[0].length == 0) return 0;
-
-        int n = costs.length, k = costs[0].length;
-        int[][] dp = new int[n][k];
-        for (int j = 0; j < k; j++) dp[0][j] = costs[0][j];
-
-        for (int i = 1; i < n; i++) {
-            int[][] temp = new int[k][2];
-            for (int j = 0; j < k; j++) {
-                temp[j][0] = dp[i - 1][j];
-                temp[j][1] = j;
-            }
-            Arrays.sort(temp, (o1, o2) -> o1[0] - o2[0]);
-            for (int j = 0; j < k; j++) { // 对于每个j，我们都要找一个最小值
-                if (j == temp[0][1]) {
-                    dp[i][j] = temp[1][0] + costs[i][j];
-                } else {
-                    dp[i][j] = temp[0][0] + costs[i][j];
-                }
-            }
-        }
-        int res = Integer.MAX_VALUE;
-        for (int j = 0; j < k; j++) {
-            res = Math.min(res, dp[n - 1][j]);
-        }
-        return res;
-    }
-
-    // S3: DP
-    // time = O(n * k), space = O(n * k)
-    public int minCostII3(int[][] costs) {
-        // corner case
-        if (costs == null || costs.length == 0 || costs[0] == null || costs[0].length == 0) return 0;
-
-        int n = costs.length, k = costs[0].length;
-        int[][] dp = new int[n + 1][k];
-
-
-        int id1 = 0, id2 = 0;
-
+        int a = 0, b = 0, c1 = 0;
         for (int i = 1; i <= n; i++) {
-            int min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
-            for (int j = 0; j < k; j++) {
-                if (dp[i - 1][j] < min1) {
-                    min2 = min1;
-                    id2 = id1;
-                    min1 = dp[i - 1][j];
-                    id1 = j;
-                } else if (dp[i - 1][j] < min2) {
-                    min2 = dp[i - 1][j];
-                    id2 = j;
+            for (int j = 0; j < m; j++) {
+                if (j != c1) f[i][j] = a + costs[i - 1][j];
+                else f[i][j] = b + costs[i - 1][j];
+            }
+
+            a = INF;
+            b = INF;
+            for (int j = 0; j < m; j++) {
+                if (f[i][j] < a) {
+                    b = a;
+                    a = f[i][j];
+                    c1 = j;
+                } else if (f[i][j] < b) {
+                    b = f[i][j];
                 }
             }
-
-            for (int j = 0; j < k; j++) {
-                dp[i][j] = costs[i - 1][j];
-                if (j != id1) {
-                    dp[i][j] += min1;
-                } else dp[i][j] += (min2 == Integer.MAX_VALUE ? 0 : min2);
-            }
         }
 
-        int res = Integer.MAX_VALUE;
-        for (int j = 0; j < k; j++) {
-            res = Math.min(res, dp[n][j]);
-        }
+        int res = INF;
+        for (int i = 0; i < m; i++) res = Math.min(res, f[n][i]);
         return res;
     }
 }

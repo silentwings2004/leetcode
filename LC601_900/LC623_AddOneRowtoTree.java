@@ -52,37 +52,58 @@ public class LC623_AddOneRowtoTree {
             return node;
         }
 
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        int minLen = 1;
-
-        while (!queue.isEmpty() && minLen < d - 1) {
-            int size = queue.size();
-            while (size-- > 0) {
-                TreeNode cur = queue.poll();
-                if (cur.left != null) queue.offer(cur.left);
-                if (cur.right != null) queue.offer(cur.right);
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        for (int i = 0; i < d - 2; i++) {
+            for (int j = q.size(); j > 0; j--) {
+                TreeNode t = q.poll();
+                if (t.left != null) q.offer(t.left);
+                if (t.right != null) q.offer(t.right);
             }
-            minLen++;
         }
 
-        while (!queue.isEmpty()) {
-            TreeNode cur = queue.poll();
-            TreeNode temp = cur.left;
-            cur.left = new TreeNode(v);
-            cur.left.left = temp;
-            temp = cur.right;
-            cur.right = new TreeNode(v);
-            cur.right.right = temp;
+        while (!q.isEmpty()) {
+            TreeNode t = q.poll();
+            TreeNode left = new TreeNode(v);
+            TreeNode right = new TreeNode(v);
+            left.left = t.left;
+            right.right = t.right;
+            t.left = left;
+            t.right = right;
         }
         return root;
     }
 
-    private class TreeNode {
-        private int val;
-        private TreeNode left, right;
-        public TreeNode(int val) {
-            this.val = val;
+    // S2
+    // time = O(n), space = O(n)
+    int v, d;
+    public TreeNode addOneRow2(TreeNode root, int val, int depth) {
+        if (root == null) return root;
+
+        v = val;
+        d = depth;
+        if (d == 1) {
+            TreeNode node = new TreeNode(v);
+            node.left = root;
+            return node;
+        }
+        dfs(root, 1);
+        return root;
+    }
+
+    private void dfs(TreeNode node, int depth) {
+        if (node == null) return;
+
+        if (depth + 1 == d) {
+            TreeNode l = new TreeNode(v);
+            TreeNode r = new TreeNode(v);
+            l.left = node.left;
+            r.right = node.right;
+            node.left = l;
+            node.right = r;
+        } else {
+            dfs(node.left, depth + 1);
+            dfs(node.right, depth + 1);
         }
     }
 }

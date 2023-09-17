@@ -27,17 +27,15 @@ public class LC1603_DesignParkingSystem {
      * At most 1000 calls will be made to addCar
      */
     // time = O(1), space = O(1)
-    int[] parking;
+    int[] w;
     public LC1603_DesignParkingSystem(int big, int medium, int small) {
-        parking = new int[3];
-        parking[0] = big;
-        parking[1] = medium;
-        parking[2] = small;
+        w = new int[]{big, medium, small};
     }
 
     public boolean addCar(int carType) {
-        if (parking[carType - 1] > 0) {
-            parking[carType - 1]--;
+        int i = carType;
+        if (w[i - 1] > 0) {
+            w[i - 1]--;
             return true;
         }
         return false;

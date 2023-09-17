@@ -25,15 +25,10 @@ public class LC575_DistributeCandies {
      * @param candyType
      * @return
      */
-    // time = O(n), space = O(n);
+    // time = O(n), space = O(n)
     public int distributeCandies(int[] candyType) {
-        // corner case
-        if (candyType == null || candyType.length == 0) return 0;
-
         HashSet<Integer> set = new HashSet<>();
-        for (int n : candyType) set.add(n);
-
-        int max = candyType.length / 2;
-        return Math.min(set.size(), max);
+        for (int x : candyType) set.add(x);
+        return Math.min(set.size(), candyType.length / 2);
     }
 }

@@ -24,7 +24,8 @@ public class LC883_ProjectionAreaof3DShapes {
      * @param grid
      * @return
      */
-    // time = O(m * n), space = O(m + n)
+    // S1
+    // time = O(n^2), space = O(n)
     public int projectionArea(int[][] grid) {
         int n = grid.length;
         int[] row = new int[n];
@@ -38,6 +39,22 @@ public class LC883_ProjectionAreaof3DShapes {
                 col[i] = Math.max(col[i], grid[j][i]);
             }
             res += row[i] + col[i];
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n^2), space = O(1)
+    public int projectionArea2(int[][] grid) {
+        int n = grid.length, res = 0;
+        for (int i = 0; i < n; i++) {
+            int r = 0, c = 0;
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] > 0) res++;
+                r = Math.max(r, grid[i][j]);
+                c = Math.max(c, grid[j][i]);
+            }
+            res += r + c;
         }
         return res;
     }

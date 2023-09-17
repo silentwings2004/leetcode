@@ -32,15 +32,14 @@ public class LC2090_KRadiusSubarrayAverages {
     // time = O(n), space = O(n)
     public int[] getAverages(int[] nums, int k) {
         int n = nums.length;
-        long[] presum = new long[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + nums[i - 1];
-
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
         int[] res = new int[n];
         Arrays.fill(res, -1);
-        int divisor = 2 * k + 1;
-        for (int i = k + 1; i + k <= n; i++) {
-            long sum = presum[i + k] - presum[i - k - 1];
-            res[i - 1] = (int)(sum / divisor);
+        for (int i = k, j = 0; i + k + 1 <= n; i++) {
+            long sum = s[i + k + 1] - s[j];
+            res[i] = (int)(sum / (k * 2 + 1));
+            j++;
         }
         return res;
     }

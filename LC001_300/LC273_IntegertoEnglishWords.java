@@ -74,4 +74,36 @@ public class LC273_IntegertoEnglishWords {
             return less20[num / 100] + " Hundred " + helper(num % 100);
         }
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    String[] num0_19 = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    String[] num20_90 = new String[]{"Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+    String[] num1000 = new String[]{"Billion ", "Million ", "Thousand ", ""};
+    public String numberToWords3(int num) {
+        StringBuilder sb = new StringBuilder();
+        if (num == 0) return "Zero";
+        for (int i = (int) 1e9, j = 0; i >= 1; i /= 1000, j++) {
+            if (num >= i) {
+                sb.append(get(num / i)).append(num1000[j]);
+                num %= i;
+            }
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+
+    private String get(int x) {
+        StringBuilder sb = new StringBuilder();
+        if (x >= 100) {
+            sb.append(num0_19[x / 100]).append(" Hundred ");
+            x %= 100;
+        }
+        if (x >= 20) {
+            sb.append(num20_90[x / 10 - 2]).append(" ");
+            x %= 10;
+            if (x > 0) sb.append(num0_19[x]).append(" ");
+        } else if (x > 0) sb.append(num0_19[x]).append(" ");
+        return sb.toString();
+    }
 }

@@ -22,19 +22,16 @@ public class LC846_HandofStraights {
      */
     // time = O(nlogn), space = O(n)
     public boolean isNStraightHand(int[] hand, int groupSize) {
-        int n = hand.length, k = groupSize;
-        if (n % k != 0) return false;
-
         TreeMap<Integer, Integer> map = new TreeMap<>();
         for (int x : hand) map.put(x, map.getOrDefault(x, 0) + 1);
-
         while (map.size() > 0) {
-            int m = map.firstKey();
-            for (int i = m; i < m + k; i++) {
-                if (map.containsKey(i)) {
+            int x = map.firstKey();
+            for (int i = x; i < x + groupSize; i++) {
+                if (!map.containsKey(i)) return false;
+                else {
                     map.put(i, map.get(i) - 1);
                     if (map.get(i) == 0) map.remove(i);
-                } else return false;
+                }
             }
         }
         return true;

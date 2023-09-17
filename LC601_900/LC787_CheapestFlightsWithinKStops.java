@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class LC787_CheapestFlightsWithinKStops {
+public class  LC787_CheapestFlightsWithinKStops {
     /**
      * There are n cities connected by some number of flights. You are given an array flights where flights[i] =
      * [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.
@@ -96,6 +96,25 @@ public class LC787_CheapestFlightsWithinKStops {
         }
         return -1;
     }
+
+    // S3: Bellman-Ford
+    // time = O((m + n) * k), space = O(n)
+    final int INF = (int) 1e9;
+    public int findCheapestPrice4(int n, int[][] flights, int src, int dst, int k) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, INF);
+        dist[src] = 0;
+        k++;
+        while (k-- > 0) {
+            int[] cur = dist.clone();
+            for (int[] x : flights) {
+                int a = x[0], b = x[1], c = x[2];
+                cur[b] = Math.min(cur[b], dist[a] + c);
+            }
+            dist = cur.clone();
+        }
+        return dist[dst] == INF ? -1 : dist[dst];
+    }
 }
 /**
  * Floyd是有问题的
@@ -127,4 +146,7 @@ public class LC787_CheapestFlightsWithinKStops {
  * 结点是个2维量 (x,3) -> (y,4)
  * DP:
  * dp[i][b] = min{dp[i - 1][a] + price[a][b]}  where there is a flight a -> b
+ *
+ * Bellman-Ford算法的经典应用 ——> DP
+ * f(k,i): 从起点最多经过k条边到i的所有路径长度的最小值
  */

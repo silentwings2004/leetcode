@@ -24,17 +24,23 @@ public class LC1041_RobotBoundedInCircle {
      */
     // time = O(n), space = O(1)
     public boolean isRobotBounded(String instructions) {
-        int[][] directions = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-        int x = 0, y = 0, k = 0;
-        for (char c : instructions.toCharArray()) {
+        int x = 0, y = 0, d = 0, n = instructions.length();
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        for (int i = 0; i < n; i++) {
+            char c = instructions.charAt(i);
             if (c == 'G') {
-                x += directions[k][0];
-                y += directions[k][1];
-            } else if (c == 'L') k--;
-            else k++;
-            if (k < 0) k += 4;
-            if (k >= 4) k %= 4;
+                x += dx[d];
+                y += dy[d];
+            } else if (c == 'L') d = (d + 3) % 4;
+            else d = (d + 1) % 4;
         }
-        return (x == 0 && y == 0) || k != 0;
+        return x == 0 && y == 0 || d != 0;
     }
 }
+/**
+ * 1.回到原点 true
+ * 2.未回到起点  方向有四大类：
+ * 1. 同样方向：一直沿着直线走 false
+ * 2. 90度方向：true
+ * 3. 相反方向：true
+ */

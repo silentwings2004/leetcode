@@ -31,7 +31,7 @@ public class LC1012_NumbersWithRepeatedDigits {
 
         int m = nums.size();
         boolean[] st = new boolean[10];
-        for (int  i = 1; i < m; i++) res -= 9 * P(9, i - 1);
+        for (int i = 1; i < m; i++) res -= 9 * P(9, i - 1);
 
         res -= (nums.get(m - 1) - 1) * P(9, m - 1);
         st[nums.get(m - 1)] = true;

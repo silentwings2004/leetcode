@@ -97,13 +97,13 @@ public class LC798_SmallestRotationwithHighestScore {
                 b[n]--;
             }
         }
-        int res = Integer.MAX_VALUE, k = 0, sum = 0;
-        for (int i = 0; i < n; i++) {
+        int res = Integer.MAX_VALUE, k = 0;
+        for (int i = 0, sum = 0; i < n; i++) {
             sum += b[i];
             if (res > sum) {
                 res = sum;
-            }
                 k = i;
+            }
         }
         return k;
     }
@@ -141,4 +141,13 @@ public class LC798_SmallestRotationwithHighestScore {
  * diff[i+1+N-A[i] -= 1
  *
  * ref: LC1674
+ *
+ * i < ai
+ * i - k < ai => ai不得分
+ * i - ai + 1 <= k <= i
+ * k可以取负数
+ * k = -1 => k = n - 1
+ * i - k >= 0 => i >= k
+ * 每个数都有个不得分的区间，将这些区间全部+1
+ * 找到一个点，使得在这个点上不得分的元素最少 => 这个点上的数值最小 => 差分
  */

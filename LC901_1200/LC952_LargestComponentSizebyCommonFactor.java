@@ -154,8 +154,8 @@ public class LC952_LargestComponentSizebyCommonFactor {
  * primes = [ ]  O(Mloglogn) 非常高效的算法，非常接近于线性时间复杂度
  * 因式分解部分比较慢
  *
- * 枚举公约数
- * sqrt(n)
+ * 逆向思考：枚举公约数
+ * sqrt(n)：求一下每个数的约数有哪些
  * 将每一个数都挂到所有大于1的约数下面，然后再去枚举公约数
  * 将每一个公约数下面挂的所有点用并查集合并起来即可。
  */

@@ -107,6 +107,27 @@ public class LC300_LongestIncreasingSubsequence {
         }
         return set.size();
     }
+
+    // S4: BS
+    // time = O(nlogn), space = O(n)
+    public int lengthOfLIS5(int[] nums) {
+        int n = nums.length;
+        int[] q = new int[n + 1];
+        q[0] = Integer.MIN_VALUE;
+
+        int len = 0;
+        for (int i = 0; i < n; i++) {
+            int l = 0, r = len;
+            while (l < r) {
+                int mid = l + r + 1 >> 1;
+                if (q[mid] < nums[i]) l = mid;
+                else r = mid - 1;
+            }
+            len = Math.max(len, r + 1);
+            q[r + 1] = nums[i];
+        }
+        return len;
+    }
 }
 /**
  * dp 第二类dp基本型 O(n^2)

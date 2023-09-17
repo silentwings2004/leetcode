@@ -100,6 +100,70 @@ public class LC1514_PathwithMaximumProbability {
         }
         return 0;
     }
+
+    // S3: spfa
+    final int N = 10010, M = N * 4;
+    final double INF = 1e-9;
+    int[] h, e, ne;
+    double[] w, dist;
+    int idx;
+    int[] q;
+    boolean[] st;
+    public double maxProbability3(int n, int[][] edges, double[] succProb, int start, int end) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        w = new double[M];
+        dist = new double[N];
+        q = new int[N];
+        st = new boolean[N];
+        Arrays.fill(h, -1);
+        idx = 0;
+
+        for (int i = 0; i < edges.length; i++) {
+            int a = edges[i][0], b = edges[i][1];
+            double c = succProb[i];
+            add(a, b, c);
+            add(b, a, c);
+        }
+
+        double t = spfa(start, end);
+        return t == INF ? 0 : t;
+    }
+
+    private double spfa(int a, int b) {
+        Arrays.fill(dist, INF);
+        dist[a] = 1;
+        int hh = 0, tt = 1;
+        q[0] = a;
+        st[a] = true;
+
+        while (hh != tt) {
+            int t = q[hh++];
+            if (hh == N) hh = 0;
+            st[t] = false;
+
+            for (int i = h[t]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] < dist[t] * w[i]) {
+                    dist[j] = dist[t] * w[i];
+                    if (!st[j]) {
+                        q[tt++] = j;
+                        if (tt == N) tt = 0;
+                        st[j] = true;
+                    }
+                }
+            }
+        }
+        return dist[b];
+    }
+
+    private void add(int a, int b, double c) {
+        e[idx] = b;
+        w[idx] = c;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * 从起点到终点，路径乘积最大的

@@ -21,21 +21,21 @@ public class LC668_KthSmallestNumberinMultiplicationTable {
      */
     // time = O(mlog(m * n)), space = O(1)
     public int findKthNumber(int m, int n, int k) {
-        int left = 1, right = m * n;
-        while (left < right) {
-            int mid = left + (right - left) / 2; // [0,1] => 0
-            if (countEqualOrSmaller(m, n, mid) < k) left = mid + 1;
-            else right = mid; // 可能有若干个相同的数，>= k的时候还是可能是有效解！
+        int l = 1, r = m * n;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (get(m, n, mid) >= k) r = mid; // 可能有若干个相同的数，>= k的时候还是可能是有效解！
+            else l = mid + 1;
         }
-        return left;
+        return r;
     }
 
-    private int countEqualOrSmaller(int m, int n, int val) {
-        int count = 0;
+    private int get(int m, int n, int mid) {
+        int res = 0;
         for (int i = 1; i <= m; i++) {
-            count += Math.min(n, val / i); // 每一行的个数不可能大于n，有可能val非常大，在行数上比较大
+            res += Math.min(n, mid / i); // 每一行的个数不可能大于n，有可能val非常大，在行数上比较大
         }
-        return count;
+        return res;
     }
 }
 /**

@@ -22,11 +22,11 @@ public class LC235_LowestCommonAncestorofaBinarySearchTree {
     // S1
     // time = O(n), space = O(n)
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        // corner case
-        if (root == null || p == null || q == null) return null;
+        if (root == null || p == null || q == null) return root;
+        if (p == root || q == root) return root;
 
         if (p.val < root.val && q.val < root.val) return lowestCommonAncestor(root.left, p, q);
-        if (p.val > root.val && q.val > root.val) return lowestCommonAncestor(root.right, p, q);
+        else if (p.val > root.val && q.val > root.val) return lowestCommonAncestor(root.right, p, q);
         return root;
     }
 }

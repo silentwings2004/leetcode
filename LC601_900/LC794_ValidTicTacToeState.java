@@ -29,40 +29,45 @@ public class LC794_ValidTicTacToeState {
      * @return
      */
     // time = O(1), space = O(1)
+    String[] g;
     public boolean validTicTacToe(String[] board) {
-        int x = 0, o = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i].charAt(j) == 'X') x++;
-                if (board[i].charAt(j) == 'O') o++;
-            }
-        }
-        if (!(x == o || x == o + 1)) return false;
-        if (x == o && win(board, 'X')) return false;
-        if (x == o + 1 && win(board, 'O')) return false;
+        g = board;
+        int sx = get('X'), so = get('O');
+        boolean cx = check('X'), co = check('O');
+        if (cx && co) return false;
+        if (cx && sx != so + 1) return false;
+        if (co && sx != so) return false;
+        if (sx != so && sx != so + 1) return false;
         return true;
     }
 
-    private boolean win(String[] board, char ch) {
+    private int get(char c) {
+        int res = 0;
         for (int i = 0; i < 3; i++) {
-            if (board[i].charAt(0) == board[i].charAt(1) && board[i].charAt(1) == board[i].charAt(2) && board[i].charAt(0) == ch) {
-                return true;
+            for (int j = 0; j < 3; j++) {
+                if (g[i].charAt(j) == c) res++;
             }
         }
+        return res;
+    }
 
-        for (int j = 0; j < 3; j++) {
-            if (board[0].charAt(j) == board[1].charAt(j) && board[1].charAt(j) == board[2].charAt(j) && board[0].charAt(j) == ch) {
-                return true;
-            }
+    private boolean check(char c) {
+        for (int i = 0; i < 3; i++) {
+            if (g[i].charAt(0) == c && g[i].charAt(1) == c && g[i].charAt(2) == c) return true;
+            if (g[0].charAt(i) == c && g[1].charAt(i) == c && g[2].charAt(i) == c) return true;
         }
 
-        if (board[0].charAt(0) == board[1].charAt(1) && board[1].charAt(1) == board[2].charAt(2) && board[0].charAt(0) == ch) {
-            return true;
-        }
-
-        if (board[0].charAt(2) == board[1].charAt(1) && board[1].charAt(1) == board[2].charAt(0) && board[0].charAt(2) == ch) {
-            return true;
-        }
+        if (g[0].charAt(0) == c && g[1].charAt(1) == c && g[2].charAt(2) == c) return true;
+        if (g[2].charAt(0) == c && g[1].charAt(1) == c && g[0].charAt(2) == c) return true;
         return false;
     }
 }
+/**
+ * sx so
+ * cx co
+ * if (cx && co) return false
+ * if (cx && sx != so + 1) return false
+ * if (co && sx != so) return false
+ * if (sx != so && sx != so + 1) return false
+ * return true
+ */

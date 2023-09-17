@@ -26,26 +26,34 @@ public class LC522_LongestUncommonSubsequenceII {
      */
     // time = O(n^2 * k), space = O(1)  k: avg length of each string
     public int findLUSlength(String[] strs) {
-        // corner case
-        if (strs == null || strs.length <= 1) return 0;
-
-        int n = strs.length, res = -1, j = 0;
+        int n = strs.length, res = -1;
         for (int i = 0; i < n; i++) {
-            for (j = 0; j < n; j++) {
+            boolean is_sub = false;
+            for (int j = 0; j < n; j++) {
                 if (i == j) continue;
-                if (isSubsequence(strs[i], strs[j])) break;
+                if (check(strs[i], strs[j])) {
+                    is_sub = true;
+                    break;
+                }
             }
-            if (j == n) res = Math.max(res, strs[i].length());
+            if (!is_sub) res = Math.max(res, strs[i].length());
         }
         return res;
     }
 
-    private boolean isSubsequence(String a, String b) {
-        int i = 0, j = 0;
-        while (i < a.length() && j < b.length()) {
-            if (a.charAt(i) == b.charAt(j)) i++;
+    private boolean check(String s, String t) {
+        int m = s.length(), n = t.length();
+        int i, j;
+        for (i = 0, j = 0; i < m && j < n;) {
+            if (s.charAt(i) == t.charAt(j)) i++;
             j++;
         }
-        return i == a.length();
+        return i == m;
     }
 }
+/**
+ * 核心：如果某个序列的子序列是特殊序列的话，那么这个序列整体一定也是特殊序列
+ * 答案必然是某个序列本身
+ * 依次枚举每个序列，然后判断该序列是否是其他序列的子序列
+ * 如何快速判断一个序列是另一个序列的子序列呢？
+ */

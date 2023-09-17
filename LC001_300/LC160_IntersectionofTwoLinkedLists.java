@@ -24,15 +24,11 @@ public class LC160_IntersectionofTwoLinkedLists {
      */
     // time = O(m + n), space = O(1)
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        // corner case
-        if (headA == null || headB == null) return null;
-
-        ListNode curA = headA, curB = headB;
-
-        while (curA != curB) {
-            curA = curA == null ? headB : curA.next;
-            curB = curB == null ? headA : curB.next;
+        ListNode a = headA, b = headB;
+        while (a != b) {
+            a = a != null ? a.next : headB;
+            b = b != null ? b.next : headA;
         }
-        return curA;
+        return a;
     }
 }

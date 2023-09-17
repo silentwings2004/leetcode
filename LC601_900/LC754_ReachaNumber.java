@@ -37,7 +37,7 @@ public class LC754_ReachaNumber {
 }
 /**
  * 1+2+3+...+n = sum >= T
- * sum -= 2 * (a1+a2+...+ak) = T
+ * sum - 2 * (a1+a2+...+ak) = T
  * a1+...+ak = (sum - T) / 2  整数
  * 1. Sum 与 T 的奇偶性相同
  * 2. Sum >= T

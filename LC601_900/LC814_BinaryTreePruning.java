@@ -28,4 +28,19 @@ public class LC814_BinaryTreePruning {
         if (root.left == null && root.right == null && root.val == 0) return null;
         return root;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public TreeNode pruneTree2(TreeNode root) {
+        if (!dfs(root)) return null;
+        return root;
+    }
+
+    private boolean dfs(TreeNode node) {
+        if (node == null) return false;
+
+        if (!dfs(node.left)) node.left = null;
+        if (!dfs(node.right)) node.right = null;
+        return node.val == 1 || node.left != null || node.right != null;
+    }
 }

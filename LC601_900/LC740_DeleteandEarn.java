@@ -61,19 +61,18 @@ public class LC740_DeleteandEarn {
     }
 
     // S3: dp
-    // time = O(n), space = O(n)
+    // time = O(n + N), space = O(N)
+    final int N = 10010;
     public int deleteAndEarn3(int[] nums) {
-        int n = 10005;
-        int[][] dp = new int[n][2];
-        int[] count = new int[n];
-
-        for (int x : nums) count[x]++;
+        int[] cnt = new int[N];
+        int[][] f = new int[N][2];
+        for (int x : nums) cnt[x]++;
 
         int res = 0;
-        for (int i = 1; i < n; i++) {
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1]);
-            dp[i][1] = dp[i - 1][0] + i * count[i];
-            res = Math.max(res, Math.max(dp[i][0], dp[i][1]));
+        for (int i = 1; i < N; i++) {
+            f[i][0] = Math.max(f[i - 1][0], f[i - 1][1]);
+            f[i][1] = f[i - 1][0] + i * cnt[i];
+            res = Math.max(res, Math.max(f[i][0], f[i][1]));
         }
         return res;
     }
@@ -88,8 +87,11 @@ public class LC740_DeleteandEarn {
  * dp[i] = Math.max(dp[i - 2] + gain[i], dp[i - 1])
  *
  * 有限制的选择问题 -> dp
- * f[i][0] = max(f[i-1][0],f[i-1][1])
- * f[i][1] = f[i-1][0]+i*count[i])
+ * f[i][0] = max(f[i-1][0],f[i-1][1]) 不选i
+ * f[i][1] = f[i-1][0]+i*count[i]) 选择i
  * 选i，i+1不能选，否则不选i，就能选i+1
  * => time = O(n)
+ *
+ * 开个10000的数组
+ * 选x就不能选x+1，对后面的元素只有1位限制 => 打家劫舍，有限制的选择问题
  */

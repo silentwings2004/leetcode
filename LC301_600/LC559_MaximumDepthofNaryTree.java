@@ -20,12 +20,10 @@ public class LC559_MaximumDepthofNaryTree {
     // S1: DFS
     // time = O(n), space = O(n)
     public int maxDepth(Node root) {
-        // corner case
         if (root == null) return 0;
-
         int res = 0;
-        for (Node child : root.children) {
-            res = Math.max(res, maxDepth(child));
+        for (Node next : root.children) {
+            res = Math.max(res, maxDepth(next));
         }
         return res + 1;
     }

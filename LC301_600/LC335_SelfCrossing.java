@@ -56,6 +56,19 @@ public class LC335_SelfCrossing {
         if (i == n) return false;
         return true;
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    public boolean isSelfCrossing3(int[] distance) {
+        int n = distance.length;
+        if (n <= 3) return false;
+        for (int i = 3; i < n; i++) {
+            if (distance[i - 1] <= distance[i - 3] && distance[i] >= distance[i - 2]) return true;
+            if (i >= 4 && distance[i - 3] == distance[i - 1] && distance[i] + distance[i - 4] >= distance[i - 2]) return true;
+            if (i >= 5 && distance[i - 3] >= distance[i - 1] && distance[i - 1] + distance[i - 5] >= distance[i - 3] && distance[i - 2] >= distance[i - 4] && distance[i - 4] + distance[i] >= distance[i - 2]) return true;
+        }
+        return false;
+    }
 }
 /**
  * 通过画图分析可以得知，要想不相交，就只有三种模式：
@@ -70,4 +83,9 @@ public class LC335_SelfCrossing {
  * 这个等价于我们将x[i-1]-=x[i-3]，之后从x[i+1]开始，只要仍服从螺旋收缩的基本规则即可。
  * 特别注意，为了保证x[i-4]之类的操作不会下标越界，一个巧妙的方法是在x序列的前面添加四个零，
  * 模拟一圈螺旋膨胀的路径，然后从i=4开始考察它接下来的模式。
+ *
+ * 1. 连续4步以内有交点
+ * 2. 连续5步以内
+ * 3. 连续6步以内
+ * 一定属于这3种情况之一
  */

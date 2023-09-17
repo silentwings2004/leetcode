@@ -44,18 +44,14 @@ public class LC275_HIndexII {
     // S2: BS
     // time = O(logn), space = O(1)
     public int hIndex2(int[] citations) {
-        // corner case
-        if (citations == null || citations.length == 0) return 0;
-
         int n = citations.length;
-        int left = 0, right = n - 1;
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (citations[mid] < n - mid) left = mid + 1;
-            else right = mid;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (citations[mid] >= n - mid) r = mid;
+            else l = mid + 1;
         }
-        return citations[left] >= n - left ? n - left : 0;
+        return citations[r] >= n - r ? n - r : 0;
     }
 }
 /**

@@ -32,8 +32,29 @@ public class LC174_DungeonGame {
      * @param dungeon
      * @return
      */
+    // S1: DP
     // time = O(m * n), space = O(m * n)
     public int calculateMinimumHP(int[][] dungeon) {
+        int m = dungeon.length, n = dungeon[0].length;
+        int[][] f = new int[m][n];
+        for (int i = 0; i < m; i++) Arrays.fill(f[i], Integer.MAX_VALUE);
+
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == m - 1 && j == n - 1) f[i][j] = Math.max(1, 1 - dungeon[i][j]);
+                else {
+                    if (i + 1 < m) f[i][j] = f[i + 1][j] - dungeon[i][j];
+                    if (j + 1 < n) f[i][j] = Math.min(f[i][j], f[i][j + 1] - dungeon[i][j]);
+                    f[i][j] = Math.max(1, f[i][j]);
+                }
+            }
+        }
+        return f[0][0];
+    }
+
+    // S1.2
+    // time = O(m * n), space = O(m * n)
+    public int calculateMinimumHP2(int[][] dungeon) {
         // corner case
         if (dungeon == null || dungeon.length == 0 || dungeon[0] == null || dungeon[0].length == 0) return 0;
 
@@ -70,4 +91,10 @@ public class LC174_DungeonGame {
  * dp[i][j] = min{dp[i][j+1] - dungeion[j][j+1], dp[i+1][j] - dungeon[i+1][j]}
  * dp[i][j] 不能 <= 0 => dp[i][j] = Math.max(dp[i][j], 1)
  * 右下往左上推
+ *
+ * dp:
+ * 状态表示：f(i,j)
+ * 1.集合：所有从(i,j)走到终点的路径的集合
+ * 2.属性：最小值
+ * 状态计算：x + w(i,j) >= f(i,j+1) => f(i,j) = f(i,j+1)-w(i,j)
  */

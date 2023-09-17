@@ -34,7 +34,7 @@ public class LC264_UglyNumberII {
     // time = O(3n * log(3n)), space = O(n)
     public int nthUglyNumber2(int n) {
         PriorityQueue<Long> pq = new PriorityQueue<>();
-        pq.offer((long)1);
+        pq.offer((long) 1);
 
         for (int t = 0; t < n; t++) {
             long cur = pq.poll();
@@ -45,6 +45,22 @@ public class LC264_UglyNumberII {
             pq.offer(cur * 5);
         }
         return -1;
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    public int nthUglyNumber3(int n) {
+        List<Integer> q = new ArrayList<>();
+        q.add(1);
+
+        for (int i = 0, j = 0, k = 0; q.size() < n;) {
+            int t = Math.min(q.get(i) * 2, Math.min(q.get(j) * 3, q.get(k) * 5));
+            q.add(t);
+            if (q.get(i) * 2 == t) i++;
+            if (q.get(j) * 3 == t) j++;
+            if (q.get(k) * 5 == t) k++;
+        }
+        return q.get(q.size() - 1);
     }
 }
 /**

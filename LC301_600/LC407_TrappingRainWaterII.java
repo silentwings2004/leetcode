@@ -64,4 +64,5 @@ public class LC407_TrappingRainWaterII {
  * bfs + pq
  * f(i,j): 每个格子最终的高度
  * 从(i,j)到每个边界的每条路径中的最大值的最小值
+ * f(i,j) = h(i,j)
  */

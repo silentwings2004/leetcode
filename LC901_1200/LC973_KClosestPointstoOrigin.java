@@ -89,6 +89,49 @@ public class LC973_KClosestPointstoOrigin {
         }
         return res;
     }
+
+    // S3
+    // time = O(n), space = O(n)
+    public int[][] kClosest3(int[][] points, int k) {
+        int n = points.length;
+        long[][] q = new long[n][2];
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0], y = points[i][1];
+            long dist = x * x + y * y;
+            q[i] = new long[]{dist, i};
+        }
+
+        long d = quick_select(q, 0, n - 1, k);
+        int[][] res = new int[k][2];
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (q[i][0] <= d) {
+                int j = (int) q[i][1];
+                res[cnt++] = points[j];
+            }
+        }
+        return res;
+    }
+
+    private long quick_select(long[][] q, int l, int r, int k) {
+        if (l == r) return q[l][0];
+
+        long x = q[l + r >> 1][0];
+        int i = l - 1, j = r + 1;
+        while (i < j) {
+            while (q[++i][0] < x);
+            while (q[--j][0] > x);
+            if (i < j) {
+                long[] t = q[i];
+                q[i] = q[j];
+                q[j] = t;
+            }
+        }
+
+        int sl = j - l + 1;
+        if (k <= sl) return quick_select(q, l, j, k);
+        return quick_select(q, j + 1, r, k - sl);
+    }
 }
 /**
  * pq -> O(nlogk)

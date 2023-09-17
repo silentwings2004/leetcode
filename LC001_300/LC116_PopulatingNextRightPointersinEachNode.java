@@ -50,18 +50,15 @@ public class LC116_PopulatingNextRightPointersinEachNode {
     // S2: iteration
     // time = O(n), space = O(1)
     public Node connect2(Node root) {
-        // corner case
         if (root == null) return root;
 
-        Node parent = root; // level start node
-        while (parent != null) {
-            Node cur = parent;
-            while (cur != null) {
-                if (cur.left != null) cur.left.next = cur.right;
-                if (cur.right != null && cur.next != null) cur.right.next = cur.next.left;
-                cur = cur.next;
+        Node cur = root;
+        while (cur.left != null) {
+            for (Node p = cur; p != null; p = p.next) {
+                p.left.next = p.right;
+                if (p.next != null) p.right.next = p.next.left;
             }
-            parent = parent.left;
+            cur = cur.left;
         }
         return root;
     }
@@ -87,3 +84,6 @@ public class LC116_PopulatingNextRightPointersinEachNode {
         }
     }
 }
+/**
+ * 宽搜的时候用next省掉queue
+ */

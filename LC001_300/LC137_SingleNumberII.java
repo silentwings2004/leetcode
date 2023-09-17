@@ -42,18 +42,14 @@ public class LC137_SingleNumberII {
     // S2: 01状态机
     // time = O(n), space = O(1)
     public int singleNumber2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int ones = 0, twos = 0;
-        for (int n : nums) {
-            ones = (ones ^ n) & ~twos;
-            twos = (twos ^ n) & ~ones;
+        int one = 0, two = 0;
+        for (int x : nums) {
+            one = (one ^ x) & (~two);
+            two = (two ^ x) & (~one);
         }
-        return ones;
+        return one;
     }
 }
-
 /**
  * 全部加起来，除以3，出现3次的肯定能被3整除
  * bits[10]
@@ -65,4 +61,6 @@ public class LC137_SingleNumberII {
  * 用2个bit来实现对3取模的结果：00 01 10
  * int bits1, bits2
  * bits1(i), bits2(i) 共同来表示是00，01，10
+ *
+ * 统计出来各位之和 mod 3 的值
  */

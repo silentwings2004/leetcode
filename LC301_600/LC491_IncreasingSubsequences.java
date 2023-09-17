@@ -19,23 +19,25 @@ public class LC491_IncreasingSubsequences {
      * @return
      */
     // time = O(n * 2^n), space = O(2^n)
+    List<List<Integer>> res;
+    List<Integer> path;
     public List<List<Integer>> findSubsequences(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        dfs(nums, 0, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        dfs(nums, 0);
         return res;
     }
 
-    private void dfs(int[] nums, int idx, List<Integer> path, List<List<Integer>> res) {
-        // base case
-        if (path.size() > 1) res.add(new ArrayList<>(path));
-        if (idx == nums.length) return;
+    private void dfs(int[] nums, int u) {
+        if (path.size() >= 2) res.add(new ArrayList<>(path));
+        if (u == nums.length) return;
 
-        HashSet<Integer> visited = new HashSet<>();
-        for (int i = idx; i < nums.length; i++) {
-            if (!visited.add(nums[i])) continue;
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = u; i < nums.length; i++) {
+            if (!set.add(nums[i])) continue;
             if (path.size() > 0 && nums[i] < path.get(path.size() - 1)) continue;
             path.add(nums[i]);
-            dfs(nums, i + 1, path, res);
+            dfs(nums, i + 1);
             path.remove(path.size() - 1);
         }
     }

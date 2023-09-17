@@ -75,6 +75,30 @@ public class LC354_RussianDollEnvelopes {
         }
         return buffer.get(left) >= target ? left : left + 1;
     }
+
+    // S3: LIS
+    // time = O(nlogn), space = O(n)
+    public int maxEnvelopes3(int[][] envelopes) {
+        Arrays.sort(envelopes, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o2[1] - o1[1]);
+        int n = envelopes.length;
+        int[] q = new int[n + 1];
+        q[0] = Integer.MIN_VALUE;
+
+        int len = 0;
+        for (int i = 0; i < n; i++) {
+            int x = envelopes[i][1];
+            int l = 0, r = len;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (q[mid] < x) l = mid + 1;
+                else r = mid;
+            }
+            r = q[r] >= x ? r : r + 1;
+            len = Math.max(len, r);
+            q[r] = x;
+        }
+        return len;
+    }
 }
 /**
  * length: 1 3 4 6 8 9
@@ -103,5 +127,4 @@ public class LC354_RussianDollEnvelopes {
  * 集合：所有以ai结尾的上升子序列的集合
  * 属性：最大值
  * 状态计算：
- *
  */

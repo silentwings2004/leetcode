@@ -1,5 +1,5 @@
 package LC601_900;
-
+import java.util.*;
 public class LC839_SimilarStringGroups {
     /**
      * Two strings X and Y are similar if we can swap two letters (in different positions) of X, so that it equals Y.
@@ -30,48 +30,39 @@ public class LC839_SimilarStringGroups {
      * @param strs
      * @return
      */
-    // time = O(n^2 * k + nlogn), space = O(n)
-    int[] parent;
+    // time = O(n^2 * k), space = O(n)
+    int[] p;
     public int numSimilarGroups(String[] strs) {
         int n = strs.length;
-        parent = new int[n];
-        for (int i = 0; i < n; i++) parent[i] = i;
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
 
-        int count = n;
+        int cnt = n;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 if (check(strs[i], strs[j])) {
-                    if (findParent(i) != findParent(j)) {
-                        union(i, j);
-                        count--;
+                    int pa = find(i), pb = find(j);
+                    if (pa != pb) {
+                        p[pa] = pb;
+                        cnt--;
                     }
                 }
             }
         }
-        return count;
+        return cnt;
     }
 
-    private boolean check(String a, String b) {
-        if (a.equals(b)) return true;
-        int n = a.length(), count = 0;
+    private boolean check(String s, String t) {
+        int n = s.length(), cnt = 0;
         for (int i = 0; i < n; i++) {
-            if (a.charAt(i) != b.charAt(i)) {
-                count++;
-                if (count > 2) return false;
-            }
+            if (s.charAt(i) != t.charAt(i)) cnt++;
+            if (cnt > 2) return false;
         }
         return true;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }

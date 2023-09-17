@@ -72,21 +72,14 @@ public class LC373_FindKPairswithSmallestSums {
     // time = O(klogk), space = O(k)
     public List<List<Integer>> kSmallestPairs2(int[] nums1, int[] nums2, int k) {
         List<List<Integer>> res = new ArrayList<>();
-        // corner case
-        if (nums1 == null || nums1.length == 0 || nums2 == null || nums2.length == 0 || k <= 0 ) return res;
-
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
         int m = nums1.length, n = nums2.length;
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> (o1[0] + o1[1]) - (o2[0] + o2[1]));
-
-        for (int i = 0; i < m && i < k; i++) {
-            pq.offer(new int[]{nums1[i], nums2[0], 0});
-        }
+        for (int i = 0; i < n; i++) pq.offer(new int[]{nums1[0] + nums2[i], 0, i});
 
         while (k-- > 0 && !pq.isEmpty()) {
-            int[] cur = pq.poll();
-            res.add(Arrays.asList(cur[0], cur[1]));
-            if (cur[2] == n - 1) continue;
-            pq.offer(new int[]{cur[0], nums2[cur[2] + 1], cur[2] + 1});
+            int[] t = pq.poll();
+            res.add(Arrays.asList(nums1[t[1]], nums2[t[2]]));
+            if (t[1] + 1 < m) pq.offer(new int[]{nums1[t[1] + 1] + nums2[t[2]], t[1] + 1, t[2]});
         }
         return res;
     }

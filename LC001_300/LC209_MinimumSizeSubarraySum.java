@@ -22,19 +22,15 @@ public class LC209_MinimumSizeSubarraySum {
      * @param nums
      * @return
      */
+    // S1: Two Pointers
     // time = O(n), space = O(1)
     public int minSubArrayLen(int target, int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int j = -1; // left pointer     (j, i]  左开右闭
-        int sum = 0, res = Integer.MAX_VALUE;
-        for (int i = 0; i < nums.length; i++) { // right pointer
+        int n = nums.length, sum = 0, res = Integer.MAX_VALUE;
+        for (int i = 0, j = 0; i < n; i++) {
             sum += nums[i];
             while (sum >= target) {
-                res = Math.min(res, i - j); // j 不包括，所以长度是 i - j
-                j++;
-                sum -= nums[j];
+                res = Math.min(res, i - j + 1);
+                sum -= nums[j++];
             }
         }
         return res == Integer.MAX_VALUE ? 0 : res;

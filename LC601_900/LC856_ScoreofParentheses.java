@@ -24,29 +24,8 @@ public class LC856_ScoreofParentheses {
     // S1: Stack
     // time = O(n), space = O(n)
     public int scoreOfParentheses(String s) {
-        Stack<Integer> stack = new Stack<>();
-        int cur = 0;
-
-        for (char c : s.toCharArray()) {
-            if (c == ')') {  // need to pop
-                if (cur != 0) cur *= 2;
-                else cur = 1;
-                cur += stack.peek();
-                stack.pop();
-            } else {
-                stack.push(cur);
-                cur = 0; // 进入下一层，reset cur = 0;
-            }
-        }
-        return cur;
-    }
-
-    // S2: stack
-    // time = O(n), space = O(n)
-    public int scoreOfParentheses2(String s) {
         Stack<Integer> stk = new Stack<>();
         stk.push(0);
-
         for (char c : s.toCharArray()) {
             if (c == '(') stk.push(0);
             else {

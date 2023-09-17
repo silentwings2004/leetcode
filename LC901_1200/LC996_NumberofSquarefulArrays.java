@@ -60,6 +60,43 @@ public class LC996_NumberofSquarefulArrays {
             visited[x] = false;
         }
     }
+
+    // S2: 状态压缩DP
+    // time = O(2^n * n^2), space = O(2^n * n)
+    public int numSquarefulPerms2(int[] nums) {
+        int n = nums.length;
+        int[][] f = new int[1 << n][n];
+        for (int i = 0; i < n; i++) f[1 << i][i] = 1;
+        for (int i = 0; i < 1 << n; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) {
+                    for (int k = 0; k < n; k++) {
+                        if ((i >> k & 1) == 0 && is_sqr(nums[j] + nums[k])) {
+                            f[i | 1 << k][k] += f[i][j];
+                        }
+                    }
+                }
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < n; i++) res += f[(1 << n) - 1][i];
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x : nums) map.put(x, map.getOrDefault(x, 0) + 1);
+        for (int v : map.values()) res /= fact(v);
+        return res;
+    }
+
+    private boolean is_sqr(int x) {
+        int t = (int)Math.sqrt(x);
+        return t * t == x;
+    }
+
+    private int fact(int x) {
+        int res = 1;
+        for (int i = 1; i <= x; i++) res *= i;
+        return res;
+    }
 }
 /**
  * 1 <= A.length <= 12  => 暴力
@@ -74,4 +111,8 @@ public class LC996_NumberofSquarefulArrays {
  * 建立边 1 - 8
  * 相当于一笔画，找出所有路径，把所有点都走遍
  * 排序去重
+ *
+ * 状态压缩dp
+ * f(i,j): 已经用过的数的状态是i，且最后一个数为j
+ * => O(2^n * n^2)
  */

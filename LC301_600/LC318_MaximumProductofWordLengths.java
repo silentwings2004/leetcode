@@ -22,9 +22,7 @@ public class LC318_MaximumProductofWordLengths {
         int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
             int state = 0;
-            for (char c : words[i].toCharArray()) {
-                state |= 1 << (c - 'a');
-            }
+            for (char c : words[i].toCharArray()) state |= 1 << (c - 'a');
             arr[i] = state;
         }
 

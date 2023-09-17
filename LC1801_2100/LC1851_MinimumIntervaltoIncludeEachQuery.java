@@ -90,6 +90,86 @@ public class LC1851_MinimumIntervaltoIncludeEachQuery {
         }
         return res;
     }
+
+    // S3
+    // time = O(nlogn + mlogm), space = O(m + logn)
+    public int[] minInterval3(int[][] intervals, int[] queries) {
+        Arrays.sort(intervals, (o1, o2) -> {
+            int a = o1[1] - o1[0], b = o2[1] - o2[0];
+            if (a != b) return a - b;
+            return o1[0] - o2[0];
+        });
+
+        int n = intervals.length, m = queries.length;
+        TreeMap<Integer, List<Integer>> map = new TreeMap<>();
+        for (int i = 0; i < m; i++) {
+            map.putIfAbsent(queries[i], new ArrayList<>());
+            map.get(queries[i]).add(i);
+        }
+        int[] res = new int[m];
+        Arrays.fill(res, -1);
+        for (int i = 0; i < n; i++) {
+            int a = intervals[i][0], b = intervals[i][1];
+            int t = a;
+            while (true) {
+                Integer ck = map.ceilingKey(t);
+                if (ck == null || ck > b) break;
+                for (int v : map.get(ck)) res[v] = b - a + 1;
+                map.remove(ck);
+                t = ck;
+            }
+        }
+        return res;
+    }
+
+    // S4: Union Find
+    // time = O(mlogm + nlogn), space = O(m + n)
+    int[] p, w;
+    List<Integer> xs;
+    public int[] minInterval4(int[][] intervals, int[] queries) {
+        xs = new ArrayList<>();
+        for (int[] x : intervals) xs.addAll(Arrays.asList(x[0], x[1]));
+        for (int x : queries) xs.add(x);
+        xs = new ArrayList<>(new HashSet<>(xs));
+        Collections.sort(xs);
+
+        int n = xs.size();
+        p = new int[n + 1];
+        w = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            p[i] = i;
+            w[i] = -1;
+        }
+
+        Arrays.sort(intervals, (o1, o2) -> (o1[1] - o1[0]) - (o2[1] - o2[0]));
+        for (int[] x : intervals) {
+            int l = get(x[0]), r = get(x[1]), len = x[1] - x[0] + 1;
+            while (find(l) <= r) {
+                l = find(l);
+                w[l] = len;
+                p[l] = l + 1;
+            }
+        }
+        int m = queries.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) res[i] = w[get(queries[i])];
+        return res;
+    }
+
+    private int get(int x) {
+        int l = 0, r = xs.size() - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (xs.get(mid) >= x) r = mid;
+            else l = mid + 1;
+        }
+        return xs.get(r) >= x ? r : r + 1;
+    }
+
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
+    }
 }
 /**
  * [start, end]

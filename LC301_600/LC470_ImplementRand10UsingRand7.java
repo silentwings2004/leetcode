@@ -33,7 +33,16 @@ public class LC470_ImplementRand10UsingRand7 {
     public int rand7() {
         Random random = new Random();
         return random.nextInt(7) + 1;
-    };
+    }
+
+    // S2
+    public int rand10_2() {
+        int a = rand7();
+        int b = rand7();
+        while (a > 5) a = rand7();
+        while (b == 7) b = rand7();
+        return b <= 3 ? a : a + 5;
+    }
 }
 /**
  * 调用2次rand7(), 7 * 7 = 49种 1~49

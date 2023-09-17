@@ -21,37 +21,18 @@ public class LC1022_SumofRootToLeafBinaryNumbers {
      * @param root
      * @return
      */
-    // S1: dfs
     // time = O(n), space = O(n)
     public int sumRootToLeaf(TreeNode root) {
-        // corner case
-        if (root == null) return 0;
-
         return dfs(root, 0);
     }
 
-    private int dfs(TreeNode node, int val) {
-        if (node == null) return 0;
-
-        val = val * 2 + node.val;
-        return node.left == null && node.right == null ? val : dfs(node.left, val) + dfs(node.right, val);
-    }
-
-    // S2: dfs
-    // time = O(n), space = O(n)
-    public int sumRootToLeaf2(TreeNode root) {
-        if (root == null) return 0;
-
-        return helper(root, 0);
-    }
-
-    private int helper(TreeNode node, int val) {
-        val = val * 2 + node.val;
-        if (node.left == null && node.right == null) return val;
+    private int dfs(TreeNode node, int x) {
+        x = x * 2 + node.val;
+        if (node.left == null && node.right == null) return x;
 
         int res = 0;
-        if (node.left != null) res += helper(node.left, val);
-        if (node.right != null) res += helper(node.right, val);
+        if (node.left != null) res += dfs(node.left, x);
+        if (node.right != null) res += dfs(node.right, x);
         return res;
     }
 }

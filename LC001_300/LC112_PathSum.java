@@ -58,3 +58,8 @@ public class LC112_PathSum {
         return false;
     }
 }
+/**
+ * f(u): 从根走到u的权值之和
+ * f(a) = f(u) + a.val
+ * f(b) = f(u) + b.val
+ */

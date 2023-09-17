@@ -20,16 +20,10 @@ public class LC104_MaximumDepthofBinaryTree {
      */
     // time = O(n), space = O(n)
     public int maxDepth(TreeNode root) {
-        // corner case
         if (root == null) return 0;
 
-        int left = maxDepth(root.left);
-        int right = maxDepth(root.right);
-        return Math.max(left, right) + 1;
-    }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
+        int lh = maxDepth(root.left);
+        int rh = maxDepth(root.right);
+        return Math.max(lh, rh) + 1;
     }
 }

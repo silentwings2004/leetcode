@@ -31,46 +31,32 @@ public class LC752_OpentheLock {
     // time = O(n^2 * a^n + k) = O(16 + 10^4 + k) = O(k), space = O(a^n + k) = O(10^4 + k) = O(k)
     // a表示数字的个数 = 10，n表示状态的位数 = 4，k表示数组deadends的大小
     public int openLock(String[] deadends, String target) {
-        // corner case
-        if (target == null || target.length() == 0) return -1;
+        String start = "0000";
+        if (start.equals(target)) return 0;
+        HashSet<String> set = new HashSet<>();
+        for (String s : deadends) set.add(s);
+        if (set.contains(start)) return -1;
 
-        HashSet<String> deads = new HashSet<>();
-        for (String d : deadends) deads.add(d);
-        if (deads.contains("0000")) return -1;
+        Queue<String> q = new LinkedList<>();
+        q.offer(start);
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put(start, 0);
 
-        Queue<String> queue = new LinkedList<>();
-        queue.offer("0000");
-        HashSet<String> visited = new HashSet<>();
-        visited.add("0000");
-
-        int step = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                String cur = queue.poll();
-                if (cur.equals(target)) return step;
-                List<String> nexts = convert(cur);
-                for (String next : nexts) {
-                    if (visited.contains(next) || deads.contains(next)) continue;
-                    queue.offer(next);
-                    visited.add(next);
+        while (!q.isEmpty()) {
+            String t = q.poll();
+            if (t.equals(target)) return map.get(t);
+            for (int i = 0; i < 4; i++) {
+                for (int j = -1; j <= 1; j += 2) {
+                    char[] s = t.toCharArray();
+                    s[i] = (char)((s[i] - '0' + j + 10) % 10 + '0');
+                    String str = String.valueOf(s);
+                    if (!map.containsKey(str) && !set.contains(str)) {
+                        map.put(str, map.get(t) + 1);
+                        q.offer(str);
+                    }
                 }
             }
-            step++;
         }
         return -1;
-    }
-
-    private List<String> convert(String cur) {
-        List<String> res = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            for (int j = -1; j <= 1; j += 2) {
-                char[] temp = cur.toCharArray();
-                int num = (temp[i] - '0' + j + 10) % 10;
-                temp[i] = (char)(num + '0');
-                res.add(String.valueOf(temp));
-            }
-        }
-        return res;
     }
 }

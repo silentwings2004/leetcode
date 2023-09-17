@@ -104,6 +104,57 @@ public class LC310_MinimumHeightTrees {
         while (!queue.isEmpty()) res.add(queue.poll());
         return res;
     }
+
+    // S3: 树形dp
+    // time = O(n), space = O(n)
+    List<Integer>[] graph;
+    int[] d1, d2, p1, up;
+    public List<Integer> findMinHeightTrees3(int n, int[][] edges) {
+        graph = new List[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        d1 = new int[n];
+        d2 = new int[n];
+        p1 = new int[n];
+        up = new int[n];
+
+        for (int[] x : edges) {
+            int a = x[0], b = x[1];
+            graph[a].add(b);
+            graph[b].add(a);
+        }
+        dfs1(0, -1);
+        dfs2(0, -1);
+
+        int mind = n + 1;
+        for (int i = 0; i < n; i++) mind = Math.min(mind, Math.max(up[i], d1[i]));
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (Math.max(up[i], d1[i]) == mind) res.add(i);
+        }
+        return res;
+    }
+
+    private void dfs1(int u, int fa) {
+        for (int x : graph[u]) {
+            if (x == fa) continue;
+            dfs1(x, u);
+            int d = d1[x] + 1;
+            if (d > d1[u]) {
+                d2[u] = d1[u];
+                d1[u] = d;
+                p1[u] = x;
+            } else if (d > d2[u]) d2[u] = d;
+        }
+    }
+
+    private void dfs2(int u, int fa) {
+        for (int x : graph[u]) {
+            if (x == fa) continue;
+            if (p1[u] == x) up[x] = Math.max(up[u], d2[u]) + 1;
+            else up[x] = Math.max(up[u], d1[u]) + 1;
+            dfs2(x, u);
+        }
+    }
 }
 /**
  * 本题的意思是，想从一棵树的一群nodes里找出一个node作为根，使得从这个根节点出发，发散到周围的叶子节点的路径范围最短。
@@ -129,4 +180,11 @@ public class LC310_MinimumHeightTrees {
  * 我也是看网上参考才知道的。不过这也非常好理解。
  * 如果最后还剩下三个连通的节点（因为这是一棵树，必然彼此连通），显然还有从两边“往中央进军”的余地，必然只有一个是中央；
  * 如果最后还剩下两个连通的节点，两边各进一步的话就僵持住了，显然可以是并列的“中央”
+ *
+ * 树形dp
+ * u往下走 => d1[u] u往下走的最大长度, d2[u] 次大值
+ * u往上走 => up[u] u网上走的最大长度
+ * up[u] = max(up[p] + 1, d1[p] 对应u => d2[u]
+ *                        d1[p]走其他路线 => d1[p] + 1
+ * max(up[u], d1[u])
  */

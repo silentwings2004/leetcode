@@ -18,23 +18,21 @@ public class LC179_LargestNumber {
      */
     // time = O(nlogn), space = O(n)
     public String largestNumber(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return "";
-
-        String[] res = new String[nums.length];
-        for (int i = 0; i < nums.length; i++) res[i] = String.valueOf(nums[i]);
-        Arrays.sort(res, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                String s1 = o1 + o2;
-                String s2 = o2 + o1;
-                return s2.compareTo(s1);
-            }
+        int n = nums.length;
+        Integer[] arr = new Integer[n];
+        for (int i = 0; i < n; i++) arr[i] = nums[i];
+        Arrays.sort(arr, (o1, o2) -> {
+           String a = String.valueOf(o1), b = String.valueOf(o2);
+           return (b + a).compareTo(a + b);
         });
 
-        if (res[0].charAt(0) == '0') return "0";
+        if (arr[0] == 0) return "0";
         StringBuilder sb = new StringBuilder();
-        for (String s : res) sb.append(s);
+        for (int x : arr) sb.append(x);
         return sb.toString();
     }
 }
+/**
+ * 有全序关系的就可以排序
+ * 反对称性
+ */

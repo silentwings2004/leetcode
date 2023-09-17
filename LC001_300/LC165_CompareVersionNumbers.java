@@ -34,9 +34,31 @@ public class LC165_CompareVersionNumbers {
      * @param version2
      * @return
      */
-    // S1: split + parse
-    // time = O(m + n + max(m, n)), space = O(m + n)
+    // S1: two pointers 最优解！！！
+    // time = O(max(m, n)), space = O(1)
     public int compareVersion(String version1, String version2) {
+        int m = version1.length(), n = version2.length();
+        for (int i = 0, j = 0; i < m || j < n;) {
+            int a = i, b = j, x = 0, y = 0;
+            while (a < m && version1.charAt(a) != '.') {
+                x = x * 10 + version1.charAt(a) - '0';
+                a++;
+            }
+            while (b < n && version2.charAt(b) != '.') {
+                y = y * 10 + version2.charAt(b) - '0';
+                b++;
+            }
+            if (x > y) return 1;
+            if (x < y) return -1;
+            i = a + 1;
+            j = b + 1;
+        }
+        return 0;
+    }
+
+    // S2: split + parse
+    // time = O(m + n + max(m, n)), space = O(m + n)
+    public int compareVersion2(String version1, String version2) {
         String[] v1 = version1.split("\\."); // O(m)
         String[] v2 = version2.split("\\."); // O(n)
 
@@ -45,30 +67,6 @@ public class LC165_CompareVersionNumbers {
             int num2 = i < v2.length ? Integer.valueOf(v2[i]) : 0;
             if (num1 < num2) return -1;
             else if (num1 > num2) return 1;
-        }
-        return 0;
-    }
-
-    // S2: two pointers 最优解！！！
-    // time = O(max(m, n)), space = O(1)
-    public int compareVersion2(String version1, String version2) {
-        int i = 0, j = 0, v1 = 0, v2 = 0;
-        while (i < version1.length() || j < version2.length()) {
-            v1 = 0;
-            while (i < version1.length() && version1.charAt(i) != '.') {
-                v1 = v1 * 10 + (version1.charAt(i) - '0');
-                i++;
-            }
-            v2 = 0;
-            while (j < version2.length() && version2.charAt(j) != '.') {
-                v2 = v2 * 10 + (version2.charAt(j) - '0');
-                j++;
-            }
-
-            if (v1 < v2) return -1;
-            if (v1 > v2) return 1;
-            i++;
-            j++;
         }
         return 0;
     }

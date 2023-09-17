@@ -79,4 +79,46 @@ public class LC966_VowelSpellchecker {
         if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c =='u') return true;
         return false;
     }
+
+    // S2
+    // time = O((m + n) * k), space = O(n * k)
+    public String[] spellchecker2(String[] wordlist, String[] queries) {
+        HashMap<String, String> s1 = new HashMap<>();
+        HashMap<String, String> s2 = new HashMap<>();
+        HashMap<String, String> s3 = new HashMap<>();
+
+        for (String w : wordlist) {
+            if (!s1.containsKey(w)) s1.put(w, w);
+            if (!s2.containsKey(filter1(w))) s2.put(filter1(w), w);
+            if (!s3.containsKey(filter2(w))) s3.put(filter2(w), w);
+        }
+
+        int m = queries.length;
+        String[] res = new String[m];
+        for (int i = 0; i < m; i++) {
+            String q = queries[i];
+            if (s1.containsKey(q)) res[i] = q;
+            else if (s2.containsKey(filter1(q))) res[i] = s2.get(filter1(q));
+            else if (s3.containsKey(filter2(q))) res[i] = s3.get(filter2(q));
+            else res[i] = "";
+        }
+        return res;
+    }
+
+    private String filter1(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) sb.append(Character.toLowerCase(c));
+        return sb.toString();
+    }
+
+    private String filter2(String s) {
+        s = filter1(s);
+        StringBuilder sb = new StringBuilder();
+        String vowel = "aeiou";
+        for (char c : s.toCharArray()) {
+            if (vowel.indexOf(c) != -1) sb.append('a');
+            else sb.append(c);
+        }
+        return sb.toString();
+    }
 }

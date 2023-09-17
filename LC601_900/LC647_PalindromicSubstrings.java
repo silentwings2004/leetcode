@@ -40,18 +40,17 @@ public class LC647_PalindromicSubstrings {
     // S2: 中心扩散法
     // time = O(n^2), space = O(1)
     public int countSubstrings2(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int res = 0;
-        int n = s.length();
-
-        for (int center = 0; center < 2 * n - 1; center++) {
-            int left = center / 2, right = left + center % 2;
-            while (left >= 0 && right < n && s.charAt(left) == s.charAt(right)) {
+        int n = s.length(), res = 0;
+        for (int i = 0; i < n; i++) {
+            // case 1: length is odd
+            for (int j = i, k = i; j >= 0 && k < n; j--, k++) {
+                if (s.charAt(j) != s.charAt(k)) break;
                 res++;
-                left--;
-                right++;
+            }
+            // case 2: length is even
+            for (int j = i, k = i + 1; j >= 0 && k < n; j--, k++) {
+                if (s.charAt(j) != s.charAt(k)) break;
+                res++;
             }
         }
         return res;

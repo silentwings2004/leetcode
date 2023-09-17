@@ -32,18 +32,20 @@ public class LC997_FindtheTownJudge {
      */
     // time = O(n), space = O(n)
     public int findJudge(int n, int[][] trust) {
-        int[] indegree = new int[n];
-        int[] outdegree = new int[n];
-
+        int[] din = new int[n + 1], dout = new int[n + 1];
         for (int[] x : trust) {
-            int a = x[0] - 1, b = x[1] - 1;
-            outdegree[a]++;
-            indegree[b]++;
+            int a = x[0], b = x[1];
+            din[b]++;
+            dout[a]++;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (indegree[i] == n - 1 && outdegree[i] == 0) return i + 1;
+        int res = -1;
+        for (int i = 1; i <= n; i++) {
+            if (din[i] == n - 1 && dout[i] == 0) {
+                if (res != -1) return -1;
+                res = i;
+            }
         }
-        return -1;
+        return res;
     }
 }

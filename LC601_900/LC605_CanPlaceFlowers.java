@@ -24,48 +24,41 @@ public class LC605_CanPlaceFlowers {
      * @param n
      * @return
      */
-    // S1: brute-force
+    // S1
     // time = O(n), space = O(1)
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
-        int m = flowerbed.length, count = 0;
-        if (n == 0) return true;
-        if (m == 1) {
-            if (n > 1) return false;
-            return flowerbed[0] == 0;
-        }
+        int m = flowerbed.length;
         for (int i = 0; i < m; i++) {
-            if (flowerbed[i] == 0) {
-                if (i == 0) {
-                    if (flowerbed[i + 1] == 0) {
-                        flowerbed[i] = 1;
-                        count++;
-                    } else continue;
-                } else if (i == m - 1) {
-                    if (flowerbed[m - 2] == 0) {
-                        flowerbed[m - 2] = 1;
-                        count++;
-                    } else continue;
-                } else {
-                    if (flowerbed[i - 1] == 0 && flowerbed[i + 1] == 0) {
-                        flowerbed[i] = 1;
-                        count++;
-                    }
-                }
-            }
+            if (flowerbed[i] == 1) continue;
+            if (i > 0 && flowerbed[i - 1] == 1) continue;
+            if (i + 1 < m && flowerbed[i + 1] == 1) continue;
+            flowerbed[i] = 1;
+            n--;
         }
-        return count >= n;
+        return n <= 0;
     }
 
-    // S2
+    // S2: 找规律
     // time = O(n), space = O(1)
     public boolean canPlaceFlowers2(int[] flowerbed, int n) {
-        int m = flowerbed.length, count = 0;
+        if (n == 0) return true;
+        int m = flowerbed.length, res = 0;
         for (int i = 0; i < m; i++) {
-            if (flowerbed[i] == 0 && (i == 0 || flowerbed[i - 1] == 0) && (i == m - 1 || flowerbed[i + 1] == 0)) {
-                flowerbed[i] = 1;
-                count++;
-            }
+            if (flowerbed[i] == 1) continue;
+            int j = i;
+            while (j < m && flowerbed[j] == 0) j++;
+            int k = j - i - 1;
+            if (i == 0) k++;
+            if (j == m) k++;
+            res += k / 2;
+            if (res >= n) return true;
+            i = j;
         }
-        return count >= n;
+        return false;
     }
 }
+/**
+ * 内部：(k-1)/2
+ * 有一遍是边界: k/2
+ * 两遍都是边界: (k+1)/2
+ */

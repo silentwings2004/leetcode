@@ -97,9 +97,7 @@ public class LC139_WordBreak {
         HashSet<Long> set = new HashSet<>();
         for (String word : wordDict) {
             long h = 0;
-            for (char c : word.toCharArray()) {
-                h = h * P + c;
-            }
+            for (char c : word.toCharArray()) h = h * P + c;
             set.add(h);
         }
 
@@ -137,4 +135,16 @@ public class LC139_WordBreak {
  *
  * dp[i]: if s[0:i] break successfully
  * dp[i] = (dp[j] == true && s[j + 1 : i] is a word) for all j < i
+ *
+ * dp：
+ * 状态表示：
+ * 1. 集合：s[1~i]的所有合法划分方案
+ * 2. 属性：是否非空
+ * 状态计算：f(i) 1~i  2~i  ...  i~i
+ * f(k-1) && [k~i]在字典中出现过
+ * 判断是否在字典中出现过
+ * O(1):
+ * trie
+ * 字符串哈希
+ * kmp
  */

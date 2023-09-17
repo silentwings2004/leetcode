@@ -21,26 +21,26 @@ public class LC143_ReorderList {
      */
     // time = O(n), space = O(1)
     public void reorderList(ListNode head) {
-        if (head == null || head.next == null) return;
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode temp = null;
-        ListNode slow = head, fast = head;
-        ListNode l1 = head;
-        while (fast != null && fast.next != null) {
-            temp = slow;
-            slow = slow.next;
-            fast = fast.next.next;
+        int n = 0;
+        for (ListNode p = head; p != null; p = p.next) n++;
+        ListNode a = head;
+        for (int i = 0; i < (n + 1) / 2 - 1; i++) a = a.next;
+        ListNode b = a.next;
+        a.next = null;
+        ListNode h1 = head, h2 = reverse(b);
+        while (h1 != null && h2 != null) {
+            ListNode p = h1.next, q = h2.next;
+            h2.next = p;
+            h1.next = h2;
+            h1 = p;
+            h2 = q;
         }
-        temp.next = null;
-        ListNode l2 = reverse(slow);
-        merge(l1, l2);
     }
 
-    private ListNode reverse(ListNode head) {
-        if (head == null || head.next == null) return head;
+    private ListNode reverse(ListNode h) {
+        if (h == null || h.next == null) return h;
 
-        ListNode cur = head, prev = null;
+        ListNode cur = h, prev = null;
         while (cur != null) {
             ListNode next = cur.next;
             cur.next = prev;
@@ -48,22 +48,6 @@ public class LC143_ReorderList {
             cur = next;
         }
         return prev;
-    }
-
-    private void merge(ListNode l1, ListNode l2) {
-        ListNode dummy = new ListNode(0);
-        ListNode cur = dummy;
-
-        while (l1 != null && l2 != null) {
-            cur.next = l1;
-            l1 = l1.next;
-            cur = cur.next;
-            cur.next = l2;
-            l2 = l2.next;
-            cur = cur.next;
-        }
-        if (l1 != null) cur.next = l1;
-        if (l2 != null) cur.next = l2;
     }
 
     // S2

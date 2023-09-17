@@ -36,6 +36,21 @@ public class LC330_PatchingArray {
         }
         return count;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int minPatches2(int[] nums, int n) {
+        long x = 1;
+        int i = 0, res = 0, m = nums.length;
+        while (x <= n) {
+            if (i < m && nums[i] <= x) x += nums[i++];
+            else {
+                x += x;
+                res++;
+            }
+        }
+        return res;
+    }
 }
 /**
  * 假设miss是当前无法通过nums[0]~nums[i-1]这i个数通过题述的加和规则得到的、最小的那个整数，
@@ -48,4 +63,10 @@ public class LC330_PatchingArray {
  * 如此循环重复上述的过程，不断提升miss，直至miss>n.
  * 注意这个过程中nums可以提前用完。
  * 另外，值得注意的是，miss的初始值是1，而不是0. 因为没有任何nums提供时，我们首先试图要填补的就是1.
+ *
+ * 贪心问题
+ * 思路：[0,x)
+ * ai
+ * ai <= x => ai ~ ai + x => 0 ~ ai + x
+ * ai > x => ai ~ ai + x => 必然要添加一个 < x 的数 y => 0 ~ x + y - 1, y 最大取到 x => [0, 2x)
  */

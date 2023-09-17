@@ -28,14 +28,13 @@ public class LC228_SummaryRanges {
     // time = O(n), space = O(1)
     public List<String> summaryRanges(int[] nums) {
         List<String> res = new ArrayList<>();
-        // corner case
-        if (nums == null || nums.length == 0) return res;
-
-        for (int i = 0; i < nums.length; i++) {
-            int num = nums[i];
-            while (i < nums.length - 1 && nums[i] + 1 == nums[i + 1]) i++;
-            if (num != nums[i]) res.add(num + "->" + nums[i]);
-            else res.add(num + "");
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && nums[j] == nums[j - 1] + 1) j++;
+            if (nums[i] == nums[j - 1]) res.add(nums[i] + "");
+            else res.add(nums[i] + "->" + nums[j - 1]);
+            i = j - 1;
         }
         return res;
     }

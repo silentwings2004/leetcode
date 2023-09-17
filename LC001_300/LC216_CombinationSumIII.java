@@ -20,25 +20,26 @@ public class LC216_CombinationSumIII {
      * @param n
      * @return
      */
-    // time = O(C(9,k)) = O(9! / (k! * (9 - k)!), space = O(k)
+    // time = O(C(9,k)) * k), space = O(k)
+    List<List<Integer>> res;
+    List<Integer> path;
     public List<List<Integer>> combinationSum3(int k, int n) {
-        List<List<Integer>> res = new ArrayList<>();
-        dfs(n, k, 1, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        dfs(1, k, n);
         return res;
     }
 
-    private void dfs(int sum, int k, int idx, List<Integer> path, List<List<Integer>> res) {
-        // base case
-        if (path.size() == k) {
-            if (sum == 0) res.add(new ArrayList<>(path));
+    private void dfs(int u, int k, int n) {
+        if (n == 0) {
+            if (k == 0) res.add(new ArrayList<>(path));
             return;
         }
+        if (k == 0) return;
 
-        for (int i = idx; i <= 9; i++) {
+        for (int i = u; i <= 9; i++) {
             path.add(i);
-            sum -= i;
-            dfs(sum, k, i + 1, path, res);
-            sum +=i;
+            dfs(i + 1, k - 1, n - i);
             path.remove(path.size() - 1);
         }
     }

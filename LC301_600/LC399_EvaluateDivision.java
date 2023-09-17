@@ -92,49 +92,55 @@ public class LC399_EvaluateDivision {
 
     // S2: Union Find
     // time = O(m + n) * logn, space = O(n)
-    HashMap<String, String> parent;
-    HashMap<String, Double> dist;
+    final int N = 50;
+    int[] p;
+    double[] d;
+    int idx;
+    HashMap<String, Integer> map;
     public double[] calcEquation2(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        parent = new HashMap<>();
-        dist = new HashMap<>();
+        map = new HashMap<>();
+        p = new int[N];
+        d = new double[N];
+        for (int i = 0; i < N; i++) {
+            p[i] = i;
+            d[i] = 1;
+        }
+        idx = 0;
 
         int n = equations.size();
         for (int i = 0; i < n; i++) {
-            String a = equations.get(i).get(0);
-            String b = equations.get(i).get(1);
+            String s = equations.get(i).get(0), t = equations.get(i).get(1);
             double c = values[i];
-
-            parent.putIfAbsent(a, a);
-            parent.putIfAbsent(b, b);
-
-            if (!findParent(a).equals(findParent(b))) union(a, b, c);
+            if (!map.containsKey(s)) map.put(s, idx++);
+            if (!map.containsKey(t)) map.put(t, idx++);
+            int a = map.get(s), b = map.get(t);
+            int pa = find(a), pb = find(b);
+            if (pa != pb) {
+                p[pa] = pb;
+                d[pa] = c * d[b] / d[a];
+            }
         }
 
         int m = queries.size();
         double[] res = new double[m];
+        Arrays.fill(res, -1);
         for (int i = 0; i < m; i++) {
-            String a = queries.get(i).get(0);
-            String b = queries.get(i).get(1);
-            if (!parent.containsKey(a) || !parent.containsKey(b) || !findParent(a).equals(findParent(b))) res[i] = -1.0;
-            else res[i] = dist.getOrDefault(a, 1.0) / dist.getOrDefault(b, 1.0);
+            String s = queries.get(i).get(0), t = queries.get(i).get(1);
+            if (!map.containsKey(s) || !map.containsKey(t)) continue;
+            int a = map.get(s), b = map.get(t);
+            int pa = find(a), pb = find(b);
+            if (pa == pb) res[i] = d[a] / d[b];
         }
         return res;
     }
 
-    private String findParent(String x) {
-        if (!x.equals(parent.getOrDefault(x, x))) {
-            String p = parent.getOrDefault(x, x);
-            parent.put(x, findParent(p));
-            dist.put(x, dist.getOrDefault(x, 1.0) * dist.getOrDefault(p, 1.0));
+    private int find(int x) {
+        if (x != p[x]) {
+            int root = find(p[x]);
+            d[x] *= d[p[x]];
+            p[x] = root;
         }
-        return parent.getOrDefault(x, x);
-    }
-
-    private void union(String x, String y, double v) {
-        String px = parent.getOrDefault(x, x);
-        String py = parent.getOrDefault(y, y);
-        parent.put(px, py);
-        dist.put(px, v / dist.getOrDefault(x, 1.0) * dist.getOrDefault(y, 1.0));
+        return p[x];
     }
 
     // S3: Floyd
@@ -199,4 +205,9 @@ public class LC399_EvaluateDivision {
  * In the end, only a / root(x) is saved. This is path compression.
  * It's like putting a directly under the root(x)
  * x / px = vals.get(x), y / py = vals.get(y), so px / py =  v * vals.get(y) / vals.get(x)
+ *
+ * 本质上是图论问题
+ * 路径其实是一个推导过程
+ * 路径的值用乘法来表示，一定是没有矛盾的 => 每两点之间的距离是唯一的 => O(n^3)
+ * 求有向图任意2点之间的距离 => floyd问题
  */

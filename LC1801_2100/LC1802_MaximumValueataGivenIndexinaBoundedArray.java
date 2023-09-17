@@ -26,6 +26,7 @@ public class LC1802_MaximumValueataGivenIndexinaBoundedArray {
      * @param maxSum
      * @return
      */
+    // S1
     // time = O(log(maxSum)), space = O(1)
     public int maxValue(int n, int index, int maxSum) {
         int left = 1, right = maxSum;
@@ -54,6 +55,28 @@ public class LC1802_MaximumValueataGivenIndexinaBoundedArray {
             sum += (h + 1) * h / 2;
         }
         return sum - h;
+    }
+
+    // S1.2: BS
+    // time = O(nlogn), space = O(1)
+    public int maxValue2(int n, int index, int maxSum) {
+        int l = 1, r = maxSum;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (check(n, index, maxSum, mid)) l = mid;
+            else r = mid - 1;
+        }
+        return r;
+    }
+
+    private boolean check(int n, int idx, int ms, int t) {
+        int l = idx, r = n - 1 - idx;
+        long ls = 0, rs = 0;
+        if (t > l) ls = (long)(t - 1 + t - l) * l / 2;
+        else ls = (long)(t - 1 + 1) * (t - 1) / 2 + (l - (t - 1));
+        if (t > r) rs = (long)(t - 1 + t - r) * r / 2;
+        else rs = (long)(t - 1 + 1) * (t - 1) / 2 + (r - (t - 1));
+        return ls + t + rs <= ms;
     }
 }
 /**

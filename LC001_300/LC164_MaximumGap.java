@@ -18,16 +18,47 @@ public class LC164_MaximumGap {
      * @param nums
      * @return
      */
-    // S1: Sort
-    // time = O(nlogn), space = O(1)
+    // S1
+    // time = O(n), space = O(n)
     public int maximumGap(int[] nums) {
-        // corner case
-        if (nums == null || nums.length < 2) return 0;
+        int n = nums.length;
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        for (int x : nums) {
+            min = Math.min(min, x);
+            max = Math.max(max, x);
+        }
 
-        Arrays.sort(nums);
-        int max = Integer.MIN_VALUE;
-        for (int i = 1; i < nums.length; i++) max = Math.max(nums[i] - nums[i - 1], max);
-        return max;
+        if (n < 2 || min == max) return 0;
+
+        Range[] r = new Range[n - 1];
+        for (int i = 0; i < n - 1; i++) r[i] = new Range();
+        int len = (max - min + n - 2) / (n - 1);
+        for (int x : nums) {
+            if (x == min) continue;
+            int k = (x - min - 1) / len; // 区间数
+            r[k].used = true;
+            r[k].min = Math.min(r[k].min, x);
+            r[k].max = Math.max(r[k].max, x);
+        }
+
+        int res = 0;
+        for (int i = 0, last = min; i < n - 1; i++) {
+            if (r[i].used) {
+                res = Math.max(res, r[i].min - last);
+                last = r[i].max;
+            }
+        }
+        return res;
+    }
+
+    private class Range {
+        private int min, max;
+        private boolean used;
+        public Range() {
+            this.min = Integer.MAX_VALUE;
+            this.max = Integer.MIN_VALUE;
+            this.used = false;
+        }
     }
 
     // S2: bucket sort
@@ -70,3 +101,11 @@ public class LC164_MaximumGap {
         return res;
     }
 }
+/**
+ * 先将min, max之间分成若干个区间
+ * 将所有数放到对应的区间里
+ * 每个小区间内部的两个值之间的差值不可能是答案 => 只要求每个区间的最小值和最大值即可
+ * (n-1)*(x-1) <= max - min - 1
+ * x-1 <= (max-min-1)/(n-1)
+ * x <= (max-min+n-2)/(n-1) = (max-min)/(n-1) 上取整
+ */

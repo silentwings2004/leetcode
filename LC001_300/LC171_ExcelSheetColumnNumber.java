@@ -29,14 +29,10 @@ public class LC171_ExcelSheetColumnNumber {
      */
     // time = O(n), space = O(1)
     public int titleToNumber(String columnTitle) {
-        // corner case
-        if (columnTitle == null || columnTitle.length() == 0) return 0;
-
-        int n = columnTitle.length();
-        int res = 0;
+        int t = 0, n = columnTitle.length();
         for (int i = 0; i < n; i++) {
-            res = res * 26 + columnTitle.charAt(i) -'A' + 1;
+            t = t * 26 + columnTitle.charAt(i) - 'A' + 1;
         }
-        return res;
+        return t;
     }
 }

@@ -14,6 +14,7 @@ public class LC479_LargestPalindromeProduct {
      * @param n
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(1)
     public int largestPalindrome(int n) {
         if (n == 1) return 9;
@@ -35,6 +36,26 @@ public class LC479_LargestPalindromeProduct {
         StringBuilder sb = new StringBuilder(s);
         return Long.valueOf(s + sb.reverse().toString());
     }
+
+    // S2
+    // time = O(10^2n), space = O(1)
+    public int largestPalindrome2(int n) {
+        if (n == 1) return 9;
+        int maxv = (int) Math.pow(10, n) - 1;
+        for (int i = maxv;; i--) {
+            String a = String.valueOf(i);
+            String b = reverse(a);
+            long num = Long.parseLong(a + b);
+            for (long j = maxv; j * j >= num; j--) {
+                if (num % j == 0) return (int)(num % 1337);
+            }
+        }
+    }
+
+    private String reverse(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        return sb.reverse().toString();
+    }
 }
 /**
  * n = 1e8
@@ -45,4 +66,7 @@ public class LC479_LargestPalindromeProduct {
  * 枚举一半就可以了
  * 100000
  * 999999
+ *
+ * 从大到小去枚举回文数
+ * 999 => 能否整除，是否是n位数
  */

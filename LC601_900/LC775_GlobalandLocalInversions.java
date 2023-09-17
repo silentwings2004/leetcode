@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class LC775_GlobalandLocalInversions {
+public class  LC775_GlobalandLocalInversions {
     /**
      * You are given an integer array nums of length n which represents a permutation of all the integers in the
      * range [0, n - 1].
@@ -98,7 +98,8 @@ public class LC775_GlobalandLocalInversions {
  * 必要条件：|ai - i| <= 1
  * 是否充分？
  *
- * 一个局部倒置肯定也是一个全局倒置，要使得两者相等，那必须不能有额外的全局倒置产生，即不能有非相邻的倒置出现，也就是说对于两个数，不能出现
+ * 核心：一个局部倒置肯定也是一个全局倒置!
+ * 要使得两者相等，那必须不能有额外的全局倒置产生，即不能有非相邻的倒置出现，也就是说对于两个数，不能出现
  * j - i >= 2 && A[j] < A[i]
  *
  * 那么我们的思路就变成，从左到右扫一遍，然后一直maintain一个[0, I - 2]之间的一个curMax，那么只要出现curMax > A[i]，一定就会出现额外的

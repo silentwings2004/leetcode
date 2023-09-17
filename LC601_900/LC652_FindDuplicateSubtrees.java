@@ -44,6 +44,36 @@ public class LC652_FindDuplicateSubtrees {
         }
         return map.get(key);
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    HashMap<String, Integer> ids;
+    HashMap<Integer, Integer> hash;
+    List<TreeNode> ans;
+    int cnt;
+    public List<TreeNode> findDuplicateSubtrees2(TreeNode root) {
+        ids = new HashMap<>();
+        hash = new HashMap<>();
+        ans = new ArrayList<>();
+        cnt = 0;
+
+        dfs(root);
+        return ans;
+    }
+
+    private int dfs(TreeNode root) {
+        if (root == null) return 0;
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        StringBuilder sb = new StringBuilder();
+        sb.append(root.val).append(' ').append(left).append(' ').append(right);
+        String key = sb.toString();
+        if (!ids.containsKey(key)) ids.put(key, ++cnt);
+        int id = ids.get(key);
+        hash.put(id, hash.getOrDefault(id, 0) + 1);
+        if (hash.get(id) == 2) ans.add(root);
+        return id;
+    }
 }
 /**
  * 子树怎么找？

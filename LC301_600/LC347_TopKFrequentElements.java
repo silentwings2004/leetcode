@@ -150,4 +150,28 @@ public class LC347_TopKFrequentElements {
         nums.set(i, nums.get(j));
         nums.set(j, temp);
     }
+
+    // S5: 计数排序
+    // time = O(n), space = O(n)
+    public int[] topKFrequent5(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x : nums) map.put(x, map.getOrDefault(x, 0) + 1);
+        int n = nums.length;
+        int[] cnt = new int[n + 1];
+        for (int x : map.keySet()) cnt[map.get(x)]++;
+
+        int i = n, t = k;
+        while (t > 0) t -= cnt[i--];
+
+        int[] res = new int[k];
+        int idx = 0;
+        for (int x : map.keySet()) {
+            if (map.get(x) > i) res[idx++] = x;
+        }
+        return res;
+    }
 }
+/**
+ * 1. 统计每个元素出现次数 1~n
+ * 2. 计数排序
+ */

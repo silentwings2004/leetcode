@@ -81,11 +81,11 @@ public class LC155_MinStack {
         }
 
         public int top() {
-            return stack.peek() > 0 ? (int)(min + stack.peek()) : (int)min;
+            return stack.peek() > 0 ? (int)(min + stack.peek()) : (int) min;
         }
 
         public int getMin() {
-            return (int)min;
+            return (int) min;
         }
     }
 }

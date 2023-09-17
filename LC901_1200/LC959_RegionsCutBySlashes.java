@@ -1,5 +1,7 @@
 package LC901_1200;
 
+import java.util.HashSet;
+
 public class LC959_RegionsCutBySlashes {
     /**
      * An n x n grid is composed of 1 x 1 squares where each 1 x 1 square consists of a '/', '\', or blank space ' '.
@@ -113,6 +115,48 @@ public class LC959_RegionsCutBySlashes {
         y = parent[y];
         if (x < y) parent[y] = x;
         else parent[x] = y;
+    }
+
+    // S3:
+    // time = O(n^2 * logn), space = O(n^2)
+    int[] p;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    int n;
+    public int regionsBySlashes3(String[] grid) {
+        n = grid.length;
+        p = new int[n * n * 4];
+        for (int i = 0; i < n * n * 4; i++) p[i] = i;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < 4; k++) {
+                    int x = i + dx[k], y = j + dy[k];
+                    if (x >= 0 && x < n && y >= 0 && y < n) {
+                        p[find(get(i, j, k))] = find(get(x, y, k ^ 2));
+                    }
+                }
+                if (grid[i].charAt(j) != '/') {
+                    p[find(get(i, j, 0))] = find(get(i, j, 1));
+                    p[find(get(i, j, 2))] = find(get(i, j, 3));
+                }
+                if (grid[i].charAt(j) != '\\') {
+                    p[find(get(i, j, 0))] = find(get(i, j, 3));
+                    p[find(get(i, j, 1))] = find(get(i, j, 2));
+                }
+            }
+        }
+
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 0; i < n * n * 4; i++) set.add(find(i));
+        return set.size();
+    }
+
+    private int get(int i, int j, int k) {
+        return (i * n + j) * 4 + k;
+    }
+
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

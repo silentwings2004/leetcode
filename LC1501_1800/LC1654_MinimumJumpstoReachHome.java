@@ -32,6 +32,7 @@ public class LC1654_MinimumJumpstoReachHome {
      * @param x
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int minimumJumps(int[] forbidden, int a, int b, int x) {
         if (x == 0) return 0;
@@ -69,6 +70,33 @@ public class LC1654_MinimumJumpstoReachHome {
                 }
             }
             step++;
+        }
+        return -1;
+    }
+
+    // S1.2: bfs
+    // time = O(n), space = O(n)
+    public int minimumJumps2(int[] forbidden, int a, int b, int x) {
+        final int N = 8010;
+        int[][] dist = new int[N][2];
+        for (int i = 0; i < N; i++) Arrays.fill(dist[i], -1);
+        for (int t : forbidden) dist[t][0] = dist[t][1] = (int)1e8;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0});
+        dist[0][0] = 0;
+
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int y = t[0], d = t[1];
+            if (y == x) return dist[y][d];
+            if (y + a < N && dist[y + a][0] == -1) {
+                dist[y + a][0] = dist[y][d] + 1;
+                q.offer(new int[]{y + a, 0});
+            }
+            if (d == 0 && y - b >= 0 && dist[y - b][1] == -1) {
+                dist[y - b][1] = dist[y][d] + 1;
+                q.offer(new int[]{y - b, 1});
+            }
         }
         return -1;
     }

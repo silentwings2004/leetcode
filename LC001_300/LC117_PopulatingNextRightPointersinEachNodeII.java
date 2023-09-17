@@ -56,35 +56,17 @@ public class LC117_PopulatingNextRightPointersinEachNodeII {
     // S2: iteration
     // time = O(n), space = O(1)
     public Node connect2(Node root) {
-        // corner case
         if (root == null) return root;
 
-        Node cur = root, prev = null, head = null;
+        Node cur = root;
         while (cur != null) {
-            if (cur.left != null) {
-                if (head == null) {
-                    head = cur.left;
-                    prev = head;
-                } else {
-                    prev.next = cur.left;
-                    prev = prev.next;
-                }
+            Node head = new Node(-1);
+            Node tail = head;
+            for (Node p = cur; p != null; p = p.next) {
+                if (p.left != null) tail = tail.next = p.left;
+                if (p.right != null) tail = tail.next = p.right;
             }
-            if (cur.right != null) {
-                if (head == null) {
-                    head = cur.right;
-                    prev = head;
-                } else {
-                    prev.next = cur.right;
-                    prev = prev.next;
-                }
-            }
-            cur = cur.next;
-            if (cur == null) {
-                cur = head;
-                prev = null;
-                head = null;
-            }
+            cur = head.next;
         }
         return root;
     }
@@ -110,3 +92,4 @@ public class LC117_PopulatingNextRightPointersinEachNodeII {
         }
     }
 }
+

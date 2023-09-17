@@ -28,15 +28,18 @@ public class LC157_ReadNCharactersGivenRead4 {
      */
     // time = O(n), space = O(1)
     public int read(char[] buf, int n) {
-        char[] temp = new char[4];
-        int index = 0;
-
-        while (true) {
-            int count = read4(temp);
-            count = Math.min(count, n - index);
-            for (int i = 0; i < count; i++) buf[index++] = temp[i];
-            if (index == n || count < 4) return index;
+        char[] a = new char[4];
+        int cnt = 0, i = 0, j = 0;
+        for (j = 0; j < n; j++) {
+            if (cnt == 0) {
+                cnt = read4(a);
+                i = 0;
+                if (cnt == 0) break;
+            }
+            buf[j] = a[i++];
+            cnt--;
         }
+        return j;
     }
 
     // helper function

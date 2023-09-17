@@ -23,25 +23,30 @@ public class LC258_AddDigits {
     // S1: recursion
     // time = O(1), space = O(1)
     public int addDigits(int num) {
-        while (true) {
-            num = helper(num);
-            if (num / 10 == 0) break;
+        while (num >= 10) {
+            int t = 0;
+            while (num > 0) {
+                t += num % 10;
+                num /= 10;
+            }
+            num = t;
         }
         return num;
-    }
-
-    private int helper(int num) {
-        int res = 0;
-        while (num > 0) {
-            res += num % 10;
-            num /= 10;
-        }
-        return res;
     }
 
     // S2: Math
     // time = O(1), space = O(1)
     public int addDigits2(int num) {
-        return (num - 1) % 9 + 1;
+        if (num == 0) return 0;
+        return num % 9 == 0 ? 9 : num % 9;
     }
 }
+/**
+ * f(x) === x (mod 9)
+ * 判断下0还是9
+ * 最后只要判断下x mod 9 = ？
+ * x = 0 => 0
+ * x != 0:
+ * 1~8 => 1~8
+ * 0 => 9
+ */

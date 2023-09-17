@@ -50,20 +50,19 @@ public class LC287_FindtheDuplicateNumber {
     // S2: Floyd's Tortoise and Hare (Cycle Detection)
     // time = O(n), space = O(1)
     public int findDuplicate2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
+        int s = 0, f = 0;
+        while (true) {
+            s = nums[s];
+            f = nums[nums[f]];
+            if (s == f) break;
+        }
 
-        int slow = nums[0], fast = nums[nums[0]];
-        while (slow != fast) {
-            slow = nums[slow];
-            fast = nums[nums[fast]];
+        s = 0;
+        while (s != f) {
+            s = nums[s];
+            f = nums[f];
         }
-        fast = 0;
-        while (slow != fast) {
-            slow = nums[slow];
-            fast = nums[fast];
-        }
-        return slow;
+        return s;
     }
 
     // S3: indexing sort
@@ -96,4 +95,8 @@ public class LC287_FindtheDuplicateNumber {
  * B.S.
  * if the duplicated number = k => count(<= k) > k
  * 0 -> 1 -> 3 -> 2 -> 4 -> 2
+ *
+ * 每个点的出边是一定的
+ * 环的入口
+ * 至少有2个位置存的是这个数
  */

@@ -57,4 +57,7 @@ public class LC279_PerfectSquares {
  * dp[n] = Math.min{}dp[n - x^2] + 1} for all x => O(n^2)
  *
  * 当成完全背包来做
+ * Math
+ * 1. ans <= 4
+ * 2. n 能表示成3个整数的平方和，当且仅当 n != 4^a * (8b + 7)
  */

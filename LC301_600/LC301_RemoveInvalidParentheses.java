@@ -138,6 +138,55 @@ public class LC301_RemoveInvalidParentheses {
             }
         }
     }
+
+    // S3: dfs
+    // time = O(n * 2^n), space = O(n)
+    List<String> res;
+    public List<String> removeInvalidParentheses3(String s) {
+        res = new ArrayList<>();
+        int l = 0, r = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') l++;
+            else if (c == ')') {
+                if (l == 0) r++;
+                else l--;
+            }
+        }
+        dfs(s, 0, "", 0, l, r);
+        return res;
+    }
+
+    private void dfs(String s, int u, String path, int cnt, int l, int r) {
+        if (u == s.length()) {
+            if (cnt == 0) res.add(path);
+            return;
+        }
+
+        int n = s.length();
+        char c = s.charAt(u);
+        if (c != '(' && c != ')') dfs(s, u + 1, path + c, cnt, l, r);
+        else if (c == '(') {
+            int k = u;
+            while (k < n && s.charAt(k) == '(') k++;
+            l -= k - u;
+            for (int i = k - u; i >= 0; i--) {
+                if (l >= 0) dfs(s, k, path, cnt, l, r);
+                path += '(';
+                l++;
+                cnt++;
+            }
+        } else {
+            int k = u;
+            while (k < n && s.charAt(k) == ')') k++;
+            r -= k - u;
+            for (int i = k - u; i >= 0; i--) {
+                if (r >= 0 && cnt >= 0) dfs(s, k, path, cnt, l, r);
+                path += ')';
+                r++;
+                cnt--;
+            }
+        }
+    }
 }
 
 /**
@@ -221,4 +270,11 @@ public class LC301_RemoveInvalidParentheses {
  *
  * 举个例子，如果s中有四个连续的左括号，我们选择保留下来两个左括号，那么我们对这四个左括号的选择一定是XXOO的形式，即我们只选择最后两个。
  * 而不能是OOXX,OXOX,OXXO,XOOX,XOXO这五种其他的形式。这样就避免了六种DFS搜索形式对应同一个最终结果的复杂局面。
+ *
+ * 1. 左右括号数量相同
+ * 2. 任意一个前缀中，左括号数量 >= 右括号数量
+ * (   l++;
+ * )   l == r  去掉 )
+ *     l > r   r--
+ * ((((  人为规定只能从前往后删
  */

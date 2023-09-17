@@ -41,6 +41,32 @@ public class LC992_SubarrayswithKDifferentIntegers {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    final int N = 20010;
+    public int subarraysWithKDistinct2(int[] nums, int k) {
+        int[] S1 = new int[N], S2 = new int[N];
+        int res = 0, n = nums.length;
+        for (int i = 0, j1 = 0, j2 = 0, cnt1 = 0, cnt2 = 0; i < n; i++) {
+            if (S1[nums[i]] == 0) cnt1++;
+            S1[nums[i]]++;
+            while (cnt1 > k) {
+                S1[nums[j1]]--;
+                if (S1[nums[j1]] == 0) cnt1--;
+                j1++;
+            }
+            if (S2[nums[i]] == 0) cnt2++;
+            S2[nums[i]]++;
+            while (cnt2 >= k) {
+                S2[nums[j2]]--;
+                if (S2[nums[j2]] == 0) cnt2--;
+                j2++;
+            }
+            res += j2 - j1;
+        }
+        return res;
+    }
 }
 /**
  * ref: LC340, 159

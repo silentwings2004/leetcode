@@ -26,35 +26,19 @@ public class LC725_SplitLinkedListinParts {
      */
     // time = O(n + min(n, k)), space = O(1)
     public ListNode[] splitListToParts(ListNode head, int k) {
+        int n = 0;
+        for (ListNode p = head; p != null; p = p.next) n++;
         ListNode[] res = new ListNode[k];
-
-        int len = 0;
-        ListNode cur = head;
-        while (cur != null) { // O(n)
-            cur = cur.next;
-            len++;
-        }
-
-        cur = head;
-        if (len / k == 0) {
-            for (int i = 0; i < len; i++) { // O(n)
-                res[i] = cur;
-                cur = cur.next;
-                res[i].next = null;
-            }
-        } else {
-            int r = len % k;
-            int n = len / k;
-            for (int i = 0; i < k; i++) { // O(k)
-                res[i] = cur;
-                int count = r > 0 ? n + 1 : n;
-                while (cur != null && count-- > 1) cur = cur.next;
-                if (cur != null) {
-                    ListNode next = cur.next;
-                    cur.next = null;
-                    cur = next;
-                }
-                r--;
+        ListNode p = head;
+        for (int i = 0; i < k; i++) {
+            int len = n / k;
+            if (i + 1 <= n % k) len++;
+            res[i] = p;
+            for (int j = 0; j < len - 1; j++) p = p.next;
+            if (p != null) {
+                ListNode q = p.next;
+                p.next = null;
+                p = q;
             }
         }
         return res;

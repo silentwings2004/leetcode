@@ -47,6 +47,32 @@ public class LC901_OnlineStockSpan {
         i++; // don't forget to make i++
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    class StockSpanner {
+        final int N = 10010;
+        int[] stk1, stk2;
+        int k, tt1, tt2;
+        public StockSpanner() {
+            stk1 = new int[N];
+            stk2 = new int[N];
+            k = 0;
+            tt1 = 0;
+            tt2 = 0;
+        }
+
+        public int next(int price) {
+            while (tt2 > 0 && stk2[tt2] <= price) {
+                tt1--;
+                tt2--;
+            }
+            int res = tt1 == 0 ? k + 1 : k - stk1[tt1];
+            stk1[++tt1] = k++;
+            stk2[++tt2] = price;
+            return res;
+        }
+    }
 }
 /**
  * 单调递增栈

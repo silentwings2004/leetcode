@@ -20,6 +20,7 @@ public class LC368_LargestDivisibleSubset {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n)
     public List<Integer> largestDivisibleSubset(int[] nums) {
         List<Integer> res = new LinkedList<>();
@@ -58,6 +59,35 @@ public class LC368_LargestDivisibleSubset {
         }
         return res;
     }
+
+    // S2
+    // time = O(n^2), space = O(n)
+    public List<Integer> largestDivisibleSubset2(int[] nums) {
+        List<Integer> res = new LinkedList<>();
+        Arrays.sort(nums);
+        int n = nums.length, k = 0;
+        int[] f = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            f[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums[j] == 0) f[i] = Math.max(f[i], f[j] + 1);
+            }
+            if (f[k] < f[i]) k = i;
+        }
+
+        res.add(0, nums[k]);
+        while (f[k] > 1) {
+            for (int i = 0; i < k; i++) {
+                if (nums[k] % nums[i] == 0 && f[k] == f[i] + 1) {
+                    res.add(0, nums[i]);
+                    k = i;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
 }
 /**
  * 2 3 4 9 36
@@ -66,4 +96,8 @@ public class LC368_LargestDivisibleSubset {
  * 找subset，从小到大排一些
  * 选定4作为第二大元素后，4和36之间就不能选了
  * 基本型II dp -> 今天的状态跟前面某个状态有关，找个最优的状态
+ *
+ * 只要看相邻2个数能否整除即可
+ * f(i) = max(f(i), f(i) + 1)
+ * 求方案，倒推
  */

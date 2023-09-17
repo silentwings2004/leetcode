@@ -58,6 +58,49 @@ public class LC1483_KthAncestorofaTreeNode {
         }
         return node;
     }
+
+    // S2
+    class TreeAncestor {
+        // time = O(nlogn), space = O(n)
+        int[][] f;
+        List<Integer>[] g;
+        public TreeAncestor(int n, int[] parent) {
+            f = new int[n][16];
+            for (int i = 0; i < n; i++) Arrays.fill(f[i], -1);
+            g = new List[n];
+            for (int i = 0; i < n; i++) g[i] = new ArrayList<>();
+            int root = 0;
+            for (int i = 0; i < n; i++) {
+                if (parent[i] == -1) root = i;
+                else g[parent[i]].add(i);
+            }
+
+            Queue<Integer> q = new LinkedList<>();
+            q.offer(root);
+
+            while (!q.isEmpty()) {
+                int t = q.poll();
+                for (int x : g[t]) {
+                    f[x][0] = t;
+                    for (int k = 1; k < 16; k++) {
+                        if (f[x][k - 1] != -1) f[x][k] = f[f[x][k - 1]][k - 1];
+                    }
+                    q.offer(x);
+                }
+            }
+        }
+
+        public int getKthAncestor(int node, int k) {
+            int x = node;
+            for (int i = 0; i < 16; i++) {
+                if ((k >> i & 1) == 1) {
+                    x = f[x][i];
+                    if (x == -1) return x;
+                }
+            }
+            return x;
+        }
+    }
 }
 /**
  * node kth

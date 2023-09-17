@@ -31,7 +31,8 @@ public class LC1494_ParallelCoursesII {
      * @param k
      * @return
      */
-    // time = O(n * 3^n), space = O(2^n)
+    // S1
+    // time = O(3^n), space = O(2^n)
     public int minNumberOfSemesters(int n, int[][] relations, int k) {
         int[] dp = new int[1 << n];
         Arrays.fill(dp, Integer.MAX_VALUE / 2);
@@ -71,6 +72,42 @@ public class LC1494_ParallelCoursesII {
         }
         return count;
     }
+
+    // S2:
+    // time = O(3^n), space = O(2^n)
+    final int INF = 1000;
+    int[] f;
+    public int minNumberOfSemesters2(int n, int[][] relations, int k) {
+        f = new int[1 << n];
+        Arrays.fill(f, INF);
+        f[0] = 0;
+
+        for (int i = 0; i < 1 << n; i++) {
+            boolean[] st = new boolean[n];
+            for (int[] e : relations) {
+                int x = e[0] - 1, y = e[1] - 1;
+                if ((i >> x & 1) == 0) st[y] = true;
+            }
+
+            int state = 0;
+            for (int j = 0; j < n; j++) {
+                if (!st[j] && (i >> j & 1) == 0) state |= 1 << j;
+            }
+            dfs(n, k, i, state, 0, 0);
+        }
+        return f[(1 << n) - 1];
+    }
+
+    private void dfs(int n, int k, int i, int state, int now, int start) {
+        if (k == 0 || state == 0) {
+            f[i | now] = Math.min(f[i | now], f[i] + 1);
+            return;
+        }
+
+        for (int j = start; j < n; j++) {
+            if ((state >> j & 1) == 1) dfs(n, k - 1, i, state - (1 << j), now + (1 << j), j + 1);
+        }
+    }
 }
 /**
  * 拓扑排序里，在不同深度的课程是不能放在同一个阶段里学的，在这里规定就是semester
@@ -96,4 +133,7 @@ public class LC1494_ParallelCoursesII {
  * 3. prevState must contain prerequisites of state
  * subset > prereq[state]
  * 10011 | 10010 = 10010
+ *
+ * f(state): 表示已经修过的所有课是state的所有方案
+ * f(state|now) = min(f(state|now), f(state) + 1)
  */

@@ -28,31 +28,32 @@ public class LC391_PerfectRectangle {
     public boolean isRectangleCover(int[][] rectangles) {
         HashMap<String, Integer> map = new HashMap<>();
         long sum = 0;
-        for (int[] x : rectangles) {
-            int a = x[0], b = x[1], c = x[2], d = x[3];
-            String s1 = a + "#" + b;
-            String s2 = a + "#" + d;
-            String s3 = c + "#" + b;
-            String s4 = c + "#" + d;
-            map.put(s1, map.getOrDefault(s1, 0) + 1);
-            map.put(s2, map.getOrDefault(s2, 0) + 1);
-            map.put(s3, map.getOrDefault(s3, 0) + 1);
-            map.put(s4, map.getOrDefault(s4, 0) + 1);
-            sum += (long) (c - a) * (d - b);
+        for (int[] r : rectangles) {
+            int a = r[0], b = r[1], c = r[2], d = r[3];
+            String k1 = a + "#" + b;
+            String k2 = a + "#" + d;
+            String k3 = c + "#" + b;
+            String k4 = c + "#" + d;
+            map.put(k1, map.getOrDefault(k1, 0) + 1);
+            map.put(k2, map.getOrDefault(k2, 0) + 1);
+            map.put(k3, map.getOrDefault(k3, 0) + 1);
+            map.put(k4, map.getOrDefault(k4, 0) + 1);
+            sum += (long)(c - a) * (d - b);
         }
 
         List<int[]> res = new ArrayList<>();
-        for (String key : map.keySet()) {
-            int y = map.get(key);
-            if (y == 1) {
-                String[] strs = key.split("#");
-                res.add(new int[]{Integer.valueOf(strs[0]), Integer.valueOf(strs[1])});
-            } else if (y == 3) return false;
-            else if (y > 4) return false;
+        for (String k : map.keySet()) {
+            int cnt = map.get(k);
+            if (cnt == 1) {
+                String[] str = k.split("#");
+                int x = Integer.parseInt(str[0]);
+                int y = Integer.parseInt(str[1]);
+                res.add(new int[]{x, y});
+            } else if (cnt == 3 || cnt > 4) return false;
         }
         if (res.size() != 4) return false;
         Collections.sort(res, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-        return sum == (long)(res.get(3)[0] - res.get(0)[0]) * (res.get(3)[1] - res.get(0)[1]);
+        return (long)(res.get(3)[0] - res.get(0)[0]) * (res.get(3)[1] - res.get(0)[1]) == sum;
     }
 }
 /**
@@ -63,4 +64,5 @@ public class LC391_PerfectRectangle {
  * 4. 总面积相同
  *
  * 是否充分：
+ * 4角形
  */

@@ -15,18 +15,17 @@ public class LC680_ValidPalindromeII {
      */
     // time = O(n), space = O(1)
     public boolean validPalindrome(String s) {
-        int i = 0, j = s.length() - 1;
-        boolean flag = false;
-        while (i < j) {
-            if (s.charAt(i) == s.charAt(j)) {
-                i++;
-                j--;
-            } else return isPalin(s, i + 1, j) || isPalin(s, i, j - 1);
+        int n = s.length();
+        for (int i = 0, j = n - 1; i < j; i++, j--) {
+            if (s.charAt(i) != s.charAt(j)) {
+                if (check(s, i + 1, j) || check(s, i, j - 1)) return true;
+                return false;
+            }
         }
         return true;
     }
 
-    private boolean isPalin(String s, int i, int j) {
+    private boolean check(String s, int i, int j) {
         while (i < j) {
             if (s.charAt(i) != s.charAt(j)) return false;
             i++;

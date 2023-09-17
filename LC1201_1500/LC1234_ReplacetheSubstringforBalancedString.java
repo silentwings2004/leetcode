@@ -69,7 +69,7 @@ public class LC1234_ReplacetheSubstringforBalancedString {
         return false;
     }
 
-    // S1: Two Pointers
+    // S2: Two Pointers
     // time = O(n), space = O(n)
     public int balancedString2(String s) {
         // corner case
@@ -107,6 +107,32 @@ public class LC1234_ReplacetheSubstringforBalancedString {
             if (diff > n / 4) return false;
         }
         return true;
+    }
+
+    // S3: Two Pointers
+    // time = O(n), space = O(1)
+    public int balancedString3(String s) {
+        int[] cnt = new int[4];
+        int n = s.length(), t = n / 4;
+        for (int i = 0; i < n; i++) cnt[get(s.charAt(i))]++;
+        if (cnt[0] == t && cnt[1] == t && cnt[2] == t && cnt[3] == t) return 0;
+
+        int res = n;
+        for (int i = 0, j = 0; i < n; i++) {
+            cnt[get(s.charAt(i))]--;
+            while (cnt[0] <= t && cnt[1] <= t && cnt[2] <= t && cnt[3] <= t) {
+                res = Math.min(res, i - j + 1);
+                ++cnt[get(s.charAt(j++))];
+            }
+        }
+        return res;
+    }
+
+    private int get(char c) {
+        if (c == 'Q') return 0;
+        if (c == 'W') return 1;
+        if (c == 'E') return 2;
+        return 3;
     }
 }
 /**

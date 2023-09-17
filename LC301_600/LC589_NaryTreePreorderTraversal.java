@@ -21,8 +21,25 @@ public class LC589_NaryTreePreorderTraversal {
      * @param root
      * @return
      */
+    // S1: dfs
     // time = O(n), space = O(n)
+    List<Integer> res;
     public List<Integer> preorder(Node root) {
+        res = new ArrayList<>();
+        dfs(root);
+        return res;
+    }
+
+    private void dfs(Node node) {
+        if (node == null) return;
+
+        res.add(node.val);
+        for (Node c : node.children) dfs(c);
+    }
+
+    // S2: stack
+    // time = O(n), space = O(n)
+    public List<Integer> preorder2(Node root) {
         List<Integer> res = new ArrayList<>();
         // corner case
         if (root == null) return res;

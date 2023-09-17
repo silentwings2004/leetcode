@@ -80,6 +80,53 @@ public class LC726_NumberofAtoms {
         }
         return sb.toString();
     }
+
+    // S2
+    // time = O(n^2), space = O(n)
+    int u = 0;
+    public String countOfAtoms2(String formula) {
+        TreeMap<String, Integer> map = dfs(formula);
+        StringBuilder sb = new StringBuilder();
+        for (String key : map.keySet()) {
+            sb.append(key);
+            if (map.get(key) > 1) sb.append(map.get(key));
+        }
+        return sb.toString();
+    }
+
+    private TreeMap<String, Integer> dfs(String str) {
+        TreeMap<String, Integer> map = new TreeMap<>();
+        int n = str.length();
+        while (u < n) {
+            if (str.charAt(u) == '(') {
+                u++;
+                TreeMap<String, Integer> t = dfs(str);
+                u++;
+                int cnt = 1, k = u;
+                while (k < n && Character.isDigit(str.charAt(k))) k++;
+                if (k > u) {
+                    cnt = Integer.parseInt(str.substring(u, k));
+                    u = k;
+                }
+                for (String x : t.keySet()) map.put(x, map.getOrDefault(x, 0) + t.get(x) * cnt);
+
+            } else if (str.charAt(u) == ')') break;
+            else {
+                int k = u + 1;
+                while (k < n && Character.isLowerCase(str.charAt(k))) k++;
+                String key = str.substring(u, k);
+                u = k;
+                int cnt = 1;
+                while (k < n && Character.isDigit(str.charAt(k))) k++;
+                if (k > u) {
+                    cnt = Integer.parseInt(str.substring(u, k));
+                    u = k;
+                }
+                map.put(key, map.getOrDefault(key, 0) + cnt);
+            }
+        }
+        return map;
+    }
 }
 /**
  * 典型的栈的应用。此题的特别之处在于stack的元素应该是map<string,int>.

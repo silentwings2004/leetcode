@@ -117,6 +117,35 @@ public class LC785_IsGraphBipartite {
         if (x < y) parent[y] = x;
         else parent[x] = y;
     }
+
+    // S4: 染色法求二分图
+    // time = O(n + m), space = O(n)
+    int[][] g;
+    int[] color;
+    public boolean isBipartite4(int[][] graph) {
+        g = graph;
+        int n = g.length;
+        color = new int[n];
+        Arrays.fill(color, -1);
+
+        for (int i = 0; i < n; i++) {
+            if (color[i] == -1) {
+                if (!dfs(i, 0)) return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean dfs(int u, int c) {
+        color[u] = c;
+
+        for (int v : g[u]) {
+            if (color[v] != -1) {
+                if (color[v] == c) return false;
+            } else if (!dfs(v, c ^1)) return false;
+        }
+        return true;
+    }
 }
 /**
  * 顺着点走，next结点肯定是B,如果推出矛盾来了，那肯定是false

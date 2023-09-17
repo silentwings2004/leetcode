@@ -37,7 +37,7 @@ public class LC1161_MaximumLevelSumofaBinaryTree {
             if (max < sum) {
                 max = sum;
                 res = step;
-            } else if (max == sum) res = Math.min(res, step);
+            }
             step++;
         }
         return res;

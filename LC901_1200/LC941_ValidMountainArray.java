@@ -35,4 +35,16 @@ public class LC941_ValidMountainArray {
         if (i == 0 || j == n - 1) return false;
         return i == j;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public boolean validMountainArray2(int[] arr) {
+        int n = arr.length;
+        if (n < 3) return false;
+        int k = 0;
+        while (k + 1 < n && arr[k] < arr[k + 1]) k++;
+        if (k == 0 || k + 1 == n) return false;
+        while (k + 1 < n && arr[k] > arr[k + 1]) k++;
+        return k + 1 == n;
+    }
 }

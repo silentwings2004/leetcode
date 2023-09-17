@@ -1,5 +1,5 @@
 package LC601_900;
-
+import java.util.*;
 public class LC741_CherryPickup {
     /**
      * You are given an n x n grid representing a field of cherries, each cell is one of three possible integers.
@@ -51,7 +51,7 @@ public class LC741_CherryPickup {
             for (int j = 1; j <= n; j++) {
                 for (int x = 1; x <= n; x++) {
                     int y = i + j - x;
-                    if (y < 1 || y > n) continue; // y出界
+                     if (y < 1 || y > n) continue; // y出界
                     if (grid[i - 1][j - 1] == -1 || grid[x - 1][y - 1] == -1) continue; // block
                     if (i == 1 && j == 1 && x == 1) { // 起点是一定能到达的，左上角不是一个障碍物
                         dp[i][j][x] = grid[0][0];
@@ -125,6 +125,7 @@ public class LC741_CherryPickup {
  * 相当于走2次
  * 如果某个格子被2次走到的话，只能取1次樱桃
  * 按照步数来dp
+ * 每个格子的横纵坐标之和
  * 枚举的是斜线
  * f(i,j,k)
  */

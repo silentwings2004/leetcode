@@ -19,17 +19,13 @@ public class LC876_MiddleoftheLinkedList {
     // S1
     // time = O(n), space = O(1)
     public ListNode middleNode(ListNode head) {
-        ListNode cur = head;
-        int k = 0;
-        while (cur != null) {
-            cur = cur.next;
-            k++;
-        }
-
-        k /= 2;
-        cur = head;
-        while (k-- > 0) cur = cur.next;
-        return cur;
+        if (head == null || head.next == null) return head;
+        int n = 0;
+        for (ListNode p = head; p != null; p = p.next) n++;
+        n /= 2;
+        ListNode p = head;
+        for (int i = 1; i <= n; i++) p = p.next;
+        return p;
     }
 
     // S2

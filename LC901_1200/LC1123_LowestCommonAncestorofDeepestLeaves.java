@@ -79,6 +79,31 @@ public class LC1123_LowestCommonAncestorofDeepestLeaves {
         if (left == deepest && right == deepest) lca = node;
         return Math.max(left, right);
     }
+
+    // S3: dfs
+    // time = O(n), space = O(n)
+    public TreeNode lcaDeepestLeaves3(TreeNode root) {
+        return dfs(root).node;
+    }
+
+    private Node dfs(TreeNode root) {
+        if (root == null) return new Node(null, 0);
+
+        Node l = dfs(root.left);
+        Node r = dfs(root.right);
+        if (l.d == r.d) return new Node(root, l.d + 1);
+        if (l.d > r.d) return new Node(l.node, l.d + 1);
+        return new Node(r.node, r.d + 1);
+    }
+
+    private class Node {
+        private TreeNode node;
+        private int d;
+        public Node(TreeNode node, int d) {
+            this.node = node;
+            this.d = d;
+        }
+    }
 }
 /**
  * tree是递归定义的题目

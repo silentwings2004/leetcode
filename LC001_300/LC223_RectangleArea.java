@@ -25,6 +25,7 @@ public class LC223_RectangleArea {
      * @param by2
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
         int areaA = (ax2 - ax1) * (ay2 - ay1);
@@ -41,4 +42,16 @@ public class LC223_RectangleArea {
         }
         return areaA + areaB - overlap;
     }
+
+    // S2
+    // time = O(1), space = O(1)
+    public int computeArea2(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
+        int x = Math.max(0, Math.min(ax2, bx2) - Math.max(ax1, bx1));
+        int y = Math.max(0, Math.min(ay2, by2) - Math.max(ay1, by1));
+        return (ax2 - ax1) * (ay2 - ay1) + (bx2 - bx1) * (by2 - by1) - x * y;
+    }
 }
+/**
+ * 1D: max(0, min(BD) - max(AC))
+ * 2D: 分别投影到x,y轴上 => 2个一维问题
+ */

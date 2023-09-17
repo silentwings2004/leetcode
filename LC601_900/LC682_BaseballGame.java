@@ -31,21 +31,16 @@ public class LC682_BaseballGame {
     // S1: stack
     // time = O(n), space = O(n)
     public int calPoints(String[] ops) {
-        int n = ops.length;
-        Stack<Integer> stack = new Stack<>();
+        List<Integer> stk = new ArrayList<>();
         for (String s : ops) {
-            if (s.equals("+")) {
-                int temp = stack.pop();
-                int cur = temp + stack.peek();
-                stack.push(temp);
-                stack.push(cur);
-            } else if (s.equals("D")) stack.push(stack.peek() * 2);
-            else if (s.equals("C")) stack.pop();
-            else stack.push(Integer.parseInt(s));
+            int p = stk.size() - 1;
+            if (s.equals("+")) stk.add(stk.get(p - 1) + stk.get(p));
+            else if (s.equals("D")) stk.add(stk.get(p) * 2);
+            else if (s.equals("C")) stk.remove(p);
+            else stk.add(Integer.parseInt(s));
         }
-
         int res = 0;
-        while (!stack.isEmpty()) res += stack.pop();
+        for (int x : stk) res += x;
         return res;
     }
 }

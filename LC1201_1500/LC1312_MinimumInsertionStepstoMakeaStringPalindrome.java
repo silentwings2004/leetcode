@@ -21,24 +21,16 @@ public class LC1312_MinimumInsertionStepstoMakeaStringPalindrome {
     // S1: DP
     // time = O(n^2), space = O(n^2)
     public int minInsertions(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
         int n = s.length();
-        int[][] dp = new int[n][n + 1];
-
-        // init
-        for (int i = 0; i < n; i++) dp[i][i] = 0;
-        for (int i = 0; i + 1 < n; i++) dp[i][i + 1] = s.charAt(i) == s.charAt(i + 1) ? 0 : 1;
-
-        for (int len = 3; len <= n; len++) {
+        int[][] f = new int[n][n];
+        for (int len = 2; len <= n; len++) {
             for (int i = 0; i + len - 1 < n; i++) {
-                int j = i + len - 1; // right end
-                if (s.charAt(i) == s.charAt(j)) dp[i][j] = dp[i + 1][j - 1];
-                else dp[i][j] = Math.min(dp[i + 1][j] + 1, dp[i][j - 1] + 1);
+                int j = i + len - 1;
+                f[i][j] = Math.min(f[i + 1][j], f[i][j - 1]) + 1;
+                if (s.charAt(i) == s.charAt(j)) f[i][j] = Math.min(f[i][j], f[i + 1][j - 1]);
             }
         }
-        return dp[0][n - 1];
+        return f[0][n - 1];
     }
 
     // S2: SCS
@@ -96,4 +88,13 @@ public class LC1312_MinimumInsertionStepstoMakeaStringPalindrome {
  *
  * LCS variants:
  * dp[i][j]： the length of SCS for s[1:i] and t[1:j]
+ *
+ * dp
+ * 状态表示：f(i,j)
+ * 集合：所有将区间[i,j]变成回文串的方案的集合
+ * 属性：方案的最小操作数
+ * 状态计算：
+ * 1.i与j匹配: f(i+1,j-1)
+ * 2.i与新字母匹配: f(i+1,j)+1
+ * 3.j与新字母匹配: f(i,j-1)+1
  */

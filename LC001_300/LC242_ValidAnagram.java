@@ -19,19 +19,15 @@ public class LC242_ValidAnagram {
      */
     // time = O(n), space = O(1)
     public boolean isAnagram(String s, String t) {
-        // corner case
-        if (s == null) return t == null;
-        if (s.length() != t.length()) return false; // checksum
-
-        int[] count = new int[26];
-        for (int i = 0; i < s.length(); i++) {
-            count[s.charAt(i) - 'a']++;
-            count[t.charAt(i) - 'a']--;
+        int m = s.length(), n = t.length();
+        if (m != n) return false;
+        int[] cs = new int[26], ct = new int[26];
+        for (int i = 0; i < n; i++) {
+            char c1 = s.charAt(i), c2 = t.charAt(i);
+            cs[c1 - 'a']++;
+            ct[c2 - 'a']++;
         }
 
-        for (int n : count) {
-            if (n != 0) return false;
-        }
-        return true;
+        return Arrays.equals(cs, ct);
     }
 }

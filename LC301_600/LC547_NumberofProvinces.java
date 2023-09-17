@@ -26,44 +26,28 @@ public class LC547_NumberofProvinces {
      * @param isConnected
      * @return
      */
-    // time = O(n^2 * logn), space = O(n)
-    HashMap<Integer, Integer> father;
+    // time = O(n^2*logn), space = O(n)
+    int[] p;
     public int findCircleNum(int[][] isConnected) {
         int n = isConnected.length;
-        father = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            father.put(i, i);
-        }
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
 
+        int cnt = n;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i != j && isConnected[i][j] == 1) {
-                    if (findFather(i) != findFather(j)) { // not belong to the same group, so have different ancestor
-                        union(i, j); // merge i, j families
-                    }
+                if (isConnected[i][j] == 1 && find(i) != find(j)) {
+                    p[find(i)] = find(j);
+                    cnt--;
                 }
             }
         }
-
-        HashSet<Integer> set = new HashSet<>();
-        for (int i = 0; i < n; i++) {
-            set.add(findFather(i)); // findFather(int i) is used to find the top ancestor
-        }
-        // if you want 100% sure that you are calling the top ancestor, use findFather(i) only instead of father.get(i)
-        return set.size();
+        return cnt;
     }
 
-    private int findFather(int x) {
-        if (father.get(x) != x) {
-            father.put(x, findFather(father.get(x)));
-        }
-        return father.get(x);
-    }
-
-    private void union(int x, int y) {
-        x = father.get(x); // already reach the top ancestor
-        y = father.get(y); // same as x, now we reach the top ancestor
-        father.put(x, y);
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

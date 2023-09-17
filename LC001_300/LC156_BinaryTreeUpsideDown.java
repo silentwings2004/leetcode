@@ -24,17 +24,40 @@ public class LC156_BinaryTreeUpsideDown {
      * @param root
      * @return
      */
+    // S1: dfs
     // time = O(n), space = O(n)
     public TreeNode upsideDownBinaryTree(TreeNode root) {
-        // corner case
-        if (root == null || root.left == null && root.right == null) return root;
+        if (root == null || root.left == null) return root;
 
-        TreeNode newRoot = upsideDownBinaryTree(root.left);
+        TreeNode nh = upsideDownBinaryTree(root.left);
         root.left.left = root.right;
         root.left.right = root;
+        root.left = root.right = null;
+        return nh;
+    }
 
-        root.left = null;
-        root.right = null;
-        return newRoot;
+    // S2: iteration
+    // time = O(n), space = O(n)
+    final int N = 15;
+    public TreeNode upsideDownBinaryTree2(TreeNode root) {
+        if (root == null || root.left == null) return root;
+
+        TreeNode[] stk = new TreeNode[N];
+        int tt = 0;
+        TreeNode cur = root, nh = null;
+        while (cur != null || tt > 0) {
+            if (cur != null) {
+                stk[++tt] = cur;
+                cur = cur.left;
+            } else {
+                cur = stk[tt--];
+                if (nh == null) nh = cur;
+                cur.left = tt > 0 ? stk[tt].right : null;
+                cur.right = tt > 0 ? stk[tt] : null;
+                if (tt > 0) stk[tt].left = stk[tt].right = null;
+                cur = null;
+            }
+        }
+        return nh;
     }
 }

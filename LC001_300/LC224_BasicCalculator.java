@@ -91,25 +91,30 @@ public class LC224_BasicCalculator {
     // S3: stack
     // time = O(n), space = O(n)
     public int calculate3(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c != ' ') sb.append(c);
+        }
+        s = sb.toString();
+        int n = s.length();
+
         Stack<Integer> num = new Stack<>();
         Stack<Character> op = new Stack<>();
 
-        int n = s.length();
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
-            if (c == ' ') continue;
             if (Character.isDigit(c)) {
                 int j = i;
                 while (j < n && Character.isDigit(s.charAt(j))) j++;
                 int val = Integer.parseInt(s.substring(i, j));
                 num.push(val);
                 i = j - 1;
-            } else if (c == '(') op.push(c);
+            } else if (c == '(') op.push('(');
             else if (c == ')') {
                 while (!op.isEmpty() && op.peek() != '(') eval(num, op);
                 op.pop();
             } else {
-                if (i == 0 || s.charAt(i - 1) == '(' || s.charAt(i - 1) == '+' || s.charAt(i - 1) == '-') num.push(0);
+                if (i == 0 || s.charAt(i - 1) == '(') num.push(0);
                 while (!op.isEmpty() && op.peek() != '(') eval(num, op);
                 op.push(c);
             }
@@ -119,11 +124,12 @@ public class LC224_BasicCalculator {
     }
 
     private void eval(Stack<Integer> num, Stack<Character> op) {
-        int b = num.pop(), a = num.pop();
+        int b = num.pop();
+        int a = num.pop();
         char c = op.pop();
         int res = 0;
         if (c == '+') res = a + b;
-        else res = a - b;
+        else if (c == '-') res = a - b;
         num.push(res);
     }
 }

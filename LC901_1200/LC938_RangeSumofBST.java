@@ -21,18 +21,12 @@ public class LC938_RangeSumofBST {
      * @return
      */
     // S1：DFS
-    // time = O(n), space = O(n)  n: number of nodes in the tree
+    // time = O(n), space = O(n)
     public int rangeSumBST(TreeNode root, int low, int high) {
-        // corner case
         if (root == null) return 0;
-
-        if (root.val < low) {
-            return rangeSumBST(root.right, low, high);
-        }
-        if (root.val > high) {
-            return rangeSumBST(root.left, low ,high);
-        }
-        return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low ,high);
+        if (root.val < low) return rangeSumBST(root.right, low, high);
+        if (root.val > high) return rangeSumBST(root.left, low, high);
+        return rangeSumBST(root.left, low, high) + root.val + rangeSumBST(root.right, low, high);
     }
 
     // S2: iteration

@@ -56,4 +56,9 @@ public class LC390_EliminationGame {
  * [1] 2 [3] 4 [5] 6 [7] 8 [9] 10 [11]   -> [2] 4 [6] 8 [10]   ->    4 [8]
  *     ^                                        ^                    ^
  *     h = h + step(1)                          h=h+step(2)          h(keep) as remain % 2 == 0 && start from right
+ *
+ * 约瑟夫问题：AC 1455
+ * f(n) = 2 * g(n / 2)
+ * f(n) + g(n) = n + 1
+ * => g(n) = n + 1 - f(n) => f(n) = 2 * (n / 2 + 1 - f(n / 2)) => O(logn)
  */

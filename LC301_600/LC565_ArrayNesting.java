@@ -27,15 +27,14 @@ public class LC565_ArrayNesting {
         int n = nums.length, res = 0;
         for (int i = 0; i < n; i++) {
             if (nums[i] != -1) {
-                int count = 0;
-                int j = i;
+                int j = i, s = 0;
                 while (nums[j] != -1) {
-                    count++;
+                    s++;
                     int next = nums[j];
-                    nums[j] = -1; // 把走过的node都设置成-1
+                    nums[j] = -1;
                     j = next;
                 }
-                res = Math.max(res, count);
+                res = Math.max(res, s);
             }
         }
         return res;
@@ -50,4 +49,10 @@ public class LC565_ArrayNesting {
  * 从前往后遍历每个元素，遍历到第一个没有遍历过的元素，必然在一个新的环上
  * 从这个点出发，沿着边走，回到自己的时候，环就找到了。
  * 每找一个点标记下，表示遍历过了。
+ *
+ * 经典图论问题，每个元素看成一个点
+ * 从0向5连一条边 => 建图
+ * 每个点只有一条出边和入边 => 必然是若干个环，一定没有尾结点
+ * 每个集合对应一个环 => 哪个环的长度最大
+ * 从前往后遍历，遍历到第一个未被遍历的元素 => 意味着找到一个新的环
  */

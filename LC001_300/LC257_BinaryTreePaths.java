@@ -16,32 +16,37 @@ public class LC257_BinaryTreePaths {
      * @param root
      * @return
      */
+    // time = O(n^2), space = O(n^2)
+    List<String> res;
+    StringBuilder sb;
     public List<String> binaryTreePaths(TreeNode root) {
-        List<String> res = new ArrayList<>();
-        StringBuilder path = new StringBuilder();
-        path.append(root.val);
-        dfs(root, path, res);
+        res = new ArrayList<>();
+        sb = new StringBuilder();
+        if (root == null) return res;
+        sb.append(root.val);
+        dfs(root);
         return res;
     }
 
-    private void dfs(TreeNode cur, StringBuilder path, List<String> res) {
-        // base case
-        if (cur.left == null && cur.right == null) {
-            res.add(path.toString());
+    private void dfs(TreeNode node) {
+        if (node.left == null && node.right == null) {
+            res.add(sb.toString());
             return;
         }
 
-        int len = path.length();
-        if (cur.left != null) {
-            path.append("->" + cur.left.val);
-            dfs(cur.left, path, res);
-            path.setLength(len);
+        int len = sb.length();
+        if (node.left != null) {
+            sb.append("->").append(node.left.val);
+            dfs(node.left);
+            sb.setLength(len);
         }
-
-        if (cur.right != null) {
-            path.append("->" + cur.right.val);
-            dfs(cur.right, path, res);
-            path.setLength(len);
+        if (node.right != null) {
+            sb.append("->").append(node.right.val);
+            dfs(node.right);
+            sb.setLength(len);
         }
     }
 }
+/**
+ * 如果有n/2个叶子节点 => 存下来(n^2 / 4) => O(n^2)
+ */

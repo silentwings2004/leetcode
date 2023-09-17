@@ -114,4 +114,6 @@ public class LC376_WiggleSubsequence {
  * S2: DP
  * 如果之前是向上 => 后面向下才有帮助，如果依然向上则没有帮助，长度 q = p + 1
  * 同样，如果之前是向下 => 新增向上，就得到一个更长的wiggle sequence，p = q + 1
+ *
+ * 1. 去除连续相同的数
  */

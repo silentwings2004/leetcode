@@ -24,36 +24,32 @@ public class LC847_ShortestPathVisitingAllNodes {
      */
     // time = O(n^2*2^n), space = O(n*2^n)时间枚举进行状态转移
     // 状态的总数为O(n*2^n),对于每一个状态，我们需要O(n)
+    final int INF = (int)1e8;
     public int shortestPathLength(int[][] graph) {
         int n = graph.length;
-        int finalState = 0;
-        for (int i = 0; i < n; i++) finalState |= 1 << i;
-        Queue<int[]> queue = new LinkedList<>(); // {node, state}
-        boolean[][] visited = new boolean[n][1 << n];
+        int[][] f = new int[1 << n][n];
+        for (int i = 0; i < 1 << n; i++) Arrays.fill(f[i], INF);
+        Queue<int[]> q = new LinkedList<>();
         for (int i = 0; i < n; i++) {
-            queue.offer(new int[]{i, 1 << i}); // i访问过了
-            visited[i][1 << i] = true;
+            f[1 << i][i] = 0;
+            q.offer(new int[]{1 << i, i});
         }
 
-        int step = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                int[] cur = queue.poll();
-                int node = cur[0], state = cur[1];
-
-                for (int nextNode : graph[node]) {
-                    int nextState = state | (1 << nextNode);
-                    if (nextState == finalState) return step + 1;
-                    if (!visited[nextNode][nextState]) {
-                        queue.offer(new int[]{nextNode, nextState});
-                        visited[nextNode][nextState] = true;
-                    }
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int s = t[0], cur = t[1];
+            for (int next : graph[cur]) {
+                int ns = s | 1 << next;
+                if (f[ns][next] > f[s][cur] + 1) {
+                    f[ns][next] = f[s][cur] + 1;
+                    q.offer(new int[]{ns, next});
                 }
             }
-            step++;
         }
-        return 0; // 这一步不会走到，因为肯定有解，大不了多走几步。
+
+        int res = INF;
+        for (int i = 0; i < n; i++) res = Math.min(res, f[(1 << n) - 1][i]);
+        return res;
     }
 }
 /**
@@ -76,4 +72,12 @@ public class LC847_ShortestPathVisitingAllNodes {
  * 1 <= n <= 12，用一个32位bit即可表示，ref: LC864
  * 没访问过的状态是0，访问过的用1表示
  * 状态的个数可以提前知道，就那么多，所以可以用数组而不是set
+ *
+ * f(i,j):走过的点集为i，且最后处于点j的所有路径中长度的最小值
+ * f(i | 1 << k, k) <- f(i,j) + 1
+ * 每个点可以重复走
+ * 如果j和k都属于i，状态的方式之间存在一个循环依赖
+ * dp能做，必须是拓扑图 => 这里不能用
+ * 看成是一种最短路
+ * 每个状态看是一个点
  */

@@ -42,6 +42,7 @@ public class LC214_ShortestPalindrome {
     }
 
     // S2: Manacher
+    // time = O(n), space = O(n)
     public String shortestPalindrome2(String s) {
         // corner case
         if (s == null || s.length() == 0) return "";
@@ -80,6 +81,27 @@ public class LC214_ShortestPalindrome {
         return sb.reverse().toString();
     }
 
+    // S3: KMP
+    // time = O(n), space = O(n)
+    public String shortestPalindrome3(String s) {
+        int n = s.length();
+        String t = "#" + s + "#" + rev(s);
+        int[] ne = new int[n * 2 + 2];
+        for (int i = 2, j = 0; i <= 2 * n + 1; i++) {
+            while (j > 0 && t.charAt(i) != t.charAt(j + 1)) j = ne[j];
+            if (t.charAt(i) == t.charAt(j + 1)) j++;
+            ne[i] = j;
+        }
+
+        int len = ne[n * 2 + 1];
+        String r = t.substring(len + 1, n + 1);
+        return rev(r) + s;
+    }
+
+    private String rev(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        return sb.reverse().toString();
+    }
 }
 /**
  * 肯定有解，大不了把整个string翻转下，就一定是个回文串
@@ -101,4 +123,8 @@ public class LC214_ShortestPalindrome {
  * r = min(P[j], maxRight - i)
  * r++ ? => P[i]
  * t: # d [# b # a # a # b #] c
+ *
+ * KMP
+ * 翻转一遍拼在后面
+ * 求最长回文前缀
  */

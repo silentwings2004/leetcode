@@ -24,17 +24,12 @@ public class LC274_HIndex {
     // S1: Sort
     // time = O(nlogn), space = O(1)
     public int hIndex(int[] citations) {
-        // corner case
-        if (citations == null || citations.length == 0) return 0;
-
         Arrays.sort(citations);
-
-        int n = citations.length, count = 0;
-        for (int i = n - 1; i >= 0; i--) { // 从后往前数
-            if (citations[i] < n - i) break; // 注意个数是n - i
-            count++;
+        int n = citations.length;
+        for (int i = 0; i < n; i++) {
+            if (citations[i] >= n - i) return n - i;
         }
-        return count;
+        return 0;
     }
 
     // S2: 最优解

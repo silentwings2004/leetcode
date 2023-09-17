@@ -25,8 +25,7 @@ public class LC474_OnesandZeroes {
     // S1: dp
     // time = O(m * n), space = O(m * n)
     public int findMaxForm(String[] strs, int m, int n) {
-        int[][] dp = new int[m + 1][n + 1];
-
+        int[][] f = new int[m + 1][n + 1];
         for (String str : strs) {
             int a = 0, b = 0;
             for (char c : str.toCharArray()) {
@@ -35,11 +34,11 @@ public class LC474_OnesandZeroes {
             }
             for (int i = m; i >= a; i--) {
                 for (int j = n; j >= b; j--) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i - a][j - b] + 1);
+                    f[i][j] = Math.max(f[i][j], f[i - a][j - b] + 1);
                 }
             }
         }
-        return dp[m][n];
+        return f[m][n];
     }
 }
 /**

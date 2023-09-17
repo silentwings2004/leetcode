@@ -15,43 +15,17 @@ public class LC611_ValidTriangleNumber {
      * @param nums
      * @return
      */
-    // S1: brute-force
-    // time = O(n^3), space = O(1)
+    // time = O(n^2), space = O(1)
     public int triangleNumber(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length, res = 0;
         Arrays.sort(nums);
-
-        for (int i = 0; i < n - 2; i++) {
-            for (int j = i + 1; j < n - 1; j++) {
-                for (int k = j + 1; k < n; k++) {
-                    if (nums[i] + nums[j] > nums[k]) res++;
-                    else break;
-                }
+        int n = nums.length, res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i - 1, k = 0; j > 0 && k < j; j--) {
+                while (k < j && nums[k] <= nums[i] - nums[j]) k++;
+                res += j - k;
             }
         }
         return res;
-    }
-
-    // S2: linear scan
-    // time = O(n^2), space = O(logn)
-    public int triangleNumber2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int count = 0, n = nums.length;
-        Arrays.sort(nums);
-
-        for (int i = 0; i < n - 2; i++) {
-            int k = i + 2;
-            for (int j = i + 1; j < n - 1 && nums[i] != 0; j++) {
-                while (k < n && nums[i] + nums[j] > nums[k]) k++;
-                count += k - j - 1;
-            }
-        }
-        return count;
     }
 }
 /**

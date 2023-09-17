@@ -42,7 +42,7 @@ public class LC2488_CountSubarraysWithMedianK {
             if (x > k) s++;
             else if (x < k) s--;
             if (x == k) flag = true;
-            if (!flag) cnt[s]++;
+            if (!flag) cnt[s]++; // 遇到中位数之后，不能再累加，因为两点之间必须包括中位数k
             else res += cnt[s] + cnt[s - 1];
         }
         return res;
@@ -99,4 +99,9 @@ public class LC2488_CountSubarraysWithMedianK {
  *    res += presum_even[s-1]
  * [x x x x x x] => presum[i] - presum[?]
  *            i
+ * 展开成一个数学式子
+ * 中位数 = (奇数长度) 小于k的个数 = 大于k的个数
+ * 偶数长度 小于k的个数 + 1 = 大于k的个数
+ * 左侧小于k的个数 + 右侧小于k的个数 = 左侧大于k的个数 + 右侧大于k的个数
+ * => +左侧小于k的个数 - 左侧大于k的个数 = +右侧大于k的个数 - 右侧小于k的个数
  */

@@ -18,6 +18,8 @@ public class LC747_LargestNumberAtLeastTwiceofOthers {
      * @param nums
      * @return
      */
+    // S1
+    // time = O(n), space = O(1)
     public int dominantIndex(int[] nums) {
         int n = nums.length, max = 0, second = 0, res = 0;
         for (int i = 0; i < n; i++) {
@@ -28,5 +30,19 @@ public class LC747_LargestNumberAtLeastTwiceofOthers {
             } else if (nums[i] > second) second = nums[i];
         }
         return max >= second * 2 ? res : -1;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int dominantIndex2(int[] nums) {
+        int n = nums.length, k = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > nums[k]) k = i;
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (i != k && nums[k] < nums[i] * 2) return -1;
+        }
+        return k;
     }
 }

@@ -25,38 +25,36 @@ public class LC994_RottingOranges {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public int orangesRotting(int[][] grid) {
         int m = grid.length, n = grid[0].length;
-        Queue<int[]> queue = new LinkedList<>();
-        int count = 0;
+        int cnt = 0;
+        Queue<int[]> q = new LinkedList<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 2) queue.offer(new int[]{i, j});
-                else if (grid[i][j] == 1) count++;
+                if (grid[i][j] == 2) q.offer(new int[]{i, j});
+                else if (grid[i][j] == 1) cnt++;
             }
         }
-        if (count == 0) return 0; // corner case, if there is no fresh oranges at the beginning, return 0
+        if (cnt == 0) return 0;
 
         int step = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
+        while (!q.isEmpty()) {
+            int size = q.size();
             while (size-- > 0) {
-                int[] cur = queue.poll();
-                int x = cur[0], y = cur[1];
-                for (int[] dir : directions) {
-                    int i = x + dir[0];
-                    int j = y + dir[1];
-                    if (i < 0 || i >= m || j < 0 || j >= n) continue;
-                    if (grid[i][j] == 1) {
-                        grid[i][j] = 2;
-                        count--;
-                        queue.offer(new int[]{i, j});
-                    }
+                int[] t = q.poll();
+                int x = t[0], y = t[1];
+                for (int i = 0; i < 4; i++) {
+                    int a = x + dx[i], b = y + dy[i];
+                    if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                    if (grid[a][b] != 1) continue;
+                    grid[a][b] = 2;
+                    cnt--;
+                    q.offer(new int[]{a, b});
                 }
             }
             step++;
         }
-        return count == 0 ? step - 1 : -1;
+        return cnt > 0 ? -1 : step - 1;
     }
 }

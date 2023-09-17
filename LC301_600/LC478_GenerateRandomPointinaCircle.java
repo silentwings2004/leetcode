@@ -40,17 +40,15 @@ public class LC478_GenerateRandomPointinaCircle {
     // time = O(1), space = O(1)
     class Solution {
         double r, x, y;
-        Random random;
         public Solution(double radius, double x_center, double y_center) {
             r = radius;
             x = x_center;
             y = y_center;
-            random = new Random();
         }
 
         public double[] randPoint() {
-            double a = random.nextDouble() * 2 - 1;
-            double b = random.nextDouble() * 2 - 1;
+            double a = Math.random() * 2 - 1;
+            double b = Math.random() * 2 - 1;
             if (a * a + b * b > 1) return randPoint();
             return new double[]{x + r * a, y + r * b};
         }

@@ -28,28 +28,26 @@ public class LC1373_MaximumSumBSTinBinaryTree {
      * @return
      */
     // time = O(n), space = O(n)
-    final int INF = (int) 1e9;
     int res = 0;
     public int maxSumBST(TreeNode root) {
-        if (root == null) return 0;
-
         dfs(root);
         return res;
     }
 
     private int[] dfs(TreeNode node) {
-        int[] l = new int[]{0, node.val, -INF}; // 左子树不存在时，最小值返回根节点的值
-        int[] r = new int[]{0, INF, node.val};
+        if (node == null) return new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1};
 
-        if (node.left != null) l = dfs(node.left);
-        if (node.right != null) r = dfs(node.right);
+        int[] l = dfs(node.left);
+        int[] r = dfs(node.right);
 
-        if (l[2] < node.val && node.val < r[1]) {
-            int s = l[0] + node.val + r[0];
-            res = Math.max(res, s);
-            return new int[]{s, l[1], r[2]};
-        }
-        return new int[]{-INF, -INF, INF};
+        int flag = 1;
+        if (node.val > l[0] && node.val < r[1] && (l[3] & r[3]) == 1) {
+            res = Math.max(res, node.val + l[2] + r[2]);
+        } else flag = 0;
+
+        int maxv = Math.max(node.val, Math.max(l[0], r[0]));
+        int minv = Math.min(node.val, Math.min(l[1], r[1]));
+        return new int[]{maxv, minv, node.val + l[2] + r[2], flag};
     }
 }
 /**

@@ -22,23 +22,21 @@ public class LC1019_NextGreaterNodeInLinkedList {
      * @return
      */
     // time = O(n), space = O(n)
+    final int N = 10010;
     public int[] nextLargerNodes(ListNode head) {
-        ListNode cur = head;
-        int count = 0;
-        while (cur != null) {
-            cur = cur.next;
-            count++;
+        int[] stk = new int[N];
+        int tt = 0;
+        List<Integer> q = new ArrayList<>();
+        for (ListNode p = head; p != null; p = p.next) q.add(p.val);
+        for (int i = q.size() - 1; i >= 0; i--) {
+            int x = q.get(i);
+            while (tt > 0 && stk[tt] <= x) tt--;
+            if (tt > 0) q.set(i, stk[tt]);
+            else q.set(i, 0);
+            stk[++tt] = x;
         }
-        int[] res = new int[count];
-        cur = head;
-
-        Stack<int[]> stack = new Stack<>(); // {val, idx}
-        int i = 0;
-        while (cur != null) {
-            while (!stack.isEmpty() && stack.peek()[0] < cur.val) res[stack.pop()[1]] = cur.val;
-            stack.push(new int[]{cur.val, i++});
-            cur = cur.next;
-        }
+        int[] res = new int[q.size()];
+        for (int i = 0; i < q.size(); i++) res[i] = q.get(i);
         return res;
     }
 }

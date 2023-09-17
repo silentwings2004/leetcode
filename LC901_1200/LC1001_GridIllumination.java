@@ -34,6 +34,7 @@ public class LC1001_GridIllumination {
      * @param queries
      * @return
      */
+    // S1
     // time = O(m + n), space = O(n)  n 和 m 分别是 lamps 和 queries 的长度
     private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, 0}};
     public int[] gridIllumination(int n, int[][] lamps, int[][] queries) {
@@ -89,5 +90,55 @@ public class LC1001_GridIllumination {
     private void decrement(HashMap<Integer, Integer> map, int key) {
         if (map.get(key) == 1) map.remove(key);
         else map.put(key, map.get(key) - 1);
+    }
+
+    // S2
+    // time = O(l + q), space = O(l)
+    public int[] gridIllumination2(int n, int[][] lamps, int[][] queries) {
+        HashMap<Integer, HashSet<Integer>> row = new HashMap<>();
+        HashMap<Integer, HashSet<Integer>> col = new HashMap<>();
+        HashMap<Integer, HashSet<Integer>> dg = new HashMap<>();
+        HashMap<Integer, HashSet<Integer>> udg = new HashMap<>();
+        for (int[] p : lamps) {
+            int x = p[0], y = p[1];
+            row.putIfAbsent(x, new HashSet<>());
+            col.putIfAbsent(y, new HashSet<>());
+            dg.putIfAbsent(y - x, new HashSet<>());
+            udg.putIfAbsent(y + x, new HashSet<>());
+            row.get(x).add(y);
+            col.get(y).add(x);
+            dg.get(y - x).add(x);
+            udg.get(y + x).add(x);
+        }
+
+        int m = queries.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) {
+            int x = queries[i][0], y = queries[i][1];
+            if (check(row, x) || check(col, y) || check(dg, y - x) || check(udg, y + x)) {
+                res[i] = 1;
+                for (int j = x - 1; j <= x + 1; j++) {
+                    for (int k = y - 1; k <= y + 1; k++) {
+                        remove(row, j, k);
+                        remove(col, k, j);
+                        remove(dg, k - j, j);
+                        remove(udg, k + j, j);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    private void remove(HashMap<Integer, HashSet<Integer>> map, int x, int y) {
+        if (!map.containsKey(x)) return;
+        if (!map.get(x).contains(y)) return;
+        map.get(x).remove(y);
+    }
+
+    private boolean check(HashMap<Integer, HashSet<Integer>> map, int x) {
+        if (!map.containsKey(x)) return false;
+        if (map.get(x).size() == 0) return false;
+        return true;
     }
 }

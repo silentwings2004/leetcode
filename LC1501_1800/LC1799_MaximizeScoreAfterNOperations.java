@@ -137,6 +137,31 @@ public class LC1799_MaximizeScoreAfterNOperations {
 //        if (b == 0) return a;
 //        return gcd(b, a % b);
 //    }
+
+    // S3: 状压dp
+    // time = O(n * n * 2^n), space = O(2^n)
+    public int maxScore3(int[] nums) {
+        int n = nums.length;
+        int[] f = new int[1 << n];
+        for (int i = 0; i < 1 << n; i++) {
+            int cnt = n - Integer.bitCount(i);
+            cnt = cnt / 2 + 1;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) {
+                    for (int k = j + 1; k < n; k++) {
+                        if ((i >> k & 1) == 1) {
+                            f[i] = Math.max(f[i], f[i - (1 << j) - (1 << k)] + gcdd(nums[j], nums[k]) * cnt);
+                        }
+                    }
+                }
+            }
+        }
+        return f[(1 << n) - 1];
+    }
+
+    private int gcdd(int a, int b) {
+        return b == 0 ? a : gcdd(b, a % b);
+    }
 }
 /**
  * 数据量特别小 => 暴搜: dfs/state compression
@@ -150,4 +175,11 @@ public class LC1799_MaximizeScoreAfterNOperations {
  * => use Gosper's hack
  * 对所有的C(14,x)而言，C(14,6) = C(14,8)是最大的 => 总共有C(14,6) = 3003种状态，都可以存下来
  * 所有的state = 2^14 = 16384,但我们只要存1-bit数是偶数个数的state => total = 2^14 / 2 = 2^13 = 8000 都可以存下来
+ *
+ * 状态压缩dp
+ * 状态表示f(i):
+ * 1. 集合：从状态i开始游戏，操作的所有方案
+ * 2. 属性：得分最大值
+ * 状态计算：以第一步操作来分类 C(k,2)
+ *
  */

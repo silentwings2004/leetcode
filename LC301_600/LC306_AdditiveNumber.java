@@ -52,3 +52,6 @@ public class LC306_AdditiveNumber {
         return false;
     }
 }
+/**
+ * 用高精度的方式来存储每个数
+ */

@@ -22,22 +22,18 @@ public class LC922_SortArrayByParityII {
      */
     // time = O(n), space = O(1)
     public int[] sortArrayByParityII(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return new int[0];
-
-        int n = nums.length, j = 1;
-        for (int i = 0; i < n; i += 2) {
-            if (nums[i] % 2 == 1) {
-                while (nums[j] % 2 == 1) j += 2;
-                swap(nums, i, j);
-            }
+        int n = nums.length;
+        for (int i = 0, j = 1; i < n; i += 2, j += 2) {
+            while (i < n && nums[i] % 2 == 0) i += 2;
+            while (i < n && nums[j] % 2 == 1) j += 2;
+            if (i < n) swap(nums, i, j);
         }
         return nums;
     }
 
     private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
+        int t = nums[i];
         nums[i] = nums[j];
-        nums[j] = temp;
+        nums[j] = t;
     }
 }

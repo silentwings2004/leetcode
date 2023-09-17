@@ -29,3 +29,7 @@ public class LC453_MinimumMovestoEqualArrayElements {
         return res;
     }
 }
+/**
+ * 等价于每次将1个元素-1
+ * 找数组里的最小值，其他所有数至少减到最小值水平
+ */

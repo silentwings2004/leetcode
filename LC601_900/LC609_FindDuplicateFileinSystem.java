@@ -37,28 +37,21 @@ public class LC609_FindDuplicateFileinSystem {
      */
     // time = O(n * k), space = O(n * k)  k: max number of the substring separated by empty space inside the string array
     public List<List<String>> findDuplicate(String[] paths) {
-        List<List<String>> res = new ArrayList<>();
-        // corner case
-        if (paths == null || paths.length == 0) return res;
-
-        int n = paths.length;
-        HashMap<String, HashSet<String>> map = new HashMap<>(); // at most has n * k unique string as keys
-
-        for (String s : paths) { // O(n)
-            String[] strs = s.split(" ");
-            for (int i = 1; i < strs.length; i++) {  // O(k)
-                int idx = strs[i].indexOf('(');
-                String content = strs[i].substring(idx);
-                String fileName = strs[0] + "/" + strs[i].substring(0, idx);
-                map.putIfAbsent(content, new HashSet<>());
-                map.get(content).add(fileName);
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String path : paths) {
+            String[] strs = path.split(" ");
+            String p = strs[0];
+            for (int i = 1; i < strs.length; i++) {
+                int x = strs[i].indexOf('('), y = strs[i].indexOf(')');
+                String name = strs[i].substring(0, x), content = strs[i].substring(x + 1, y);
+                map.putIfAbsent(content, new ArrayList<>());
+                map.get(content).add(p + "/" + name);
             }
         }
 
-        for (String key : map.keySet()) {
-            if (map.get(key).size() > 1) {
-                res.add(new ArrayList<>(map.get(key)));
-            }
+        List<List<String>> res = new ArrayList<>();
+        for (List<String> v : map.values()) {
+            if (v.size() > 1) res.add(v);
         }
         return res;
     }

@@ -38,50 +38,58 @@ public class LC2509_CycleLengthQueriesinaTree {
      * @param queries
      * @return
      */
-    // time = O(nlogn), space = O(n)
+    // S1
+    // time = O(m * n), space = O(1)
     public int[] cycleLengthQueries(int n, int[][] queries) {
         int m = queries.length;
         int[] res = new int[m];
         for (int i = 0; i < m; i++) {
             int a = queries[i][0], b = queries[i][1];
-            int fa = lca(a, b);
-            long x = findDepth(a), y = findDepth(b), z = findDepth(fa);
-            res[i] = (int)(1 + x - z + y - z);
+            int d = 0;
+            while (a != b) {
+                if (a > b) a /= 2;
+                else b /= 2;
+                d++;
+            }
+            res[i] = d + 1;
         }
         return res;
     }
 
-    private int lca(int x, int y) {
-        long dx = findDepth(x), dy = findDepth(y);
-        if (dx < dy) {
-            int t = x;
-            x = y;
-            y = t;
-
-            long td = dx;
-            dx = dy;
-            dy = td;
+    // S2
+    // time = O(m * n), space = O(1)
+    public int[] cycleLengthQueries2(int n, int[][] queries) {
+        int m = queries.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) {
+            int a = queries[i][0], b = queries[i][1];
+            if (a > b) {
+                int t = a;
+                a = b;
+                b = t;
+            }
+            int da = get_depth(a), db = get_depth(b);
+            int len = 0;
+            for (int j = 0; j < db - da; j++) {
+                b >>= 1;
+                len++;
+            }
+            while (a != b) {
+                a >>= 1;
+                b >>= 1;
+                len += 2;
+            }
+            res[i] = len + 1;
         }
-
-        while (dx > dy) {
-            x /= 2;
-            dx = findDepth(x);
-        }
-
-        while (x != y) {
-            x /= 2;
-            y /= 2;
-        }
-        return x;
+        return res;
     }
 
-    private long findDepth(int x) {
-        long y = 1, depth = 1, sum = 1;
-        while (y < x) {
-            sum *= 2;
-            y += sum;
-            depth++;
+    private int get_depth(int x) {
+        int res = 0;
+        while (x > 0) {
+            x >>= 1;
+            res++;
         }
-        return depth;
+        return res;
     }
 }

@@ -42,10 +42,12 @@ public class LC710_RandomPickwithBlacklist {
         this.n = n;
         for (int i = n - m; i < n; i++) set.add(i);
         for (int x : blacklist) set.remove(x);
-        List<Integer> nums = new ArrayList<>(set);
-        int idx = 0;
+        Iterator iter = set.iterator();
         for (int x : blacklist) {
-            if (x < n - m) map.put(x, nums.get(idx++));
+            if (x < n - m) {
+                int y = (int) iter.next();
+                map.put(x, y);
+            }
         }
     }
     // time = O(1), space = O(m)
@@ -58,4 +60,5 @@ public class LC710_RandomPickwithBlacklist {
 /**
  * n - len
  * 取到黑名单位置，就映射到没有在黑名单的位置
+ * 前面有n-len个黑名单的位置，后面就有n-len个不在黑名单的位置
  */

@@ -1,5 +1,5 @@
 package LC1501_1800;
-
+import java.util.*;
 public class LC1508_RangeSumofSortedSubarraySums {
     /**
      * You are given the array nums consisting of n positive integers. You computed the sum of all non-empty continuous
@@ -24,41 +24,23 @@ public class LC1508_RangeSumofSortedSubarraySums {
      * @param right
      * @return
      */
-    // time = O(n^2 * logS), space = O(1)    S: sum of nums
+    // time = O(n^2), space = O(n)
     public int rangeSum(int[] nums, int n, int left, int right) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int sum = 0;
-        for (int num : nums) sum += num;
-
-        long M = (long) (1e9 + 7);
-        long res = 0;
-        for (int k = left; k <= right; k++) { // O(r - l) -> O(n)
-            res = (res + kthSubarraySum(nums, k, sum)) % M;
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
+        int m = n * (n + 1) / 2;
+        long[] w = new long[m];
+        int idx = 0;
+        for (int i = 0; i < n; i++) {
+            for (int len = 1; i + len - 1 < n; len++) {
+                int j = i + len - 1;
+                w[idx++] = s[j + 1] - s[i];
+            }
         }
-        return (int) res;
-    }
-
-    private int kthSubarraySum(int[] nums, int k, int sum) {
-        int left = 1, right = sum;
-        while (left < right) {  // O(log(10^5))
-            int mid = left + (right - left) / 2;
-            if (countSmallerOrEqual(nums, mid) < k) left = mid + 1; // 往上猜，答案肯定不是mid
-            else right = mid;
-        }
-        return left; // 一定有解！
-    }
-
-    private int countSmallerOrEqual(int[] nums, int s) { // O(n)
-        // how many subarrays whose sum is smaller or equal to s
-        int n = nums.length, count = 0, j = 0, sum = 0;
-        for (int i = 0; i < n; i++) { // O(n)
-            while (j < n && sum + nums[j] <= s) sum += nums[j++];
-            count += j - i; // 注意j不用reset
-            sum -= nums[i];
-        }
-        return count;
+        Arrays.sort(w);
+        long res = 0, mod = (long)(1e9 + 7);
+        for (int i = left - 1; i < right; i++) res = (res + w[i]) % mod;
+        return (int)res;
     }
 }
 /**

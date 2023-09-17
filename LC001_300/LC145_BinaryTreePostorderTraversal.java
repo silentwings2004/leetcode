@@ -39,23 +39,16 @@ public class LC145_BinaryTreePostorderTraversal {
     public List<Integer> postorderTraversal2(TreeNode root) {
         List<Integer> res = new ArrayList<>();
         Stack<TreeNode> stack = new Stack<>();
-        HashSet<TreeNode> set = new HashSet<>();
 
         TreeNode cur = root;
         while (cur != null || !stack.isEmpty()) {
             if (cur != null) {
+                res.add(cur.val);
                 stack.push(cur);
-                cur = cur.left;
-            } else {
-                cur = stack.peek();
-                if (set.add(cur)) cur = cur.right;
-                else {
-                    res.add(cur.val);
-                    stack.pop();
-                    cur = null;
-                }
-            }
+                cur = cur.right;
+            } else cur = stack.pop().left;
         }
+        Collections.reverse(res);
         return res;
     }
 
@@ -78,6 +71,7 @@ public class LC145_BinaryTreePostorderTraversal {
     }
 }
 /**
+ * 左右根 => 根右左，再逆序一次即可
  * postorder区别：根要遍历好几次
  * 左子树都读完，右子树都读完，再读root
  * res: (...)(...) 5

@@ -32,24 +32,24 @@ public class LC158_ReadNCharactersGivenRead4IICallmultipletimes {
      *     int read4(char[] buf4);
      */
     // time = O(n), space = O(1)
-    char[] readBuf = new char[4];
-    int count = 0, i = 0;
+    char[] a = new char[4];
+    int i = 0, cnt = 0;
     public int read(char[] buf, int n) {
         int j = 0;
         for (j = 0; j < n; j++) {
-            if (count == 0) {
-                count = read4(readBuf);
+            if (cnt == 0) {
+                cnt = read4(a);
                 i = 0;
-                if (count == 0) break;
+                if (cnt == 0) break;
             }
-            buf[j] = readBuf[i];
+            buf[j] = a[i];
             i++;
-            count--;
+            cnt--;
         }
         return j;
     }
 
-    // helper function
+    // helper function, not part of the solution!!!
     private int read4(char[] temp) {
         char[] res = new char[4];
         int index = 0;

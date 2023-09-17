@@ -26,6 +26,7 @@ public class LC482_LicenseKeyFormatting {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public String licenseKeyFormatting(String s, int k) {
         StringBuilder sb = new StringBuilder();
@@ -44,5 +45,22 @@ public class LC482_LicenseKeyFormatting {
         }
         if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '-') sb.setLength(sb.length() - 1);
         return sb.reverse().toString();
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public String licenseKeyFormatting2(String s, int k) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c != '-') sb.append(c);
+        }
+        StringBuilder res = new StringBuilder();
+        int n = sb.length();
+        for (int i = 0; i < n % k; i++) res.append(Character.toUpperCase(sb.charAt(i)));
+        for (int i = n % k; i < n;) {
+            if (res.length() > 0) res.append('-');
+            for (int j = 0; j < k; j++) res.append(Character.toUpperCase(sb.charAt(i++)));
+        }
+        return res.toString();
     }
 }

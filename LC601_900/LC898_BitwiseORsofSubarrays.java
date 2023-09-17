@@ -60,5 +60,5 @@ public class LC898_BitwiseORsofSubarrays {
     }
 }
 /**
- * 不同数的个数最多只有30个
+ * 不同数的个数最多只有30个 => 某位一旦变为1，就不可能再变回0了
  */

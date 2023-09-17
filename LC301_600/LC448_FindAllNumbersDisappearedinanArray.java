@@ -19,6 +19,7 @@ public class LC448_FindAllNumbersDisappearedinanArray {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public List<Integer> findDisappearedNumbers(int[] nums) {
         List<Integer> res = new ArrayList<>();
@@ -42,6 +43,22 @@ public class LC448_FindAllNumbersDisappearedinanArray {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public List<Integer> findDisappearedNumbers2(int[] nums) {
+        for (int x : nums) {
+            x = Math.abs(x);
+            if (nums[x - 1] > 0) nums[x - 1] *= -1;
+        }
+
+        List<Integer> res = new ArrayList<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) res.add(i + 1);
+        }
+        return res;
     }
 }
 /**

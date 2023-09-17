@@ -65,4 +65,5 @@ public class LC1140_StoneGameII {
  * maximize：           dp[state]
  *                         ||
  * minimize (maximize: dp[state'])
+ * 让对手最大化的效益最小化
  */

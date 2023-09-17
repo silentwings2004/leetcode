@@ -49,4 +49,30 @@ public class LC516_LongestPalindromicSubsequence {
         }
         return f[0][n - 1];
     }
+
+    // S23
+    // time = O(n^2), space = O(n^2)
+    public int longestPalindromeSubseq2(String s) {
+        int n = s.length();
+        int[][] f = new int[n][n];
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                if (len == 1) f[i][j] = 1;
+                else {
+                    if (s.charAt(i) == s.charAt(j)) {
+                        f[i][j] = f[i + 1][j - 1] + 2;
+                    }
+                    f[i][j] = Math.max(f[i][j], Math.max(f[i + 1][j], f[i][j - 1]));
+                }
+            }
+        }
+        return f[0][n - 1];
+    }
 }
+/**
+ * i,j都在: f(i+1,j-1)+2
+ * i,j都在: f(i+1,j-1)  包含在下面2种情况中
+ * i在，j不在 => f(i,j-1)
+ * i不在，j在 => f(i+1,j)
+ */

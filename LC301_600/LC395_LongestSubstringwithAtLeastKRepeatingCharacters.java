@@ -1,7 +1,5 @@
 package LC301_600;
-
-import java.util.HashMap;
-
+import java.util.*;
 public class LC395_LongestSubstringwithAtLeastKRepeatingCharacters {
     /**
      * Given a string s and an integer k, return the length of the longest substring of s such that the frequency of
@@ -77,6 +75,42 @@ public class LC395_LongestSubstringwithAtLeastKRepeatingCharacters {
             i = j;
         }
         return res;
+    }
+
+    // S3
+    // time = O(26n), space = O(n)
+    int[] cnt;
+    int x, y, k;
+    public int longestSubstring3(String s, int k) {
+        this.k = k;
+        int n = s.length(), res = 0;
+
+        for (int u = 1; u <= 26; u++) { // 区间内字符的种类数
+            cnt = new int[26];
+            x = 0; // 当前区间内的不同字符数
+            y = 0; // 当前区间内至少有k个重复字符的不同字符种类数
+            for (int i = 0, j = 0; i < n; i++) {
+                char c = s.charAt(i);
+                add(c);
+                while (x > u) del(s.charAt(j++));
+                if (x == y) res = Math.max(res, i - j + 1);
+            }
+        }
+        return res;
+    }
+
+    private void add(char c) {
+        int u = c - 'a';
+        if (cnt[u] == 0) x++;
+        cnt[u]++;
+        if (cnt[u] == k) y++;
+    }
+
+    private void del(char c) {
+        int u = c - 'a';
+        if (cnt[u] == k) y--;
+        cnt[u]--;
+        if (cnt[u] == 0) x--;
     }
 }
 /**

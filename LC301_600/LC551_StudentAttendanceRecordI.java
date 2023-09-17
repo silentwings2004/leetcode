@@ -26,16 +26,14 @@ public class LC551_StudentAttendanceRecordI {
      */
     // time = O(n), space = O(1)
     public boolean checkRecord(String s) {
-        int n = s.length(), count = 0;
-        for (int i = 0; i < n; i++) {
-            if (s.charAt(i) == 'A') count++;
-            else if (s.charAt(i) == 'L') {
-                int j = i;
-                while (j < n && s.charAt(j) == 'L') j++;
-                if (j - i >= 3) return false;
-                i = j - 1;
-            }
+        for (int i = 0, a = 0, l = 0; i < s.length(); i++) {
+            if (s.charAt(i) == 'A') {
+                a++;
+                l = 0;
+            } else if (s.charAt(i) == 'L') l++;
+            else l = 0;
+            if (a > 1 || l > 2) return false;
         }
-        return count < 2;
+        return true;
     }
 }

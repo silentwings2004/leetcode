@@ -1,5 +1,5 @@
 package LC301_600;
-
+import java.util.*;
 public class LC397_IntegerReplacement {
     /**
      * Given a positive integer n, you can apply one of the following operations:
@@ -17,16 +17,23 @@ public class LC397_IntegerReplacement {
      * @param n
      * @return
      */
-    // time = O(logn), space = O(logn)
+    // time = O(sqrt(n)), space = O(sqrt(n))
+    HashMap<Long, Integer> map;
     public int integerReplacement(int n) {
-        return dfs(n);
+        map = new HashMap<>();
+        return f(n);
     }
 
-    private int dfs(long n) { // 注意：这里得用long!!!否则会有越界溢出问题。
-        // base case
+    private int f(long n) {
         if (n == 1) return 0;
-
-        if (n % 2 == 0) return dfs(n / 2) + 1;
-        else return Math.min(dfs(n + 1), dfs(n - 1)) + 1;
+        if (map.containsKey(n)) return map.get(n);
+        if (n % 2 == 0) {
+            int t = f(n / 2) + 1;
+            map.put(n, t);
+            return t;
+        }
+        int t = Math.min(f(n - 1), f(n + 1)) + 1;
+        map.put(n, t);
+        return t;
     }
 }

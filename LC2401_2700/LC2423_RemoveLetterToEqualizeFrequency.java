@@ -55,29 +55,8 @@ public class LC2423_RemoveLetterToEqualizeFrequency {
     }
 
     // S2
-    // time = O(n), space = O(1)
-    public boolean equalFrequency2(String word) {
-        int[] cnt = new int[26];
-        int maxf = 0, n = word.length();
-        for (int i = 0; i < n; i++) {
-            char c = word.charAt(i);
-            cnt[c - 'a']++;
-            maxf = Math.max(maxf, cnt[c - 'a']);
-        }
-
-        int m1 = 0, m2 = 0;
-        for (int i = 0; i < 26; i++) {
-            if (cnt[i] == 0) continue;
-            if (cnt[i] == maxf) m1++;
-            if (cnt[i] == maxf - 1) m2++;
-            if (cnt[i] < maxf - 1) return false;
-        }
-        return m2 == 1 && maxf == 2 || m1 == 1 || m2 == 0 && maxf == 1;
-    }
-
-    // S3
     // time = O(n), space = O(n)
-    public boolean equalFrequency3(String word) {
+    public boolean equalFrequency2(String word) {
         HashMap<Character, Integer> map = new HashMap<>(); // {val, cnt}
         HashMap<Integer, Integer> cnt = new HashMap<>(); // {cnt, amount}
 

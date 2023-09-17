@@ -26,41 +26,17 @@ public class LC153_FindMinimuminRotatedSortedArray {
      * @param nums
      * @return
      */
-    // S1: BS
-    // time = o(logn), space = O(1)
+    // time = O(logn), space = O(1)
     public int findMin(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) {
-            throw new IllegalArgumentException("Invalid input!");
+        int n = nums.length;
+        if (nums[0] <= nums[n - 1]) return nums[0];
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] >= nums[0]) l = mid + 1;
+            else r = mid;
         }
-
-        int start = 0, end = nums.length - 1;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[start] < nums[mid]) { // case 1: 如果mid落在左边上升区间
-                if (nums[mid] < nums[end]) return nums[start]; // 1.1: 单调递增，则start就是最小
-                else start = mid; // 1.2: 2个单调区间，则最小值应该落在第2区间的左端点 -> move start = mid
-            } else { // case 2: 如果落在右边上升区间
-                end = mid; // 只有一种情况，就是min落在右边上升区间的左端点 -> move end = mid
-            }
-        }
-        if (nums[start] < nums[end]) return nums[start];
-        return nums[end];
-    }
-
-    // S1.2: BS
-    // time = o(logn), space = O(1)
-    public int findMin2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0)  return -1;
-
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] > nums[right]) left = mid + 1;
-            else right = mid;
-        }
-        return nums[left];
+        return nums[r];
     }
 }
 /**

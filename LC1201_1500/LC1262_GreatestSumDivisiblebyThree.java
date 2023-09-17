@@ -1,6 +1,6 @@
 package LC1201_1500;
 import java.util.*;
-public class LC1262_GreatestSumDivisiblebyThree {
+public class  LC1262_GreatestSumDivisiblebyThree {
     /**
      * Given an array nums of integers, we need to find the maximum possible sum of elements of the array such that it
      * is divisible by three.
@@ -54,6 +54,32 @@ public class LC1262_GreatestSumDivisiblebyThree {
             }
         }
         return dp[n & 1][0] == Integer.MIN_VALUE / 2 ? 0 : dp[n & 1][0];
+    }
+
+    // S3
+    // time = O(n), space = O(1)
+    final int INF = (int)1e9;
+    public int maxSumDivThree3(int[] nums) {
+        int sum = 0;
+        int f1 = INF, s1 = INF;
+        int f2 = INF, s2 = INF;
+        for (int x : nums) {
+            sum += x;
+            if (x % 3 == 1) {
+                if (x <= f1) {
+                    s1 = f1;
+                    f1 = x;
+                } else if (x < s1) s1 = x;
+            } else if (x % 3 == 2) {
+                if (x <= f2) {
+                    s2 = f2;
+                    f2 = x;
+                } else if (x < s2) s2 = x;
+            }
+        }
+        if (sum % 3 == 0) return sum;
+        if (sum % 3 == 1) return Math.max(sum - f1, sum - f2 - s2);
+        return Math.max(sum - f2, sum - f1 - s1);
     }
 }
 /**

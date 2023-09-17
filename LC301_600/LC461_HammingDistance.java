@@ -32,4 +32,13 @@ public class LC461_HammingDistance {
         }
         return count;
     }
+
+    // S3
+    public int hammingDistance3(int x, int y) {
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            res += (x >> i & 1) ^ (y >> i & 1);
+        }
+        return res;
+    }
 }

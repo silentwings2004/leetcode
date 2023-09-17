@@ -24,6 +24,33 @@ public class LC500_KeyboardRow {
      */
     // time = O(n * k), space = O(n * k)
     public String[] findWords(String[] words) {
+        String[] line = new String[]{
+                "qwertyuiop",
+                "asdfghjkl",
+                "zxcvbnm"
+        };
+
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < 3; i++) {
+            for (char c : line[i].toCharArray()) {
+                map.put(c, i);
+            }
+        }
+
+        List<String> res = new ArrayList<>();
+        for (String word : words) {
+            HashSet<Integer> set = new HashSet<>();
+            for (char c : word.toCharArray()) {
+                set.add(map.get(Character.toLowerCase(c)));
+            }
+            if (set.size() == 1) res.add(word);
+        }
+        return res.toArray(new String[res.size()]);
+    }
+
+    // S2
+    // time = O(n * k), space = O(n * k)
+    public String[] findWords2(String[] words) {
         String[] dict = new String[]{"qwertyuiop", "asdfghjkl", "zxcvbnm"};
         List<String> res = new ArrayList<>();
         for (String word : words) {

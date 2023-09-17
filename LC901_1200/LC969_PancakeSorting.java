@@ -58,4 +58,31 @@ public class LC969_PancakeSorting {
             arr[i--] = t;
         }
     }
+
+    // S2
+    // time = O(n^2), space = O(1)
+    public List<Integer> pancakeSort2(int[] arr) {
+        List<Integer> res = new ArrayList<>();
+        int n = arr.length;
+        for (int i = n - 1; i >= 0; i--) {
+            int k = 0;
+            for (int j = 0; j <= i; j++) {
+                if (arr[j] > arr[k]) k = j;
+            }
+            if (k == i) continue;
+            reverse(arr, k + 1);
+            res.add(k + 1);
+            reverse(arr, i + 1);
+            res.add(i + 1);
+        }
+        return res;
+    }
+
+    private void reverse(int[] arr, int r) {
+        for (int i = 0, j = r - 1; i < j; i++, j--) {
+            int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+    }
 }

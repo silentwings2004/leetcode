@@ -24,6 +24,7 @@ public class LC313_SuperUglyNumber {
      * @param primes
      * @return
      */
+    // S1
     // time = O(nlogk), space = O(n + k)
     public int nthSuperUglyNumber(int n, int[] primes) {
         // corner case
@@ -47,6 +48,24 @@ public class LC313_SuperUglyNumber {
                 p[i]++;
                 pq.offer(new int[]{res[p[i]] * primes[i], i});
             }
+        }
+        return res[n - 1];
+    }
+
+    // S2
+    // time = O(nlogk), space = O(n + k)
+    public int nthSuperUglyNumber2(int n, int[] primes) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
+        for (int x : primes) pq.offer(new int[]{x, x, 0});
+
+        int[] res = new int[n];
+        res[0] = 1;
+        int i = 1;
+        while (i < n) {
+            int[] t = pq.poll();
+            int val = t[0], p = t[1], idx = t[2];
+            if (val != res[i - 1]) res[i++] = val;
+            pq.offer(new int[]{p * res[idx + 1], p, idx + 1});
         }
         return res[n - 1];
     }

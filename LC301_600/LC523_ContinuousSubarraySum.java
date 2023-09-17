@@ -22,40 +22,28 @@ public class LC523_ContinuousSubarraySum {
     // time = O(n), space = O(n)
     public boolean checkSubarraySum(int[] nums, int k) {
         int n = nums.length;
-        int[] presum = new int[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + nums[i - 1];
-
         HashSet<Integer> set = new HashSet<>();
+        int[] s = new int[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
         for (int i = 2; i <= n; i++) {
-            set.add(presum[i - 2] % k);
-            if (set.contains(presum[i] % k)) return true;
+            set.add(s[i - 2] % k);
+            if (set.contains(s[i] % k)) return true;
         }
         return false;
     }
 
     // S2
-    // time = O(n), space = O(n)
     public boolean checkSubarraySum2(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length <= 1) return false;
-        if (k == 0) {
-            for (int i = 0; i < nums.length - 1; i++) {
-                if (nums[i] == 0 && nums[i + 1] == 0) return true;
-            }
-            return false;
-        }
-
-        int preSum1 = 0, preSum2 = 0; // preSum1加到j - 2为止, preSum1加到j为止，两者要对k同余！
-        HashSet<Integer> set = new HashSet<>();
-        set.add(0);
-
-        for (int j = 0; j < nums.length; j++) {
-            preSum2 += nums[j];
-            if (j >= 2) {
-                preSum1 += nums[j - 2];
-                set.add(preSum1 % k);
-            }
-            if (j >= 1 && set.contains(preSum2 % k)) return true;
+        int n = nums.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        for (int i = 0, sum = 0; i < n; i++) {
+            sum += nums[i];
+            int r = sum % k;
+            if (map.containsKey(r)) {
+                int len = i - map.get(r);
+                if (len >= 2) return true;
+            } else map.put(r, i);
         }
         return false;
     }

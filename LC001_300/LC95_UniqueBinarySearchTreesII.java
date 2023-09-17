@@ -8,6 +8,9 @@ public class LC95_UniqueBinarySearchTreesII {
      * Input: n = 3
      * Output: [[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
      *
+     * Input: n = 1
+     * Output: [[1]]
+     *
      * Constraints:
      *
      * 1 <= n <= 8
@@ -16,28 +19,24 @@ public class LC95_UniqueBinarySearchTreesII {
      */
     // time = O(n * G(n)), space = O(nG(n))  G(n): Catalan number = 4^n / n^(1/2)
     public List<TreeNode> generateTrees(int n) {
-        List<TreeNode> res = new ArrayList<>();
-        // corner case
-        if (n <= 0) return res;
         return dfs(1, n);
     }
 
-    private List<TreeNode> dfs(int start, int end) {
+    private List<TreeNode> dfs(int l, int r) {
         List<TreeNode> res = new ArrayList<>();
-        // base case
-        if (start > end) {
+        if (l > r) {
             res.add(null);
             return res;
         }
 
-        for (int i = start; i <= end; i++) {
-            List<TreeNode> ls = dfs(start, i - 1); // set i as the root
-            List<TreeNode> rs = dfs(i + 1, end);
-            for (TreeNode l : ls) {
-                for (TreeNode r : rs) {
+        for (int i = l; i <= r; i++) {
+            List<TreeNode> ls = dfs(l, i - 1);
+            List<TreeNode> rs = dfs(i + 1, r);
+            for (TreeNode a : ls) {
+                for (TreeNode b : rs) {
                     TreeNode root = new TreeNode(i);
-                    root.left = l;
-                    root.right = r;
+                    root.left = a;
+                    root.right = b;
                     res.add(root);
                 }
             }

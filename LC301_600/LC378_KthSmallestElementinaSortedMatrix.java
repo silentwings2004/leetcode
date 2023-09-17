@@ -106,4 +106,6 @@ public class LC378_KthSmallestElementinaSortedMatrix {
  * ref: LC240 Search a 2D Matrix II 从左下角出发或者从右上角出发
  * 遇到matrix[i][j]<=x，说明从(i,j)之上的整列都smallerOrEqual(x)，于是就可以往右移动一列．
  * 否则的话，我们就往上移动一行．
+ *
+ * 如果t是第k小的数 => <= t的数一定是 >= k
  */

@@ -31,41 +31,24 @@ public class LC215_KthLargestElementinanArray {
     // S2: quick select
     // time = O(n) on average, O(n^2) worst case, space = O(1)
     public int findKthLargest2(int[] nums, int k) {
-        int n = nums.length;
-        quickSelect(nums, 0, n - 1, k);
-        return nums[n - k];
+        return quick_select(nums, 0, nums.length - 1, k - 1);
     }
 
-    private void quickSelect(int[] nums, int left, int right, int k) {
-        int n = nums.length;
-        // base case
-        if (left == right) return;
+    private int quick_select(int[] nums, int l, int r, int k) {
+        if (l >= r) return nums[r];
 
-        int pivot = partition(nums, left, right);
-        if (pivot == n - k) return;
-        if (pivot < n - k) quickSelect(nums, pivot + 1, right, k);
-        else quickSelect(nums, left, pivot - 1, k);
-    }
-
-    private int partition(int[] nums, int left, int right) {
-        Random random = new Random();
-        int pivot = random.nextInt(right - left + 1) + left;
-        swap(nums, right, pivot);
-        int l = left, r = right - 1;
-
-        while (l <= r) {
-            if (nums[l] > nums[right] && nums[r] <= nums[right]) swap(nums, l++, r--);
-            if (nums[l] <= nums[right]) l++;
-            if (nums[r] > nums[right]) r--;
+        int x = nums[l + r >> 1], i = l - 1, j = r + 1;
+        while (i < j) {
+            while (nums[++i] > x);
+            while (nums[--j] < x);
+            if (i < j) {
+                int t = nums[i];
+                nums[i] = nums[j];
+                nums[j] = t;
+            }
         }
-        swap(nums, l, right);
-        return l;
-    }
-
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+        if (k <= j) return quick_select(nums, l, j, k);
+        return quick_select(nums, j + 1, r, k);
     }
 
     // S2.1: Quick Select
@@ -91,6 +74,12 @@ public class LC215_KthLargestElementinanArray {
         if (b - j >= k) return quickselect(nums, j + 1, b, k);
         if (b - i + 1 >= k) return pivot;
         return quickselect(nums, a, i - 1, k - (b - i + 1));
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 
     // S3: Binary Search

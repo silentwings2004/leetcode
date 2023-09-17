@@ -11,6 +11,7 @@ public class LC199_BinaryTreeRightSideView {
      * @param root
      * @return
      */
+    // S1: bfs
     // time = O(n), space = O(n)
     public List<Integer> rightSideView(TreeNode root) {
         List<Integer> res = new ArrayList<>();
@@ -32,18 +33,21 @@ public class LC199_BinaryTreeRightSideView {
         return res;
     }
 
-    private class TreeNode {
-        private int val;
-        private TreeNode left, right;
+    // S2: dfs
+    // time = O(n), space = O(n)
+    List<Integer> res;
+    public List<Integer> rightSideView2(TreeNode root) {
+        res = new ArrayList<>();
+        if (root == null) return res;
+        dfs(root, 0);
+        return res;
     }
 
-    /**
-     * Definition for a binary tree node.
-     * public class TreeNode {
-     *     int val;
-     *     TreeNode left;
-     *     TreeNode right;
-     *     TreeNode(int x) { val = x; }
-     * }
-     */
+    private void dfs(TreeNode node, int depth) {
+        if (node == null) return;
+
+        if (depth == res.size()) res.add(node.val);
+        dfs(node.right, depth + 1);
+        dfs(node.left, depth + 1);
+    }
 }

@@ -30,6 +30,7 @@ public class LC811_SubdomainVisitCount {
      * @param cpdomains
      * @return
      */
+    // S1
     // time = O(L), space = O(L)  L: 数组 cpdomains 中的所有字符串长度之和
     public List<String> subdomainVisits(String[] cpdomains) {
         HashMap<String, Integer> map = new HashMap<>();
@@ -48,6 +49,31 @@ public class LC811_SubdomainVisitCount {
         List<String> res = new ArrayList<>();
         for (String k : map.keySet()) {
             res.add(map.get(k) + " " + k);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(L), space = O(L)
+    public List<String> subdomainVisits2(String[] cpdomains) {
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String s : cpdomains) {
+            int k = s.indexOf(' ');
+            int c = Integer.parseInt(s.substring(0, k));
+            s = s.substring(k + 1);
+            while (true) {
+                map.put(s, map.getOrDefault(s, 0) + c);
+                k = s.indexOf('.');
+                if (k == -1) break;
+                s = s.substring(k + 1);
+            }
+        }
+
+        List<String> res = new ArrayList<>();
+        for (String key : map.keySet()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(map.get(key)).append(' ').append(key);
+            res.add(sb.toString());
         }
         return res;
     }

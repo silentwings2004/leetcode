@@ -23,11 +23,11 @@ public class LC974_SubarraySumsDivisiblebyK {
     public int subarraysDivByK(int[] nums, int k) {
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(0, 1);
-        int n = nums.length, presum = 0, res = 0;
-        for (int i = 0; i < n; i++) {
-            presum += nums[i];
-            int r = presum > 0 ? presum % k : (k + presum % k) % k;
-            res += map.getOrDefault(r, 0);
+        int res = 0, s = 0;
+        for (int x : nums) {
+            s += x;
+            int r = (s % k + k) % k;
+            if (map.containsKey(r)) res += map.get(r);
             map.put(r, map.getOrDefault(r, 0) + 1);
         }
         return res;

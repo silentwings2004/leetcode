@@ -1,5 +1,5 @@
 package LC301_600;
-
+import java.util.*;
 public class LC546_RemoveBoxes {
     /**
      * You are given several boxes with different colors represented by different positive numbers.
@@ -25,8 +25,41 @@ public class LC546_RemoveBoxes {
      * @param boxes
      * @return
      */
-    private int[][][] dp;
+    // S1: 记忆化搜索
+    // time = O(n^4), space = O(n^3)
+    final int N = 110;
+    int[] w;
+    int[][][] f;
     public int removeBoxes(int[] boxes) {
+        w = boxes;
+        f = new int[N][N][N];
+        return dfs(0, w.length - 1, 0);
+    }
+
+    private int dfs(int l, int r, int k) {
+        if (l > r) return 0;
+        while (l < r && w[r] == w[r - 1]) {
+            r--;
+            k++;
+        }
+        if (f[l][r][k] > 0) return f[l][r][k];
+
+        // case 1
+        f[l][r][k] = dfs(l, r - 1, 0) + (k + 1) * (k + 1);
+
+        // case 2
+        for (int i = l; i < r; i++) {
+            if (w[i] == w[r]) {
+                f[l][r][k] = Math.max(f[l][r][k], dfs(l, i, k + 1) + dfs(i + 1, r - 1, 0));
+            }
+        }
+        return f[l][r][k];
+    }
+
+    // S2
+    // time = O(n^4), space = O(n^3)
+    private int[][][] dp;
+    public int removeBoxes2(int[] boxes) {
         // corner case
         if (boxes == null || boxes.length == 0) return 0;
 
@@ -54,6 +87,41 @@ public class LC546_RemoveBoxes {
             dp[l][r][k] = Math.max(dp[l][r][k], dfs(boxes, l, j, count) + dfs(boxes, j + 1, i, 0));
         }
         return dp[l][r][k];
+    }
+
+    // S3
+    // time = O(n^4), space = O(n^3)
+    public int removeBoxes3(int[] boxes) {
+        int n = boxes.length, INF = (int) 1e8;
+        int[][][] f = new int[n][n][n + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Arrays.fill(f[i][j], -INF);
+            }
+        }
+
+        int[][] g = new int[n][n];
+        for (int i = 0; i < n; i++) Arrays.fill(g[i], -INF);
+
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                for (int k = 1; k <= len; k++) {
+                    if (len == 1) f[i][j][k] = 1;
+                    else if (k == 1) f[i][j][k] = 1 + g[i + 1][j];
+                    else {
+                        for (int u = i + 1; u <= j - k + 2; u++) {
+                            if (boxes[i] != boxes[u]) continue;
+                            int t = 0;
+                            if (i + 1 <= u - 1) t = g[i + 1][u - 1];
+                            f[i][j][k] = Math.max(f[i][j][k], t + f[u][j][k - 1] - (k - 1) * (k - 1) + k * k);
+                        }
+                    }
+                    g[i][j] = Math.max(g[i][j], f[i][j][k]);
+                }
+            }
+        }
+        return g[0][n - 1];
     }
 }
 /**
@@ -93,4 +161,12 @@ public class LC546_RemoveBoxes {
  * dp[l][r][k] 受后面跟了多少个元素的影响
  * k 事先并不知道
  * 从上往下
+ *
+ * 状态表示：f(i,j,k)
+ * 1. 集合：所有将(i,j)清空，且最后删除i，且最后一步删掉k个盒子的所有方案的集合
+ * 2. 属性：分值的最大值
+ * 状态计算：
+ * k = 1时 => 1 + max{f(i+1,j,k}
+ * k > 1时 => max{f(i+1,u-1,k}, f(u,j,k-1)-(k-1)^2 + k^2
+ * 预处理 max{f(i+1,n-1,k)}
  */

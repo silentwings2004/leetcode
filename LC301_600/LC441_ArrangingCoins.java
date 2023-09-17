@@ -16,6 +16,7 @@ public class LC441_ArrangingCoins {
      * @param n
      * @return
      */
+    // S1: BS
     // time = O(logn), space = O(1)
     public int arrangeCoins(int n) {
         int left = 1, right = n;
@@ -30,4 +31,14 @@ public class LC441_ArrangingCoins {
     private long helper(int t) {
         return (1 + (long) t) * t / 2;
     }
+
+    // S2: Math
+    // time = O(1), space = O(1)
+    public int arrangeCoins2(int n) {
+        return (int)((-1 + Math.sqrt(1 + 8.0 * n)) / 2);
+    }
 }
+/**
+ * k(k+1)/2 <= n => k^2 + k - 2n <= 0
+ * k <= (-1 + sqrt(1 + 8 * n) / 2 下取整
+ */

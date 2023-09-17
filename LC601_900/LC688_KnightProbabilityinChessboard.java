@@ -54,27 +54,33 @@ public class LC688_KnightProbabilityinChessboard {
     }
 
     // S2: dp
+    // time = O(n^2 * k), space = O(n^2 * k)
     public double knightProbability2(int n, int k, int row, int column) {
-        double[][][] dp = new double[n][n][k + 1];
-        // init
+        double[][][] f = new double[25][25][101];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                dp[i][j][0] = 1;
+                f[i][j][k] = 1;
             }
         }
 
-        for (int d = 1; d <= k; d++) {
+        int[] dx = new int[]{-2, -1, 1, 2, 2, 1, -1, -2};
+        int[] dy = new int[]{1, 2, 2, 1, -1, -2, -2, -1};
+        for (int t = k - 1; t >= 0; t--) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    for (int[] dir : directions) {
-                        int x = i + dir[0];
-                        int y = j + dir[1];
+                    for (int u = 0; u < 8; u++) {
+                        int x = i + dx[u], y = j + dy[u];
                         if (x < 0 || x >= n || y < 0 || y >= n) continue;
-                        dp[i][j][d] += dp[x][y][d - 1] / 8;
+                        f[i][j][t] += f[x][y][t + 1] / 8;
                     }
                 }
             }
         }
-        return dp[row][column][k];
+        return f[row][column][0];
     }
 }
+/**
+ * f(i,j,k) 在(i,j)已经跳了k步 -> 1/8概率跳到(x,y)   f(x,y,k+1) * 1/8
+ * 边界：f(i,j,K) = 1
+ * 答案：f(r,c,0)
+ */

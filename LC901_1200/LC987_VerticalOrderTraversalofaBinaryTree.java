@@ -24,57 +24,32 @@ public class LC987_VerticalOrderTraversalofaBinaryTree {
      * @return
      */
     // time = O(n), space = O(n)
+    final int INF = 0x3f3f3f3f;
+    int minc = INF, maxc = -INF;
+    HashMap<Integer, List<int[]>> map;
     public List<List<Integer>> verticalTraversal(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
-        // corner case
         if (root == null) return res;
-
-        Queue<Pair> queue = new LinkedList<>();
-        queue.offer(new Pair(root, 0));
-        HashMap<Integer, List<Integer>> map = new HashMap<>(); // 也可以直接用TreeMap来代替这里的min, max
-        int min = 0, max = 0;
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            HashMap<Integer, List<Integer>> temp = new HashMap<>();
-            while (size-- > 0) {
-                Pair p = queue.poll();
-                TreeNode node = p.node;
-                int idx = p.idx;
-                min = Math.min(min, idx);
-                max = Math.max(max, idx);
-                temp.putIfAbsent(idx, new ArrayList<>());
-                temp.get(idx).add(node.val);
-                if (node.left != null) {
-                    queue.offer(new Pair(node.left, idx - 1));
-                    min = Math.min(min, idx - 1);
-                }
-                if (node.right != null) {
-                    queue.offer(new Pair(node.right, idx + 1));
-                    max = Math.max(max, idx + 1);
-                }
-            }
-
-            for (int key : temp.keySet()) {
-                List<Integer> list = temp.get(key);
-                Collections.sort(list);
-                map.putIfAbsent(key, new ArrayList<>());
-                map.get(key).addAll(list);
-            }
-        }
-
-        for (int i = min; i <= max; i++) {
-            res.add(map.get(i));
+        map = new HashMap<>();
+        dfs(root, 0, 0);
+        for (int i = minc; i <= maxc; i++) {
+            List<int[]> q = map.get(i);
+            Collections.sort(q, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+            List<Integer> t = new ArrayList<>();
+            for (int[] x : q) t.add(x[1]);
+            res.add(t);
         }
         return res;
     }
 
-    private class Pair {
-        private TreeNode node;
-        private int idx;
-        public Pair(TreeNode node, int idx) {
-            this.node = node;
-            this.idx = idx;
-        }
+    private void dfs(TreeNode node, int r, int c) {
+        if (node == null) return;
+        map.putIfAbsent(c, new ArrayList<>());
+        map.get(c).add(new int[]{r, node.val});
+        minc = Math.min(minc, c);
+        maxc = Math.max(maxc, c);
+
+        dfs(node.left, r + 1, c - 1);
+        dfs(node.right, r + 1, c + 1);
     }
 }

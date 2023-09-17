@@ -86,6 +86,42 @@ public class LC1092_ShortestCommonSupersequence {
         while (j > 0) sb.append(str2.charAt(j--));
         return sb.reverse().toString();
     }
+
+    // S3: edit distance
+    // time = O(n * m), space = O(n * m)
+    public String shortestCommonSupersequence3(String str1, String str2) {
+        int m = str1.length(), n = str2.length();
+        int[][] f = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) f[i][0] = 0;
+        for (int i = 0; i <= n; i++) f[0][i] = i;
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                f[i][j] = Math.min(f[i][j - 1] + 1, f[i - 1][j]);
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) f[i][j] = Math.min(f[i][j], f[i - 1][j - 1]);
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = m, j = n; i >= 0;) {
+            if (i == 0 || j == 0 || str1.charAt(i - 1) != str2.charAt(j - 1)) {
+                if (j > 0 && f[i][j] == f[i][j - 1] + 1) sb.append(str2.charAt(--j));
+                else {
+                    if (i > 0) sb.append(str1.charAt(--i));
+                    else i--;
+                }
+            } else {
+                if (f[i][j] == f[i][j - 1] + 1) sb.append(str2.charAt(--j));
+                else if (f[i][j] == f[i - 1][j]) sb.append(str1.charAt(--i));
+                else {
+                    sb.append(str1.charAt(--i));
+                    j--;
+                }
+            }
+        }
+        String res = sb.reverse().toString();
+        return res;
+    }
 }
 /**
  * 双序列dp
@@ -113,4 +149,16 @@ public class LC1092_ShortestCommonSupersequence {
  *            c y y x x x x
  * x a x x x b x (c x x x x)
  * y y a y b y (c y y)
+ *
+ * 从编辑距离角度去分析
+ * DP
+ * 1. 状态表示 f(i,j):
+ * 集合：所有在A[1:i]上添加字符使之包含B[1,j]的方案的集合
+ * 属性：最少添加字符数
+ * 2. 状态计算
+ * (1) Ai != Bj
+ * 添加新字母，必定加Bj -> f(i,j-1)+1
+ * 未添加新字母 -> f(i-1,j)
+ * (2) Ai == Bj
+ * f(i-1,j-1)
  */

@@ -21,7 +21,7 @@ public class LC819_MostCommonWord {
      * @param banned
      * @return
      */
-    // time = O(n), space = O(n)
+    // time = O(n + m), space = O(n + m)
     public String mostCommonWord(String paragraph, String[] banned) {
         HashSet<String> set = new HashSet<>();
         HashMap<String, Integer> map = new HashMap<>();
@@ -44,6 +44,32 @@ public class LC819_MostCommonWord {
                 max = map.get(key);
                 res = key;
             }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n + m), space = O(n + m)
+    public String mostCommonWord2(String paragraph, String[] banned) {
+        HashSet<String> set = new HashSet<>();
+        for (String b : banned) set.add(b);
+        HashMap<String, Integer> map = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        for (char c : paragraph.toCharArray()) {
+            c = Character.toLowerCase(c);
+            if (Character.isLowerCase(c)) sb.append(c);
+            else {
+                String s = sb.toString();
+                if (s.length() > 0 && !set.contains(s)) map.put(s, map.getOrDefault(s, 0) + 1);
+                sb = new StringBuilder();
+            }
+        }
+        String s = sb.toString();
+        if (s.length() > 0 && !set.contains(s)) map.put(s, map.getOrDefault(s, 0) + 1);
+
+        String res = "";
+        for (String key : map.keySet()) {
+            if (map.get(key) > map.getOrDefault(res, 0)) res = key;
         }
         return res;
     }

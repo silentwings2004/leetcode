@@ -91,4 +91,11 @@ public class LC766_ToeplitzMatrix {
  * The reason why we need to have a column overlapped is because you need to check the top left cell
  * and if your matrices are not overlapped with 1 column, you don't know the leftmost column has the same elements
  * as its previous column.
+ *
+ * follow-up
+ * 1. 先把第一行读进来，再读第二行，第一个元素和第二个元素读进来，一样的话把第一行对应元素删了
+ * => 同时存的元素个数很少，只有 n + 2 个元素。
+ * 2. 可以用分治的思想。
+ * 分成若干个小块，分别处理每个子矩阵内部，看内部是否满足要求，再处理边界。
+ * 取边界的时候取个冗余，边界会被算2次
  */

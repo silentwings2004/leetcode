@@ -24,21 +24,17 @@ public class LC821_ShortestDistancetoaCharacter {
     // S1: Min Array
     // time = O(n), space = O(1)
     public int[] shortestToChar(String s, char c) {
-        // corner case
-        if (s == null || s.length() == 0) return new int[0];
-
-        int[] res = new int[s.length()];
-        int prev = Integer.MIN_VALUE / 2; // 这里不能取Integer.MIN_VALUE,否则下面i - prev会出界！！！
-
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == c) prev = i;
-            res[i] = i - prev;
+        int n = s.length();
+        int[] res = new int[n];
+        Arrays.fill(res, Integer.MAX_VALUE);
+        for (int i = 0, j = -1; i < n; i++) {
+            if (s.charAt(i) == c) j = i;
+            if (j != -1) res[i] = i - j;
         }
 
-        prev = Integer.MAX_VALUE / 2; // 这里prev = Integer.MAX_VALUE也可以，因为prev - i是一定不会出界的！
-        for (int i = s.length() - 1; i >= 0; i--) {
-            if (s.charAt(i) == c) prev = i;
-            res[i] = Math.min(res[i], prev - i);
+        for (int i = n - 1, j = -1; i >= 0; i--) {
+            if (s.charAt(i) == c) j = i;
+            if (j != -1) res[i] = Math.min(res[i], j - i);
         }
         return res;
     }

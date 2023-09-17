@@ -148,5 +148,12 @@ public class LC638_ShoppingOffers {
  *             100     011
  * 注意：bundle价不一定更便宜！提前special处理下
  * return dfs(int state)
+ *
+ * 本质上是个完全背包问题
+ * 6个维度
+ * f(i,j) = max{f(i-1,j), f(i,j-vi) + wi}
+ * f(i,j0,j1...j5) = max{f(i-1,j), f(i,j-vi) + wi}
+ * 7^6 * 100 * 6 => 用记忆化搜索来写
+ * 8进制
  */
 

@@ -78,6 +78,21 @@ public class LC877_StoneGame {
     public boolean stoneGame3(int[] piles) {
         return true;
     }
+
+    // S4: dp
+    // time = O(n^2), space = O(n)
+    public boolean stoneGame4(int[] piles) {
+        int n = piles.length;
+        int[][] f = new int[n][n];
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                if (len == 1) f[i][j] = piles[i];
+                else f[i][j] = Math.max(piles[i] - f[i + 1][j], piles[j] - f[i][j - 1]);
+            }
+        }
+        return f[0][n - 1] > 0;
+    }
 }
 /**
  * x [o x o x o x o] ->
@@ -92,4 +107,7 @@ public class LC877_StoneGame {
  * 1. pick piles[1] => piles[1] + sum[2:n] - solve(2,n) => sum[1:n] - solve(2,n)
  * 2. pick piles[n] -> piles[n] + sum[1:n-1] - solve(1,n-1) => sum[1:n] - solve(1,n-1)
  * solve(a,a) = piles[a]
+ *
+ * 每次都是选择最坏情况下最好的做法
+ * wi - f(i+1,j), wj - f(i, j-1)
  */

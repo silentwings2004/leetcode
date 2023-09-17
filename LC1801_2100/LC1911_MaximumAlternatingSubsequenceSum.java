@@ -23,6 +23,7 @@ public class LC1911_MaximumAlternatingSubsequenceSum {
      * @param nums
      * @return
      */
+    // S1: Greedy
     // time = O(n), space = O(1)
     public long maxAlternatingSum(int[] nums) {
         // corner case
@@ -34,6 +35,19 @@ public class LC1911_MaximumAlternatingSubsequenceSum {
         }
         return res;
     }
+
+    // S2: DP
+    // time = O(n), space = O(n)
+    public long maxAlternatingSum2(int[] nums) {
+        int n = nums.length;
+        long[][] f = new long[n + 1][2];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], (long)1e15);
+        for (int i = 1; i <= n; i++) {
+            f[i][0] = Math.max(f[i - 1][0], f[i - 1][1] - nums[i - 1]);
+            f[i][1] = Math.max(f[i - 1][1], Math.max(0L, f[i - 1][0] + nums[i - 1]));
+        }
+        return Math.max(f[n][0], f[n][1]);
+    }
 }
 /**
  * same as LC122
@@ -43,4 +57,9 @@ public class LC1911_MaximumAlternatingSubsequenceSum {
  * 不违反正负交替的原则
  * 虚拟的给邻接的2位加上正负号，都互相前后抵消
  * 非常典型的greedy算法
+ *
+ * f(i,0):从前i个中选了偶数个数的最大和
+ * f(i,1):从前i个中选了奇数个数的最大和
+ * f(i,0) = max(f(i-1,0) + f(i-1,1) - w[i]}
+ * f(i,1) = max(f(i-1,1) + max{0, f(i-1,0) + w[i]}
  */

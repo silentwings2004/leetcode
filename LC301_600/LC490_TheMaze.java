@@ -33,31 +33,29 @@ public class LC490_TheMaze {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public boolean hasPath(int[][] maze, int[] start, int[] destination) {
-        int row = maze.length, col = maze[0].length;
-        boolean[][] visited = new boolean[row][col];
+        int m = maze.length, n = maze[0].length;
+        boolean[][] st = new boolean[m][n];
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(start);
+        st[start[0]][start[1]] = true;
 
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(start[0] * col + start[1]);
-        visited[start[0]][start[1]] = true;
-
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            int i = cur / col, j = cur % col;
-            if (i == destination[0] && j == destination[1]) return true;
-            for (int[] dir : DIRECTIONS) { // pick one direction
-                // i, j will change after each pick of direction, so each for loop we need to set it back
-                i = cur / col;
-                j = cur % col;
-                while (i + dir[0] >= 0 && i + dir[0] < row && j + dir[1] >= 0 && j + dir[1] < col && maze[i + dir[0]][j + dir[1]] == 0) {
-                    i += dir[0];
-                    j += dir[1];
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            if (t[0] == destination[0] && t[1] == destination[1]) return true;
+            for (int i = 0; i < 4; i++) {
+                int x = t[0], y = t[1];
+                while (true) {
+                    int a = x + dx[i], b = y + dy[i];
+                    if (a < 0 || a >= m || b < 0 || b >= n) break;
+                    if (maze[a][b] == 1) break;
+                    x = a;
+                    y = b;
                 }
-                if (!visited[i][j]) {
-                    queue.offer(i * col + j);
-                    visited[i][j] = true;
-                }
+                if (st[x][y]) continue;
+                st[x][y] = true;
+                q.offer(new int[]{x, y});
             }
         }
         return false;

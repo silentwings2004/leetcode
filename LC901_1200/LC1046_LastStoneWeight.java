@@ -28,11 +28,9 @@ public class LC1046_LastStoneWeight {
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
         for (int x : stones) pq.offer(x);
         while (pq.size() > 1) {
-            int a = pq.poll(), b = pq.poll();
-            if (a == b) continue;
-            else if (a >= b) pq.offer(a - b);
-            else pq.offer(b - a);
+            int x = pq.poll(), y = pq.poll();
+            pq.offer(x - y);
         }
-        return pq.isEmpty() ? 0 : pq.peek(); // 注意：[2,2]这样的case,可能导致pq最后为空！！！
+        return pq.peek();
     }
 }

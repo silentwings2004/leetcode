@@ -28,45 +28,41 @@ public class LC127_WordLadder {
      * @param wordList
      * @return
      */
-    // time = O(V + E), space = O(k * n)
+    // time = O(n * c^2), space = O(n * c^2)  n 为 wordList 的长度，c 为列表中单词的长度。
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        // corner case
-        if (beginWord == null || endWord == null) return 0;
-
         HashSet<String> dict = new HashSet<>(wordList);
-        Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
+        Queue<String> q = new LinkedList<>();
+        q.offer(beginWord);
 
-        int minLen = 1;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
+        int step = 1;
+        while (!q.isEmpty()) {
+            int size = q.size();
             while (size-- > 0) {
-                String cur = queue.poll();
-                if (cur.equals(endWord)) return minLen;
-                List<String> nexts = convert(cur, dict);
+                String t = q.poll();
+                if (t.equals(endWord)) return step;
+                List<String> nexts = convert(t, dict);
                 for (String next : nexts) {
-                    queue.offer(next);
+                    q.offer(next);
                     dict.remove(next);
                 }
             }
-            minLen++;
+            step++;
         }
         return 0;
     }
 
-    private List<String> convert(String cur, HashSet<String> dict) {
-        List<String> nexts = new ArrayList<>();
-        char[] chars = cur.toCharArray();
-
+    private List<String> convert(String s, HashSet<String> dict) {
+        List<String> res = new ArrayList<>();
+        char[] chars = s.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            char temp = chars[i];
-            for (char c = 'a'; c <= 'z'; c++) {
-                chars[i] = c;
+            char t = chars[i];
+            for (int j = 0; j < 26; j++) {
+                chars[i] = (char)(j + 'a');
                 String str = String.valueOf(chars);
-                if (i != temp && dict.contains(str)) nexts.add(str);
+                if (chars[i] != t && dict.contains(str)) res.add(str);
             }
-            chars[i] = temp;
+            chars[i] = t;
         }
-        return nexts;
+        return res;
     }
 }

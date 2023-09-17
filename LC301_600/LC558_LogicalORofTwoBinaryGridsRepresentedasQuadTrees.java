@@ -60,7 +60,7 @@ public class LC558_LogicalORofTwoBinaryGridsRepresentedasQuadTrees {
      * @return
      */
     // S1: dfs
-    // time = O(n), space = O(n)
+    // time = O(n^2), space = O(logn)
     public Node intersect(Node quadTree1, Node quadTree2) {
         if (quadTree1.isLeaf) return quadTree1.val ? quadTree1 : quadTree2;
         if (quadTree2.isLeaf) return quadTree2.val ? quadTree2 : quadTree1;
@@ -82,7 +82,7 @@ public class LC558_LogicalORofTwoBinaryGridsRepresentedasQuadTrees {
     }
 
     // S2
-    // time = O(n), space = O(n)
+    // time = O(n^2), space = O(logn)
     public Node intersect2(Node quadTree1, Node quadTree2) {
         if (quadTree1.isLeaf && quadTree2.isLeaf) {
             Node node = new Node(quadTree1.val || quadTree2.val, true, null, null, null, null);

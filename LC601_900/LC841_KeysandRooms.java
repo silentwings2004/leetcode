@@ -27,28 +27,25 @@ public class LC841_KeysandRooms {
      * @return
      */
     // time = O(m + n), space = O(n)
+    List<List<Integer>> g;
+    boolean[] st;
+    int n;
     public boolean canVisitAllRooms(List<List<Integer>> rooms) {
-        // corner case
-        if (rooms == null || rooms.size() == 0) return true;
+        g = rooms;
+        n = g.size();
+        st = new boolean[n];
 
-        Stack<Integer> stack = new Stack<>();
-        boolean[] visited = new boolean[rooms.size()];
-        stack.push(0);
-        visited[0] = true;
-
-        while (!stack.isEmpty()) {
-            int key = stack.pop();
-            for (int next : rooms.get(key)) {
-                if (!visited[next]) {
-                    stack.push(next);
-                    visited[next] = true;
-                }
-            }
-        }
-
-        for (boolean v : visited) {
-            if (!v) return false;
+        dfs(0);
+        for (int i = 0; i < n; i++) {
+            if (!st[i]) return false;
         }
         return true;
+    }
+
+    private void dfs(int u) {
+        st[u] = true;
+        for (int v : g.get(u)) {
+            if (!st[v]) dfs(v);
+        }
     }
 }

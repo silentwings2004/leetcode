@@ -26,19 +26,13 @@ public class LC167_TwoSumIIInputarrayissorted {
      */
     // time = O(n), space = O(1)
     public int[] twoSum(int[] numbers, int target) {
-        int[] res = new int[2];
-        // corner case
-        if (numbers == null || numbers.length == 0) return new int[0];
-
-        int left = 0, right = numbers.length - 1;
-        while (left < right) {
-            if (numbers[left] + numbers[right] == target) {
-                res[0] = left + 1;
-                res[1] = right + 1;
-                break;
-            } else if (numbers[left] + numbers[right] < target) left++;
-            else right--;
+        int n = numbers.length;
+        int i = 0, j = n - 1;
+        while (i < j) {
+            if (numbers[i] + numbers[j] == target) return new int[]{i + 1, j + 1};
+            if (numbers[i] + numbers[j] < target) i++;
+            else j--;
         }
-        return res;
+        return new int[0];
     }
 }

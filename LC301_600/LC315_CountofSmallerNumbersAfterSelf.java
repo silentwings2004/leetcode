@@ -251,47 +251,32 @@ public class LC315_CountofSmallerNumbersAfterSelf {
 
     // S5: BIT
     // time = O(nlogn), space = O(n)
+    final int N = 20010;
+    int[] tr;
     public List<Integer> countSmaller5(int[] nums) {
+        tr = new int[N];
+        int n = nums.length, idx = 0;
         List<Integer> res = new LinkedList<>();
-
-        int min = nums[0], n = nums.length;
-        for (int x : nums) min = Math.min(min, x);
-        for (int i = 0; i < n; i++) nums[i] -= min;
-
-        BIT bit = new BIT(200001);
-
         for (int i = n - 1; i >= 0; i--) {
-            res.add(0, bit.sumRange(1, nums[i]));
-            bit.update(nums[i] + 1, 1);
+            int x = nums[i] + 10001;
+            res.add(0, query(x - 1));
+            add(x, 1);
         }
         return res;
     }
 
-    private class BIT {
-        private int n;
-        private int[] bitree;
-        public BIT(int n) {
-            this.n = n;
-            this.bitree = new int[n + 1];
-        }
+    private int lowbit(int x) {
+        return x & -x;
+    }
 
-        private void update(int x, int delta) {
-            for (int i = x; i <= n; i += i & (-i)) {
-                bitree[i] += delta;
-            }
-        }
+    private void add(int x, int c) {
+        for (int i = x; i < N; i += lowbit(i)) tr[i] += c;
+    }
 
-        private int query(int x) {
-            int res = 0;
-            for (int i = x; i > 0; i -= i & (-i)) {
-                res += bitree[i];
-            }
-            return res;
-        }
-
-        private int sumRange(int i, int j) {
-            return query(j) - query(i - 1);
-        }
+    private int query(int x) {
+        int res = 0;
+        for (int i = x; i > 0; i -= lowbit(i)) res += tr[i];
+        return res;
     }
 }
 /**

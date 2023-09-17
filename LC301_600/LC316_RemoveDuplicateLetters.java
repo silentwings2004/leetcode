@@ -47,6 +47,28 @@ public class LC316_RemoveDuplicateLetters {
         while (!stack.isEmpty()) sb.append(stack.pop());
         return sb.reverse().toString();
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    final int N = 10010;
+    public String removeDuplicateLetters2(String s) {
+        char[] stk = new char[N];
+        int tt = 0;
+        int[] pos = new int[26];
+        boolean[] ins = new boolean[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) pos[s.charAt(i) - 'a'] = i;
+
+        for (int i = 0; i < n; i++) {
+            if (ins[s.charAt(i) - 'a']) continue;
+            while (tt > 0 && stk[tt] > s.charAt(i) && pos[stk[tt] - 'a'] > i) ins[stk[tt--] - 'a'] = false;
+            stk[++tt] = s.charAt(i);
+            ins[stk[tt] - 'a'] = true;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= tt; i++) sb.append(stk[i]);
+        return sb.toString();
+    }
 }
 /**
  * ref: LC402, same as LC1081
@@ -57,4 +79,5 @@ public class LC316_RemoveDuplicateLetters {
  * abc
  * 规律：a出现了，b和c都得让位
  * 递增的话，不会轻易删除一个字符
+ * Tj > Si 且Tj能被删除，则删掉Tj
  */

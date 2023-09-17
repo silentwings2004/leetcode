@@ -26,6 +26,7 @@ public class LC331_VerifyPreorderSerializationofaBinaryTree {
      * @param preorder
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public boolean isValidSerialization(String preorder) {
         // corner case
@@ -43,5 +44,28 @@ public class LC331_VerifyPreorderSerializationofaBinaryTree {
             if (i < n - 1 && count > 0) return false;
         }
         return count == 1;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    int k;
+    String s;
+    public boolean isValidSerialization2(String preorder) {
+        s = preorder + ",";
+        k = 0;
+        if (!dfs()) return false;
+        return k == s.length();
+    }
+
+    private boolean dfs() {
+        if (k == s.length()) return false;
+        if (s.charAt(k) == '#') {
+            k += 2;
+            return true;
+        }
+
+        while(s.charAt(k) != ',') k++;
+        k++;
+        return dfs() && dfs();
     }
 }

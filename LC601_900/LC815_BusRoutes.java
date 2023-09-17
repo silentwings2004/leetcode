@@ -64,6 +64,42 @@ public class LC815_BusRoutes {
         }
         return -1; // cannot reach target
     }
+
+    // S2
+    // time = O(n^2), space = O(n^2)
+    public int numBusesToDestination2(int[][] routes, int source, int target) {
+        if (source == target) return 0;
+        int n = routes.length;
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        int[] dist = new int[n];
+        Arrays.fill(dist, (int) 1e8);
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            for (int x : routes[i]) {
+                if (x == source) {
+                    dist[i] = 1;
+                    q.offer(i);
+                }
+                map.putIfAbsent(x, new ArrayList<>());
+                map.get(x).add(i);
+            }
+        }
+
+        while (!q.isEmpty()) {
+            int t = q.poll();
+            for (int x : routes[t]) {
+                if (x == target) return dist[t];
+                for (int y : map.getOrDefault(x, new ArrayList<>())) {
+                    if (dist[y] > dist[t] + 1) {
+                        dist[y] = dist[t] + 1;
+                        q.offer(y);
+                    }
+                }
+                map.remove(x);
+            }
+        }
+        return -1;
+    }
 }
 /**
  * bus2stop

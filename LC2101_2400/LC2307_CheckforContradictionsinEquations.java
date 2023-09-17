@@ -29,43 +29,43 @@ public class LC2307_CheckforContradictionsinEquations {
      * @return
      */
     // time = O(nlogn), space = O(n)
-    HashMap<String, String> parent;
-    HashMap<String, Double> dist;
+    final int N = 210;
+    final double eps = 1e-5;
+    int[] p;
+    double[] d;
+    int idx;
+    HashMap<String, Integer> map;
     public boolean checkContradictions(List<List<String>> equations, double[] values) {
-        parent = new HashMap<>();
-        dist = new HashMap<>();
-
+        map = new HashMap<>();
+        p = new int[N];
+        d = new double[N];
+        idx = 0;
+        for (int i = 0; i < N; i++) {
+            p[i] = i;
+            d[i] = 1;
+        }
         int n = equations.size();
         for (int i = 0; i < n; i++) {
-            String a = equations.get(i).get(0);
-            String b = equations.get(i).get(1);
+            String s = equations.get(i).get(0), t = equations.get(i).get(1);
             double c = values[i];
-
-            parent.putIfAbsent(a, a);
-            parent.putIfAbsent(b, b);
-
-            if (!findParent(a).equals(findParent(b))) union(a, b, c);
-            else {
-                double val = dist.getOrDefault(a, 1.0) / dist.getOrDefault(b, 1.0);
-                if (Math.abs(val - c) > 1e-5) return true;
-            }
+            if (!map.containsKey(s)) map.put(s, idx++);
+            if (!map.containsKey(t)) map.put(t, idx++);
+            int a = map.get(s), b = map.get(t);
+            int pa = find(a), pb = find(b);
+            if (pa != pb) {
+                p[pa] = pb;
+                d[pa] = c * d[b] / d[a];
+            } else if (Math.abs(d[a] / d[b] - c) > eps) return true;
         }
         return false;
     }
 
-    private String findParent(String x) {
-        if (!x.equals(parent.getOrDefault(x, x))) {
-            String p = parent.getOrDefault(x, x);
-            parent.put(x, findParent(p));
-            dist.put(x, dist.getOrDefault(x, 1.0) * dist.getOrDefault(p, 1.0));
+    private int find(int x) {
+        if (x != p[x]) {
+            int root = find(p[x]);
+            d[x] *= d[p[x]];
+            p[x] = root;
         }
-        return parent.getOrDefault(x, x);
-    }
-
-    private void union(String x, String y, double val) {
-        String px = findParent(x);
-        String py = findParent(y);
-        parent.put(px, py);
-        dist.put(px, val / dist.getOrDefault(x, 1.0) * dist.getOrDefault(y, 1.0));
+        return p[x];
     }
 }

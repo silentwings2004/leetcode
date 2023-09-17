@@ -66,16 +66,19 @@ public class LC926_FlipStringtoMonotoneIncreasing {
     public int minFlipsMonoIncr3(String s) {
         int n = s.length();
         int[] presum = new int[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + s.charAt(i - 1) - '0';
+        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + (s.charAt(i - 1) == '1' ? 1 : 0);
 
-        int res = n - presum[n];
-        for (int i = 1; i <= n; i++) {
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
             res = Math.min(res, presum[i] + (n - i) - (presum[n] - presum[i]));
         }
         return res;
     }
 }
 /**
+ * 枚举所有的分界点
+ * 前面1的个数 + 后面0的个数 => 前缀和
+ *
  * dp[i]表示前i个字符所需最小翻转次数，则dp[i+1]有如下四种情况，取其最小值即可
  * 1、第i+1个字符为0，且不翻转，d[i+1]=前i个字符中1的个数
  * 2、第i+1个字符为0，且翻转，d[i+1]=d[i]+1

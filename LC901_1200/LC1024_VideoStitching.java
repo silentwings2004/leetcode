@@ -26,7 +26,8 @@ public class LC1024_VideoStitching {
      * @param time
      * @return
      */
-    // time = O(nlogn), space = O(1)
+    // S1
+    // time = O(nlogn), space = O(logn)
     public int videoStitching(int[][] clips, int time) {
         Arrays.sort(clips, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o2[1] - o1[1]); // 左端点相等时，长区间优先
 
@@ -49,6 +50,22 @@ public class LC1024_VideoStitching {
             right = farReach;
         }
         return -1;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(logn)
+    public int videoStitching2(int[][] clips, int time) {
+        Arrays.sort(clips, (o1, o2) -> o1[0] - o2[0]);
+        int n = clips.length, res = 0, last = 0;
+        for (int i = 0; i < n;) {
+            if (clips[i][0] > last) return -1;
+            int r = 0;
+            while (i < n && clips[i][0] <= last) r = Math.max(r, clips[i++][1]);
+            last = r;
+            res++;
+            if (last >= time) break;
+        }
+        return last >= time ? res : -1;
     }
 }
 /**

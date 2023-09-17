@@ -104,6 +104,55 @@ public class LC2101_DetonatetheMaximumBombs {
         }
         return res;
     }
+
+    // S3
+    // time = O(n^3), space = O(n^2)
+    HashMap<Integer, List<Integer>> map;
+    int n;
+    public int maximumDetonation3(int[][] bombs) {
+        map = new HashMap<>();
+        n = bombs.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                long d = get(bombs[i][0], bombs[i][1], bombs[j][0], bombs[j][1]);
+                if (d <= (long)bombs[i][2] * bombs[i][2]) {
+                    map.putIfAbsent(i, new ArrayList<>());
+                    map.get(i).add(j);
+                }
+                if (d <= (long)bombs[j][2] * bombs[j][2]) {
+                    map.putIfAbsent(j, new ArrayList<>());
+                    map.get(j).add(i);
+                }
+            }
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; i++) res = Math.max(res, bfs(i));
+        return res;
+    }
+
+    private int bfs(int u) {
+        int s = 1;
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(u);
+        boolean[] st = new boolean[n];
+        st[u] = true;
+
+        while (!q.isEmpty()) {
+            int t = q.poll();
+            for (int v : map.getOrDefault(t, new ArrayList<>())) {
+                if (st[v]) continue;
+                q.offer(v);
+                st[v] = true;
+                s++;
+            }
+        }
+        return s;
+    }
+
+    private long get(int x1, int y1, int x2, int y2) {
+        return (long)(x2 - x1) * (x2 - x1) + (long)(y2 - y1) * (y2 - y1);
+    }
 }
 /**
  * 我们随意采用一个炸弹作为初始引爆点，题目所给的条件可以知道哪些后续炸弹会被第一个引爆。

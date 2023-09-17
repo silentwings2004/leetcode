@@ -24,6 +24,7 @@ public class LC880_DecodedStringatIndex {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public String decodeAtIndex(String s, int k) {
         int n = s.length();
@@ -41,6 +42,32 @@ public class LC880_DecodedStringatIndex {
                 } else {
                     return decodeAtIndex(s.substring(0, i), k % (int)count);
                 }
+            }
+        }
+        return "";
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public String decodeAtIndex2(String s, int k) {
+        int m = s.length();
+        long n = 0;
+        for (int i = 0; i < m; i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c)) n *= c - '0';
+            else n++;
+        }
+
+        for (int i = m - 1; i >= 0; i--) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c)) {
+                int x = c - '0';
+                n /= x;
+                k %= n;
+                if (k == 0) k = (int)n;
+            } else {
+                if (k == n) return String.valueOf(c);
+                n--;
             }
         }
         return "";

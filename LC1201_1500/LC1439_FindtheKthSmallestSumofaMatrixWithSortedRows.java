@@ -10,6 +10,12 @@ public class LC1439_FindtheKthSmallestSumofaMatrixWithSortedRows {
      * Input: mat = [[1,3,11],[2,4,6]], k = 5
      * Output: 7
      *
+     * Input: mat = [[1,3,11],[2,4,6]], k = 9
+     * Output: 17
+     *
+     * Input: mat = [[1,10,10],[1,4,5],[2,3,6]], k = 7
+     * Output: 9
+     *
      * Constraints:
      *
      * m == mat.length

@@ -1,5 +1,5 @@
 package LC301_600;
-
+import java.util.*;
 public class LC600_NonnegativeIntegerswithoutConsecutiveOnes {
     /**
      * Given a positive integer n, return the number of the integers in the range [0, n] whose binary representations
@@ -23,7 +23,8 @@ public class LC600_NonnegativeIntegerswithoutConsecutiveOnes {
      * @param n
      * @return
      */
-    // time = O(1), space = O(1)
+    // S1
+    // time = O(logn), space = O(logn)
     public int findIntegers(int n) {
         int[] dp = new int[33];
         dp[0] = 1;
@@ -56,6 +57,34 @@ public class LC600_NonnegativeIntegerswithoutConsecutiveOnes {
         }
         res += 1; // i被递归到0，前面一路前缀打平相同，一直打到最后退出来了，所以最后一定要补上一个, 比如10000000 vs 00000000,也算1个
         return res;
+    }
+
+    // S2: 数位dp
+    // time = O(logn), space = O(logn)
+    public int findIntegers2(int n) {
+        List<Integer> nums = new ArrayList<>();
+        while (n > 0) {
+            nums.add(n % 2);
+            n >>= 1;
+        }
+        int m = nums.size();
+        int[][] f = new int[m + 1][2];
+        f[1][0] = f[1][1] = 1;
+        for (int i = 2; i <= m; i++) {
+            f[i][0] = f[i - 1][0] + f[i - 1][1];
+            f[i][1] = f[i - 1][0];
+        }
+
+        int res = 0;
+        for (int i = m, last = 0; i > 0; i--) {
+            int x = nums.get(i - 1);
+            if (x == 1) {
+                res += f[i][0];
+                if (last == 1) return res;
+            }
+            last = x;
+        }
+        return res + 1;
     }
 }
 /**
@@ -91,4 +120,10 @@ public class LC600_NonnegativeIntegerswithoutConsecutiveOnes {
  * (C)
  * 0xxxxxxxxxx
  * 0??????????    result -> dfs(31)
+ *
+ * 数位dp
+ * 1. 预处理
+ * f(i,0): 最高位为0，一共i位 => f(i,0) = f(i-1,0) + f(i-1,1)
+ * f(i,1): 最高位为1，一共i位 => f(i,1) = f(i-1,0)
+ * 2. 按位做：
  */

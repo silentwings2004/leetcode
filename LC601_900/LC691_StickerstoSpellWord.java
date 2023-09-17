@@ -58,6 +58,59 @@ public class LC691_StickerstoSpellWord {
         }
         return status;
     }
+
+    // S2: 暴搜
+    // time = O(2^m * n * (c + m)), space = O(2^m)
+    final int N = 1 << 15, INF = 20;
+    int n;
+    String[] strs;
+    String target;
+    int[] f;
+    int[][] g;
+    public int minStickers2(String[] stickers, String target) {
+        strs = stickers;
+        this.target = target;
+        n = target.length();
+        f = new int[N];
+        g = new int[N][26];
+
+        Arrays.fill(f, -1);
+        for (int i = 0; i < N; i++) Arrays.fill(g[i], -1);
+        int res = dfs(0);
+        if (res == INF) res = -1;
+        return res;
+    }
+
+    private int dfs(int state) {
+        if (f[state] != -1) return f[state];
+        if (state == (1 << n) - 1) return f[state] = 0;
+        int v = INF;
+
+        for (String str : strs) {
+            int cur = state;
+            for (char c : str.toCharArray()) {
+                cur = fill(cur, c);
+            }
+            if (cur != state) v = Math.min(v, dfs(cur) + 1);
+        }
+        f[state] = v;
+        return f[state];
+    }
+
+    private int fill(int state, char c) {
+        int v = g[state][c - 'a'];
+        if (v != -1) return v;
+        v = state;
+
+        for (int i = 0; i < n; i++) {
+            if ((state >> i & 1) == 0 && target.charAt(i) == c) {
+                v |= 1 << i;
+                break;
+            }
+        }
+        g[state][c - 'a'] = v;
+        return v;
+    }
 }
 /**
  * 状态压缩dp

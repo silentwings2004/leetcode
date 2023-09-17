@@ -24,39 +24,29 @@ public class LC990_SatisfiabilityofEqualityEquations {
      * @return
      */
     // time = O(n), space = O(1)
-    int[] parent;
+    int[] p;
     public boolean equationsPossible(String[] equations) {
-        parent = new int[26];
-        for (int i = 0; i < 26; i++) parent[i] = i;
-
-        for (String eq : equations) { // O(n)
-            if (eq.charAt(1) == '=') {
-                int a = eq.charAt(0) - 'a';
-                int b = eq.charAt(3) - 'a';
-                if (findParent(a) != findParent(b)) union(a, b);
-            }
+        p = new int[26];
+        for (int i = 0; i < 26; i++) p[i] = i;
+        for (String e : equations) {
+            int a = e.charAt(0) - 'a';
+            int b = e.charAt(3) - 'a';
+            if (e.charAt(1) == '=') p[find(a)] = find(b);
         }
 
-        for (String eq : equations) {
-            if (eq.charAt(1) == '!') {
-                int a = eq.charAt(0) - 'a';
-                int b = eq.charAt(3) - 'a';
-                if (findParent(a) == findParent(b)) return false;
+        for (String e : equations) {
+            int a = e.charAt(0) - 'a';
+            int b = e.charAt(3) - 'a';
+            if (e.charAt(1) == '!') {
+                if (find(a) == find(b)) return false;
             }
         }
         return true;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

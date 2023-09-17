@@ -20,22 +20,21 @@ public class LC637_AverageofLevelsinBinaryTree {
     // time = O(n), space = O(k) k: the maximum number of nodes at any level in the input tree
     public List<Double> averageOfLevels(TreeNode root) {
         List<Double> res = new ArrayList<>();
-        // corner case
         if (root == null) return res;
 
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
 
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            double levelSum = 0; // 注意这里要用double, 用int到后面再转很可能会越界！！！
+        while (!q.isEmpty()) {
+            int size = q.size();
+            double sum = 0;
             for (int i = 0; i < size; i++) {
-                TreeNode cur = queue.poll();
-                levelSum += cur.val;
-                if (cur.left != null) queue.offer(cur.left);
-                if (cur.right != null) queue.offer(cur.right);
+                TreeNode t = q.poll();
+                sum += t.val;
+                if (t.left != null) q.offer(t.left);
+                if (t.right != null) q.offer(t.right);
             }
-            res.add(levelSum / size);
+            res.add(sum / size);
         }
         return res;
     }

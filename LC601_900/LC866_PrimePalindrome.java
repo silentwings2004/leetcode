@@ -22,6 +22,7 @@ public class LC866_PrimePalindrome {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int primePalindrome(int n) {
         if (n > 7 && n <= 11) return 11; // 11本身是个质数，无法被下面只考虑奇数位翻转的case考虑到，需要单独考虑！
@@ -52,6 +53,30 @@ public class LC866_PrimePalindrome {
         if (k % 2 == 0) return k == 2;
         for (int i = 3; i * i <= k; i += 2) {
             if (k % i == 0) return false;
+        }
+        return true;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int primePalindrome2(int n) {
+        if (n > 7 && n <= 11) return 11;
+        for (int i = 1;; i++) {
+            int x = get(i);
+            if (x >= n && is_prime(x)) return x;
+        }
+    }
+
+    private int get(int x) {
+        String a = String.valueOf(x);
+        String b = new StringBuilder(a).reverse().toString();
+        return Integer.parseInt(a + b.substring(1));
+    }
+
+    private boolean is_prime(int x) {
+        if (x < 2) return false;
+        for (int i = 2; i <= x / i; i++) {
+            if (x % i == 0) return false;
         }
         return true;
     }

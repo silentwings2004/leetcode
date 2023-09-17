@@ -52,20 +52,16 @@ public class LC377_CombinationSumIV {
     }
 
     // S2: DP
-    //time = O(n * t), space = O(t)  t: target value
+    // time = O(n * m), space = O(n)
     public int combinationSum42(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int[] dp = new int[target + 1];
-        dp[0] = 1;
-
-        for (int i = 1; i < dp.length; i++) { // i: target range
-            for (int n : nums) {
-                if (i - n >= 0) dp[i] += dp[i - n]; // 注意这里是 i - n >= 0 而不仅仅是 > 0
+        int[] f = new int[target + 1];
+        f[0] = 1;
+        for (int i = 0; i <= target; i++) {
+            for (int x : nums) {
+                if (i >= x) f[i] += f[i - x];
             }
         }
-        return dp[target];
+        return f[target];
     }
 }
 /**
@@ -86,4 +82,6 @@ public class LC377_CombinationSumIV {
  * 状态计算：
  * 假设最后一个是ak的话，考虑如何去计算？
  * 统计前面的方案个数，数量没有限制，总和是j - ak => f[j-ak]  从小到大去枚举
+ * follow-up:
+ * 1 + (-1) = 0 => 答案无限个，限制个数则答案变得有限
  */

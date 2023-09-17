@@ -37,22 +37,22 @@ public class LC791_CustomSortString {
 
     // S2: count
     // time = O(m + n), space = O(n)
-    public String customSortString2(String order, String str) {
-        int[] count = new int[26];
-        for (char c : str.toCharArray()) count[c -'a']++;
+    public String customSortString2(String order, String s) {
+        int[] cnt = new int[26];
+        for (char c : s.toCharArray()) cnt[c - 'a']++;
 
         StringBuilder sb = new StringBuilder();
         for (char c : order.toCharArray()) {
-            for (int i = 0; i < count[c - 'a']; i++) {
-                sb.append(c); // append all chars inside of the order
+            if (cnt[c - 'a'] > 0) {
+                while (cnt[c - 'a'] > 0) {
+                    sb.append(c);
+                    cnt[c - 'a']--;
+                }
             }
-            count[c - 'a'] = 0;
         }
 
-        for (char c = 'a'; c <= 'z'; c++) {
-            for (int i = 0; i < count[c - 'a']; i++) {
-                sb.append(c); // append all chars that not inside the order
-            }
+        for (char c : s.toCharArray()) {
+            if (cnt[c - 'a'] > 0) sb.append(c);
         }
         return sb.toString();
     }

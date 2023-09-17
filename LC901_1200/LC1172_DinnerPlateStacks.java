@@ -74,7 +74,87 @@ public class LC1172_DinnerPlateStacks {
         }
         return res;
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    class DinnerPlates {
+        List<Stack<Integer>> q;
+        TreeSet<Integer> s1, s2;
+        int c, idx;
+        public DinnerPlates(int capacity) {
+            q = new ArrayList<>();
+            s1 = new TreeSet<>();
+            s2 = new TreeSet<>();
+            c = capacity;
+            idx = 0;
+
+            s1.add(0);
+            q.add(new Stack<>());
+        }
+
+        public void push(int val) {
+            if (s1.size() == 0) {
+                q.add(new Stack<>());
+                idx++;
+                s1.add(idx);
+            }
+            Integer fk = s1.first();
+            q.get(fk).push(val);
+            if (q.get(fk).size() == c) s1.remove(fk);
+            s2.add(fk);
+        }
+
+        public int pop() {
+            if (s2.size() == 0) return -1;
+            return popAtStack(s2.last());
+        }
+
+        public int popAtStack(int index) {
+            if (!s2.contains(index)) return -1;
+            int t = q.get(index).pop();
+            if (q.get(index).size() == 0) s2.remove(index);
+            s1.add(index);
+            return t;
+        }
+    }
+
+    // S3
+    class DinnerPlates2 {
+        // time = O(nlogn), space = O(n)
+        List<Stack<Integer>> stks;
+        PriorityQueue<Integer> pq;
+        int last, capacity;
+        public DinnerPlates2(int capacity) {
+            stks = new ArrayList<>();
+            pq = new PriorityQueue<>();
+            last = -1;
+            this.capacity = capacity;
+        }
+
+        public void push(int val) {
+            if (pq.isEmpty()) {
+                int id = stks.size();
+                stks.add(new Stack<>());
+                pq.offer(id);
+            }
+            Stack<Integer> stk = stks.get(pq.peek());
+            stk.push(val);
+            last = Math.max(last, pq.peek());
+            if (stk.size() == capacity) pq.poll();
+        }
+
+        public int pop() {
+            return popAtStack(last);
+        }
+
+        public int popAtStack(int index) {
+            if (index == -1 || index > last) return -1;
+            Stack<Integer> stk = stks.get(index);
+            if (stk.size() == 0) return -1;
+            int res = stk.pop();
+            if (stk.size() == capacity - 1) pq.offer(index);
+            while (last >= 0 && stks.get(last).size() == 0) last--;
+            return res;
+        }
+    }
 }
-/**
- *
- */

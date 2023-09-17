@@ -23,28 +23,22 @@ public class LC661_ImageSmoother {
      * @return
      */
     // time = O(m * n), space = O(1)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     public int[][] imageSmoother(int[][] img) {
         int m = img.length, n = img[0].length;
         int[][] res = new int[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                res[i][j] = helper(img, i, j);
+                int s = 0, c = 0;
+                for (int x = i - 1; x <= i + 1; x++) {
+                    for (int y = j - 1; y <= j + 1; y++) {
+                        if (x < 0 || x >= m || y < 0 || y >= n) continue;
+                        s += img[x][y];
+                        c++;
+                    }
+                }
+                res[i][j] = s / c;
             }
         }
         return res;
-    }
-
-    private int helper(int[][] grid, int i, int j) {
-        int m = grid.length, n = grid[0].length;
-        int sum = grid[i][j], count = 1;
-        for (int[] dir : directions) {
-            int x = i + dir[0];
-            int y = j + dir[1];
-            if (x < 0 || x >= m || y < 0 || y >= n) continue;
-            sum += grid[x][y];
-            count++;
-        }
-        return sum / count;
     }
 }

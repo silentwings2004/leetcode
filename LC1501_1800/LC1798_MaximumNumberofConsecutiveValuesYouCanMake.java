@@ -23,19 +23,15 @@ public class LC1798_MaximumNumberofConsecutiveValuesYouCanMake {
      * @param coins
      * @return
      */
-    // time = O(nlogn), space = O(1)
+    // time = O(nlogn), space = O(logn)
     public int getMaximumConsecutive(int[] coins) {
-        // corner case
-        if (coins == null || coins.length == 0) return 0;
-
         Arrays.sort(coins);
-        int curMax = 0;
-
-        for (int c : coins) {
-            if (c > curMax + 1) break;
-            curMax += c;
+        int sum = 0;
+        for (int x : coins) {
+            if (x > sum + 1) return sum + 1;
+            sum += x;
         }
-        return curMax + 1;
+        return sum + 1;
     }
 }
 /**
@@ -49,4 +45,7 @@ public class LC1798_MaximumNumberofConsecutiveValuesYouCanMake {
  * curMax + 1 < c  => 是个连续区间，不需要用一个set
  *
  * Greedy: similar to LC55
+ * ai > Si-1 + 1 => Si-1 + 1 一定无法凑出
+ * ai <= Si-1 + 1 一定可以凑出
+ * [Si-1 + 1 - ai, Si] => [Si-1 + 1, Si-1 + ai]
  */

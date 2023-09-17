@@ -27,14 +27,10 @@ public class LC190_ReverseBits {
     // you need treat n as an unsigned value
     // time = O(1), space = O(1)
     public int reverseBits(int n) {
-        // corner case
-        if (n == 0) return 0;
-
         int res = 0;
         for (int i = 0; i < 32; i++) {
-            res <<= 1;
-            if ((n & 1) == 1) res++;
-            n >>= 1;
+            if ((n >> i & 1) == 1) res = (res << 1) + 1;
+            else res <<= 1;
         }
         return res;
     }

@@ -15,6 +15,7 @@ public class LC357_CountNumberswithUniqueDigits {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int countNumbersWithUniqueDigits(int n) {
         int res = 1; // 0
@@ -29,6 +30,20 @@ public class LC357_CountNumberswithUniqueDigits {
         for (int i = 0; i < n; i++) {
             res *= m - i;
         }
+        return res;
+    }
+
+    // S2:
+    // time = O(n), space = O(n)
+    public int countNumbersWithUniqueDigits2(int n) {
+        if (n == 0) return 1;
+        int[] f = new int[n + 1];
+        f[1] = 9;
+        for (int i = 2; i <= n; i++) {
+            f[i] = f[i - 1] * (11 - i);
+        }
+        int res = 1;
+        for (int i = 1; i <= n; i++) res += f[i];
         return res;
     }
 }

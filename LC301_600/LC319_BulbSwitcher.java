@@ -24,6 +24,9 @@ public class LC319_BulbSwitcher {
     }
 }
 /**
+ * x的约数个数 = 奇数 = (a1+1)(a2+1)...(ak+1)
+ * 里面每个数都是奇数=> 每个ai都是偶数 => 必然是个完全平方数
+ * 1~n里有多少个完全平方数 => sqrt(n)
  * A bulb ends up on iff it is switched an odd number of times.
  *
  * Call them bulb 1 to bulb n. Bulb i is switched in round d if and only if d divides i. So bulb i ends up on if and

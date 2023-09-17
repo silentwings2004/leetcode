@@ -28,29 +28,34 @@ public class LC919_CompleteBinaryTreeInserter {
      * 0 <= val <= 5000
      * At most 104 calls will be made to insert and get_root.
      */
+    // time = O(n), space = O(n)
     TreeNode root;
-    List<TreeNode> h;
+    Queue<TreeNode> tq;
     public LC919_CompleteBinaryTreeInserter(TreeNode root) {
-        h = new ArrayList<>();
         this.root = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        while (!queue.isEmpty()) {
-            TreeNode cur = queue.poll();
-            h.add(cur);
-            if (cur.left != null) queue.offer(cur.left);
-            if (cur.right != null) queue.offer(cur.right);
+        tq = new LinkedList<>();
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+
+        while (!q.isEmpty()) {
+            TreeNode t = q.poll();
+            if (t.left != null) q.offer(t.left);
+            if (t.right != null) q.offer(t.right);
+            if (!(t.left != null && t.right != null)) tq.offer(t);
         }
     }
 
     public int insert(int val) {
-        TreeNode t = new TreeNode(val);
-        h.add(t);
-        int k = h.size();
-        int p = k / 2;
-        if (p * 2 == k) h.get(p - 1).left = t;
-        else h.get(p - 1).right = t;
-        return h.get(p - 1).val;
+        TreeNode node = new TreeNode(val);
+        TreeNode p = tq.peek();
+        int res = p.val;
+        if (p.left == null) p.left = node;
+        else {
+            p.right = node;
+            tq.poll();
+        }
+        tq.offer(node);
+        return res;
     }
 
     public TreeNode get_root() {

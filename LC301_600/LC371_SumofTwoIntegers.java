@@ -14,6 +14,7 @@ public class LC371_SumofTwoIntegers {
      * @param b
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public int getSum(int a, int b) {
         if (a == 0) return b;
@@ -26,10 +27,21 @@ public class LC371_SumofTwoIntegers {
         }
         return a;
     }
+
+    // S2
+    // time = O(1), space = O(1)
+    public int getSum2(int a, int b) {
+        if (a == 0) return b;
+        int sum = a ^ b, carry = (a & b) << 1;
+        return getSum2(carry, sum);
+    }
 }
 /**
  * 0 + 0 = 00  ^
  * 1 + 0 = 01  ^
  * 0 + 1 = 01  ^
  * 1 + 1 = 10  &
+ *
+ * ((a & b) << 1) + (a ^ b) = a + b
+ * a & b == 001, & 出来的结果表示需要进位的地方，将它左移1位得到010
  */

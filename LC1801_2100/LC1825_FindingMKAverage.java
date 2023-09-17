@@ -255,4 +255,11 @@ public class LC1825_FindingMKAverage {
  *
  * shiftLeft(set1, set2)
  * shiftRight(set1, set2)
+ *
+ * 动态中位数的扩展版
+ * 同时支持最大最小值和删除操作 => 平衡树
+ * multi-set维护3段， L, M, R
+ * < m => -1
+ * = m 暴力分三段
+ * 如果要添加一个元素 => 暴力将x加到中间
  */

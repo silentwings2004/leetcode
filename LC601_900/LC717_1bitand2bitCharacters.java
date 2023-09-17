@@ -1,6 +1,6 @@
 package LC601_900;
 
-public class LC717_1bitand2bitCharacters {
+public class  LC717_1bitand2bitCharacters {
     /**
      * We have two special characters:
      *
@@ -20,12 +20,12 @@ public class LC717_1bitand2bitCharacters {
      */
     // time = O(n), space = O(1)
     public boolean isOneBitCharacter(int[] bits) {
-        int n = bits.length, i = 0;
-        for (i = 0; i < n - 1; i++) {
-            if (bits[i] == 0) continue; // move 1 step
-            else i++; // move 2 steps
+        int n = bits.length;
+        for (int i = 0; i < n; i++) {
+            if (i == n - 1 && bits[i] == 0) return true;
+            if (bits[i] == 1) i++;
         }
-        return i == n - 1;
+        return false;
     }
 }
 /**

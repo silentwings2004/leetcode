@@ -23,20 +23,16 @@ public class LC849_MaximizeDistancetoClosestPerson {
      * @param seats
      * @return
      */
+    // S1: two pointers
     // time = O(n), space = O(1)
     public int maxDistToClosest(int[] seats) {
-        int n = seats.length;
-        int prev = -1, future = 0;
-        int res = 0;
-
+        int n = seats.length, res = 0;
         for (int i = 0; i < n; i++) {
-            if (seats[i] == 1) prev = i;
-            else {
-                while (future < n && seats[future] == 0 || future < i) future++;
-                int left = prev == -1 ? n : i - prev;
-                int right = future == n ? n : future - i;
-                res = Math.max(res, Math.min(left, right));
-            }
+            if (seats[i] == 1) continue;
+            int j = i + 1;
+            while (j < n && seats[j] == 0) j++;
+            if (i == 0 || j == n) res = Math.max(res, j - i);
+            else res = Math.max(res, (j - i + 1) / 2);
         }
         return res;
     }

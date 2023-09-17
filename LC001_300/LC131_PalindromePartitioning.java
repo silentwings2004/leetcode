@@ -17,47 +17,38 @@ public class LC131_PalindromePartitioning {
      * @param s
      * @return
      */
-    // S1: dfs
     // time = O(n * 2^n), space = O(n^2)
-    boolean[][] isPalin;
+    List<List<String>> res;
+    List<String> path;
+    boolean[][] f;
     public List<List<String>> partition(String s) {
-        List<List<String>> res = new ArrayList<>();
-
         int n = s.length();
-        isPalin = new boolean[n][n];
+        f = new boolean[n][n];
 
-        // init
-        // j - 1 = i + len - 2 >= i + 1  => len >= 3
-        // len = 1 => j = i => isPalin[i][i] = true
-        for (int i = 0; i < n; i++) isPalin[i][i] = true;
-        // len = 2 -> j = i + 1 -> i + 1 > j - 1
-        for (int i = 0; i < n - 1; i++) isPalin[i][i + 1] = s.charAt(i) == s.charAt(i + 1);
-
-        for (int len = 3; len <= n; len++) {
-            for (int i = 0; i + len - 1 < n; i++) {
-                int j = i + len - 1;
-                if (s.charAt(i) == s.charAt(j) && isPalin[i + 1][j - 1]) {
-                    isPalin[i][j] = true;
-                } else isPalin[i][j] = false;
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i <= j; i++) {
+                if (i == j) f[i][j] = true;
+                else if (s.charAt(i) == s.charAt(j)) {
+                    if (i + 1 > j - 1 || f[i + 1][j - 1]) f[i][j] = true;
+                }
             }
         }
 
-        dfs(s, 0, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        dfs(s, 0);
         return res;
     }
 
-    private void dfs(String s, int idx, List<String> path, List<List<String>> res) {
-        // base case
-        if (idx == s.length()) {
-            res.add(new ArrayList<>(path));
-            return;
-        }
-
-        for (int i = idx; i < s.length(); i++) {
-            if (isPalin[idx][i]) {
-                path.add(s.substring(idx, i + 1));
-                dfs(s, i + 1, path, res);
-                path.remove(path.size() - 1);
+    private void dfs(String s, int u) {
+        if (u == s.length()) res.add(new ArrayList<>(path));
+        else {
+            for (int i = u; i < s.length(); i++) {
+                if (f[u][i]) {
+                    path.add(s.substring(u, i + 1));
+                    dfs(s, i + 1);
+                    path.remove(path.size() - 1);
+                }
             }
         }
     }

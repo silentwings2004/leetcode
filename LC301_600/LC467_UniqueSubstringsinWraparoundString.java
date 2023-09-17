@@ -52,3 +52,9 @@ public class LC467_UniqueSubstringsinWraparoundString {
         return res;
     }
 }
+/**
+ * 起始字符
+ * 长度
+ * 求下以每个字符开头的连续子串的最大长度
+ * 在每个区间内部，只要枚举下起点即可
+ */

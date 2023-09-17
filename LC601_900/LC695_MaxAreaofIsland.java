@@ -24,34 +24,32 @@ public class LC695_MaxAreaofIsland {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    int[][] g;
+    int m, n;
     public int maxAreaOfIsland(int[][] grid) {
-        // corner case
-        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) return 0;
-
-        int m = grid.length, n = grid[0].length, max = 0;
+        g = grid;
+        m = g.length;
+        n = g[0].length;
+        int res = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 1) {
-                    max = Math.max(max, dfs(grid, i, j));
-                }
+                if (g[i][j] == 1) res = Math.max(res, dfs(i, j));
             }
         }
-        return max;
+        return res;
     }
 
-    private int dfs(int[][] grid, int i, int j) {
-        int m = grid.length, n = grid[0].length;
-        // base case - fail
-        if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == 0) return 0;
+    private int dfs(int x, int y) {
+        int area = 1;
+        g[x][y] = 0;
 
-        int area = 0;
-        grid[i][j] = 0;
-        for (int[] dir : DIRECTIONS) {
-            int ii = i + dir[0];
-            int jj = j + dir[1];
-            area += dfs(grid, ii, jj);
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == 0) continue;
+            area += dfs(a, b);
         }
-        return area + 1;
+        return area;
     }
 }

@@ -68,5 +68,6 @@ public class LC230_KthSmallestElementinaBST {
  * lc < k -> dfs 左子树
  * lc == k + 1 -> root
  * lc > k -> dfs 右子树
- * 必须手写平衡树
+ * 必须手写平衡树 => time = O(logn)
+ * 每次递归一边即可
  */

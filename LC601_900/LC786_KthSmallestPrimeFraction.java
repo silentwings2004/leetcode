@@ -26,45 +26,30 @@ public class LC786_KthSmallestPrimeFraction {
      * @return
      */
     // time = O(nlogn), space = O(1)
+    final double eps = 1e-8;
+    int[] ans;
     public int[] kthSmallestPrimeFraction(int[] arr, int k) {
-        // corner case
-        if (arr == null || arr.length == 0 || k < 0) return new int[0];
-
-        double left = 0, right = 1, mid = 0;
-        while (left < right) {
-            mid = left + (right - left) / 2;
-            int count = 0;
-            for (int i = 0; i < arr.length; i++) {
-                int idx = lowerBound(arr, arr[i] * 1.0 / mid);
-                count += arr.length - idx;
-            }
-
-            if (count < k) left = mid;
-            else if (count > k) right = mid;
-            else break;
+        ans = new int[2];
+        double l = 0, r = 1;
+        while (r - l > eps) {
+            double mid = (l + r) / 2;
+            if (get(arr, mid) >= k) r = mid;
+            else l = mid;
         }
+        get(arr, r);
+        return ans;
+    }
 
-        int[] res = new int[2];
-        double ans = 0;
-        for (int i = 0; i < arr.length; i++) {
-            int idx = lowerBound(arr, arr[i] * 1.0 / mid);
-            if (idx != arr.length && arr[i] * 1.0 / arr[idx] > ans) { // arr[i]/arr[j] <= mid => 取arr[i]/arr[j]最大的那个！
-                ans = arr[i] * 1.0 / arr[idx];
-                res[0] = arr[i];
-                res[1] = arr[idx];
+    private int get(int[] arr, double mid) {
+        int n = arr.length, res = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            while (j + 1 < n && arr[j + 1] * 1.0 / arr[i] <= mid) j++;
+            if (arr[j] * 1.0 / arr[i] <= mid) res += j + 1;
+            if (Math.abs(arr[j] * 1.0 / arr[i] - mid) < eps) {
+                ans = new int[]{arr[j], arr[i]};
             }
         }
         return res;
-    }
-
-    private int lowerBound(int[] nums, double target) {
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) left = mid + 1;
-            else right = mid;
-        }
-        return nums[left] >= target ? left : left + 1;
     }
 }
 /**
@@ -76,4 +61,6 @@ public class LC786_KthSmallestPrimeFraction {
  * 3/5 = 0.6 => mid = 0.625
  * 如果是double,永远是开区间，得通过手动设置条件跳出loop
  * 分母越大，整个fraction就越小，所以找的j是后半段 => n - idx
+ *
+ * 二分：满足 <= 它的数的个数 >= k 的最小数
  */

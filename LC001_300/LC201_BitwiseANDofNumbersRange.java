@@ -18,13 +18,12 @@ public class LC201_BitwiseANDofNumbersRange {
     // S1
     // time = O(1), space = O(1)
     public int rangeBitwiseAnd(int left, int right) {
-        int shift = 0;
-        while (left != right) {
-            left >>= 1;
-            right >>= 1;
-            shift++;
+        int m = left, n = right, res = 0;
+        for (int i = 30; i >= 0; i--) {
+            if ((m >> i & 1) != (n >> i & 1)) break;
+            if ((m >> i & 1) == 1) res += 1 << i;
         }
-        return left << shift;
+        return res;
     }
 
     // S2
@@ -33,5 +32,11 @@ public class LC201_BitwiseANDofNumbersRange {
         while (right > left) right = right & (right - 1);
         return right;
     }
-
 }
+/**
+ * m <= n
+ * m =   xxxxx 0_1111 >= m
+ * n =   xxxxx 1_0000 <= n
+ * =>    xxxxx 0
+ * 找到从右到左第一位m和n不一样的地方，从这位往右边，一定全都是0，前面都不变
+ */

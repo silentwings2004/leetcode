@@ -36,6 +36,7 @@ public class LC1625_LexicographicallySmallestStringAfterApplyingOperations {
     // time = (n * 100), space = O(n)
     public String findLexSmallestString(String s, int a, int b) {
         int n = s.length();
+
         String res = s;
 
         int evenLimit = 1;
@@ -133,4 +134,13 @@ public class LC1625_LexicographicallySmallestStringAfterApplyingOperations {
  * 周赛第二题暴力也没问题
  * eg. b = 3 for 123456, 不需要rotate n = 6 次，只要rotate 2 次 => n / gcd(n, b) = 6 / 3 = 2
  * 3rd ennumeration only takes place when b is odd
+ *
+ * 操作1：奇数位
+ * (1) b是偶数，则奇数位集合不变 => 操作顺序不影响结果
+ * 第一个操作最多10次，第二个操作最多n次 => 最多枚举10*n次
+ * (2) b是奇数，奇数位和偶数位都可以+1 => 最后结果取决于
+ * 奇数位操作多少次
+ * 偶数位操作多少次
+ * 向后移动多少次
+ * => 10^2 * n * n = 100 * n^2 = 10^6
  */

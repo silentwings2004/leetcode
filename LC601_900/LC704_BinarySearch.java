@@ -15,20 +15,14 @@ public class LC704_BinarySearch {
      * @param target
      * @return
      */
-    // time = O(logn), space = O(1)
+    // time = O(logg), space = O(1)
     public int search(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return -1;
-
-        int start = 0, end = nums.length - 1;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] == target) return mid;
-            if (nums[mid] < target) start = mid;
-            else end = mid;
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] < target) l = mid + 1;
+            else r = mid;
         }
-        if (nums[start] == target) return start;
-        if (nums[end] == target) return end;
-        return -1;
+        return nums[r] == target ? r : -1;
     }
 }

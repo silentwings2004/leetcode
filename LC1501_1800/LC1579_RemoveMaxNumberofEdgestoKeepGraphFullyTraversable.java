@@ -87,6 +87,48 @@ public class LC1579_RemoveMaxNumberofEdgestoKeepGraphFullyTraversable {
         if (x < y) parent[y] = x;
         else parent[x] = y;
     }
+
+    // S2
+    // time = O(m * a(n)), space = O(n)
+    int[] p;
+    HashSet<String> set;
+    int cnt, n;
+    public int maxNumEdgesToRemove2(int n, int[][] edges) {
+        p = new int[n + 1];
+        set = new HashSet<>();
+        cnt = 0;
+        this.n = n;
+
+        if (!helper(edges, 1) || !helper(edges, 2)) return -1;
+        return cnt;
+    }
+
+    private boolean helper(int[][] edges, int type) {
+        for (int i = 1; i <= n; i++) p[i] = i;
+        List<int[]> g = new ArrayList<>();
+        for (int[] e : edges) {
+            int t = e[0], a = e[1], b = e[2];
+            if (t == 3) {
+                if (find(a) != find(b)) p[find(a)] = find(b);
+                else if (set.add(a + "#" + b)) cnt++;
+            } else if (t == type) g.add(new int[]{a, b});
+        }
+
+        for (int[] x : g) {
+            int a = x[0], b = x[1];
+            if (find(a) != find(b)) p[find(a)] = find(b);
+            else cnt++;
+        }
+
+        HashSet<Integer> ps = new HashSet<>();
+        for (int i = 1; i <= n; i++) ps.add(find(i));
+        return ps.size() == 1;
+    }
+
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
+    }
 }
 /**
  * MST: minimum spanning tree

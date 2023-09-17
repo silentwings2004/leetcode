@@ -2,7 +2,8 @@ package LC601_900;
 import java.util.*;
 public class LC696_CountBinarySubstrings {
     /**
-     * Give a string s, count the number of non-empty (contiguous) substrings that have the same number of 0's and 1's, and all the 0's and all the 1's in these substrings are grouped consecutively.
+     * Give a string s, count the number of non-empty (contiguous) substrings that have the same number of 0's and 1's,
+     * and all the 0's and all the 1's in these substrings are grouped consecutively.
      *
      * Substrings that occur multiple times are counted the number of times they occur.
      *
@@ -18,19 +19,16 @@ public class LC696_CountBinarySubstrings {
      */
     // time = O(n), space = O(1)
     public int countBinarySubstrings(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int cur = 1, prev = 0, res = 0;
-        for (int i = 1; i < s.length(); i++) {
-            if (s.charAt(i) == s.charAt(i - 1)) cur++;
-            else {
-                res += Math.min(prev, cur);
-                prev = cur;
-                cur = 1;
-            }
+        int n = s.length(), res = 0, last = 0;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && s.charAt(j) == s.charAt(j - 1)) j++;
+            int cur = j - i;
+            res += Math.min(cur, last);
+            last = cur;
+            i = j - 1;
         }
-        return res + Math.min(prev, cur);
+        return res;
     }
 }
 /**

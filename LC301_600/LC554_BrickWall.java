@@ -32,23 +32,22 @@ public class LC554_BrickWall {
      * @param wall
      * @return
      */
-    // time = O(m * n), space = O(m)
+    // time = O(m * n), space = O(m * n)
     public int leastBricks(List<List<Integer>> wall) {
-        // corner case
-        if (wall == null || wall.size() == 0 || wall.get(0) == null || wall.get(0).size() == 0) return 0;
-
         HashMap<Integer, Integer> map = new HashMap<>();
-        int max = 0;
-        for (List<Integer> list : wall) {
-            int sum = 0;
-            for (int i = 0; i < list.size() - 1; i++) {
-                sum += list.get(i);
-                map.put(sum, map.getOrDefault(sum, 0) + 1);
+        int n = wall.size();
+        for (List<Integer> x : wall) {
+            for (int i = 0, s = 0; i < x.size() - 1; i++) {
+                s += x.get(i);
+                map.put(s, map.getOrDefault(s, 0) + 1);
             }
         }
-        for (int key : map.keySet()) {
-            max = Math.max(max, map.get(key));
-        }
-        return wall.size() - max;
+
+        int res = 0;
+        for (int v : map.values()) res = Math.max(res, v);
+        return n - res;
     }
 }
+/**
+ * n - 缝隙的数量 => 缝隙的数量尽可能大
+ */

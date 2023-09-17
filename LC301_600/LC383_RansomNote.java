@@ -22,9 +22,7 @@ public class LC383_RansomNote {
     public boolean canConstruct(String ransomNote, String magazine) {
         char[] cnt = new char[26];
         int m = ransomNote.length(), n = magazine.length();
-        for (int i = 0; i < n; i++) {
-            cnt[magazine.charAt(i) - 'a']++;
-        }
+        for (int i = 0; i < n; i++) cnt[magazine.charAt(i) - 'a']++;
 
         for (int i = 0; i < m; i++) {
             char c = ransomNote.charAt(i);

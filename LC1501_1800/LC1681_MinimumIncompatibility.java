@@ -138,6 +138,50 @@ public class LC1681_MinimumIncompatibility {
         vals[1] = p.get(p.size() - 1) - p.get(0);
         return false;
     }
+
+    // S3
+    // time = O(3^n), space = O(2^n)
+    public int minimumIncompatibility3(int[] nums, int k) {
+        int n = nums.length, INF = (int)1e8;
+        int[] f = new int[1 << n], g = new int[1 << n];
+        Arrays.fill(f, INF);
+        Arrays.fill(g, -1);
+        f[0] = 0;
+        int[] d = new int[20];
+
+        for (int i = 0; i < 1 << n; i++) {
+            if (Integer.bitCount(i) == n / k) {
+                int cnt = 0;
+                for (int j = 0; j < n; j++) {
+                    if ((i >> j & 1) == 1) {
+                        d[cnt++] = nums[j];
+                    }
+                }
+                Arrays.sort(d, 0, cnt);
+                int minv = d[0], maxv = d[0];
+                boolean flag = true;
+                for (int j = 1; j < cnt; j++) {
+                    if (d[j] == d[j - 1]) {
+                        flag = false;
+                        break;
+                    }
+                    minv = Math.min(minv, d[j]);
+                    maxv = Math.max(maxv, d[j]);
+                }
+                if (flag) g[i] = maxv - minv;
+            }
+        }
+
+        for (int i = 0; i < 1 << n; i++) {
+            if (Integer.bitCount(i) % (n / k) != 0) continue;
+            for (int j = i; j > 0; j = j - 1 & i) {
+                if (g[j] != -1) {
+                    f[i] = Math.min(f[i], f[i - j] + g[j]);
+                }
+            }
+        }
+        return f[(1 << n) - 1] == INF ? -1 : f[(1 << n) - 1];
+    }
 }
 /**
  * 本题初看有一种错觉，以为小的数字应该尽量和小的数字分在一组，大的数字应该尽量和大的数字分在一组。
@@ -169,4 +213,12 @@ public class LC1681_MinimumIncompatibility {
  * }
  * return dp[m - 1][(1 << n) - 1]
  * dpstate = 10001110011
+ *
+ * f(i): 已经凑好了若干组，且已经用的数为i的所有方案中的最小值
+ * f(111...1)
+ * 一组一组去枚举
+ * 枚举一下最后一组选哪些数
+ * f(i-j) + cost[j]  cost[j]可以预处理 O(2^n * n)
+ * i 暴力枚举 0 ~ 2^n - 1
+ * j 枚举i 的所有子集 => 3^n
  */

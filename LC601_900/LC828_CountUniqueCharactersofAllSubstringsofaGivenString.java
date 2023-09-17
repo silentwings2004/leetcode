@@ -105,11 +105,9 @@ public class LC828_CountUniqueCharactersofAllSubstringsofaGivenString {
             p[k] = i;
         }
 
-        long mod = (long)(1e9 + 7), res = 0;
-        for (int i = 0; i < n; i++) {
-            res = (res + (long)(i - l[i]) * (r[i] - i)) % mod;
-        }
-        return (int) res;
+        int res = 0;
+        for (int i = 0; i < n; i++) res += (i - l[i]) * (r[i] - i);
+        return res;
     }
 }
 /**
@@ -150,4 +148,7 @@ public class LC828_CountUniqueCharactersofAllSubstringsofaGivenString {
  * 如果只出现过1次或者2次，没有三元对
  * => 小技巧，前面和后面都添加一个，-1和n
  * (i + 1) * (n - i)
+ *
+ * 关键：预处理出来每一个字母左边第一个和它相同字母的位置，和右边第一个和它相同字母的位置
+ * => (i - L)*(R - i)
  */

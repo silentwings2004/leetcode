@@ -46,4 +46,15 @@ public class LC1009_ComplementofBase10Integer {
         }
         return res;
     }
+
+    // S3:
+    // time = O(n), space = O(1)
+    public int bitwiseComplement3(int n) {
+        if (n == 0) return 1;
+        int res = 0;
+        for (int i = 0; 1 << i < n; i++) {
+            res |= (1 - (n >> i & 1)) << i;
+        }
+        return res;
+    }
 }

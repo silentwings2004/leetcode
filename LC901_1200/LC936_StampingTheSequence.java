@@ -72,5 +72,44 @@ public class LC936_StampingTheSequence {
         }
         return flag;
     }
-}
 
+    // S2
+    // time = O(n * (n - m)), space = O(n * (n - m))
+    public int[] movesToStamp2(String stamp, String target) {
+        List<Integer> res = new ArrayList<>();
+        char[] chars = target.toCharArray();
+        int m = stamp.length(), n = chars.length;
+        while (true) {
+            boolean flag = true;
+            for (int i = 0; i + m <= n; i++) {
+                if (work(stamp, chars, i)) {
+                    res.add(i);
+                    flag = false;
+                }
+            }
+            if (flag) break;
+        }
+
+        target = String.valueOf(chars);
+        String t = "?".repeat(n);
+        if (!target.equals(t)) return new int[0];
+        Collections.reverse(res);
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
+        return ans;
+    }
+
+    private boolean work(String s, char[] chars, int k) {
+        String target = String.valueOf(chars);
+        int m = s.length();
+        if (target.substring(k, k + m).equals("?".repeat(m))) return false;
+        for (int i = 0; i < m; i++) {
+            if (chars[k + i] != '?' && chars[k + i] != s.charAt(i)) return false;
+        }
+        for (int i = 0; i < m; i++) chars[k + i] = '?';
+        return true;
+    }
+}
+/**
+ * 从后往前看，找到一段和刷子完全匹配的一段 => 变成？
+ */

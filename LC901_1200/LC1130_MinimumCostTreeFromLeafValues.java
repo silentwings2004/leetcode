@@ -87,6 +87,22 @@ public class LC1130_MinimumCostTreeFromLeafValues {
         // sum is the total sum of all leaf node number, so we must deduct them to get non-leaf sum!
         return dp[0][n - 1] - sum;
     }
+
+    // S3: 单调栈
+    // time = O(n), space = O(n)
+    public int mctFromLeafValues3(int[] arr) {
+        Stack<Integer> stk = new Stack<>();
+        int res = 0;
+        for (int x : arr) {
+            while (!stk.isEmpty() && stk.peek() <= x) {
+                res += stk.pop() * Math.min(x, stk.isEmpty() ? 100 : stk.peek());
+            }
+            stk.push(x);
+        }
+
+        while (stk.size() > 1) res += stk.pop() * stk.peek();
+        return res;
+    }
 }
 /**
  * 区间型dp

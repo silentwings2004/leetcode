@@ -36,3 +36,6 @@ public class LC1026_MaximumDifferenceBetweenNodeandAncestor {
         dfs(node.right, min, max);
     }
 }
+/**
+ * 只跟祖先结点的最大值和最小值相关
+ */

@@ -28,20 +28,23 @@ public class LC454_4SumII {
     // S1
     // time = O(n^2), space = O(n^2)
     public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int a : nums1) {
-            for (int b : nums2) {
-                map.put(a + b, map.getOrDefault(a + b, 0) + 1);
+        int n = nums1.length;
+        HashMap<Long, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                long sum = nums1[i] + nums2[j];
+                map.put(sum, map.getOrDefault(sum, 0) + 1);
             }
         }
 
-        int count = 0;
-        for (int c : nums3) {
-            for (int d : nums4) {
-                 count += map.getOrDefault(-(c + d), 0);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                long sum = nums3[i] + nums4[j];
+                res += map.getOrDefault(-sum, 0);
             }
         }
-        return count;
+        return res;
     }
 
     // S2: ksum

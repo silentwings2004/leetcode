@@ -1,5 +1,6 @@
 package LC601_900;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class LC788_RotatedDigits {
@@ -31,6 +32,7 @@ public class LC788_RotatedDigits {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int rotatedDigits(int n) {
         int res = 0;
@@ -48,5 +50,28 @@ public class LC788_RotatedDigits {
             if (flag) res++;
         }
         return res;
+    }
+
+    // S2:
+    // time = O(nlogn), space = O(1)
+    public int rotatedDigits2(int n) {
+        int res = 0;
+        for (int i = 1; i <= n; i++) {
+            if (check(i)) res++;
+        }
+        return res;
+    }
+
+    private boolean check(int x) {
+        HashSet<Integer> s1 = new HashSet<>(Arrays.asList(0, 1, 8));
+        HashSet<Integer> s2 = new HashSet<>(Arrays.asList(2, 5, 6, 9));
+        boolean is_diff = false;
+        while (x > 0) {
+            int t = x % 10;
+            x /= 10;
+            if (!s1.contains(t) && !s2.contains(t)) return false;
+            if (s2.contains(t)) is_diff = true;
+        }
+        return is_diff;
     }
 }

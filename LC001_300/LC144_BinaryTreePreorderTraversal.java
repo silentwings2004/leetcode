@@ -21,13 +21,11 @@ public class LC144_BinaryTreePreorderTraversal {
         Stack<TreeNode> stack = new Stack<>();
         TreeNode cur = root;
         while (cur != null || !stack.isEmpty()) {
-            if (cur == null) {
-                cur = stack.pop().right;
-            } else {
+            if (cur != null) {
                 res.add(cur.val);
                 stack.push(cur);
                 cur = cur.left;
-            }
+            } else cur = stack.pop().right;
         }
         return res;
     }

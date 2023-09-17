@@ -73,4 +73,29 @@ public class LC394_DecodeString {
         }
         return sb.toString();
     }
+
+    // S3: stack
+    // time = O(n), space = O(n)
+    public String decodeString3(String s) {
+        Stack<String> stk = new Stack<>();
+        String res = "";
+        for (char c : s.toCharArray()) {
+            if (c != '[' && c != ']') res += c;
+            else if (c == '[') {
+                stk.push(res);
+                res = "";
+            } else {
+                String t = stk.pop();
+                res = eval(t, res);
+            }
+        }
+        return res;
+    }
+
+    private String eval(String s, String t) {
+        int i = s.length() - 1;
+        while (i >= 0 && Character.isDigit(s.charAt(i))) i--;
+        int val = Integer.parseInt(s.substring(i + 1));
+        return s.substring(0, i + 1) + t.repeat(val);
+    }
 }

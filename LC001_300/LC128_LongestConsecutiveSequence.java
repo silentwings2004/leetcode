@@ -23,20 +23,17 @@ public class LC128_LongestConsecutiveSequence {
         if (nums == null || nums.length == 0) return 0;
 
         HashSet<Integer> set = new HashSet<>();
-        int len = 0;
         for (int x : nums) set.add(x);
 
+        int res = 0;
         for (int x : set) {
             if (!set.contains(x - 1)) { // 不是最小值，而是中间值，以后到了最小值再数，现在不用管
-                int count = 0;
-                while (set.contains(x)) {
-                    count++;
-                    x++;
-                }
-                len = Math.max(len, count);
+                int y = x;
+                while (set.contains(y)) y++;
+                res = Math.max(res, y - x);
             }
         }
-        return len;
+        return res;
     }
 
     // S2: union find

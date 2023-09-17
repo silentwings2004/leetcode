@@ -96,4 +96,6 @@ public class LC939_MinimumAreaRectangle {
  * |
  * |    D       B
  * ------------------> x
+ *
+ * 枚举对角线
  */

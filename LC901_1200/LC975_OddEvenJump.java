@@ -64,6 +64,34 @@ public class LC975_OddEvenJump {
         }
         return count;
     }
+
+    // S1.2
+    // time = O(nlogn), space = O(n)
+    public int oddEvenJumps2(int[] arr) {
+        int n = arr.length;
+        boolean[][] f = new boolean[n][2];
+        f[n - 1][0] = f[n - 1][1] = true;
+        int res = 1;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        map.put(arr[n - 1], n - 1);
+
+        for (int i = n - 2; i >= 0; i--) {
+            Integer ck = map.ceilingKey(arr[i]);
+            if (ck != null) {
+                int j = map.get(ck);
+                f[i][1] |= f[j][0];
+            }
+
+            Integer fk = map.floorKey(arr[i]);
+            if (fk != null) {
+                int j = map.get(fk);
+                f[i][0] |= f[j][1];
+            }
+            map.put(arr[i], i);
+            if (f[i][1]) res++;
+        }
+        return res;
+    }
 }
 /**
  * 10 -> 13 -> 12 -> 14 -> null

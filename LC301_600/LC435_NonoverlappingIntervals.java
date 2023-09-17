@@ -16,23 +16,17 @@ public class LC435_NonoverlappingIntervals {
      * @param intervals
      * @return
      */
-    // time = O(nlogn), space = O(1)
+    // time = O(nlogn), space = O(logn)
     public int eraseOverlapIntervals(int[][] intervals) {
-        // corner case
-        if (intervals == null || intervals.length == 0 || intervals[0] == null || intervals[0].length == 0) {
-            return 0;
-        }
-
         Arrays.sort(intervals, (o1, o2) -> o1[1] - o2[1]);
-
-        int i = 0, n = intervals.length, count = 0;
-        while (i < n) {
-            count++; // 保留的区间
-            int j = i + 1;
-            while (j < n && intervals[j][0] < intervals[i][1]) j++;
-            i = j;
+        int n = intervals.length, res = 1, r = intervals[0][1];
+        for (int i = 1; i < n; i++) {
+            if (intervals[i][0] >= r) {
+                res++;
+                r = intervals[i][1];
+            }
         }
-        return n - count;
+        return n - res;
     }
 }
 /**
@@ -46,4 +40,12 @@ public class LC435_NonoverlappingIntervals {
  * 按照ending point排序的话，永远保留第一个，因为它的ending point最靠前，它对后面这些区间的干扰就会越小
  * 这样就可以保证所选的这些区间都不会overlap
  * 在这里是从里面选区间，必须保证区间是完整的，而用扫描线则是把starting point ,end point 都打散了。
+ *
+ * 按区间右端点从小到大排序
+ * 从左到右选择每个区间
+ * 贪心解 = 最优解
+ * 贪心解 <= 最优解 => 贪心解必然是一个有效解，而最优解是所有有效解离最大值，所以必然有最优解 >= 贪心解
+ * 贪心解 >= 最优解 => [调整法] 将最优解的合法区间按照右端点从小到大排序，找到第一个和贪心解不一样的区间，当不一样的时候，由于贪心解从前往后选，
+ * 贪心解选的必然是右端点最靠左边的一个，最优解的右端点一定>=贪心解的右端点，两者调换后仍然是一个最优解，依次类推可以将任何一个最优解的区间
+ * 换成贪心解的区间，所以两者相等
  */

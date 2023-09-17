@@ -24,6 +24,7 @@ public class LC464_CanIWin {
      * @param desiredTotal
      * @return
      */
+    // S1
     // time = O(2^n), space = O(2^n)
     private int[] visited; // must win -> 2, must lose -> 1
     public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
@@ -53,6 +54,32 @@ public class LC464_CanIWin {
         visited[state] = 1;
         return false;
     }
+
+    // S2
+    // time = O(n * 2^n), space = O(2^n)
+    Boolean[] f;
+    int n, m;
+    public boolean canIWin2(int maxChoosableInteger, int desiredTotal) {
+        n = maxChoosableInteger;
+        m = desiredTotal;
+        if (n * (n + 1) / 2 < m) return false;
+        f = new Boolean[1 << n];
+        return dp(0);
+    }
+
+    private boolean dp(int x) {
+        if (f[x] != null) return f[x];
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            if ((x >> i & 1) == 1) sum += i + 1;
+        }
+        for (int i = 0; i < n; i++) {
+            if ((x >> i & 1) == 1) continue;
+            if (sum + i + 1 >= m) return f[x] = true;
+            if (!dp(x + (1 << i))) return f[x] = true;
+        }
+        return f[x] = false;
+    }
 }
 /**
  * 决策问题：甲方乙方互相博弈的问题，eg. stone game
@@ -68,4 +95,7 @@ public class LC464_CanIWin {
  * use state compression
  * 0 ~ 20的全排列 = 20! => 记忆化
  * 真正独立变量是state
+ *
+ * 用一个二进制数去表示状态，1表示用过了这个数，0表示没用过
+ * f(state) 必胜或者必败
  */

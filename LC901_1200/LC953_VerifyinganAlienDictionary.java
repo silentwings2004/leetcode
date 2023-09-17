@@ -49,4 +49,45 @@ public class LC953_VerifyinganAlienDictionary {
         }
         return true;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public boolean isAlienSorted2(String[] words, String order) {
+        int n = words.length;
+        for (int i = 0; i + 1 < n; i++) {
+            String a = words[i], b = words[i + 1];
+            int len1 = a.length(), len2 = b.length();
+            if (len1 > len2 && a.substring(0, len2).equals(b)) return false;
+
+            for (int j = 0; j < Math.min(len1, len2); j++) {
+                char c1 = a.charAt(j), c2 = b.charAt(j);
+                if (c1 == c2) continue;
+                if (order.indexOf(c1) > order.indexOf(c2)) return false;
+                break;
+            }
+        }
+        return true;
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    public boolean isAlienSorted3(String[] words, String order) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        int n = words.length, m = order.length();
+        for (int i = 0; i < m; i++) map.put(order.charAt(i), i);
+        for (int i = 1; i < n; i++) {
+            String a = words[i - 1], b = words[i];
+            int x = 0, y = 0;
+            while (x < a.length() && y < b.length()) {
+                int t1 = map.getOrDefault(a.charAt(x), 0);
+                int t2 = map.getOrDefault(b.charAt(x), 0);
+                if (t1 > t2) return false;
+                if (t1 < t2) break;
+                x++;
+                y++;
+            }
+            if (x < a.length() && y == b.length()) return false;
+        }
+        return true;
+    }
 }

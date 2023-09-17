@@ -19,7 +19,8 @@ public class LC476_NumberComplement {
      * @param num
      * @return
      */
-    // time = O(1), space = O(1)
+    // S1
+    // time = O(logn), space = O(1)
     public int findComplement(int num) {
         int res = 0, i = 0;
         while (num > 0) {
@@ -28,5 +29,23 @@ public class LC476_NumberComplement {
             num >>= 1;
         }
         return res;
+    }
+
+    // S2
+    // time = O(logn), space = O(1)
+    public int findComplement2(int num) {
+        if (num == 0) return 1;
+        int cnt = 0;
+        for (int x = num; x > 0; x >>= 2) cnt++;
+        return (int)(~num & (1L << cnt) - 1);
+    }
+
+    // S3
+    // time = O(logn), space = O(1)
+    public int findComplement3(int num) {
+        int j = 31;
+        while (j >= 0 && (num >> j & 1) == 0) j--;
+        for (int i = j; i >= 0; i--) num ^= 1 << i;
+        return num;
     }
 }

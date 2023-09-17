@@ -27,44 +27,25 @@ public class LC765_CouplesHoldingHands {
      * @return
      */
     // time = O(nlogn), space = O(n)
-    private int[] parent;
+    int[] p;
     public int minSwapsCouples(int[] row) {
-        int n = row.length;
-        parent = new int[n];
-        for (int i = 0; i < n; i += 2) { // couple自身连成1个个group
-            parent[i] = i;
-            parent[i + 1] = i;
+        int n = row.length / 2;
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+        int cnt = n;
+        for (int i = 0; i < n * 2; i += 2) {
+            int a = row[i] / 2, b = row[i + 1] / 2;
+            if (find(a) != find(b)) {
+                p[find(a)] = find(b);
+                cnt--;
+            }
         }
-
-        for (int i = 0; i < n; i += 2) { // 被打乱在一起的也连成一个group
-            int a = row[i];
-            int b = row[i + 1];
-            if (findParent(a) != findParent(b)) union(a, b);
-        }
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            int p = findParent(i);
-            map.put(p, map.getOrDefault(p, 0) + 1); // 每个group里的couple数 = group人数 / 2
-        }
-
-        int res = 0;
-        for (int x : map.keySet()) {
-            res += map.get(x) / 2 - 1; // 交换次数 = couple数 - 1, 因为朋友圈不可再分，组成一个链
-        }
-        return res;
+        return n - cnt;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**
@@ -92,4 +73,12 @@ public class LC765_CouplesHoldingHands {
  * 2 couples -> n - 1 次 swap
  * 3 couples -> n - 2 次 swap
  * 有没有可能用更少次数的swap使其配对呢？其实不可能。
+ *
+ * 点：每对情侣
+ * 边：沙发
+ *
+ * 1. 同属一个环，交换环内 => 多一个环
+ * 2. 属于不同环 => 少一个环
+ * 每操作一次，最多多一个环 => n - cnt
+ * 无向图里，环与连通块等价
  */

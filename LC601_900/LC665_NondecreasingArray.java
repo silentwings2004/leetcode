@@ -61,3 +61,6 @@ public class LC665_NondecreasingArray {
         return true;
     }
 }
+/**
+ * 只有2种改法：要么前一个数改到和后面的数一样大，要么后一个数改到和前面的数一样大
+ */

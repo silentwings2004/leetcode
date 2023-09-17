@@ -50,12 +50,45 @@ public class LC329_LongestIncreasingPathinaMatrix {
         memo[i][j] = res + 1;
         return res + 1;
     }
+
+    // S2: 记忆化搜索
+    // time = O(m * n), space = O(m * n)
+    int[][] g, f;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    public int longestIncreasingPath2(int[][] matrix) {
+        g = matrix;
+        m = g.length;
+        n = g[0].length;
+        f = new int[m][n];
+        for (int i = 0; i < m; i++) Arrays.fill(f[i], -1);
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res = Math.max(res, dp(i, j));
+            }
+        }
+        return res;
+    }
+
+    private int dp(int x, int y) {
+        if (f[x][y] != -1) return f[x][y];
+        f[x][y] = 1;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] <= g[x][y]) continue;
+            f[x][y] = Math.max(f[x][y], dp(a, b) + 1);
+        }
+        return f[x][y];
+    }
 }
 /**
  * dfs(C) => 1 + (dfs(A), dfs(D))
  * dfs(A) = 1 + max(dfs(B1), dfs(B2))
  * 我们从任意点A开始递归寻找各条递增路径，最终返回的时候记录从A为起点时的最长路径长度。
  * 将此结果记忆化，这样当对其他点进行DFS的时候，如果递归调用到dfs(A)就直接返回结果。
+ * dp的记忆化搜索写法
  * f(i,j): 以(i,j)为起点的上升路径的最大长度
  * 这题不存在环
  * 这里必须要严格上升，如果这个题说可以非严格上升，就不能用dp来做，可以用图论做法来做。

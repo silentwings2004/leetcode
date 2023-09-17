@@ -16,19 +16,15 @@ public class LC159_LongestSubstringwithAtMostTwoDistinctCharacters {
      */
     // time = O(n), space = O(1)
     public int lengthOfLongestSubstringTwoDistinct(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
+        int[] cnt = new int[128];
+        int n = s.length();
 
-        int[] counter = new int[128];
-        int start = 0, curK = 0, res = 0;
-
-        for (int i = 0; i < s.length(); i++) {
+        int res = 0, tot = 0;
+        for (int i = 0, j = 0; i < n; i++) {
             char c = s.charAt(i);
-            if (counter[c]++ == 0) curK++;
-            while (curK > 2) {
-                if (--counter[s.charAt(start++)] == 0) curK--;
-            }
-            res = Math.max(res, i - start + 1);
+            if (cnt[c]++ == 0) tot++;
+            while (tot > 2) if (--cnt[s.charAt(j++)] == 0) tot--;
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }

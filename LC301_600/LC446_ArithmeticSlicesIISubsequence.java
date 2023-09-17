@@ -123,5 +123,9 @@ public class LC446_ArithmeticSlicesIISubsequence {
  * 状态表示：f[i,j]
  * 集合：所有以ai结尾且公差为j的长度 >= 2的等差数列
  * 属性：个数
- * 状态计算：
+ * 状态计算：最后一个数都是ai，所以我们按照前一个数ak来进行集合划分
+ * a0, a1, a2,... ai-1
+ * 得保证前一个数ak和ai的公差为j => 1 + f(k,j)
+ * j = ak - ai 因为j是完全由ai和ak决定的
+ * 对于j而言，个数最多只有0~i-1个，但是分布很大 => 用hashmap来处理
  */

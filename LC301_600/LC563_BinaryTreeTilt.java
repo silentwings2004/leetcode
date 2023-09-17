@@ -19,22 +19,18 @@ public class LC563_BinaryTreeTilt {
      * @return
      */
     // time = O(n), space = O(n)
-    private int res = 0;
+    int ans = 0;
     public int findTilt(TreeNode root) {
-        // corner case
-        if (root == null) return 0;
-
-        helper(root);
-        return res;
+        dfs(root);
+        return ans;
     }
 
-    private int helper(TreeNode root) {
-        if (root == null) return 0;
+    private int dfs(TreeNode node) {
+        if (node == null) return 0;
 
-        int ls = helper(root.left);
-        int rs = helper(root.right);
-
-        res += Math.abs(ls - rs);
-        return ls + rs + root.val;
+        int l = dfs(node.left);
+        int r = dfs(node.right);
+        ans += Math.abs(l - r);
+        return l + r + node.val;
     }
 }

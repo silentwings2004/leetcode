@@ -21,15 +21,12 @@ public class LC932_BeautifulArray {
     // time = O(nlogn), space = O(nlogn)
     public int[] beautifulArray(int n) {
         if (n == 1) return new int[]{1};
-        if (n == 2) return new int[]{2, 1};
-
-        int[] A = beautifulArray((n + 1) / 2);
-        int[] B = beautifulArray(n - (n + 1) / 2);
+        int[] left = beautifulArray((n + 1) / 2);
+        int[] right = beautifulArray(n / 2);
         int[] res = new int[n];
-
-        int i = 0;
-        for (int x : A) res[i++] = x * 2 - 1;
-        for (int x : B) res[i++] = x * 2;
+        int idx = 0;
+        for (int x : left) res[idx++] = 2 * x - 1;
+        for (int x : right) res[idx++] = 2 * x;
         return res;
     }
 }

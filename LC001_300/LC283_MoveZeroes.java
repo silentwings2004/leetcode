@@ -22,16 +22,11 @@ public class LC283_MoveZeroes {
     // S1: 补0
     // time = O(n), space = O(1)
     public void moveZeroes(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return;
-
-        int idx = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != 0) {
-                nums[idx++] = nums[i];
-            }
+        int n = nums.length, j = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != 0) nums[j++] = nums[i];
         }
-        for (int i = idx; i < nums.length; i++) nums[i] = 0;
+        while (j < n) nums[j++] = 0;
     }
 
     // S2: swap

@@ -15,6 +15,7 @@ public class LC897_IncreasingOrderSearchTree {
      * @param root
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public TreeNode increasingBST(TreeNode root) {
         if (root == null) return root;
@@ -31,5 +32,26 @@ public class LC897_IncreasingOrderSearchTree {
             root.right = increasingBST(root.right);
             return root;
         }
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    TreeNode tail;
+    public TreeNode increasingBST2(TreeNode root) {
+        if (root == null) return root;
+
+        TreeNode dummy = new TreeNode(0);
+        tail = dummy;
+        dfs(root);
+        return dummy.right;
+    }
+
+    private void dfs(TreeNode node) {
+        if (node == null) return;
+
+        dfs(node.left);
+        tail = tail.right = node;
+        node.left = null;
+        dfs(node.right);
     }
 }

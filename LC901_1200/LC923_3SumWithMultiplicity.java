@@ -19,6 +19,7 @@ public class LC923_3SumWithMultiplicity {
      * @param target
      * @return
      */
+    // S1
     // time = O(n^2), space = O(1)
     public int threeSumMulti(int[] arr, int target) {
         // corner case
@@ -55,4 +56,40 @@ public class LC923_3SumWithMultiplicity {
         }
         return (int) res;
     }
+
+    // S2
+    // time = O(n^2), space = O(1)
+    int[] cnt;
+    int mod = (int)(1e9 + 7);
+    public int threeSumMulti2(int[] arr, int target) {
+        cnt = new int[310];
+        for (int x : arr) cnt[x]++;
+        int res = 0, mod = (int)1e9 + 7;
+        for (int i = 0; i <= target; i++) {
+            for (int j = i; j <= target - i - j; j++) {
+                res = (res + calc(i, j, target - i - j)) % mod;
+            }
+        }
+        return res;
+    }
+
+    private int calc(int a, int b, int c) {
+        if (a == b && b == c) return C(cnt[a], 3);
+        if (a == b) return C(cnt[a], 2) * cnt[c] % mod;
+        if (b == c) return cnt[a] * C(cnt[b], 2) % mod;
+        return cnt[a] * cnt[b] % mod * cnt[c] % mod;
+    }
+
+    private int C(int a, int b) {
+        long res = 1;
+        for (int i = a, j = 1; j <= b; i--, j++) {
+            res = res * i / j;
+        }
+        return (int)(res % mod);
+    }
 }
+/**
+ * 0 ~ 100 => 按数值来枚举
+ * 分类讨论 => Ca * Cb * Cc
+ * T^3
+ */

@@ -36,9 +36,4 @@ public class LC669_TrimaBinarySearchTree {
         root.right = trimBST(root.right, root.val, high);
         return root;
     }
-
-    private class TreeNode {
-        private int val;
-        private TreeNode left, right;
-    }
 }

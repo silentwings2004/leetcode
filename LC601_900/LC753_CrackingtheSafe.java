@@ -75,6 +75,32 @@ public class LC753_CrackingtheSafe {
         }
         return false;
     }
+
+    // S3: 欧拉回路
+    // time = O(n * k^n), space = O(n * k^n)
+    HashSet<String> set;
+    String ans;
+    int k;
+    public String crackSafe3(int n, int k) {
+        set = new HashSet<>();
+        ans = "";
+        this.k = k;
+
+        String start = "0".repeat(n - 1);
+        dfs(start);
+        return ans + start; // 欧拉路径是对称的，正着走和反着走是一样的，所以可以直接返回逆序即可。
+    }
+
+    private void dfs(String u) {
+        for (int i = 0; i < k; i++) {
+            String v = u + i;
+            if (!set.contains(v)) {
+                set.add(v);
+                dfs(v.substring(1));
+                ans += i;
+            }
+        }
+    }
 }
 /**
  * n^k种
@@ -92,4 +118,14 @@ public class LC753_CrackingtheSafe {
  * 哈密尔顿路径并不是唯一的
  * 怎么高效找出来呢？
  * [xxxxxxx] [x]
+ *
+ * k^n种密码
+ * 理论最小值: n-1 + k^n
+ * 能不能把理论最小值构造出来
+ * 每按一个字符相当于从前一个n-1个字符转移到后一个n-1个字符，所以可以看成是边 => 有向图
+ * => 转化为有一个有向图，把每条边都要走一遍 => 一笔画问题，欧拉回路问题
+ * 满足欧拉图的条件：
+ * 1. 入度 == 出度 == k
+ * 2. 连通
+ * 从任意一点出发，求欧拉回路即可。
  */

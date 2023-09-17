@@ -105,4 +105,29 @@ public class LC890_FindandReplacePattern {
         }
         return sb.toString();
     }
+
+    // S4
+    // time = O(n * m), space = O(m)
+    public List<String> findAndReplacePattern4(String[] words, String pattern) {
+        List<String> res = new ArrayList<>();
+        for (String w : words) {
+            if (check(w, pattern)) res.add(w);
+        }
+        return res;
+    }
+
+    private boolean check(String s, String t) {
+        int[] f = new int[26], g = new int[26];
+        Arrays.fill(f, -1);
+        Arrays.fill(g, -1);
+        for (int i = 0; i < s.length(); i++) {
+            int x = s.charAt(i) - 'a';
+            int y = t.charAt(i) - 'a';
+            if (f[x] != -1 && f[x] != y) return false;
+            if (g[y] != -1 && g[y] != x) return false;
+            f[x] = y;
+            g[y] = x;
+        }
+        return true;
+    }
 }

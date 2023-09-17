@@ -78,4 +78,46 @@ public class LC2458_HeightofBinaryTreeAfterSubtreeRemovalQueries {
         else if (r > l) son[v] = 1;
         return d[v];
     }
+
+    // S2
+    int[] depth, height;
+    HashMap<Integer, List<Integer>> map; // all the heights for the node whose depth is d
+    public int[] treeQueries2(TreeNode root, int[] queries) {
+        depth = new int[100010];
+        height = new int[100010];
+        map = new HashMap<>();
+        dfs_height(root, 0);
+        for (int d : map.keySet()) Collections.sort(map.get(d), (o1, o2) -> o2 - o1);
+
+        int m = queries.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) {
+            int node = queries[i];
+            int d = depth[node], h = height[node];
+            if (map.get(d).size() == 1) res[i] = d - 1;
+            else if (map.get(d).get(0) == h) res[i] = map.get(d).get(1) + d;
+            else res[i] = map.get(d).get(0) + d;
+        }
+        return res;
+    }
+
+    private int dfs_height(TreeNode node, int d) {
+        if (node == null) return -1; // 叶子节点高度为0， 这里是叶子节点下一层，所以是-1
+        int h = Math.max(dfs_height(node.left, d + 1), dfs_height(node.right, d + 1)) + 1;
+        depth[node.val] = d;
+        height[node.val] = h;
+        map.putIfAbsent(d, new ArrayList<>());
+        map.get(d).add(h);
+        return h;
+    }
 }
+/**
+ * 影响树高的只有一条链 -> 类似"重链"
+ * 从上往下走，判断左右两边谁更高，往高的那边走
+ * 往下走路径是唯一的
+ *
+ * 我们定义一个节点的height表示从它到叶子节点的最大距离，depth表示从它到root的距离。
+ * 我们移除node节点对应的子树后，剩下的树的高度其实就取决于与它同depth的节点的height。
+ * 所以我们将所有处在同depth的节点的height都提前收集好，那么就很容易找到其他子树的最大height。
+ * 特别注意，如果某个深度的节点只有一个，那么将其移除后，剩下树的最大高度就是该节点的depth-1.
+ */

@@ -26,29 +26,30 @@ public class LC2218_MaximumValueofKCoinsFromPiles {
      * @param k
      * @return
      */
-    // time = O(sum(piles[i].length) * k), space = O(max(n * m, n * k))
+    // time = O(s * k), space = O(n * k)
+    final int N = 1010, M = 2010;
     public int maxValueOfCoins(List<List<Integer>> piles, int k) {
         int n = piles.size();
-        int[][] dp = new int[n][k + 1];
-        List<Integer>[] presum = new List[n]; // presum[i][t]: the sum of the first t coins in the i-th pile
-        for (int i = 0; i < n; i++) presum[i] = new ArrayList<>();
+        int[][] s = new int[N][M];
         for (int i = 0; i < n; i++) {
-            int sum = 0; // allow 0 coins
-            presum[i].add(sum);
-            for (int j = 0; j < piles.get(i).size(); j++) {
-                sum += piles.get(i).get(j);
-                presum[i].add(sum);
+            int m = piles.get(i).size();
+            for (int j = 1; j <= m; j++) {
+                s[i][j] = s[i][j - 1] + piles.get(i).get(j - 1);
             }
         }
 
-        for (int i = 0; i < n; i++) {
+        int[][] f = new int[n + 1][k + 1];
+        for (int i = 1; i <= n; i++) {
             for (int j = 0; j <= k; j++) {
-                for (int t = 0; t <= Math.min(j, piles.get(i).size()); t++) {
-                    dp[i][j] = Math.max(dp[i][j], (i == 0 ? 0 : dp[i - 1][j - t]) + presum[i].get(t));
+                for (int u = 0; u <= Math.min(j, piles.get(i - 1).size()); u++) {
+                    f[i][j] = Math.max(f[i][j], f[i - 1][j - u] + s[i - 1][u]);
                 }
             }
         }
-        return dp[n - 1][k];
+
+        int res = 0;
+        for (int i = 1; i <= n; i++) res = Math.max(res, f[i][k]);
+        return res;
     }
 }
 /**

@@ -25,7 +25,7 @@ public class LC1038_BinarySearchTreetoGreaterSumTree {
      * @return
      */
     // time = O(n), space = O(n)
-    private int sum = 0;
+    int sum = 0;
     public TreeNode bstToGst(TreeNode root) {
         // corner case
         if (root == null) return root;
@@ -35,10 +35,5 @@ public class LC1038_BinarySearchTreetoGreaterSumTree {
         root.val = sum;
         bstToGst(root.left);
         return root;
-    }
-
-    private class TreeNode {
-        private int val;
-        private TreeNode left, right;
     }
 }

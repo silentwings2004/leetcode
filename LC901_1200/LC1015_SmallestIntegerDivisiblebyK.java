@@ -46,6 +46,44 @@ public class LC1015_SmallestIntegerDivisiblebyK {
         }
         return -1;
     }
+
+    // S3
+    // time = O(sqrt(n)), space = O(sqrt(n))
+    public int smallestRepunitDivByK3(int k) {
+        if (k % 2 == 0 || k % 5 == 0) return -1;
+
+        int phi = get_euler(k * 9);
+        int res = phi;
+        for (int i = 1; i <= phi / i; i++) {
+            if (phi % i == 0) {
+                if (qmi(10, i, 9 * k) == 1) return i;
+                if (qmi(10, phi / i, 9 * k) == 1) res = Math.min(res, phi / i);
+            }
+        }
+        return res;
+    }
+
+    private int get_euler(int x) {
+        int res = x;
+        for (int i = 2; i <= x / i; i++) {
+            if (x % i == 0) {
+                res = res / i * (i - 1);
+                while (x % i == 0) x /= i;
+            }
+        }
+        if (x > 1) res = res / x * (x - 1);
+        return res;
+    }
+
+    private long qmi(long a, long k, long p) {
+        long res = 1;
+        while (k > 0) {
+            if ((k & 1) == 1) res = res * a % p;
+            a = a * a % p;
+            k >>= 1;
+        }
+        return res;
+    }
 }
 /**
  * 1, 11, 111, 1111, ....
@@ -77,4 +115,10 @@ public class LC1015_SmallestIntegerDivisiblebyK {
  *
  * So this is a pigeon holes problem:
  * There must be at least 2 same remainders.
+ *
+ * 111...1 = (10^x - 1) / 9
+ * k | (10^x - 1) => 10^x = 1 (mod 9*k) => 10^x - 9 * k * t = 1
+ * => 10是否和k互质 => 看下是否包含因子2和5
+ * 欧拉定理： 10^(phi(9 * k)) = 1 (mod 9 * k)
+ * x = phi(9k) => 枚举phi(9*k)的约数
  */

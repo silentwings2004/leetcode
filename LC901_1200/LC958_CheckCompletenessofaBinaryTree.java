@@ -19,20 +19,18 @@ public class LC958_CheckCompletenessofaBinaryTree {
      */
     // S1: dfs
     // time = O(n), space = O(n)
+    int n = 0, p = 0;
     public boolean isCompleteTree(TreeNode root) {
-        int num = countNodes(root);
-        return dfs(root, 0, num);
+        if (!dfs(root, 1)) return false;
+        return n == p;
     }
 
-    private int countNodes(TreeNode node) {
-        if (node == null) return 0;
-        return countNodes(node.left) + 1 + countNodes(node.right);
-    }
-
-    private boolean dfs(TreeNode node, int idx, int num) {
+    private boolean dfs(TreeNode node, int k) {
         if (node == null) return true;
-        if (idx >= num) return false;
-        return dfs(node.left, idx * 2 + 1, num) && dfs(node.right, idx * 2 + 2, num);
+        if (k > 100) return false;
+        n++;
+        p = Math.max(p, k);
+        return dfs(node.left, k * 2) && dfs(node.right, k * 2 + 1);
     }
 
     // S2: bfs
@@ -54,3 +52,7 @@ public class LC958_CheckCompletenessofaBinaryTree {
         return true;
     }
 }
+/**
+ * 堆式存储
+ * dfs => 判断下最后一个节点的编号是否为n即可
+ */

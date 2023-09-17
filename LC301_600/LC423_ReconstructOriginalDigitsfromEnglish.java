@@ -13,9 +13,16 @@ public class LC423_ReconstructOriginalDigitsfromEnglish {
      *
      * Input: "owoztneoer"
      * Output: "012"
+     *
+     * Constraints:
+     *
+     * 1 <= s.length <= 10^5
+     * s[i] is one of the characters ["e","g","f","i","h","o","n","s","r","u","t","w","v","x","z"].
+     * s is guaranteed to be valid.
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public String originalDigits(String s) {
         // corner case
@@ -49,5 +56,35 @@ public class LC423_ReconstructOriginalDigitsfromEnglish {
             }
         }
         return sb.toString();
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public String originalDigits2(String s) {
+        String[] name = new String[]{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        int[] ord = new int[]{0, 8, 3, 2, 6, 4, 5, 1, 7, 9};
+        int[] cnt = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) cnt[s.charAt(i) - 'a']++;
+        StringBuilder sb = new StringBuilder();
+        for (int x : ord) {
+            while (true) {
+                boolean flag = true;
+                for (char c : name[x].toCharArray()) {
+                    if (cnt[c - 'a'] == 0) {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag) {
+                    sb.append(x);
+                    for (char c : name[x].toCharArray()) cnt[c - 'a']--;
+                } else break;
+            }
+        }
+        char[] chars = sb.toString().toCharArray();
+        Arrays.sort(chars);
+        return String.valueOf(chars);
     }
 }

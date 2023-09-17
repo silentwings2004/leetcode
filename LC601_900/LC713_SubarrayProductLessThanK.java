@@ -19,23 +19,11 @@ public class LC713_SubarrayProductLessThanK {
      */
     // time = O(n), space = O(1)
     public int numSubarrayProductLessThanK(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length;
-        int j = 0, product = 1, res = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (j < i) {
-                j = i;
-                product = 1;
-            }
-            while (j < n && product * nums[j] < k) {
-                product *= nums[j];
-                j++;
-            }
-            res += j - i;
-            product /= nums[i];
+        int n = nums.length, res = 0, p = 1;
+        for (int i = 0, j = 0; i < n; i++) {
+            p *= nums[i];
+            while (j <= i && p >= k) p /= nums[j++];
+            res += i - j + 1;
         }
         return res;
     }

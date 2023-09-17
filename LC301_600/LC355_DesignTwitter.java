@@ -81,6 +81,62 @@ public class LC355_DesignTwitter {
             friends.get(followerId).remove(followeeId);
         }
     }
+
+    // S2
+    class Twitter {
+        // time = O(nlogn), space = O(n)
+        HashMap<Integer, List<int[]>> tweets;
+        HashMap<Integer, HashSet<Integer>> follows;
+        int ts;
+        public Twitter() {
+            tweets = new HashMap<>();
+            follows = new HashMap<>();
+            ts = 0;
+        }
+
+        public void postTweet(int userId, int tweetId) {
+            tweets.putIfAbsent(userId, new ArrayList<>());
+            tweets.get(userId).add(new int[]{ts++, tweetId});
+        }
+
+        public List<Integer> getNewsFeed(int userId) {
+            PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]);
+            follows.putIfAbsent(userId, new HashSet<>());
+            follows.get(userId).add(userId);
+            for (int user : follows.get(userId)) {
+                List<int[]> q = tweets.getOrDefault(user, new ArrayList<>());
+                if (q.size() > 0) {
+                    int i = q.size() - 1;
+                    pq.offer(new int[]{q.get(i)[0], q.get(i)[1], i, user}); // {ts, tweetId, idx, userId}
+                }
+            }
+
+            List<Integer> res = new ArrayList<>();
+            while (!pq.isEmpty()) {
+                int[] t = pq.poll();
+                int tweetId = t[1], idx = t[2], user = t[3];
+                res.add(tweetId);
+                if (res.size() == 10) break;
+                idx--;
+                if (idx >= 0) {
+                    List<int[]> q = tweets.get(user);
+                    pq.offer(new int[]{q.get(idx)[0], q.get(idx)[1], idx, user});
+                }
+            }
+            return res;
+        }
+
+        public void follow(int followerId, int followeeId) {
+            follows.putIfAbsent(followerId, new HashSet<>());
+            follows.get(followerId).add(followeeId);
+        }
+
+        public void unfollow(int followerId, int followeeId) {
+            if (follows.containsKey(followerId) && follows.get(followerId).contains(followeeId)) {
+                follows.get(followerId).remove(followeeId);
+            }
+        }
+    }
 }
 /**
  * pull: user只存自己的，等另一个想要读帖子，会到所有好友里拉10个帖子

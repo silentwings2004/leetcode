@@ -63,37 +63,37 @@ public class LC1020_NumberofEnclaves {
 
     // S2: 反向dfs (optimal solution!!!)
     // time = O(m * n), space = O(m * n)
+    int[][] g;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public int numEnclaves2(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        int res = 0;
-        boolean[][] visited = new boolean[m][n];
+        g = grid;
+        m = g.length;
+        n = g[0].length;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (i == 0 || i == m - 1 || j == 0 || j == n - 1) {
-                    if (grid[i][j] == 1) dfs(grid, i, j);
+                if (g[i][j] == 1 && (i == 0 || i == m - 1 || j == 0 || j == n - 1)) {
+                    dfs(i, j);
                 }
             }
         }
 
+        int res = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 1) res++;
+                res += g[i][j];
             }
         }
         return res;
     }
 
-    private void dfs(int[][] grid, int i, int j) {
-        int m = grid.length, n = grid[0].length;
-        // base case
-        if (i < 0 || i >= m || j < 0 || j >= n) return;
-        if (grid[i][j] == 0) return;
-
-        grid[i][j] = 0;
-        for (int[] dir : directions) {
-            int x = i + dir[0];
-            int y = j + dir[1];
-            dfs(grid, x, y);
+    private void dfs(int x, int y) {
+        g[x][y] = 0;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == 0) continue;
+            dfs(a, b);
         }
     }
 }

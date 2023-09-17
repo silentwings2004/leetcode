@@ -19,12 +19,31 @@ public class LC1104_PathInZigzagLabelledBinaryTree {
      * @param label
      * @return
      */
+    // S1
+    // time = O(logn), space = O(1)
     public List<Integer> pathInZigZagTree(int label) {
         List<Integer> res = new LinkedList<>();
         while (label > 0) {
             res.add(0, label);
             int n = (int) (Math.log(label) / Math.log(2));
             label = (int) (Math.pow(2, n) - 1 + Math.pow(2, n - 1) - label / 2);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(logn), space = O(1)
+    public List<Integer> pathInZigZagTree2(int label) {
+        List<Integer> res = new ArrayList<>();
+        while (label > 0) {
+            res.add(label);
+            label >>= 1;
+        }
+        Collections.reverse(res);
+
+        for (int i = res.size() % 2; i < res.size(); i += 2) {
+            int t = res.get(i) ^ ((1 << i) - 1);
+            res.set(i, t);
         }
         return res;
     }

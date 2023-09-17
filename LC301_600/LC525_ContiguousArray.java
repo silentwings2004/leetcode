@@ -16,14 +16,13 @@ public class LC525_ContiguousArray {
      */
     // time = O(n), space = O(n)
     public int findMaxLength(int[] nums) {
-        int n = nums.length, delta = 0, res = 0;
+        int n = nums.length, res = 0;
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(0, -1);
-        for (int i = 0; i < n; i++) {
-            if (nums[i] == 1) delta++;
-            else delta--;
-            if (map.containsKey(delta)) res = Math.max(res, i - map.get(delta));
-            else map.put(delta, i);
+        for (int i = 0, sum = 0; i < n; i++) {
+            sum += nums[i] == 0 ? -1 : 1;
+            if (map.containsKey(sum)) res = Math.max(res, i - map.get(sum));
+            else map.put(sum, i);
         }
         return res;
     }

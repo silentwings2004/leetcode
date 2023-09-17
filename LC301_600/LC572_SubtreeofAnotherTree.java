@@ -95,6 +95,27 @@ public class LC572_SubtreeofAnotherTree {
         // 注意：为了防止出现[12],[2]这样的case "12,#,#" vs "2,#,#",我们要区分它们，在前面加一个","！！！
         return "," + root.val + "," + serialize(root.left) + "," + serialize(root.right);
     }
+
+    // S4: Tree Hash
+    // time = O(n), space = O(n)
+    final int P = 131, Q = 159, mod = (int) 1e9 + 7;
+    int T = -1;
+    boolean ans = false;
+    public boolean isSubtree4(TreeNode root, TreeNode subRoot) {
+        T = dfs(subRoot);
+        if (T == dfs(root)) ans = true;
+        return ans;
+    }
+
+    private int dfs(TreeNode node) {
+        if (node == null) return 12345;
+
+        int l = dfs(node.left);
+        int r = dfs(node.right);
+        int x = (node.val % mod + mod) % mod;
+        if (l == T || r == T) ans = true;
+        return (x + l * P % mod + r * Q % mod) % mod;
+    }
 }
 /**
  * S2: KMP
@@ -113,4 +134,7 @@ public class LC572_SubtreeofAnotherTree {
  *   2   3
  * # 2 # 1 # 3 #
  * 并没有连接叶子节点，因为有4的存在，后者不是前者的一个子树 => 老老实实用先序遍历
+ *
+ * 树哈希 -> 类似与字符串哈希的方式
+ * 递归去求哈希值
  */

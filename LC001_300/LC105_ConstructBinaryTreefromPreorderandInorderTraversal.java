@@ -26,22 +26,19 @@ public class LC105_ConstructBinaryTreefromPreorderandInorderTraversal {
     HashMap<Integer, Integer> map;
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         map = new HashMap<>();
-        for (int i = 0; i < inorder.length; i++) {
-            map.put(inorder[i], i);
-        }
-        return helper(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+        int n = inorder.length;
+        for (int i = 0; i < n; i++) map.put(inorder[i], i);
+        return dfs(preorder, 0, n - 1, inorder, 0, n - 1);
     }
 
-    private TreeNode helper(int[] preorder, int ps, int pe, int[] inorder, int is, int ie) {
-        // base case
-        if (ps > pe) return null;
+    private TreeNode dfs(int[] a, int i, int j, int[] b, int x, int y) {
+        if (i > j) return null;
 
-        TreeNode root = new TreeNode(preorder[ps]);
-        int idx = map.get(preorder[ps]);
-
-        int dist = idx - is;
-        root.left = helper(preorder, ps + 1, ps + dist, inorder, is, idx - 1);
-        root.right = helper(preorder, ps + dist + 1, pe, inorder, idx + 1, ie);
+        int r = map.get(a[i]);
+        int left = r - x, right = y - r;
+        TreeNode root = new TreeNode(a[i]);
+        root.left = dfs(a, i + 1, i + left, b, x, r - 1);
+        root.right = dfs(a, i + left + 1, j, b, r + 1, y);
         return root;
     }
 }

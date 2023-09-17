@@ -67,6 +67,31 @@ public class LC133_CloneGraph {
         return map.get(node);
     }
 
+    // S3:
+    class Solution {
+        // time = O(n), space = O(n)
+        HashMap<Node, Node> map;
+        public Node cloneGraph(Node node) {
+            map = new HashMap<>();
+            if (node == null) return null;
+            dfs(node); // 复制所有点
+
+            for (Node s : map.keySet()) {
+                for (Node ver : s.neighbors) {
+                    map.get(s).neighbors.add(map.get(ver));
+                }
+            }
+            return map.get(node);
+        }
+
+        private void dfs(Node node) {
+            map.put(node, new Node(node.val));
+
+            for (Node ver : node.neighbors) {
+                if (!map.containsKey(ver)) dfs(ver);
+            }
+        }
+    }
 
     class Node {
         public int val;
@@ -84,4 +109,7 @@ public class LC133_CloneGraph {
  * BFS一般都是用队列。对于队首的原图节点root，查看其所有邻接节点adjacent。
  * 如果adjacent在Map中没有建立其映射关系，则将adjacent入列，并且新建adjacent在新图中的对应节点，并建立在新图中的邻里关系。
  * 反之，邻接节点adjacent存在于Map的映射里，说明它已经被考虑过，则只需要建立root和adjacent对应节点的邻里关系，不需要入列任何节点。
+ *
+ * 1. 复制所有点
+ * 2. 复制所有边
  */

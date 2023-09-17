@@ -23,17 +23,14 @@ public class LC1043_PartitionArrayforMaximumSum {
     // time = O(n * k), space = O(n)
     public int maxSumAfterPartitioning(int[] arr, int k) {
         int n = arr.length;
-        int[] dp = new int[n + 1];
-
+        int[] f = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            int max = 0;
-            // update dp[i]
-            for (int j = i; j >= Math.max(i - k + 1, 1); j--) {
-                max = Math.max(max, arr[j - 1]);
-                dp[i] = Math.max(dp[i], dp[j - 1] + max * (i - j + 1));
+            for (int j = 1, v = 0; j <= k && j <= i; j++) {
+                v = Math.max(v, arr[i - j]);
+                f[i] = Math.max(f[i], f[i - j] + v * j);
             }
         }
-        return dp[n];
+        return f[n];
     }
 }
 /**
@@ -41,4 +38,11 @@ public class LC1043_PartitionArrayforMaximumSum {
  * {x x x x} [j x i]
  * dp[j-1]
  * dp[i] = max{dp[j-1] + max*(i-j+1)} for j=i, i-1, ... i-k+1
+ *
+ * dp:
+ * 状态表示 f(i)
+ * 集合：前i个数的所有操作方案
+ * 属性：最大值
+ * 状态计算： f(i) 以最后一段长度来分，一共可以分为k类
+ * f(i) = f(i-j) + value
  */

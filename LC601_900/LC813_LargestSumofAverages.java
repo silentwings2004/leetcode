@@ -71,4 +71,5 @@ public class LC813_LargestSumofAverages {
  * 状态表示f(i,j):
  * 集合：所有将(1，i)分成j段的方案的集合
  * 属性：max
+ * 状态计算：以倒数第二段的终点来分类 0，1，..., i-1
  */

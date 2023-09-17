@@ -29,40 +29,40 @@ public class LC380_InsertDeleteGetRandomO1 {
      */
     /** Initialize your data structure here. */
     // time = O(1), space = O(n)
-    private List<Integer> list;
-    private HashMap<Integer, Integer> map;
+    Random random;
+    List<Integer> nums;
+    HashMap<Integer, Integer> map;
     public LC380_InsertDeleteGetRandomO1() {
-        list = new ArrayList<>();
+        random = new Random();
+        nums = new ArrayList<>();
         map = new HashMap<>();
     }
 
-    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public boolean insert(int val) {
         if (map.containsKey(val)) return false;
-        list.add(val);
-        map.put(val, list.size() - 1);
+        nums.add(val);
+        map.put(val, nums.size() - 1);
         return true;
     }
 
-    /** Removes a value from the set. Returns true if the set contained the specified element. */
     public boolean remove(int val) {
         if (!map.containsKey(val)) return false;
-
-        int idx = map.get(val);
-        int lastVal = list.get(list.size() - 1);
-        // swap
-        list.set(idx, lastVal);
-        map.put(lastVal, idx);
-        list.remove(list.size() - 1);
-        map.remove(val); // val的remove必须放到最后，因为有可能要remove的就是list的最后一个元素！！！
+        int a = map.get(val), b = nums.size() - 1;
+        if (a == b) {
+            map.remove(val);
+            nums.remove(b);
+        } else {
+            nums.set(a, nums.get(b));
+            nums.remove(b);
+            map.put(nums.get(a), a);
+            map.remove(val);
+        }
         return true;
     }
 
-    /** Get a random element from the set. */
     public int getRandom() {
-        Random random = new Random();
-        int idx = random.nextInt(list.size());
-        return list.get(idx);
+        int idx = random.nextInt(nums.size());
+        return nums.get(idx);
     }
 }
 /**

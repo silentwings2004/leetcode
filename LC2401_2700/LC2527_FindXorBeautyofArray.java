@@ -49,3 +49,9 @@ public class LC2527_FindXorBeautyofArray {
         return state;
     }
 }
+/**
+ * xor of a series of bits
+ * => 1  if there is an odd number of bit 1
+ * => 0 if there is an even number of bit 1
+ *
+ */

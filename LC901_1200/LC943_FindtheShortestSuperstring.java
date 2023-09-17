@@ -22,6 +22,7 @@ public class LC943_FindtheShortestSuperstring {
      * @param words
      * @return
      */
+    // S1
     // time = O(n^2 * (2^n + k)), space = O(n * (2^n + k))  k: maximum length of each word
     public String shortestSuperstring(String[] words) {
         // corner case
@@ -97,6 +98,64 @@ public class LC943_FindtheShortestSuperstring {
         }
         return s + t;
     }
+
+    // S2
+    final int INF = (int)1e8;
+    public String shortestSuperstring2(String[] words) {
+        int n = words.length;
+        int[][] tr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                tr[i][j] = get(words[i], words[j]);
+            }
+        }
+
+        int[][] f = new int[1 << n][n];
+        for (int i = 0; i < 1 << n; i++) Arrays.fill(f[i], INF);
+        for (int i = 0; i < n; i++) f[1 << i][i] = words[i].length();
+        for (int i = 0; i < 1 << n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (f[i][j] == INF) continue;
+                for (int k = 0; k < n; k++) {
+                    if ((i >> k & 1) == 0) {
+                        f[i | (1 << k)][k] = Math.min(f[i | (1 << k)][k], f[i][j] + words[k].length() - tr[j][k]);
+                    }
+                }
+            }
+        }
+
+        // 反推
+        int i = (1 << n) - 1, j = 0;
+        for (int k = 0; k < n; k++) {
+            if (f[i][k] < f[i][j]) j = k;
+        }
+
+        List<Integer> q = new LinkedList<>();
+        for (int u = 0; u < n; u++) {
+            q.add(j);
+            for (int k = 0; k < n; k++) {
+                if (f[i - (1 << j)][k] + words[j].length() - tr[k][j] == f[i][j]) {
+                    i -= 1 << j;
+                    j = k;
+                    break;
+                }
+            }
+        }
+        Collections.reverse(q);
+        StringBuilder sb = new StringBuilder(words[q.get(0)]);
+        for (i = 1; i < q.size(); i++) {
+            sb.append(words[q.get(i)].substring(tr[q.get(i - 1)][q.get(i)]));
+        }
+        return sb.toString();
+    }
+
+    private int get(String a, String b) {
+        int m = a.length(), n = b.length();
+        for (int i = Math.min(m, n); i > 0; i--) {
+            if (a.substring(m - i).equals(b.substring(0, i))) return i;
+        }
+        return 0;
+    }
 }
 /**
  * 本质上是个旅行商问题(travel salesman problem, tsp)
@@ -131,4 +190,11 @@ public class LC943_FindtheShortestSuperstring {
  *
  * dp[0111][B] = min(dp[0011][C]+dis(C,B)，dp[0011][D]+dis(D,B))
  *     BCD                  以C结尾
+ *
+ * f(i,j): 当前已选择的串的状态，且以j结尾的所有串的最短长度
+ * wj 与 wk 重合的部分越长越好
+ * 由于wj和wk不会互为子串，所以wk是不会向前超过wj的
+ * f(i | 1 << k, k)
+ * 反推状态
+ * 暴力预处理下每2个串的重叠长度
  */

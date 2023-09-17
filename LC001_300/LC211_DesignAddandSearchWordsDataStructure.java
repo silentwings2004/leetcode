@@ -66,6 +66,50 @@ public class LC211_DesignAddandSearchWordsDataStructure {
             this.isEnd = false;
         }
     }
+
+    // S1.2
+    class WordDictionary {
+        final int N = 300010;
+        int[][] son;
+        int[] cnt;
+        int idx;
+        public WordDictionary() {
+            son = new int[N][26];
+            cnt = new int[N];
+            idx = 0;
+        }
+
+        public void addWord(String word) {
+            int p = 0;
+            for (char c : word.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+            }
+            cnt[p]++;
+        }
+
+        public boolean search(String word) {
+            return dfs(word, 0, 0);
+        }
+
+        private boolean dfs(String s, int i, int p) {
+            if (i == s.length()) return cnt[p] > 0;
+
+            char c = s.charAt(i);
+            if (Character.isLetter(c)) {
+                int u = c - 'a';
+                if (son[p][u] == 0) return false;
+                return dfs(s, i + 1, son[p][u]);
+            } else {
+                for (int k = 0; k < 26; k++) {
+                    if (son[p][k] == 0) continue;
+                    if (dfs(s, i + 1, son[p][k])) return true;
+                }
+                return false;
+            }
+        }
+    }
 }
 /**
  * Trie类的问题主要在于两大块：建树和搜索

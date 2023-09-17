@@ -22,6 +22,7 @@ public class LC337_HouseRobberIII {
      * @param root
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     private HashMap<TreeNode, Integer> flag1;
     private HashMap<TreeNode, Integer> flag0;
@@ -55,6 +56,22 @@ public class LC337_HouseRobberIII {
         if (flag == 0) flag0.put(node, res);
         return res;
     }
+
+    // S2: 树形dp
+    // time = O(n), space = O(n)
+    public int rob2(TreeNode root) {
+        if (root == null) return 0;
+        int[] f = dfs(root);
+        return Math.max(f[0], f[1]);
+    }
+
+    private int[] dfs(TreeNode node) {
+        if (node == null) return new int[]{0, 0};
+
+        int[] l = dfs(node.left);
+        int[] r = dfs(node.right);
+        return new int[]{Math.max(l[0], l[1]) + Math.max(r[0], r[1]), l[0] + r[0] + node.val};
+    }
 }
 /**
  * 二叉树 99% 都可以用dfs递归的方法来解
@@ -65,4 +82,10 @@ public class LC337_HouseRobberIII {
  * (node, 1/0)
  * 最怕重复 -> 记忆化
  * 遍历过程中会有大量重复的状态
+ *
+ * 对于每个点来说，有2种选择方式：
+ * 选 / 不选
+ * f(u,0) = max{f(x, 0), f(x, 1)} + max{f(y, 0), f(y, 1)}
+ * f(u,1) = f(x, 0) + f(y, 0) + v[u]
+ * return max{f(root, 0), f(root, 1)}
  */

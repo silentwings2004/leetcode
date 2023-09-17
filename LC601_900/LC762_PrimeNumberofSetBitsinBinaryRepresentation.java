@@ -1,5 +1,5 @@
 package LC601_900;
-
+import java.util.*;
 public class LC762_PrimeNumberofSetBitsinBinaryRepresentation {
     /**
      * Given two integers left and right, return the count of numbers in the inclusive range [left, right] having a
@@ -21,7 +21,7 @@ public class LC762_PrimeNumberofSetBitsinBinaryRepresentation {
      * @return
      */
     // S1
-    // time = O(1), space = O(1)
+    // time = O(n), space = O(1)
     public int countPrimeSetBits(int left, int right) {
         int res = 0;
         for (int i = left; i <= right; i++) {
@@ -41,14 +41,13 @@ public class LC762_PrimeNumberofSetBitsinBinaryRepresentation {
     }
 
     // S2: Ennumeration
-    // time = O(1), space = O(1)
+    // time = O(n), space = O(1)
     public int countPrimeSetBits2(int left, int right) {
+        HashSet<Integer> set = new HashSet<>(Arrays.asList(2, 3, 5, 7, 11, 13, 17, 19));
         int res = 0;
         for (int i = left; i <= right; i++) {
-            int n = Integer.bitCount(i);
-            if (n == 2 || n == 3 || n == 5 || n == 7 || n == 11 || n == 13 || n == 17 || n == 19 || n == 23 || n == 29) {
-                res++;
-            }
+            int x = Integer.bitCount(i);
+            if (set.contains(x)) res++;
         }
         return res;
     }

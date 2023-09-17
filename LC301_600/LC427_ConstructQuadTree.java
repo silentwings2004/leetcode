@@ -59,24 +59,25 @@ public class LC427_ConstructQuadTree {
      */
     // S1
     // time = O(n^2), space = O(n^2)
-    int[][] presum;
+    // time = O(n^2), space = O(n^2)
+    int[][] s;
     public Node construct(int[][] grid) {
         int n = grid.length;
-        presum = new int[n + 1][n + 1];
+        s = new int[n + 1][n + 1];
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                presum[i][j] = presum[i - 1][j] + presum[i][j - 1] - presum[i - 1][j - 1] + grid[i - 1][j - 1];
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + grid[i - 1][j - 1];
             }
         }
-
         return dfs(1, 1, n, n);
     }
 
     private Node dfs(int x1, int y1, int x2, int y2) {
         int n = x2 - x1 + 1;
-        int sum = presum[x2][y2] - presum[x2][y1 - 1] - presum[x1 - 1][y2] + presum[x1 - 1][y1 - 1];
-        if (sum == 0 || sum == n * n) return new Node(sum == 0 ? false : true, true);
-
+        int sum = s[x2][y2] - s[x2][y1 - 1] - s[x1 - 1][y2] + s[x1 - 1][y1 - 1];
+        if (sum == 0 || sum == n * n) {
+            return new Node(sum == 0 ? false : true, true);
+        }
         Node node = new Node(false, false);
         int m = n / 2;
         node.topLeft = dfs(x1, y1, x1 + m - 1, y1 + m - 1);

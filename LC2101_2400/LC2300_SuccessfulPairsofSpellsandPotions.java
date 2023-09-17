@@ -31,18 +31,18 @@ public class LC2300_SuccessfulPairsofSpellsandPotions {
      */
     // time = O(nlogn), space = O(1)
     public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        int n = spells.length, m = potions.length;
         Arrays.sort(potions);
-
-        int m = spells.length, n = potions.length;
-        int[] res = new int[m];
-        for (int i = 0; i < m; i++) {
-            int left = 0, right = n - 1;
-            while (left < right) {
-                int mid = left + (right - left) / 2;
-                if ((long) potions[mid] * spells[i] < success) left = mid + 1;
-                else right = mid;
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            int l = 0, r = m - 1;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if ((long) spells[i] * potions[mid] >= success) r = mid;
+                else l = mid + 1;
             }
-            res[i] = (long) potions[left] * spells[i] >= success ? n - left : 0;
+            r = (long) spells[i] * potions[r] >= success ? r : r + 1;
+            res[i] = m - r;
         }
         return res;
     }

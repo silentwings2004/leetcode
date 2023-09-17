@@ -20,24 +20,12 @@ public class LC508_MostFrequentSubtreeSum {
      */
     // time = O(n), space = O(n)
     HashMap<Integer, Integer> map;
+    List<Integer> res;
+    int maxc = 0;
     public int[] findFrequentTreeSum(TreeNode root) {
-        if (root == null) return new int[0];
-
         map = new HashMap<>();
+        res = new ArrayList<>();
         dfs(root);
-
-        int max = 0;
-        List<Integer> res = new ArrayList<>();
-        for (int x : map.keySet()) {
-            if (map.get(x) >= max) {
-                if (map.get(x) > max) {
-                    res = new ArrayList<>();
-                    max = map.get(x);
-                }
-                res.add(x);
-            }
-        }
-
         int[] ans = new int[res.size()];
         for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
         return ans;
@@ -46,10 +34,13 @@ public class LC508_MostFrequentSubtreeSum {
     private int dfs(TreeNode node) {
         if (node == null) return 0;
 
-        int l = dfs(node.left);
-        int r = dfs(node.right);
-        int sum = l + r + node.val;
+        int sum = node.val + dfs(node.left) + dfs(node.right);
         map.put(sum, map.getOrDefault(sum, 0) + 1);
+        if (map.get(sum) > maxc) {
+            maxc = map.get(sum);
+            res = new ArrayList<>();
+            res.add(sum);
+        } else if (map.get(sum) == maxc) res.add(sum);
         return sum;
     }
 }

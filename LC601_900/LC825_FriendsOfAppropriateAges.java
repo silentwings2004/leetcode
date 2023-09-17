@@ -25,27 +25,20 @@ public class LC825_FriendsOfAppropriateAges {
      * @param ages
      * @return
      */
-    // S1: HashMap
+    // S1
     // time = O(n^2), space = O(n)
+    final int N = 130;
     public int numFriendRequests(int[] ages) {
-        // corner case
-        if (ages == null || ages.length <= 1) return 0;
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int age : ages) map.put(age, map.getOrDefault(age, 0) + 1);
-
-        int res = 0;
-        for (int a : map.keySet()) {
-            for (int b : map.keySet()) {
-                if (helper(a, b)) res += map.get(a) * (map.get(b) - (a == b ? 1 : 0));
+        int[] s = new int[N];
+        for (int x : ages) s[x]++;
+        int n = ages.length, res = n * n;
+        for (int i = 1; i <= 120; i++) {
+            for (int j = 1; j <= 120; j++) {
+                if (j <= 0.5 * i + 7 || j > i) res -= s[i] * s[j];
+                else if (i == j) res -= s[i];
             }
         }
         return res;
-    }
-
-    private boolean helper(int a, int b) {
-        if (b <= 0.5 * a + 7 || b > a || b > 100 && a < 100) return false;
-        return true;
     }
 
     // S2: BS

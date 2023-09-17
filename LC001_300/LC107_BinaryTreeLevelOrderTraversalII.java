@@ -18,30 +18,24 @@ public class LC107_BinaryTreeLevelOrderTraversalII {
      */
     // time = O(n), space = O(n)
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        // corner case
-        List<List<Integer>> res = new LinkedList<>();
-        // corner case
+        List<List<Integer>> res = new ArrayList<>();
         if (root == null) return res;
 
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
 
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            List<Integer> list = new LinkedList<>();
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> path = new ArrayList<>();
             while (size-- > 0) {
-                TreeNode cur = queue.poll();
-                list.add(cur.val);
-                if (cur.left != null) queue.offer(cur.left);
-                if (cur.right != null) queue.offer(cur.right);
+                TreeNode t = q.poll();
+                path.add(t.val);
+                if (t.left != null) q.offer(t.left);
+                if (t.right != null) q.offer(t.right);
             }
-            res.add(0, list);
+            res.add(path);
         }
+        Collections.reverse(res);
         return res;
-    }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
     }
 }

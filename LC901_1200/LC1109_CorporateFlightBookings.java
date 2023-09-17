@@ -25,24 +25,14 @@ public class LC1109_CorporateFlightBookings {
      */
     // time = O(n), space = O(n)
     public int[] corpFlightBookings(int[][] bookings, int n) {
-        // corner case
-        if (bookings == null || bookings.length == 0 || bookings[0] == null || bookings[0].length == 0) {
-            return new int[0];
+        int[] b = new int[n];
+        for (int[] x : bookings) {
+            int l = x[0] - 1, r = x[1] - 1, c = x[2];
+            b[l] += c;
+            if (r + 1 < n) b[r + 1] -= c;
         }
-
-        int[] diff = new int[n + 2];
-        for (int[] b : bookings) {
-            diff[b[0]] += b[2];
-            diff[b[1] + 1] -= b[2];
-        }
-
-        int cur = 0;
-        int[] res = new int[n];
-        for (int i = 1; i <= n; i++) {
-            cur += diff[i];
-            res[i - 1] = cur;
-        }
-        return res;
+        for (int i = 1; i < n; i++) b[i] += b[i - 1];
+        return b;
     }
 }
 /**

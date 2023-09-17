@@ -32,25 +32,16 @@ public class LC824_GoatLatin {
      */
     // time = O(n), space = O(n)
     public String toGoatLatin(String sentence) {
-        int n = sentence.length(), k = 0;
+        String[] strs = sentence.split(" ");
+        String vowel = "aeiou";
         StringBuilder sb = new StringBuilder();
-        String vowel = "aeiouAEIOU";
-
-        for (int i = 0; i < n; i++) {
-            int j = i;
-            while (j < n && sentence.charAt(j) != ' ') j++;
-            String s = sentence.substring(i, j);
-
-            if (vowel.contains(String.valueOf(s.charAt(0)))) {
-                sb.append(s).append("ma");
-            } else {
-                sb.append(s.substring(1)).append(s.charAt(0)).append("ma");
-            }
-
-            for (int t = 0; t <= k; t++) sb.append('a');
-            sb.append(" ");
-            k++;
-            i = j;
+        for (int i = 0; i < strs.length; i++) {
+            String s = strs[i];
+            char c = Character.toLowerCase(s.charAt(0));
+            if (vowel.indexOf(c) != -1) sb.append(s).append("ma");
+            else sb.append(s.substring(1)).append(s.charAt(0)).append("ma");
+            for (int j = 0; j <= i; j++) sb.append('a');
+            sb.append(' ');
         }
         sb.setLength(sb.length() - 1);
         return sb.toString();

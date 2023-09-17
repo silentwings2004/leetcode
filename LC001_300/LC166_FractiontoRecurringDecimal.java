@@ -30,20 +30,21 @@ public class LC166_FractiontoRecurringDecimal {
         if ((x < 0) ^ (y < 0)) sb.append('-');
         x = Math.abs(x);
         y = Math.abs(y);
-
         sb.append(x / y).append('.');
         x %= y;
 
         HashMap<Long, Integer> map = new HashMap<>();
-        while (x != 0 && !map.containsKey(x)) {
+        while (x > 0) {
             map.put(x, sb.length());
             x *= 10;
             sb.append(x / y);
             x %= y;
+            if (map.containsKey(x)) {
+                sb.insert((int) map.get(x), '(');
+                sb.append(')');
+                break;
+            }
         }
-        if (x == 0) return sb.toString();
-        sb.insert(map.get(x), "(");
-        sb.append(')');
         return sb.toString();
     }
 }
@@ -59,4 +60,6 @@ public class LC166_FractiontoRecurringDecimal {
  *
  * 模拟下高精度除法
  * 最多循环n次
+ * 余数相同 => 出现循环节
+ * 只需要维护余数以及余数是否出现过
  */

@@ -57,7 +57,7 @@ public class LC114_FlattenBinaryTreetoLinkedList {
         prev = root;
     }
 
-    // S2: iteration (最优解！！！）
+    // S3: iteration (最优解！！！）
     // time = O(n), space = O(1)
     public void flatten3(TreeNode root) {
         // corner case
@@ -76,10 +76,32 @@ public class LC114_FlattenBinaryTreetoLinkedList {
             cur.left = null;
         }
     }
+
+    // S4:
+    // time = O(n), space = O(1)
+    public void flatten4(TreeNode root) {
+        if (root == null) return;
+
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.left != null) {
+                TreeNode p = cur.left;
+                while (p.right != null) p = p.right;
+                p.right = cur.right;
+                cur.right = cur.left;
+                cur.left = null;
+            }
+            cur = cur.right;
+        }
+    }
 }
 /**
  * flattern就是拉直的过程，这个命令是可以重复利用的。
  * 注意边界条件，如果左边为空的话，要单独考虑！
  * 1. 存在左子树，将左子树的右链插入当前结点右边
  * 2. 否则遍历到右儿子
+ *
+ * 找规律
+ * 1. 存在左子树，将左子树右链插入当前点右边
+ * 2. 否则，则遍历到右儿子
  */

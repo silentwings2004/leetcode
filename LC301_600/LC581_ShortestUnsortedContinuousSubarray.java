@@ -19,6 +19,7 @@ public class LC581_ShortestUnsortedContinuousSubarray {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space - O(1)
     public int findUnsortedSubarray(int[] nums) {
         int n = nums.length;
@@ -35,6 +36,23 @@ public class LC581_ShortestUnsortedContinuousSubarray {
         }
         return r > l ? r - l + 1 : 0;
     }
+
+    // S2
+    // time = O(n), space - O(1)
+    public int findUnsortedSubarray2(int[] nums) {
+        int n = nums.length;
+        int l = 0, r = n - 1;
+        while (l + 1 < n && nums[l] <= nums[l + 1]) l++;
+        if (l == r) return 0;
+        while (r - 1 >= 0 && nums[r - 1] <= nums[r]) r--;
+        for (int i = l + 1; i < n; i++) {
+            while (l >= 0 && nums[l] > nums[i]) l--;
+        }
+        for (int i = r - 1; i >= 0; i--) {
+            while (r < n && nums[r] < nums[i]) r++;
+        }
+        return r - l - 1;
+    }
 }
 /**
  * 1. 从小到大排序
@@ -45,4 +63,10 @@ public class LC581_ShortestUnsortedContinuousSubarray {
  * 同理，找到这样一个left_bound：位于该数右边的所有数的最小值，要比这个数小，这说明这个数在排序后需要变换位置。
  * 也是讲数组从右往左过一遍，实时保存最小值。
  * 最后当right_bound>left_bound时，结果就是 right_bound-left_bound+1
+ *
+ * 左右两边是完全独立的
+ * 左边区间满足2个性质：
+ * 1.从小到大排序
+ * 2 左边最后一个元素 <= 右侧最小值
+ * 在左侧找到一个最大的小于等于右侧最小值的一个位置
  */

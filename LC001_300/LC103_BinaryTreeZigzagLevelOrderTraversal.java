@@ -41,12 +41,4 @@ public class LC103_BinaryTreeZigzagLevelOrderTraversal {
         }
         return res;
     }
-
-    private class TreeNode {
-        private int val;
-        TreeNode left, right;
-        public TreeNode(int val) {
-            this.val = val;
-        }
-    }
 }

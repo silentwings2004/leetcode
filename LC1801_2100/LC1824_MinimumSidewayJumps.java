@@ -62,6 +62,29 @@ public class LC1824_MinimumSidewayJumps {
         }
         return res;
     }
+
+    // S2: dp
+    // time = O(n), space = O(n)
+    final int N = 500010, INF = (int) 1e8;
+    public int minSideJumps2(int[] obstacles) {
+        int[][] f = new int[N][3];
+        f[0][1] = 0;
+        f[0][0] = f[0][2] = 1;
+
+        int n = obstacles.length - 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < 3; j++) {
+                f[i][j] = INF;
+                if (obstacles[i] == j + 1) continue;
+                for (int k = 0; k < 3; k++) {
+                    if (obstacles[i] == k + 1) continue;
+                    int cost = j == k ? 0 : 1;
+                    f[i][j] = Math.min(f[i][j], f[i - 1][k] + cost);
+                }
+            }
+        }
+        return Math.min(f[n][0], Math.min(f[n][1], f[n][2]));
+    }
 }
 /**
  * dp[i][j]: minimum number of side jumps to arrive at position i and track j
@@ -69,4 +92,9 @@ public class LC1824_MinimumSidewayJumps {
  * else:
  *      dp[i][j] = dp[i - 1][j] -> 冲成功
  *      dp[i][j] = min(dp[i][j]) + 1  -> 换道
+ *
+ * 最短路问题 -> bfs 双端队列广搜 本质上是dijkstra => O(n)
+ * dp 分层图最短路 只能从上一层跳到下一层，整个图是个拓扑图
+ * 状态计算关系不能有环
+ * 用递推的方式求每个点的最短路
  */

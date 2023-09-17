@@ -31,19 +31,17 @@ public class LC807_MaxIncreasetoKeepCitySkyline {
     // time = O(n^2), space = O(n)
     public int maxIncreaseKeepingSkyline(int[][] grid) {
         int n = grid.length;
-        int[] rm = new int[n], cm = new int[n];
-
+        int[] r = new int[n], c = new int[n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                rm[i] = Math.max(rm[i], grid[i][j]); // the max row for each row
-                cm[j] = Math.max(cm[j], grid[i][j]); // the max height for each col
+                r[i] = Math.max(r[i], grid[i][j]);
+                c[j] = Math.max(c[j], grid[i][j]);
             }
         }
-
         int res = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                res += Math.min(rm[i], cm[j]) - grid[i][j];
+                res += Math.min(r[i], c[j]) - grid[i][j];
             }
         }
         return res;

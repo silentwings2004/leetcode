@@ -66,33 +66,36 @@ public class LC851_LoudandRich {
     }
 
     // S2: dfs (最优解!)
-    // time = O(n^2), space = O(n^2)
+    // time = O(n + m), space = O(n + m)
+    List<Integer>[] g;
+    int[] w;
+    int[] ans;
     public int[] loudAndRich2(int[][] richer, int[] quiet) {
         int n = quiet.length;
-
-        List<Integer>[] graph = new List[n];
-        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-        for (int[] x : richer) graph[x[1]].add(x[0]);
-
-        int[] res = new int[n];
-        Arrays.fill(res, -1);
-
-        for (int i = 0; i < n; i++) {
-            dfs(graph, i, quiet, res);
+        w = quiet;
+        ans = new int[n];
+        g = new List[n];
+        for (int i = 0; i < n; i++) g[i] = new ArrayList<>();
+        for (int[] x : richer) {
+            int a = x[0], b = x[1];
+            g[b].add(a);
         }
-        return res;
+
+        Arrays.fill(ans, -1);
+        for (int i = 0; i < n; i++) dfs(i);
+        return ans;
     }
 
-    private int dfs(List<Integer>[] graph, int cur, int[] quiet, int[] res) {
-        if (res[cur] == -1) { // if not visited, then go to dfs; otherwise can work as memo to directly return
-            res[cur] = cur;
-            for (int next : graph[cur]) {
-                int candidate = dfs(graph, next, quiet, res);
-                if (quiet[res[cur]] > quiet[candidate]) {
-                    res[cur] = candidate;
-                }
-            }
+    private void dfs(int u) {
+        if (ans[u] != -1) return;
+
+        ans[u] = u;
+        for (int v : g[u]) {
+            dfs(v);
+            if (w[ans[u]] > w[ans[v]]) ans[u] = ans[v];
         }
-        return res[cur];
     }
 }
+/**
+ * 有向无环图 => 记忆化搜索
+ */

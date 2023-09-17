@@ -37,20 +37,24 @@ public class LC790_DominoandTrominoTiling {
 
     // S2: dp
     // time = O(n), space = O(n)
+    final int mod = (int) 1e9 + 7;
     public int numTilings2(int n) {
-        int[][] w = new int[][]{{1, 1, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}, {1, 0, 0, 0}};
+        int[][] w = {
+                {1, 1, 1, 1},
+                {0, 0, 1, 1},
+                {0, 1, 0, 1},
+                {1, 0, 0, 0}
+        };
         int[][] f = new int[n + 1][4];
-        int mod = (int)(1e9 + 7);
-        f[0][0] = f[0][3] = 1;
-
-        for (int i = 1; i <= n; i++) {
+        f[0][0] = 1;
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
-                    f[i][j] = (f[i][j] + f[i - 1][k] * w[j][k]) % mod;
+                    f[i + 1][k] = (f[i + 1][k] + f[i][j] * w[j][k]) % mod;
                 }
             }
         }
-        return f[n][3];
+        return f[n][0];
     }
 }
 /**
@@ -76,4 +80,12 @@ public class LC790_DominoandTrominoTiling {
  * dp[2][0] = dp[1][0] + dp[0][0] - 2 * dp[1][1] = 2
  * dp[1][1] = 0 (no way to put one line and has only top row covered), dp[1][0] = 1 (just lay down one flat piece)
  * => dp[0][0] = 2 - 1 = 1
+ *
+ * f(i,j): 铺完前i-1列，且i列被占用的状态为j的方案数
+ *      00   01   10   11
+ * 00   1    1    1    1
+ * 01             1    0
+ * 10        1         1
+ * 11   1
+ * 手推一下4种状态的转移方式：
  */

@@ -27,16 +27,14 @@ public class LC447_NumberofBoomerangs {
         for (int i = 0; i < n; i++) {
             HashMap<Integer, Integer> map = new HashMap<>();
             for (int j = 0; j < n; j++) {
-                int val1 = (points[i][0] - points[j][0]) * (points[i][0] - points[j][0]);
-                int val2 = (points[i][1] - points[j][1]) * (points[i][1] - points[j][1]);
-                int dist = val1 + val2;
-                map.put(dist, map.getOrDefault(dist, 0) + 1);
+                if (i != j) {
+                    int dx = points[i][0] - points[j][0];
+                    int dy = points[i][1] - points[j][1];
+                    int dist = dx * dx + dy * dy;
+                    map.put(dist, map.getOrDefault(dist, 0) + 1);
+                }
             }
-
-            for (int key : map.keySet()) {
-                int k = map.get(key);
-                res += k * (k - 1);
-            }
+            for (int v : map.values()) res += v * (v - 1);
         }
         return res;
     }

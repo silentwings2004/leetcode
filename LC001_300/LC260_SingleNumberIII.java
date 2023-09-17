@@ -34,6 +34,24 @@ public class LC260_SingleNumberIII {
         }
         return new int[]{a, b};
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int[] singleNumber2(int[] nums) {
+        int ab = 0;
+        for (int x : nums) ab ^= x;
+        int k = 0;
+        while ((ab >> k & 1) == 0) k++;
+        return new int[]{get(nums, k, 0), get(nums, k, 1)};
+    }
+
+    private int get(int[] nums, int k, int t) {
+        int res = 0;
+        for (int x : nums) {
+            if ((x >> k & 1) == t) res ^= x;
+        }
+        return res;
+    }
 }
 /**
  * 这是一道经典题．

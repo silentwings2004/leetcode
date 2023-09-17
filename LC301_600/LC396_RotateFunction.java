@@ -23,6 +23,7 @@ public class LC396_RotateFunction {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int maxRotateFunction(int[] nums) {
         int n = nums.length, sum = 0, total = 0;
@@ -37,5 +38,20 @@ public class LC396_RotateFunction {
             res = Math.max(res, total);
         }
         return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int maxRotateFunction2(int[] nums) {
+        long sum = 0, cur = 0;
+        for (int x : nums) sum += x;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) cur += i * nums[i];
+        long res = cur;
+        for (int i = n - 1; i >= 0; i--) {
+            cur += sum - n * nums[i];
+            res = Math.max(res, cur);
+        }
+        return (int) res;
     }
 }

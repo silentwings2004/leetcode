@@ -58,24 +58,23 @@ public class LC719_FindKthSmallestPairDistance {
     // S1.2: BS (最优解！！！)
     // time = O(nlogn), space = O(1)
     public int smallestDistancePair2(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0 || k < 0) return 0;
-
         Arrays.sort(nums);
-        int n = nums.length;
-        int left = 0, right = nums[n - 1] - nums[0];
-
+        int left = 0, right = (int) 1e6;
         while (left < right) {
             int mid = left + (right - left) / 2;
-            int j = 0, count = 0;
-            for (int i = 0; i < n; i++) {
-                while (j < n && nums[j] <= nums[i] + mid) j++;
-                count += j - i - 1;
-            }
-            if (count < k) left = mid + 1;
+            if (helper(nums, mid) < k) left = mid + 1;
             else right = mid;
         }
         return left;
+    }
+
+    private int helper(int[] nums, int t) {
+        int n = nums.length, j = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] - nums[j] > t) j++;
+            res += i - j;
+        }
+        return res;
     }
 }
 /**

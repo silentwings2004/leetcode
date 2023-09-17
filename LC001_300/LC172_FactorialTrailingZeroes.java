@@ -15,13 +15,18 @@ public class LC172_FactorialTrailingZeroes {
      * @param n
      * @return
      */
-    // time = O(n), space = O(1)
+    // time = O(logn), space = O(1)
     public int trailingZeroes(int n) {
-        int count = 0;
+        int res = 0;
         while (n > 0) {
-            count += n / 5;
+            res += n / 5;
             n /= 5;
         }
-        return count;
+        return res;
     }
 }
+/**
+ * 1. 1~n中p的倍数 n/p下取整
+ * 2. 1~n^2中p^2的倍数 n/p^2
+ * 算2次
+ */

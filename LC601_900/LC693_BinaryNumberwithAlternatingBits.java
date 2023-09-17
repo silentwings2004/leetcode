@@ -14,11 +14,23 @@ public class LC693_BinaryNumberwithAlternatingBits {
      * @param n
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public boolean hasAlternatingBits(int n) {
         String s = Integer.toBinaryString(n);
         for (int i = 0; i < s.length() - 1; i++) {
             if (s.charAt(i) == s.charAt(i + 1)) return false;
+        }
+        return true;
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public boolean hasAlternatingBits2(int n) {
+        for (int i = 1; 1L << i < n; i++) {
+            int a = n >> i - 1 & 1;
+            int b = n >> i & 1;
+            if (a == b) return false;
         }
         return true;
     }

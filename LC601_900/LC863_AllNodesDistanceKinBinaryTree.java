@@ -3,20 +3,21 @@ import java.util.*;
 public class LC863_AllNodesDistanceKinBinaryTree {
     /**
      * We are given a binary tree (with root node root), a target node, and an integer value k.
-     *
+     * <p>
      * Return a list of the values of all nodes that have a distance k from the target node.  The answer can be returned
      * in any order.
-     *
+     * <p>
      * Input: root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, k = 2
-     *
+     * <p>
      * Output: [7,4,1]
-     *
+     * <p>
      * Note:
-     *
+     * <p>
      * The given tree is non-empty.
      * Each node in the tree has unique values 0 <= node.val <= 500.
      * The target node is a node in the tree.
      * 0 <= k <= 1000.
+     *
      * @param root
      * @param target
      * @param K
@@ -98,6 +99,53 @@ public class LC863_AllNodesDistanceKinBinaryTree {
         }
         fetch(node.left, k - 1, res);
         fetch(node.right, k - 1, res);
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    class Solution {
+        List<Integer> res;
+        HashMap<TreeNode, List<TreeNode>> map;
+
+        public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+            res = new ArrayList<>();
+            map = new HashMap<>();
+
+            dfs1(root);
+            dfs2(target, null, k);
+            return res;
+        }
+
+        private void dfs1(TreeNode node) {
+            if (node == null) return;
+
+            if (node.left != null) {
+                map.putIfAbsent(node, new ArrayList<>());
+                map.putIfAbsent(node.left, new ArrayList<>());
+                map.get(node).add(node.left);
+                map.get(node.left).add(node);
+                dfs1(node.left);
+            }
+
+            if (node.right != null) {
+                map.putIfAbsent(node, new ArrayList<>());
+                map.putIfAbsent(node.right, new ArrayList<>());
+                map.get(node).add(node.right);
+                map.get(node.right).add(node);
+                dfs1(node.right);
+            }
+        }
+
+        private void dfs2(TreeNode node, TreeNode parent, int k) {
+            if (k == 0) res.add(node.val);
+            else {
+                for (TreeNode next : map.getOrDefault(node, new ArrayList<>())) {
+                    if (next != parent) {
+                        dfs2(next, node, k - 1);
+                    }
+                }
+            }
+        }
     }
 }
 /**

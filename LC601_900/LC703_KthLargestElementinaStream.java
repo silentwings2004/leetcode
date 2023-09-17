@@ -33,9 +33,7 @@ public class LC703_KthLargestElementinaStream {
     public LC703_KthLargestElementinaStream(int k, int[] nums) {
         pq = new PriorityQueue<>();
         this.k = k;
-        for (int num : nums) {
-            add(num);
-        }
+        for (int num : nums) add(num);
     }
 
     public int add(int val) {

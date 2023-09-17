@@ -20,18 +20,13 @@ public class LC905_SortArrayByParity {
     // time = O(n), space = O(1)
     public int[] sortArrayByParity(int[] nums) {
         int n = nums.length;
-        int i = 0, j = n - 1;
-        while (i < j) {
-            while (i < j && nums[i] % 2 != 1) i++;
-            while (i < j && nums[j] % 2 != 0) j--;
-            swap(nums, i++, j--);
+        for (int i = 0, j = n - 1; i < j; i++, j--) {
+            while (i < j && nums[i] % 2 == 0) i++;
+            while (i < j && nums[j] % 2 == 1) j--;
+            int t = nums[i];
+            nums[i] = nums[j];
+            nums[j] = t;
         }
         return nums;
-    }
-
-    private void swap(int[] nums, int i, int j) {
-        int t = nums[i];
-        nums[i] = nums[j];
-        nums[j] = t;
     }
 }

@@ -25,6 +25,7 @@ public class LC436_FindRightInterval {
      * @param intervals
      * @return
      */
+    // S1: TreeMap
     // time = O(nlogn), space = O(n)
     public int[] findRightInterval(int[][] intervals) {
         TreeMap<Integer, Integer> map = new TreeMap<>();
@@ -35,6 +36,28 @@ public class LC436_FindRightInterval {
         for (int i = 0; i < n; i++) {
             Integer ck = map.ceilingKey(intervals[i][1]);
             res[i] = ck == null ? -1 : map.get(ck);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int[] findRightInterval2(int[][] intervals) {
+        int n = intervals.length;
+        int[][] arr = new int[n][3];
+        for (int i = 0; i < n; i++) arr[i] = new int[]{intervals[i][0], intervals[i][1], i};
+        Arrays.sort(arr, (o1, o2) -> o1[0] - o2[0]);
+
+        int[] res = new int[n];
+        Arrays.fill(res, -1);
+        for (int[] x : arr) {
+            int l = 0, r = n - 1;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (arr[mid][0] >= x[1]) r = mid;
+                else l = mid + 1;
+            }
+            if (arr[r][0] >= x[1]) res[x[2]] = arr[r][2];
         }
         return res;
     }

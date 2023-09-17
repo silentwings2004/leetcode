@@ -30,28 +30,26 @@ public class LC748_ShortestCompletingWord {
      */
     // time = O(m + n * k), space = O(1)  k: length of longest word in the words array
     public String shortestCompletingWord(String licensePlate, String[] words) {
-        int[] freq = new int[26];
-        for (char c : licensePlate.toCharArray()) { // O(m)
-            if (Character.isAlphabetic(c)) freq[Character.toLowerCase(c) - 'a']++;
+        int[] cnt1 = new int[26];
+        for (char c : licensePlate.toCharArray()) {
+            if (Character.isLetter(c)) cnt1[Character.toLowerCase(c) - 'a']++;
         }
 
         String res = "";
-        int minLen = Integer.MAX_VALUE;
-        for (String word : words) { // O(n * k)
-            boolean flag = true;
-            int[] arr = new int[26];
-            for (char c : word.toCharArray()) {
-                arr[c - 'a']++;
+        for (String w : words) {
+            int[] cnt2 = new int[26];
+            for (char c : w.toCharArray()) {
+                if (Character.isLetter(c)) cnt2[Character.toLowerCase(c) - 'a']++;
             }
+            boolean flag = true;
             for (int i = 0; i < 26; i++) {
-                if (freq[i] > 0 && freq[i] > arr[i]) {
+                if (cnt1[i] > cnt2[i]) {
                     flag = false;
                     break;
                 }
             }
-            if (flag && word.length() < minLen) {
-                res = word;
-                minLen = word.length();
+            if (flag) {
+                if (res.length() == 0 || res.length() > w.length()) res = w;
             }
         }
         return res;

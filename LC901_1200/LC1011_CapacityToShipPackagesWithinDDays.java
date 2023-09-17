@@ -23,35 +23,30 @@ public class LC1011_CapacityToShipPackagesWithinDDays {
      * @return
      */
     // time = O(nlogn), space = O(1)
-    public int shipWithinDays(int[] weights, int D) {
-        // corner case
-        if (weights == null || weights.length == 0) return 0;
-
-        int sum = 0, max = 0;
-        for (int weight : weights) {
-            sum += weight;
-            max = Math.max(max, weight);
+    public int shipWithinDays(int[] weights, int days) {
+        int l = 0, r = 0;
+        for (int x : weights) {
+            l = Math.max(l, x);
+            r += x;
         }
 
-        int left = max, right = sum;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (!checkOK(weights, mid, D)) left = mid + 1;
-            else right = mid;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (check(weights, days, mid)) r = mid;
+            else l = mid + 1;
         }
-        return left; // 一定有解！
+        return r;
     }
 
-    private boolean checkOK(int[] weights, int cap, int D) {
-        int count = 0;
-        for (int i = 0; i < weights.length; i++) {
-            int j = i, sum = 0;
-            while (j < weights.length && sum + weights[j] <= cap) sum += weights[j++];
-            count++;
-            if (count > D) return false;
-            i = j - 1;
+    private boolean check(int[] w, int d, int mid) {
+        int t = 1, sum = 0;
+        for (int x : w) {
+            if (sum + x > mid) {
+                t++;
+                sum = x;
+            } else sum += x;
         }
-        return true;
+        return t <= d;
     }
 }
 /**

@@ -26,29 +26,25 @@ public class LC528_RandomPickwithWeight {
      * @param w
      */
     // S1: BS
-    // time = O(n), space = O(n)
-    List<Integer> list;
+    int[] s;
+    int n;
     Random random;
-    int sum = 0;
     public LC528_RandomPickwithWeight(int[] w) {
-        list = new ArrayList<>();
         random = new Random();
-        for (int x : w) {
-            sum += x;
-            list.add(sum);
-        }
+        n = w.length;
+        s = new int[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + w[i - 1];
     }
-
-    // time = O(logn), space = O(1)
+    // time = O(logn), space = O(n)
     public int pickIndex() {
-        int r = random.nextInt(sum) + 1; // 注意：list里放的sum，值域是[1:sum] (1 <= w[i] <= 10^5),而不是从0开始，所以要+1！！！
-        int left = 0, right = list.size() - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (list.get(mid) < r) left = mid + 1;
-            else right = mid;
+        int x = random.nextInt(s[n]) + 1;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (s[mid] >= x) r = mid;
+            else l = mid + 1;
         }
-        return left;
+        return r - 1;
     }
 
     // S2: TreeMap

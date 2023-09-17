@@ -23,14 +23,13 @@ public class LC389_FindtheDifference {
     // S1
     // time = O(m + n), space = O(1)
     public char findTheDifference(String s, String t) {
-        int[] freq = new int[26];
-        for (char c : s.toCharArray()) {
-            freq[c - 'a']++;
-        }
-
-        for (char c : t.toCharArray()) {
-            freq[c - 'a']--;
-            if (freq[c - 'a'] < 0) return c;
+        int[] cnt = new int[26];
+        int m = s.length(), n = t.length();
+        for (int i = 0; i < m; i++) cnt[s.charAt(i) - 'a']++;
+        for (int i = 0; i < n; i++) {
+            char c = t.charAt(i);
+            cnt[c - 'a']--;
+            if (cnt[c - 'a'] < 0) return c;
         }
         return '\0';
     }

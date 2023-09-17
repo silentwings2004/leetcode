@@ -107,4 +107,12 @@ public class LC514_FreedomTrail {
  * dp[i][cur_pos]:at the ith-round, we are going to move the letter at ring[cur_pos] to 12 o'clock,
  * minimum number of steps in order to spell all the characters in the keyword[0:i]
  * dp[i][pos] => min{dp[i-1][pos'] + dis(pos, pos')} for pos' = ...
+ *
+ * DP
+ * 1.状态表示 f(i, j):
+ * 集合：已经输出了key的前i个字符且输出最后一个字母的时候指针位于ring[j]的所有方案
+ * 属性：最小值
+ * 2.状态计算 f(i, j)
+ * 倒数第二步：k->j 按按钮 f(i-1,k)
+ *
  */

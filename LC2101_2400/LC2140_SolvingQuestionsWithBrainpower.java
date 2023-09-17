@@ -75,12 +75,14 @@ public class LC2140_SolvingQuestionsWithBrainpower {
     // time = O(n), space = O(n)
     public long mostPoints3(int[][] questions) {
         int n = questions.length;
-        long[] dp = new long[n + 1];
-        for (int i = n - 1; i >= 0; i--) {
-            int j = i + questions[i][1] + 1;
-            dp[i] = Math.max(dp[i + 1], (j < n ? dp[j] : 0) + questions[i][0]);
+        long[] f = new long[n];
+        f[n - 1] = questions[n - 1][0];
+        for (int i = n - 2; i >= 0; i--) {
+            int a = questions[i][0], b = questions[i][1] + 1;
+            f[i] = f[i + 1];
+            f[i] = Math.max(f[i], (i + b >= n ? 0 : f[i + b]) + a);
         }
-        return dp[0];
+        return f[0];
     }
 
     // S4: HashMap

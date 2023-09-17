@@ -24,14 +24,11 @@ public class LC724_FindPivotIndex {
      */
     // time = O(n), space = O(1)
     public int pivotIndex(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length, sum = 0, leftSum = 0;
-        for (int num : nums) sum += num;
-        for (int i = 0; i < n; i++) {
-            if (leftSum == sum - leftSum - nums[i]) return i;
-            leftSum += nums[i];
+        int sum = 0;
+        for (int x : nums) sum += x;
+        for (int i = 0, s = 0; i < nums.length; i++) {
+            if (s == sum - s - nums[i]) return i;
+            s += nums[i];
         }
         return -1;
     }

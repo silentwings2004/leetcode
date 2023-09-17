@@ -30,40 +30,36 @@ public class LC802_FindEventualSafeStates {
      * @return
      */
     // S1: BFS
-    // time = O(V + E), space = O(V)
+    // time = O(n + m), space = O(n + m)
     public List<Integer> eventualSafeNodes(int[][] graph) {
-        List<Integer> res = new ArrayList<>();
         int n = graph.length;
-        int[] outdegree = new int[n];
-        List<Integer>[] prev = new List[n];
-        for (int i = 0; i < n; i++) prev[i] = new ArrayList<>();
+        int[] d = new int[n];
+        List<Integer>[] g = new List[n];
+        for (int i = 0; i < n; i++) g[i] = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            for (int j : graph[i]) {
-                prev[j].add(i);
-                outdegree[i]++;
+            for (int b : graph[i]) {
+                int a = i;
+                g[b].add(a);
+                d[a]++;
             }
         }
 
         Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < n; i++) {
-            if (outdegree[i] == 0) {
-                queue.offer(i);
-                res.add(i);
-            }
+            if (d[i] == 0) queue.offer(i);
         }
 
         while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            for (int x : prev[cur]) {
-                outdegree[x]--;
-                if (outdegree[x] == 0) {
-                    queue.offer(x);
-                    res.add(x);
-                }
+            int t = queue.poll();
+            for (int next : g[t]) {
+                if (--d[next] == 0) queue.offer(next);
             }
         }
-        // order被打乱，需要重新sort
-        Collections.sort(res);
+
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (d[i] == 0) res.add(i);
+        }
         return res;
     }
 
@@ -105,4 +101,9 @@ public class LC802_FindEventualSafeStates {
  * S2: bfs
  * 拓扑排序的应用。最容易判定safe的节点，是那些出度为0的节点。将这些点剪除之后，接下来出度为0的节点，肯定还是safe的节点。
  * 以此BFS不断推进，如果还有剩下的节点，那么他们肯定出度都不为0，即是互相成环的，可以终止程序。
+ *
+ * 先去找到没有出边的点，这些都是安全的点
+ * 再继续找，看当前哪些点没有出边 => 都是安全点，再删掉
+ * 直到不能删为止，剩下的点一定是在环上 => 拓扑排序
+ * 先得将所有边反向，这样出边变成入边，才能转化为一般的拓扑排序问题
  */

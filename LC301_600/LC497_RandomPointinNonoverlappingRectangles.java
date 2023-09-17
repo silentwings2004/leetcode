@@ -34,38 +34,41 @@ public class LC497_RandomPointinNonoverlappingRectangles {
      * At most 10^4 calls will be made to pick.
      * @param rects
      */
+    // time = O(nlogn), space = O(n)
+    int n;
     int[][] rects;
-    int[] sum;
+    int[] s;
     Random random;
     public LC497_RandomPointinNonoverlappingRectangles(int[][] rects) {
         this.rects = rects;
-        int n = rects.length;
-        sum = new int[n + 1];
+        n = rects.length;
+        s = new int[n + 1];
         random = new Random();
-
         for (int i = 1; i <= n; i++) {
-            int a = rects[i - 1][2] - rects[i - 1][0] + 1;
-            int b = rects[i - 1][3] - rects[i - 1][1] + 1;
-            sum[i] = sum[i - 1] + a * b;
+            int dx = rects[i - 1][2] - rects[i - 1][0] + 1;
+            int dy = rects[i - 1][3] - rects[i - 1][1] + 1;
+            s[i] = s[i - 1] + dx * dy;
         }
     }
 
     public int[] pick() {
-        int n = sum.length;
-        int k = random.nextInt(sum[n - 1]) + 1;
-        int left = 1, right = n - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (sum[mid] < k) left = mid + 1;
-            else right = mid;
+        int k = random.nextInt(s[n]) + 1;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (s[mid] >= k) r = mid;
+            else l = mid + 1;
         }
-        int[] r = rects[left - 1];
-        int a = r[2] - r[0] + 1;
-        int b = r[3] - r[1] + 1;
-        return new int[]{random.nextInt(a) + r[0], random.nextInt(b) + r[1]};
+        int[] t = rects[r - 1];
+        int dx = t[2] - t[0] + 1;
+        int dy = t[3] - t[1] + 1;
+        return new int[]{random.nextInt(dx) + t[0], random.nextInt(dy) + t[1]};
     }
 }
 /**
  * rand() % M => [0, M-1]
  * ______|____|______
+ * 把矩形的面积变化为线段的长度，最后从数轴上选一个点，线段越长，落到的概率就越高
+ * 先求下矩形的面积，用线段上的一段来表示矩形，每段长度恰好等于矩形面积
+ * 先随机在哪一段上，然后在矩形内部随机点
  */

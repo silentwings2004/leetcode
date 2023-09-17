@@ -73,6 +73,43 @@ public class LC679_24Game {
         }
         return false;
     }
+
+    // S2
+    // time = O(1), space = O(1)
+    public boolean judgePoint242(int[] cards) {
+        int n = cards.length;
+        double[] a = new double[n];
+        for (int i = 0; i < n; i++) a[i] = cards[i];
+        return dfs(a);
+    }
+
+    private boolean dfs(double[] nums) {
+        if (nums.length == 1) return Math.abs(nums[0] - 24) < 1e-8;
+
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    double a = nums[i], b = nums[j];
+                    if (dfs(get(nums, i, j, a + b))) return true;
+                    if (dfs(get(nums, i, j, a - b))) return true;
+                    if (dfs(get(nums, i, j, a * b))) return true;
+                    if (b != 0 && dfs(get(nums, i, j, a / b))) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private double[] get(double[] nums, int i, int j, double x) {
+        int n = nums.length, idx = 0;
+        double[] res = new double[n - 1];
+        for (int k = 0; k < n; k++) {
+            if (k != i && k != j) res[idx++] = nums[k];
+        }
+        res[idx++] = x;
+        return res;
+    }
 }
 /**
  * 本质是任选2个数，算出来把结果放回去，3个数中算24，以此类推

@@ -83,8 +83,51 @@ public class LC140_WordBreakII {
             this.isEnd = false;
         }
     }
+
+    // S2
+    // time = O(n * 2^n), space = O(n * 2^n)
+    List<String> ans;
+    HashSet<String> set;
+    boolean[] f;
+    int n;
+    public List<String> wordBreak2(String s, List<String> wordDict) {
+        ans = new ArrayList<>();
+        set = new HashSet<>();
+        n = s.length();
+        f = new boolean[n + 1];
+
+        for (String word : wordDict) set.add(word);
+
+        f[n] = true;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i; j < n; j++) {
+                if (set.contains(s.substring(i, j + 1)) && f[j + 1]) f[i] = true;
+            }
+        }
+        dfs(s, 0, new StringBuilder());
+        return ans;
+    }
+
+    private void dfs(String s, int u, StringBuilder sb) {
+        if (u == n) {
+            sb.setLength(sb.length() - 1);
+            ans.add(sb.toString());
+            return;
+        }
+
+        int len = sb.length();
+        for (int i = u; i < n; i++) {
+            if (set.contains(s.substring(u, i + 1)) && f[i + 1]) {
+                sb.append(s.substring(u, i + 1)).append(' ');
+                dfs(s, i + 1, sb);
+                sb.setLength(len);
+            }
+        }
+    }
 }
 /**
  * Trie 共用前缀
  * Trie总共最多也就10层，所以最多通过O(10)的时间就能确定哪些前缀是在Trie里面的，效率非常高
+ * 暴搜：快速判断后面这一部分能不能合法划分出来
+ * 先处理f(i) s[i~n]
  */

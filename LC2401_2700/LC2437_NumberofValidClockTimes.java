@@ -81,4 +81,29 @@ public class LC2437_NumberofValidClockTimes {
         if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) return true;
         return false;
     }
+
+    // S3: brute-force
+    // time = O(24 * 60 * 5), space = O(1)
+    public int countTime3(String time) {
+        int res = 0;
+        for (int i = 0; i < 24; i++) {
+            for (int j = 0; j < 60; j++) {
+                String h = String.valueOf(i);
+                if (i < 10) h = "0" + h;
+                String m = String.valueOf(j);
+                if (j < 10) m = "0" + m;
+                String t = h + ":" + m;
+                if (check(t, time)) res++;
+            }
+        }
+        return res;
+    }
+
+    private boolean check(String s, String t) {
+        for (int i = 0; i < 5; i++) {
+            if (t.charAt(i) == '?') continue;
+            if (s.charAt(i) != t.charAt(i)) return false;
+        }
+        return true;
+    }
 }

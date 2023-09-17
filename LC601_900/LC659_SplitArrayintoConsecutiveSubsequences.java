@@ -33,6 +33,7 @@ public class LC659_SplitArrayintoConsecutiveSubsequences {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public boolean isPossible(int[] nums) {
         HashMap<Integer, Integer> map = new HashMap<>(); // key: ending number, val: how many seqs
@@ -54,6 +55,33 @@ public class LC659_SplitArrayintoConsecutiveSubsequences {
                 count.put(x + 2, count.get(x + 2) - 1);
                 map.put(x + 2, map.getOrDefault(x + 2, 0) + 1);
             }
+        }
+        return true;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public boolean isPossible2(int[] nums) {
+        HashMap<Integer, Integer> m1 = new HashMap<>();
+        HashMap<Integer, Integer> m2 = new HashMap<>();
+        for (int x : nums) m1.put(x, m1.getOrDefault(x, 0) + 1);
+        for (int x : nums) {
+            if (!m1.containsKey(x)) continue;
+            if (m2.containsKey(x - 1)) {
+                m2.put(x - 1, m2.get(x - 1) - 1);
+                if (m2.get(x - 1) == 0) m2.remove(x - 1);
+                m2.put(x, m2.getOrDefault(x, 0) + 1);
+                m1.put(x, m1.get(x) - 1);
+                if (m1.get(x) == 0) m1.remove(x);
+            } else if (m1.containsKey(x + 1) && m1.containsKey(x + 2)) {
+                m2.put(x + 2, m2.getOrDefault(x + 2, 0) + 1);
+                m1.put(x, m1.get(x) - 1);
+                m1.put(x + 1, m1.get(x + 1) - 1);
+                m1.put(x + 2, m1.get(x + 2) - 1);
+                if (m1.get(x) == 0) m1.remove(x);
+                if (m1.get(x + 1) == 0) m1.remove(x + 1);
+                if (m1.get(x + 2) == 0) m1.remove(x + 2);
+            } else return false;
         }
         return true;
     }

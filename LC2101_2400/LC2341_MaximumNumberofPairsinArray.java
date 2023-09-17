@@ -22,13 +22,16 @@ public class LC2341_MaximumNumberofPairsinArray {
      * @return
      */
     // time = O(n), space = O(n)
+    final int N = 110;
     public int[] numberOfPairs(int[] nums) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int x : nums) map.put(x, map.getOrDefault(x, 0) + 1);
+        int[] cnt = new int[N];
+        for (int x : nums) cnt[x]++;
         int[] res = new int[2];
-        for (int v : map.values()) {
-            res[0] += v / 2;
-            res[1] += v % 2;
+        for (int i = 0; i <= 100; i++) {
+            if (cnt[i] >= 2) {
+                res[0] += cnt[i] / 2;
+                if (cnt[i] % 2 != 0) res[1]++;
+            } else if (cnt[i] == 1) res[1]++;
         }
         return res;
     }

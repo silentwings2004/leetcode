@@ -24,7 +24,7 @@ public class LC933_NumberofRecentCalls {
      * Each test case will call ping with strictly increasing values of t.
      * At most 10^4 calls will be made to ping.
      */
-    // time = O(1), space = O(1)
+    // time = O(1), space = O(n)
     int N = 10010;
     int[] q;
     int hh, tt;

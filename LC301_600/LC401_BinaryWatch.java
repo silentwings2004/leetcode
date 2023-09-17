@@ -26,6 +26,7 @@ public class LC401_BinaryWatch {
      * @param turnedOn
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public List<String> readBinaryWatch(int turnedOn) {
         List<String> res = new ArrayList<>();
@@ -33,6 +34,25 @@ public class LC401_BinaryWatch {
             for (int m = 0; m < 60; m++) {
                 if (Integer.bitCount(h) + Integer.bitCount(m) == turnedOn) {
                     res.add(h + ":" + (m < 10 ? "0" + m : m));
+                }
+            }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public List<String> readBinaryWatch2(int turnedOn) {
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < 1 << 10; i++) {
+            int s = 0;
+            for (int j = 0; j < 10; j++) {
+                if ((i >> j & 1) == 1) s++;
+            }
+            if (s == turnedOn) {
+                int a = i >> 6, b = i & 63;
+                if (a < 12 && b < 60) {
+                    res.add(a + ":" + (b < 10 ? "0" + b : b));
                 }
             }
         }

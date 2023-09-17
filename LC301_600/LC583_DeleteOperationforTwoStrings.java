@@ -22,18 +22,18 @@ public class LC583_DeleteOperationforTwoStrings {
     // time = O(m * n), space = O(m * n)
     public int minDistance(String word1, String word2) {
         int m = word1.length(), n = word2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) dp[i][0] = i;
-        for (int j = 1; j <= n; j++) dp[0][j] = j;
+        int[][] f = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) f[i][0] = i;
+        for (int i = 1; i <= n; i++) f[0][i] = i;
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + 1;
+                f[i][j] = Math.min(f[i - 1][j], f[i][j - 1]) + 1;
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-                    dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - 1]);
+                    f[i][j] = Math.min(f[i][j], f[i - 1][j - 1]);
                 }
             }
         }
-        return dp[m][n];
+        return f[m][n];
     }
 }
 /**
@@ -63,8 +63,10 @@ public class LC583_DeleteOperationforTwoStrings {
  *  1. 集合：所有将s1(1~i) 与s2(1~j)变成相同字符中的所有方案
  *  2. 属性：min
  *  状态计算：4种情况中取最小值
- *  （1）i,j都存在：f(i-1,j-1)
+ *  （1）i,j都存在：f(i-1,j-1) when s1[i] == s2[j]
  *  （2）i存在，j不存在: f(i,j-1) + 1
  *  （3）i不存在，j存在: f(i-1,j) + 1
  *  （4）i,j都不存在: f(i-1,j-1) + 2  -> 被包含在（2）和（3）之中，不用单独考虑
+ *
+ * 其实就是去求最长公共子序列
  */

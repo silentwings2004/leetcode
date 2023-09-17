@@ -13,38 +13,29 @@ public class LC98_ValidateBinarySearchTree {
      * @param root
      * @return
      */
-    // S1: ResultType
+    // S1: 定义
     // time = O(n), space = O(n)
     public boolean isValidBST(TreeNode root) {
-        ResultType r = helper(root);
-        return r.isbst;
+        if (root == null) return true;
+        return dfs(root)[0] == 1 ? true : false;
     }
 
-    private ResultType helper(TreeNode root) {
-        // corner case
-        if (root == null) return new ResultType(true, Integer.MAX_VALUE, Integer.MIN_VALUE);
+    private int[] dfs(TreeNode node) {
+        int[] res = new int[]{1, node.val, node.val};
 
-        ResultType left = helper(root.left);
-        ResultType right = helper(root.right);
-
-        if (!left.isbst || !right.isbst) return new ResultType(false, 0, 0);
-
-        if (root.left != null && left.max >= root.val || root.right != null && right.min <= root.val) {
-            return new ResultType(false, 0, 0);
+        if (node.left != null) {
+            int[] t = dfs(node.left);
+            if (t[0] == 0 || t[2] >= node.val) res[0] = 0;
+            res[1] = Math.min(res[1], t[1]);
+            res[2] = Math.max(res[2], t[2]);
         }
-
-        return new ResultType(true, Math.min(root.val, left.min), Math.max(root.val, right.max));
-    }
-
-    private class ResultType {
-        private boolean isbst;
-        private int min;
-        private int max;
-        public ResultType(boolean isbst, int min, int max) {
-            this.isbst = isbst;
-            this.min = min;
-            this.max = max;
+        if (node.right != null) {
+            int[] t = dfs(node.right);
+            if (t[0] == 0 || t[1] <= node.val) res[0] = 0;
+            res[1] = Math.min(res[1], t[1]);
+            res[2] = Math.max(res[2], t[2]);
         }
+        return res;
     }
 
     // S2: Recursion
@@ -60,9 +51,8 @@ public class LC98_ValidateBinarySearchTree {
         prev = root;
         return isValidBST(root.right);
     }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
-    }
 }
+/**
+ * 直接判断它的子树是否中序遍历有序
+ * 在遍历的时候求下其左子树的最大值是否小于当前值，右子树的最小值是否大于当前值(定义)
+ */

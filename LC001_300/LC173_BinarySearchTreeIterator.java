@@ -42,7 +42,7 @@ public class LC173_BinarySearchTreeIterator {
         }
     }
 
-    // time = O(n), space = O(n)
+    // time = O(1), space = O(n) 时间复杂度均摊O(1)，因为每个元素只会进栈出栈1次
     public int next() {
         TreeNode top = stack.pop();
         TreeNode cur = top.right;

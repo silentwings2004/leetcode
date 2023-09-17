@@ -32,48 +32,37 @@ public class LC911_OnlineElection {
      * @param persons
      * @param times
      */
-    private int[] times;
-    private List<Integer> lead;
     // time = O(nlogn), space = O(n)
+    int[] win, times;
     public LC911_OnlineElection(int[] persons, int[] times) {
         this.times = times;
-        List<int[]> list = new ArrayList<>();
         int n = persons.length;
-        for (int i = 0; i < n; i++) list.add(new int[]{times[i], persons[i]});
-        Collections.sort(list, (o1, o2) -> o1[0] - o2[0]);
-        Arrays.sort(times);
+        win = new int[n];
+        int[] sum = new int[n];
 
-        int leadPerson = -1, leadVotes = 0;
-        HashMap<Integer, Integer> map = new HashMap<>();
-        lead = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            int p = list.get(i)[1];
-            map.put(p, map.getOrDefault(p, 0) + 1);
-            if (map.get(p) >= leadVotes) {
-                leadVotes = map.get(p);
-                leadPerson = p;
+        int maxc = 0, maxp = 0;
+        for (int i = 0; i < n; i++) {
+            int p = persons[i];
+            if (++sum[p] >= maxc) {
+                maxc = sum[p];
+                maxp = p;
             }
-            lead.add(leadPerson);
+            win[i] = maxp;
         }
     }
     // time = O(logn), space = O(1)
     public int q(int t) {
-        int idx = upperBound(times, t); // 第一个 <= t的时刻
-        return lead.get(idx);
+        int k = lower_bound(times, t);
+        return win[k];
     }
 
-    private int upperBound(int[] nums, int t) {
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
-            if (nums[mid] <= t) left = mid;
-            else right = mid - 1;
+    private int lower_bound(int[] a, int t) {
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (a[mid] <= t) l = mid;
+            else r = mid - 1;
         }
-        return nums[left] <= t ? left : left - 1;
+        return r;
     }
-    /**
-     * Your TopVotedCandidate object will be instantiated and called as such:
-     * TopVotedCandidate obj = new TopVotedCandidate(persons, times);
-     * int param_1 = obj.q(t);
-     */
 }

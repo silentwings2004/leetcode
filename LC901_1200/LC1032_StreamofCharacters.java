@@ -78,6 +78,50 @@ public class LC1032_StreamofCharacters {
             this.isEnd = false;
         }
     }
+
+    // S2
+    // time = O(n * m), space = O(n * m)
+    class StreamChecker {
+        final int N = 2000 * 200;
+        int[][] son;
+        int[] cnt;
+        int idx;
+        StringBuilder sb;
+        public StreamChecker(String[] words) {
+            son = new int[N][26];
+            cnt = new int[N];
+            idx = 0;
+            sb = new StringBuilder();
+
+            for (String w : words) insert(w);
+        }
+
+        public boolean query(char letter) {
+            sb.append(letter);
+            return check(sb.toString());
+        }
+
+        private void insert(String s) {
+            int p = 0;
+            for (int i = s.length() - 1; i >= 0; i--) {
+                int u = s.charAt(i) - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+            }
+            cnt[p]++;
+        }
+
+        private boolean check(String s) {
+            int p = 0;
+            for (int i = s.length() - 1; i >= 0; i--) {
+                int u = s.charAt(i) - 'a';
+                if (son[p][u] == 0) return false;
+                p = son[p][u];
+                if (cnt[p] > 0) return true;
+            }
+            return false;
+        }
+    }
 }
 /**
  * 从后往前建立trie

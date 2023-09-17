@@ -23,26 +23,22 @@ public class LC106_ConstructBinaryTreefromInorderandPostorderTraversal {
      * @return
      */
     // time = O(n), space = O(n)
-    HashMap<Integer, Integer> map = new HashMap<>();
+    HashMap<Integer, Integer> map;
     public TreeNode buildTree(int[] inorder, int[] postorder) {
-        for (int i = 0; i < inorder.length; i++) {
-            map.put(inorder[i], i);
-        }
-        return helper(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+        map = new HashMap<>();
+        int n = inorder.length;
+        for (int i = 0; i < n; i++) map.put(inorder[i], i);
+        return dfs(inorder, 0, n - 1, postorder, 0, n - 1);
     }
 
-    private TreeNode helper(int[] inorder, int is, int ie, int[] postorder, int ps, int pe) {
-        // base case
-        if (is > ie) return null;
+    private TreeNode dfs(int[] a, int i, int j, int[] b, int x, int y) {
+        if (i > j) return null;
 
-        TreeNode root = new TreeNode(postorder[pe]);
-
-        int idx = map.get(postorder[pe]);
-        int dist = idx - is;
-
-        root.left = helper(inorder, is, idx - 1, postorder, ps, ps + dist - 1);
-        root.right = helper(inorder, idx + 1, ie, postorder, ps + dist, pe - 1);
-
+        int r = map.get(b[y]);
+        int left = r - i, right = j - r;
+        TreeNode root = new TreeNode(b[y]);
+        root.left = dfs(a, i, r - 1, b, x, x + r - i - 1);
+        root.right = dfs(a, r + 1, j, b, x + r - i, y - 1);
         return root;
     }
 }

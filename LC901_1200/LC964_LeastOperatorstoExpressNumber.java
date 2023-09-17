@@ -76,6 +76,30 @@ public class LC964_LeastOperatorstoExpressNumber {
         }
         return f[0] - 1;
     }
+
+    // S3: memoization
+    // time = O(logt), space = O(logt)
+    HashMap<String, Integer> f;
+    public int leastOpsExpressTarget3(int x, int target) {
+        f = new HashMap<>();
+        return dp(x, target, 0);
+    }
+
+    private int dp(int x, int target, int depth) {
+        if (target == 0) return -1;
+        String state = target + " " + depth;
+        if (f.containsKey(state)) return f.get(state);
+        int cost = depth > 0 ? depth : 2;
+        if (target == 1) {
+            f.put(state, cost - 1);
+            return f.get(state);
+        }
+
+        int d = target / x, r = target % x;
+        if (r == 0) f.put(state, dp(x, d, depth + 1));
+        else f.put(state, Math.min(dp(x, d, depth + 1) + r * cost, dp(x, d + 1, depth + 1) + (x - r) * cost));
+        return f.get(state);
+    }
 }
 /**
  * 首先我们要厘清本题的实质。根据四则混合运算的性质，我们可以将一串表达式看成是若干个乘除项的加减。
@@ -106,4 +130,9 @@ public class LC964_LeastOperatorstoExpressNumber {
  *                    b5+x=a5+1 (b5也虚报1位)
  * f[i]: x^i, prev(bi) + bi, ai
  * g[i]: x^i, prev(bi) + bi, ai+1
+ *
+ * target 看成是一个k进制数
+ * 个位：能影响个位的只有x^0
+ * 1. 加r个x^0 => r * cost[0]
+ * 2. 减(x-r)个x^0 => (x-r)*cost[0]
  */

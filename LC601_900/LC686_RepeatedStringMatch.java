@@ -53,4 +53,35 @@ public class LC686_RepeatedStringMatch {
         if (sb.append(a).toString().contains(b)) return count + 1;
         return -1;
     }
+
+    // S3: KMP
+    // time = O(m + n), space = O(m + n)
+    public int repeatedStringMatch3(String a, String b) {
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() < b.length()) sb.append(a);
+        sb.append(a);
+        String s = sb.toString();
+        int n = s.length(), m = b.length();
+        s = "#" + s;
+        String p = "#" + b;
+
+        int[] ne = new int[m + 1];
+        for (int i = 2, j = 0; i <= m; i++) {
+            while (j > 0 && p.charAt(i) != p.charAt(j + 1)) j = ne[j];
+            if (p.charAt(i) == p.charAt(j + 1)) j++;
+            ne[i] = j;
+        }
+
+        for (int i = 1, j = 0; i <= n; i++) {
+            while (j > 0 && s.charAt(i) != p.charAt(j + 1)) j = ne[j];
+            if (s.charAt(i) == p.charAt(j + 1)) j++;
+            if (j == m) return (i + a.length() - 1) / a.length();
+        }
+        return -1;
+    }
 }
+/**
+ * 枚举下起始位置
+ * 需要枚举的起点只有a的字符数量
+ * 后面最多再加一段a，即可判断是否存在b => kmp
+ */

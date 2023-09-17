@@ -21,6 +21,7 @@ public class LC1568_MinimumNumberofDaystoDisconnectIsland {
      * @param grid
      * @return
      */
+    // S1
     // time = O(m^2 * n^2), space = O(m * n)
     private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int minDays(int[][] grid) {
@@ -71,6 +72,55 @@ public class LC1568_MinimumNumberofDaystoDisconnectIsland {
             }
         }
         return count;
+    }
+
+    // S2
+    // time = O(m^2 * n^2), space = O(m * n)
+    int m, n;
+    int[][] g;
+    boolean[][] st;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    public int minDays2(int[][] grid) {
+        g = grid;
+        m = g.length;
+        n = g[0].length;
+
+        if (check()) return 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (g[i][j] == 1) {
+                    g[i][j] = 0;
+                    if (check()) return 1;
+                    g[i][j] = 1;
+                }
+            }
+        }
+        return 2;
+    }
+
+    private boolean check() {
+        int cnt = 0;
+        st = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!st[i][j] && g[i][j] == 1) {
+                    cnt++;
+                    dfs(i, j);
+                }
+            }
+        }
+        return cnt > 1 || cnt == 0;
+    }
+
+    private void dfs(int x, int y) {
+        st[x][y] = true;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (st[a][b]) continue;
+            if (g[a][b] == 0) continue;
+            dfs(a, b);
+        }
     }
 }
 /**

@@ -19,15 +19,13 @@ public class LC118_PascalsTriangle {
     // time = O(n^2), space = O(n)
     public List<List<Integer>> generate(int numRows) {
         List<List<Integer>> res = new ArrayList<>();
-
-        for (int i = 0; i < numRows; i++) {
-            List<Integer> t = new ArrayList<>();
-            t.add(1);
-            for (int j = 1; j < i; j++) {
-                t.add(res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
-            }
-            if (i > 0) t.add(1);
-            res.add(t);
+        int n = numRows;
+        for (int i = 0; i < n; i++) {
+            List<Integer> path = new ArrayList<>();
+            path.add(1);
+            for (int j = 1; j < i; j++) path.add(res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+            if (i > 0) path.add(1);
+            res.add(path);
         }
         return res;
     }
@@ -35,24 +33,18 @@ public class LC118_PascalsTriangle {
     // S2
     // time = O(n^2), space = O(n)
     public List<List<Integer>> generate2(int numRows) {
-        List<List<Integer>> res = new ArrayList<>();
-
+        List<List<Integer>> f = new ArrayList<>();
+        f.add(Arrays.asList(1));
         int n = numRows;
-        for (int i = 0; i < n; i++) {
-            List<Integer> q = new ArrayList<>();
+        for (int i = 1; i < n; i++) {
+            f.add(new ArrayList<>());
             for (int j = 0; j <= i; j++) {
-                int a = 0, b = 0;
-                if (i == 0) {
-                    q.add(1);
-                    break;
-                } else {
-                    if (j > 0) a = res.get(i - 1).get(j - 1);
-                    if (j < i) b = res.get(i - 1).get(j);
-                    q.add(a + b);
-                }
+                int t = 0;
+                if (j <= i - 1) t += f.get(i - 1).get(j);
+                if (j - 1 >= 0) t += f.get(i - 1).get(j - 1);
+                f.get(i).add(t);
             }
-            res.add(q);
         }
-        return res;
+        return f;
     }
 }

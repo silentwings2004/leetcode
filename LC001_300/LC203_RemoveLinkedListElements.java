@@ -19,17 +19,14 @@ public class LC203_RemoveLinkedListElements {
      */
     // time = O(n), space = O(1)
     public ListNode removeElements(ListNode head, int val) {
-        // corner case
         if (head == null) return head;
 
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode cur = dummy;
-
-        while (cur.next != null) {
-            if (cur.next.val != val) cur = cur.next;
-            else cur.next = cur.next.next;
+        ListNode dummy = new ListNode(-1), p = dummy;
+        for (ListNode q = head; q != null; q = q.next) {
+            if (q.val == val) continue;
+            p = p.next = q;
         }
+        p.next = null;
         return dummy.next;
     }
 }

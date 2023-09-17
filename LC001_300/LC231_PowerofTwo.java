@@ -20,13 +20,9 @@ public class LC231_PowerofTwo {
      */
     // time = O(1), space = O(1)
     public boolean isPowerOfTwo(int n) {
-        return n > 0 && (n & (n - 1)) == 0;
+        return n > 0 && (n & -n) == n;
     }
 }
 /**
- * The solution is straightforward:
- *
- * Power of two has just one 1-bit.
- *
- * x & (x - 1) sets this 1-bit to zero, and hence one has to verify if the result is zero x & (x - 1) == 0.
+ * 一个数是2的整次幂的话，它的lowbit必然是等于它本身，即 lowbit(n) == n.
  */

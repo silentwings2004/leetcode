@@ -60,6 +60,63 @@ public class LC1245_TreeDiameter {
         }
         return new int[]{nodeIdx, maxDist};
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    final int N = 10010, M = N * 2;
+    int idx;
+    int[] h, e, ne;
+    int[] q, dist;
+    boolean[] st;
+    public int treeDiameter2(int[][] edges) {
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        q = new int[N];
+        dist = new int[N];
+        st = new boolean[N];
+        Arrays.fill(h, -1);
+        idx = 0;
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            add(a, b);
+            add(b, a);
+        }
+
+        int a = bfs(0);
+        int b = bfs(a);
+        return dist[b];
+    }
+
+    private int bfs(int start) {
+        Arrays.fill(dist, -1);
+        dist[start] = 0;
+        int hh = 0, tt = 0;
+        q[0] = start;
+        int max = 0, id = start;
+
+        while (hh <= tt) {
+            int t = q[hh++];
+            for (int i = h[t]; i != -1; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] != -1) continue;
+                q[++tt] = j;
+                dist[j] = dist[t] + 1;
+                if (dist[j] > max) {
+                    max = dist[j];
+                    id = j;
+                }
+            }
+        }
+        return id;
+    }
+
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
+    }
 }
 /**
  * 对于一张无向图的树，求最长的点到点距离，有一个非常成熟的做法。

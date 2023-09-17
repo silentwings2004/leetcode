@@ -64,6 +64,19 @@ public class LC537_ComplexNumberMultiplication {
         }
         return new int[]{res, i + 1};
     }
+
+    // S3
+    // time = O(1), space = O(1)
+    public String complexNumberMultiply3(String num1, String num2) {
+        int m = num1.length(), n = num2.length();
+        int i = num1.indexOf('+');
+        int j = num2.indexOf('+');
+        int a = Integer.parseInt(num1.substring(0, i));
+        int c = Integer.parseInt(num2.substring(0, j));
+        int b = Integer.parseInt(num1.substring(i + 1, m - 1));
+        int d = Integer.parseInt(num2.substring(j + 1, n - 1));
+        return (a * c - b * d) + "+" + (a * d + b * c) + "i";
+    }
 }
 /**
  * (a+ib)×(x+iy)=ax+(i^2)by+i(bx+ay)=ax−by+i(bx+ay)

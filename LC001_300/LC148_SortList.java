@@ -16,8 +16,52 @@ public class LC148_SortList {
      * @param head
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(1)
     public ListNode sortList(ListNode head) {
+        int n = 0;
+        for (ListNode p = head; p != null; p = p.next) n++;
+
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        for (int i = 1; i < n; i *= 2) {
+            ListNode cur = dummy;
+            for (int j = 1; j + i <= n; j += i * 2) {
+                ListNode p = cur.next, q = p;
+                for (int k = 0; k < i; k++) q = q.next;
+
+                int l = 0, r = 0;
+                while (l < i && r < i && p != null && q != null) {
+                    if (l < i && p.val <= q.val) {
+                        cur = cur.next = p;
+                        p = p.next;
+                        l++;
+                    } else {
+                        cur = cur.next = q;
+                        q = q.next;
+                        r++;
+                    }
+                }
+
+                while (l < i && p != null) {
+                    cur = cur.next = p;
+                    p = p.next;
+                    l++;
+                }
+                while (r < i && q != null) {
+                    cur = cur.next = q;
+                    q = q.next;
+                    r++;
+                }
+                cur.next = q;
+            }
+        }
+        return dummy.next;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(nlogn)
+    public ListNode sortList2(ListNode head) {
         // corner case
         if (head == null || head.next == null) return head;
 

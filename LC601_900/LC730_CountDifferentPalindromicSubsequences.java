@@ -76,35 +76,35 @@ public class LC730_CountDifferentPalindromicSubsequences {
     // S2: dp
     // time = O(n^2), space = O(n^2)
     public int countPalindromicSubsequences2(String s) {
-        int n = s.length(), M = (int)(1e9 + 7);
-        int[][] f = new int[n][n];
-        for (int[] x : f) Arrays.fill(x, 1); // 初始化都有一个"空串"，所以初始为1，最后再结尾再去掉空串！
-        for (int i = 0; i < n; i++) f[i][i]++; // 加上长度为1的回文子序列！
+        int n = s.length(), mod = (int) 1e9 + 7;
+        int[][] f = new int[n + 2][n + 2];
+        for (int i = 0; i <= n + 1; i++) Arrays.fill(f[i], 1);
+        for (int i = 1; i <= n; i++) f[i][i]++;
 
         for (int len = 2; len <= n; len++) {
-            Deque<Integer>[] dq = new Deque[4];
-            for (int i = 0; i < 4; i++) dq[i] = new LinkedList<>();
-            for (int i = 0; i < len - 1; i++) dq[s.charAt(i) - 'a'].offerLast(i);
-            for (int i = 0; i + len - 1 < n; i++) {
-                int j = i + len - 1;
-                dq[s.charAt(j) - 'a'].offerLast(j);
-                for (int k = 0; k < 4; k++) {
-                    if (dq[k].size() > 0) {
-                        f[i][j]++; // 长度为1的回文子序列
-                        int l = dq[k].peekFirst(); // 找到l与r的位置
-                        int r = dq[k].peekLast();
-                        if (l < r) f[i][j] = (f[i][j] + f[l + 1][r - 1]) % M;
+            Deque<Integer>[] q = new Deque[4];
+            for (int i = 0; i < 4 ; i++) q[i] = new LinkedList<>();
+            for (int i = 1; i <= n; i++) {
+                q[s.charAt(i - 1) - 'a'].offer(i);
+                int j = i - len + 1;
+                if (j >= 1) {
+                    for (int k = 0; k < 4; k++) {
+                        while (!q[k].isEmpty() && q[k].peekFirst() < j) q[k].pollFirst();
+                        if (!q[k].isEmpty()) {
+                            f[j][i]++;
+                            int l = q[k].peekFirst(), r = q[k].peekLast();
+                            if (l < r) f[j][i] = (f[j][i] + f[l + 1][r - 1]) % mod;
+                        }
                     }
                 }
-                dq[s.charAt(i) - 'a'].pollFirst();
             }
         }
-        return f[0][n - 1] - 1; // 最后去掉"空串"
+        return (f[1][n] - 1 + mod) % mod;
     }
 }
 /**
  * f(i,j) 不同回文子序列的数量(含空)
- * 只可能包含4个字符，划分为4类：
+ * 只可能包含4个字符，以最外侧的字符来划分为4类：
  * a-a, b-b, c-c, d-d
  * 这四类一定没有交集
  * 找到第一个a和最后一个a => f(L+1,R-1) + 1 (1个a)
@@ -113,5 +113,4 @@ public class LC730_CountDifferentPalindromicSubsequences {
  * dp[i][j] 能match的话，就转移
  * 回文，一头一尾相等
  * dp[i][j]: the number of different non-empty palindromic subsequences in s[j:i]
- *
  */

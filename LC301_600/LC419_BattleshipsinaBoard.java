@@ -42,3 +42,8 @@ public class LC419_BattleshipsinaBoard {
         return res;
     }
 }
+/**
+ * 只记录左上角格子的数量，
+ * 如果左上角格子的左边和下边都没有'X'
+ * 那么表示可以是一艘战舰
+ */

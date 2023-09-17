@@ -81,5 +81,5 @@ public class LC895_MaximumFrequencyStack {
 /**
  * val, cnt, id
  * 在cnt最多的元素里，找id最大的 => 线性
- * 拉链法
+ * 拉链法 => 用栈来实现
  */

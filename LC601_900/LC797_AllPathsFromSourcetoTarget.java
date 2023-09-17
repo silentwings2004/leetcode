@@ -23,30 +23,28 @@ public class LC797_AllPathsFromSourcetoTarget {
      * @return
      */
     // time = O(n * 2^n), space = O(n)
-    List<List<Integer>> res;
-    int[][] graph;
     int n;
+    List<List<Integer>> res;
+    List<Integer> path;
+    int[][] g;
     public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        g = graph;
+        n = g.length;
         res = new ArrayList<>();
-        this.graph = graph;
-        n = graph.length;
-
-        List<Integer> path = new ArrayList<>();
-        path.add(0);
-        dfs(0, -1, path);
+        path = new ArrayList<>();
+        dfs(0);
         return res;
     }
 
-    private void dfs(int u, int fa, List<Integer> path) {
+    private void dfs(int u) {
+        path.add(u);
         if (u == n - 1) {
             res.add(new ArrayList<>(path));
+            path.remove(path.size() - 1);
             return;
         }
 
-        for (int j : graph[u]) {
-            path.add(j);
-            dfs(j, u, path);
-            path.remove(path.size() - 1);
-        }
+        for (int next : g[u]) dfs(next);
+        path.remove(path.size() - 1);
     }
 }

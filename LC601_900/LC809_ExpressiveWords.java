@@ -1,5 +1,5 @@
 package LC601_900;
-
+import java.util.*;
 public class LC809_ExpressiveWords {
     /**
      * Sometimes people repeat letters to represent extra feeling. For example:
@@ -34,6 +34,7 @@ public class LC809_ExpressiveWords {
      * @param words
      * @return
      */
+    // S1
     // time = O(S), space = O(1)  S: the length of string s and all of the words in the array words
     public int expressiveWords(String s, String[] words) {
         int n = s.length(), res = 0;
@@ -58,6 +59,47 @@ public class LC809_ExpressiveWords {
             }
             if (i != n || j != m) continue;
             if (flag) res++;
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int expressiveWords2(String s, String[] words) {
+        if (s.length() == 0) {
+            int res = 0;
+            for (String w : words) {
+                if (w.length() == 0) res++;
+            }
+            return res;
+        }
+
+        List<int[]> q = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+            int j = i + 1;
+            while (j < s.length() && s.charAt(i) == s.charAt(j)) j++;
+            q.add(new int[]{s.charAt(i) - 'a', j - i});
+            i = j - 1;
+        }
+
+        int res = 0;
+        for (String w : words) {
+            int k = 0;
+            for (int i = 0; i < w.length(); i++) {
+                if (k == q.size()) {
+                    k = -1;
+                    break;
+                }
+                if (q.get(k)[0] != w.charAt(i) - 'a') break;
+                int j = i + 1;
+                while (j < w.length() && w.charAt(i) == w.charAt(j)) j++;
+                int c1 = q.get(k)[1], c2 = j - i;
+                if (c1 < c2) break;
+                if (c1 < 3 && c1 != c2) break;
+                k++;
+                i = j - 1;
+            }
+            if (k == q.size()) res++;
         }
         return res;
     }

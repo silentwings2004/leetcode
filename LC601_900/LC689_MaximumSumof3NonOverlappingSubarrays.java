@@ -79,4 +79,38 @@ public class LC689_MaximumSumof3NonOverlappingSubarrays {
         }
         return new int[]{a, b, c};
     }
+
+    // S2:
+    // time = O(n), space = O(n)
+    public int[] maxSumOfThreeSubarrays2(int[] nums, int k) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
+        int[][] f = new int[n + 2][4];
+
+        int x = n + 1, y = 3;
+        for (int i = n - k + 1; i > 0; i--) {
+            for (int j = 1; j <= 3; j++) {
+                f[i][j] = Math.max(f[i + 1][j], f[i + k][j - 1] + s[i + k - 1] - s[i - 1]);
+            }
+            if (f[x][3] <= f[i][3]) x = i;
+        }
+
+        int[] res = new int[3];
+        int idx = 0;
+        while (y > 0) {
+            while (f[x][y] != f[x + k][y - 1] + s[x + k - 1] - s[x - 1]) x++;
+            res[idx++] = x - 1;
+            x += k;
+            y--;
+        }
+        return res;
+    }
 }
+/**
+ * f(i,j): 前i个数中找到j个不重叠子数组的最大和
+ * 不用ai: f(i-1,j)
+ * 用ai: f(i-k,j-1)+Si-Sk
+ * f(i,j) = max{f(i-1,j), f(i-k,j-1) + Si-Sk}
+ * 倒序dp求方案
+ */

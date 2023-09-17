@@ -163,6 +163,48 @@ public class LC1157_OnlineMajorityElementInSubarray {
             return new int[]{R[0], R[1] - L[1]};
         }
     }
+
+    // S3: 分块
+    // time = O(n*sqrt(n)), space = O(n)
+    class MajorityChecker {
+        int n, len;
+        HashMap<Integer, Integer> cnt;
+        HashMap<Integer, int[]> map;
+        int[] a;
+        public MajorityChecker(int[] arr) {
+            a = arr;
+            cnt = new HashMap<>();
+            map = new HashMap<>();
+            n = a.length;
+            len = (int) Math.sqrt(n * 2);
+
+            for (int x : a) cnt.put(x, cnt.getOrDefault(x, 0) + 1);
+            for (int x : cnt.keySet()) {
+                if (cnt.get(x) > len) {
+                    map.put(x, new int[n + 1]);
+                    for (int i = 1; i <= n; i++) {
+                        map.get(x)[i] = map.get(x)[i - 1];
+                        if (a[i - 1] == x) map.get(x)[i]++;
+                    }
+                }
+            }
+        }
+
+        public int query(int left, int right, int threshold) {
+            if (right - left + 1 <= len) {
+                cnt.clear();
+                for (int i = left; i <= right; i++) {
+                    cnt.put(a[i], cnt.getOrDefault(a[i], 0) + 1);
+                    if (cnt.get(a[i]) >= threshold) return a[i];
+                }
+            } else {
+                for (int x : map.keySet()) {
+                    if (map.get(x)[right + 1] - map.get(x)[left] >= threshold) return x;
+                }
+            }
+            return -1;
+        }
+    }
 }
 /**
  * 任何区间内不可能有2个元素 >= threshold (抽屉原理)
@@ -196,4 +238,10 @@ public class LC1157_OnlineMajorityElementInSubarray {
  * freqDiff
  * 如果抽中2个都是相同的数，这个时候majority element就是这个数，freqDiff就做和。
  * 如果freqDiff == 0，那么majority就没有意义了，一定不存在majority element
+ *
+ * 分类处理：
+ * <= len => 暴力求 O(len) 区间长度比较短
+ * >= len => T > len / 2  => 这种数的个数 = n / (len/2) = 2*n/len 很少
+ * => O(sqrt(2n))
+ * 求某个区间内的出现次数=> 前缀和优化
  */

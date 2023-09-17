@@ -61,6 +61,23 @@ public class LC995_MinimumNumberofKConsecutiveBitFlips {
         }
         return count;
     }
+
+    // S3: prefix sum
+    // time = O(n), space = O(n)
+    public int minKBitFlips3(int[] nums, int k) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int t = s[i - 1] - s[Math.max(0, i - k)] & 1;
+            nums[i - 1] ^= t;
+            if (nums[i - 1] == 0) {
+                if (i - 1 + k > n) return -1;
+                s[i]++;
+            }
+            s[i] += s[i - 1];
+        }
+        return s[n];
+    }
 }
 /**
  * 1 1 [0 x x 1] x x x x  -> 前面搞定了就不要去动了，百害而无一利

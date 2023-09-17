@@ -28,18 +28,18 @@ public class LC944_DeleteColumnstoMakeSorted {
      * @param strs
      * @return
      */
-    // time = O(m * n), space = O(1)
+    // time = O(m * n), space = (1)
     public int minDeletionSize(String[] strs) {
         int m = strs.length, n = strs[0].length();
-        int count = 0;
+        int res = 0;
         for (int j = 0; j < n; j++) {
-            for (int i = 0; i < m - 1; i++) {
-                if (strs[i + 1].charAt(j) < strs[i].charAt(j)) {
-                    count++;
+            for (int i = 1; i < m; i++) {
+                if (strs[i].charAt(j) < strs[i - 1].charAt(j)) {
+                    res++;
                     break;
                 }
             }
         }
-        return count;
+        return res;
     }
 }

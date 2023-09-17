@@ -37,6 +37,21 @@ public class LC921_MinimumAddtoMakeParenthesesValid {
         res += count;
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int minAddToMakeValid2(String s) {
+        int l = 0, r = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') l++;
+            else {
+                if (l == 0) r++;
+                else l--;
+            }
+        }
+        return l + r;
+    }
 }
 /**
  * 对于括号，无非2种做法：

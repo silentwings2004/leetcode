@@ -42,16 +42,16 @@ public class LC714_BestTimetoBuyandSellStockwithTransactionFee {
     // S2: state machine DP
     // time = O(n), space = O(n)
     public int maxProfit2(int[] prices, int fee) {
-        int n = prices.length;
-        int[][] dp = new int[n + 1][2];
-        for (int i = 0; i <= n; i++) Arrays.fill(dp[i], Integer.MIN_VALUE / 2);
-        dp[0][0] = 0;
+        int n = prices.length, INF = (int) 1e8;
+        int[][] f = new int[n + 1][2];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], -INF);
+        f[0][0] = 0;
 
         int res = 0;
         for (int i = 1; i <= n; i++) {
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i - 1]);
-            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i - 1] - fee);
-            res = Math.max(res, dp[i][0]);
+            f[i][0] = Math.max(f[i - 1][0], f[i - 1][1] + prices[i - 1]);
+            f[i][1] = Math.max(f[i - 1][1], f[i - 1][0] - prices[i - 1] - fee);
+            res = Math.max(res, f[i][0]);
         }
         return res;
     }

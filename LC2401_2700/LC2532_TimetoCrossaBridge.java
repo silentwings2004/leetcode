@@ -48,6 +48,7 @@ public class LC2532_TimetoCrossaBridge {
      * @param time
      * @return
      */
+    // S1
     // time = O(nlogk), space = O(k)
     public int findCrossingTime(int n, int k, int[][] time) {
         PriorityQueue<int[]> pq1 = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]); // {time, 0:l / 1:r, i, time}
@@ -86,4 +87,67 @@ public class LC2532_TimetoCrossaBridge {
             pq1.offer(cur); // 把当前准备过桥的工人加入过桥优先队列pq1
         }
     }
+
+    // S2: Simulation
+    public int findCrossingTime2(int n, int k, int[][] time) {
+        PriorityQueue<int[]> leftWait = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o2[0] - o1[0] : o2[1] - o1[1]); // {efficiency, id}
+        PriorityQueue<int[]> rightWait = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o2[0] - o1[0] : o2[1] - o1[1]);
+        PriorityQueue<int[]> leftArrival = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]); // {arriveTime, id}
+        PriorityQueue<int[]> rightArrival = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int nextFree = 0;
+        for (int i = 0; i < k; i++) leftArrival.offer(new int[]{0, i});
+
+        int returned = 0, res = 0, crossed = 0;
+        while (returned < n) {
+            if (crossed == n) {
+                leftWait.clear();;
+                leftArrival.clear();;
+            }
+
+            while (!leftArrival.isEmpty() && leftArrival.peek()[0] <= nextFree) {
+                int[] t = leftArrival.poll();
+                int id = t[1];
+                leftWait.offer(new int[]{time[id][0] + time[id][2], id});
+            }
+            while (!rightArrival.isEmpty() && rightArrival.peek()[0] <= nextFree) {
+                int[] t = rightArrival.poll();
+                int id = t[1];
+                rightWait.offer(new int[]{time[id][0] + time[id][2], id});
+            }
+
+            if (leftWait.isEmpty() && rightWait.isEmpty()) {
+                int t1 = leftArrival.isEmpty() ? Integer.MAX_VALUE : leftArrival.peek()[0];
+                int t2 = rightArrival.isEmpty() ? Integer.MAX_VALUE : rightArrival.peek()[0];
+                nextFree = Math.min(t1, t2);
+            }
+
+            if (!rightWait.isEmpty()) { // R -> L
+                int[] t = rightWait.poll();
+                int id = t[1];
+                nextFree += time[id][2];
+                leftArrival.offer(new int[]{nextFree + time[id][3], id});
+                returned++;
+                res = Math.max(res, nextFree);
+            } else if (!leftWait.isEmpty()) {
+                int[] t = leftWait.poll();
+                int id = t[1];
+                nextFree += time[id][0];
+                rightArrival.offer(new int[]{nextFree + time[id][1], id});
+                crossed++;
+            }
+        }
+        return res;
+    }
 }
+/**
+ * 不需要做决策，过程都是确定的 => 模拟题
+ * 把这个过程给模拟出来，谁先走和谁后走都是确定的
+ * 切入点：桥两端的等位系统
+ * 到达对岸后，又会在一个预期的时间内加入对岸的队列
+ * leftWait:{id, efficiency}
+ * rightWait:{id, efficiency}
+ * nextFreeTime
+ * leftArrival: {id, arriveTime}
+ * rightArrival: {id, arriveTime}
+ */

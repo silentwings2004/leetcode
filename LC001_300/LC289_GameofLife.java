@@ -24,65 +24,20 @@ public class LC289_GameofLife {
      * @param board
      */
     // time = O(m * n), space = O(1)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, -1}, {1, 1,}, {-1, 1}, {1, -1}};
-    public void gameOfLife(int[][] board) {
-        // corner case
-        if (board == null || board.length == 0 || board[0] == null || board[0].length == 0) return;
-
-        int row = board.length, col = board[0].length;
-
-        // 1st iteration: modify the changing locations into intermediate value
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                int live = 0;
-                for (int[] dir : DIRECTIONS) {
-                    int ii = i + dir[0];
-                    int jj = j + dir[1];
-                    if (ii < 0 || ii >= row || jj < 0 || jj >= col) continue;
-                    // 0 -> 1 record with -1, if 1 -> 0 then record with 2 as intermediate value
-                    if (board[ii][jj] == 1 || board[ii][jj] == 2) live++; // 2表示变化前改位置是1，代表有一个live cell
-                }
-                if (board[i][j] == 0) { // current cell is dead
-                    if (live == 3) board[i][j] = -1; // 0 -> 1
-                } else { // current cell is alive
-                    if (live < 2 || live > 3) board[i][j] = 2; // 1 -> 0
-                }
-            }
-        }
-
-        // 2nd iteration: -1 -> 1, 2 -> 0
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if (board[i][j] == -1) board[i][j] = 1;
-                else if (board[i][j] == 2) board[i][j] = 0;
-            }
-        }
-    }
-
-    // S2
-    // time = O(m * n), space = O(1)
     private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-    public void gameOfLife2(int[][] board) {
+    public void gameOfLife(int[][] board) {
         int m = board.length, n = board[0].length;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 int live = 0;
                 for (int[] dir : directions) {
-                    int x = i + dir[0];
-                    int y = j + dir[1];
-                    if (x < 0 || x >= m || y < 0 || y >= n) continue;
-                    if ((board[x][y] & 1) == 1) live++;
+                    int a = i + dir[0];
+                    int b = j + dir[1];
+                    if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                    if ((board[a][b] & 1) == 1) live++;
                 }
-
-                int next = 0;
-                if (board[i][j] == 0) {
-                    if (live == 3) next = 1;
-                    else next = 0;
-                } else {
-                    if (live < 2 || live > 3) next = 0;
-                    else next = 1;
-                }
-                board[i][j] |= next << 1;
+                if (board[i][j] == 1 && (live == 2 || live == 3)) board[i][j] |= 1 << 1;
+                if (board[i][j] == 0 && live == 3) board[i][j] |= 1 << 1;
             }
         }
 

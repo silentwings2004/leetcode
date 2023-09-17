@@ -164,6 +164,67 @@ public class LC736_ParseLispExpression {
         }
         return copy;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    int k = 0;
+    public int evaluate2(String expression) {
+        HashMap<String, Integer> map = new HashMap<>();
+        return dfs(expression, map);
+    }
+
+    private int dfs(String str, HashMap<String, Integer> map) {
+        int value = 0;
+        k++; // '('
+        String type = str.substring(k, k + 3);
+        if (type.equals("let")) {
+            k += 4;
+            while (str.charAt(k) != ')') {
+                if (str.charAt(k) == '(' || str.charAt(k) == '-' || Character.isDigit(str.charAt(k))) {
+                    value = get_value(str, map);
+                    break;
+                }
+                String name = "";
+                while (str.charAt(k) != ')' && str.charAt(k) != ' ') name += str.charAt(k++);
+                if (str.charAt(k) == ')') {
+                    value = map.get(name);
+                    break;
+                }
+                k++;
+                map.put(name, get_value(str, new HashMap<>(map)));
+                k++;
+            }
+        } else if (type.equals("add")) {
+            k += 4;
+            int a = get_value(str, new HashMap<>(map));
+            k++;
+            int b = get_value(str, new HashMap<>(map));
+            value = a + b;
+        } else {
+            k += 5;
+            int a = get_value(str, new HashMap<>(map));
+            k++;
+            int b = get_value(str, new HashMap<>(map));
+            value = a * b;
+        }
+        k++;
+        return value;
+    }
+
+    private int get_value(String str, HashMap<String, Integer> map) {
+        int value = 0;
+        if (str.charAt(k) == '-' || Character.isDigit(str.charAt(k))) {
+            int i = k + 1;
+            while (i < str.length() && Character.isDigit(str.charAt(i))) i++;
+            value = Integer.parseInt(str.substring(k, i));
+            k = i;
+        } else if (str.charAt(k) != '(') {
+            String name = "";
+            while (str.charAt(k) != ' ' && str.charAt(k) != ')') name += str.charAt(k++);
+            value = map.get(name);
+        } else value = dfs(str, new HashMap<>(map));
+        return value;
+    }
 }
 /**
  * 函数式语言 => 递归的过程

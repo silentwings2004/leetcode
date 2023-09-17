@@ -42,5 +42,5 @@ public class LC812_argestTriangleArea {
     }
 }
 /**
- * 用叉积公式
+ * 用叉积公式 => 求的是平行四边形的"有向面积" => 用绝对值
  */

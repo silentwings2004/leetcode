@@ -19,27 +19,24 @@ public class LC92_ReverseLinkedListII {
      * @param right
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public ListNode reverseBetween(ListNode head, int left, int right) {
-        // corner case
-        if (head == null || head.next == null) return head;
-
-        ListNode dummy = new ListNode(0);
+        ListNode dummy = new ListNode(-1);
         dummy.next = head;
-        ListNode prev = dummy, cur = head;
 
-        for (int i = 1; i < left; i++) {
-            cur = cur.next;
-            prev = prev.next;
+        int m = left, n = right;
+        ListNode a = dummy;
+        for (int i = 0; i < m - 1; i++) a = a.next;
+        ListNode b = a.next, c = b.next;
+        for (int i = 0; i < n - m; i++) {
+            ListNode t = c.next;
+            c.next = b;
+            b = c;
+            c = t;
         }
-        // cur -> left, prev.next -> cur / start
-        for (int i = 0; i < right - left; i++) {
-            // pair reverse
-            ListNode next = cur.next; // next = 3
-            cur.next = next.next; // 2 -> 4
-            next.next = prev.next; // 3 -> 2
-            prev.next = next; // 1 -> 3
-        }
+        a.next.next = c;
+        a.next = b;
         return dummy.next;
     }
 

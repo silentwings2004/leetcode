@@ -38,4 +38,23 @@ public class LC735_AsteroidCollision {
         for (int i = res.length - 1; i >= 0; i--) res[i] = stack.pop();
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int[] asteroidCollision2(int[] asteroids) {
+        List<Integer> res = new ArrayList<>();
+        for (int x : asteroids) {
+            if (x > 0) res.add(x);
+            else {
+                while (res.size() > 0 && res.get(res.size() - 1) > 0 && res.get(res.size() - 1) < -x) {
+                    res.remove(res.size() - 1);
+                }
+                if (res.size() > 0 && res.get(res.size() - 1) == -x) res.remove(res.size() - 1);
+                else if (res.size() == 0 || res.get(res.size() - 1) < 0) res.add(x);
+            }
+        }
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
+        return ans;
+    }
 }

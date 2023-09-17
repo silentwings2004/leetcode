@@ -31,37 +31,42 @@ public class LC1036_EscapeaLargeMaze {
      * @return
      */
     // time = O(b^2), space = O(b^2)  b = b * (b - 1) / 2
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    HashSet<String> set;
+    int m, n = (int)1e6;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public boolean isEscapePossible(int[][] blocked, int[] source, int[] target) {
-        HashSet<String> blocks = new HashSet<>();
-        for (int[] b : blocked) blocks.add(b[0] + "#" + b[1]);
-        if (enclose(source, target, blocks) || enclose(target, source, blocks)) return false;
-        return true;
+        set = new HashSet<>();
+        m = blocked.length;
+        for (int[] b : blocked) set.add(get(b[0], b[1]));
+        return bfs(source, target) && bfs(target, source);
     }
 
-    private boolean enclose(int[] source, int[] target, HashSet<String> set) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[]{source[0], source[1]});
-        HashSet<String> visited = new HashSet<>();
-        visited.add(source[0] + "#" + source[1]);
+    private boolean bfs(int[] source, int[] target) {
+        HashSet<String> st = new HashSet<>(set);
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(source);
+        st.add(get(source[0], source[1]));
+        int cnt = 1;
 
-        int n = set.size();
-        while (!queue.isEmpty() && visited.size() <= n * (n - 1) / 2 ) {
-            int[] cur = queue.poll();
-            int x = cur[0], y = cur[1];
-            if (x == target[0] && y == target[1]) return false;
-
-            for (int[] dir : directions) {
-                int i = x + dir[0];
-                int j = y + dir[1];
-                if (i < 0 || i >= (int) 1e6 || j < 0 || j >= (int) 1e6) continue;
-                if (set.contains(i + "#" + j)) continue;
-                if (visited.contains(i + "#" + j)) continue;
-                queue.offer(new int[]{i, j});
-                visited.add(i + "#" + j);
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int x = t[0], y = t[1];
+            for (int i = 0; i < 4; i++) {
+                int a = x + dx[i], b = y + dy[i];
+                if (a < 0 || a >= n || b < 0 || b >= n) continue;
+                if (st.contains(get(a, b))) continue;
+                cnt++;
+                if (cnt * 2 > m * (m - 1)) return true;
+                if (target[0] == a && target[1] == b) return true;
+                q.offer(new int[]{a, b});
+                st.add(get(a, b));
             }
         }
-        return queue.isEmpty() ? true : false;
+        return false;
+    }
+
+    private String get(int x, int y) {
+        return x + "#" + y;
     }
 }
 /**

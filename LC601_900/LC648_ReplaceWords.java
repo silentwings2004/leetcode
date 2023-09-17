@@ -30,6 +30,7 @@ public class LC648_ReplaceWords {
      * @param sentence
      * @return
      */
+    // S1: Trie
     // time = O(m + n), space = O(m + n)
     public String replaceWords(List<String> dictionary, String sentence) {
         TrieNode root = new TrieNode();
@@ -71,5 +72,32 @@ public class LC648_ReplaceWords {
             this.next = new TrieNode[26];
             this.isEnd = false;
         }
+    }
+
+    // S2: 字符串哈希
+    // time = O(m + n), space = O(m + n)
+    final int P = 131;
+    public String replaceWords2(List<String> dictionary, String sentence) {
+        HashSet<Long> set = new HashSet<>();
+        for (String s : dictionary) {
+            long h = 0;
+            for (char c : s.toCharArray()) h = h * P + c;
+            set.add(h);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        String[] strs = sentence.split(" ");
+        for (String s : strs) {
+            long h = 0;
+            int i = 0;
+            for (i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                h = h * P + c;
+                if (set.contains(h)) break;
+            }
+            sb.append(s.substring(0, Math.min(i + 1, s.length()))).append(' ');
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 }

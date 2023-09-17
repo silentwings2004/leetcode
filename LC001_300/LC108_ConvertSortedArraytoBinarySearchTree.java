@@ -21,19 +21,20 @@ public class LC108_ConvertSortedArraytoBinarySearchTree {
      */
     // time = O(n), space = O(n)
     public TreeNode sortedArrayToBST(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return null;
-
-        return helper(nums, 0, nums.length - 1);
+        return dfs(nums, 0, nums.length - 1);
     }
 
-    private TreeNode helper(int[] nums, int start, int end) {
-        if (start > end) return null;
-        int mid = start + (end - start) / 2;
-        TreeNode root = new TreeNode(nums[mid]);
+    private TreeNode dfs(int[] nums, int l, int r) {
+        if (l > r) return null;
 
-        root.left = helper(nums, start, mid - 1);
-        root.right = helper(nums, mid + 1, end);
+        int mid = l + r >> 1;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = dfs(nums, l, mid - 1);
+        root.right = dfs(nums, mid + 1, r);
         return root;
     }
 }
+/**
+ * 实际考察的是线段树和平衡树的初始化
+ * 高度 = log2(n+1)上取整
+ */

@@ -49,3 +49,15 @@ public class LC1029_TwoCityScheduling {
         return res;
     }
 }
+/**
+ * 1.背包问题 => O(n^2)
+ * 2.贪心 O(nlogn) 调整法贪心问题
+ * 反证法：
+ * ax - bx > ay - by   => ax + by > ay + bx
+ *      交换前               交换后
+ * x     ax                  bx
+ * y     by                  ay
+ *
+ * ax + by  >   bx + ay  => 总和变小了 => 矛盾
+ * 贪心是正确的
+ */

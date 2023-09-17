@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class LC675_CutOffTreesforGolfEvent {
+public class  LC675_CutOffTreesforGolfEvent {
     /**
      * You are asked to cut off all the trees in a forest for a golf event. The forest is represented as an m x n matrix.
      * In this matrix:
@@ -32,53 +32,55 @@ public class LC675_CutOffTreesforGolfEvent {
      * @return
      */
     // time = O(m^2 * n^2), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    final int INF = (int) 1e8;
+    List<List<Integer>> g;
+    int m, n;
     public int cutOffTree(List<List<Integer>> forest) {
-        int m = forest.size(), n = forest.get(0).size();
-        TreeMap<Integer, int[]> map = new TreeMap<>();
+        g = forest;
+        m = g.size();
+        n = g.get(0).size();
+
+        List<int[]> trs = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                int h = forest.get(i).get(j);
-                if (h > 1) map.put(h, new int[]{i, j});
+                if (g.get(i).get(j) > 1) trs.add(new int[]{i, j, g.get(i).get(j)});
             }
         }
+        Collections.sort(trs, (o1, o2) -> o1[2] - o2[2]);
 
         int res = 0;
         int[] last = new int[]{0, 0};
-        for (int[] cur : map.values()) {
-            int t = bfs(forest, last, cur, m, n);
+        for (int[] tr : trs) {
+            int t = bfs(last, tr);
             if (t == -1) return -1;
             res += t;
-            last = cur;
+            last = tr;
         }
         return res;
     }
 
-    private int bfs(List<List<Integer>> forest, int[] start, int[] end, int m, int n) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(start);
-        boolean[][] visited = new boolean[m][n];
-        visited[start[0]][start[1]] = true;
+    private int bfs(int[] start, int[] end) {
+        if (start[0] == end[0] && start[1] == end[1]) return 0;
+        int[][] dist = new int[m][n];
+        for (int i = 0; i < m; i++) Arrays.fill(dist[i], INF);
+        dist[start[0]][start[1]] = 0;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(start);
 
-        int step = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                int[] cur = queue.poll();
-                int x = cur[0], y = cur[1];
-                if (x == end[0] && y == end[1]) return step;
-
-                for (int[] dir : directions) {
-                    int i = x + dir[0];
-                    int j = y + dir[1];
-                    if (i < 0 || i >= m || j < 0 || j >= n) continue;
-                    if (visited[i][j]) continue;
-                    if (forest.get(i).get(j) == 0) continue;
-                    queue.offer(new int[]{i, j});
-                    visited[i][j] = true;
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int x = t[0], y = t[1];
+            if (x == end[0] && y == end[1]) return dist[x][y];
+            for (int i = 0; i < 4; i++) {
+                int a = x + dx[i], b = y + dy[i];
+                if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                if (g.get(a).get(b) == 0) continue;
+                if (dist[a][b] > dist[x][y] + 1) {
+                    dist[a][b] = dist[x][y] + 1;
+                    q.offer(new int[]{a, b});
                 }
             }
-            step++;
         }
         return -1;
     }

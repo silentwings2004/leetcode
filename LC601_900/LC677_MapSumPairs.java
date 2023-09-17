@@ -67,4 +67,51 @@ public class LC677_MapSumPairs {
             this.val = 0;
         }
     }
+
+    // S2
+    class MapSum {
+        // time = O(k), space = O(k)
+        final int N = 2510;
+        int[][] son;
+        int[] S, V;
+        int idx;
+        public MapSum() {
+            son = new int[N][26];
+            S = new int[N];
+            V = new int[N];
+            idx = 0;
+        }
+
+        public void insert(String key, int val) {
+            add(key, val, V[query(key)]);
+        }
+
+        public int sum(String prefix) {
+            return S[query(prefix)];
+        }
+
+        private void add(String s, int value, int last) {
+            int p = 0;
+            for (char c : s.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+                S[p] += value - last;
+            }
+            V[p] = value;
+        }
+
+        private int query(String s) {
+            int p = 0;
+            for (char c : s.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) return 0;
+                p = son[p][u];
+            }
+            return p;
+        }
+    }
 }
+/**
+ * 维护整棵子树的总和
+ */

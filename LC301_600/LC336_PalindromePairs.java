@@ -61,9 +61,34 @@ public class LC336_PalindromePairs {
     }
 
     private String reverse(String s) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = s.length() - 1; i >= 0; i--) sb.append(s.charAt(i));
-        return sb.toString();
+        StringBuilder sb = new StringBuilder(s);
+        return sb.reverse().toString();
+    }
+
+    // S2
+    // time = O(n * k^2), space = O(n * k)
+    public List<List<Integer>> palindromePairs2(String[] words) {
+        int n = words.length;
+        HashMap<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            String w = reverse(words[i]);
+            map.put(w, i);
+        }
+
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            String w = words[i];
+            for (int j = 0; j <= w.length(); j++) {
+                String left = w.substring(0, j), right = w.substring(j);
+                if (isPalin(right) && map.containsKey(left) && map.get(left) != i) {
+                    res.add(Arrays.asList(i, map.get(left)));
+                }
+                if (isPalin(left) && map.containsKey(right) && map.get(right) != i && w.length() != words[map.get(right)].length()) {
+                    res.add(Arrays.asList(map.get(right), i));
+                }
+            }
+        }
+        return res;
     }
 }
 /**
@@ -73,4 +98,9 @@ public class LC336_PalindromePairs {
  * xxxx yyy yyyyy
  * 通过一个set，根据当前第j个串，看它xxxx在不在这个set里面 => 要遍历长度次
  * O(n * l)
+ *
+ * 枚举较长的串 wi
+ * 有多少个j可以组成第一种形式，枚举分界点 => right回文串，有没有一个单词翻转后 = left (哈希表把每个单词翻转后的结果存下来)
+ * O(l)*O(l)*O(n) = O(n*l^2)
+ * 如果长度相等的话，只在第一种情况中算一遍，第二种情况就不算了 => 避免重复，只会在算i的时候把j算进去
  */

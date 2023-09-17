@@ -26,15 +26,15 @@ public class LC365_WaterandJugProblem {
      * @return
      */
     // S1: Math
-    // time = O(1), space = O(1)
+    // time = O(logn), space = O(1)
     public boolean canMeasureWater(int jug1Capacity, int jug2Capacity, int targetCapacity) {
-        int x = jug1Capacity, y = jug2Capacity, z = targetCapacity;
-        return z >= 0 && z <= x + y && z % gcd(x, y) == 0;
+        int a = jug1Capacity, b = jug2Capacity, c = targetCapacity;
+        if (c > a + b) return false;
+        return c == 0 || c % gcd(a, b) == 0;
     }
 
     private int gcd(int a, int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b);
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     // S2: bfs
@@ -112,4 +112,7 @@ public class LC365_WaterandJugProblem {
 /**
  * add
  * remove
+ * 性质：2个杯子不可能同时既不空，又不满
+ * ax + by = c => 裴蜀定理
+ * (a,b) | c
  */

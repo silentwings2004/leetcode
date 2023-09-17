@@ -16,12 +16,15 @@ public class LC507_PerfectNumber {
      * @param num
      * @return
      */
-    // time = O(n^(1/2)), space = O(1)
+    // time = O(sqrt(n)), space = O(1)
     public boolean checkPerfectNumber(int num) {
-        int sum = 1;
-        for (int i = 2; i * i < num; i++) {
-            if (num % i == 0) sum += i + num / i;
+        int sum = 0;
+        for (int i = 1; i <= num / i; i++) {
+            if (num % i == 0) {
+                if (i < num) sum += i;
+                if (i != num / i && num / i < num) sum += num / i;
+            }
         }
-        return sum == num && num != 1;
+        return sum == num;
     }
 }

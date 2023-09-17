@@ -36,8 +36,8 @@ public class LC749_ContainVirus {
     int[][] g;
     int m, n;
     boolean[][] st;
-    List<int[]> path; // flood fill中所有被遍历到的点
-    HashSet<Integer> set; // flood fill中所有影响到的点
+    List<int[]> path; // flood fill中所有被遍历到的已被感染的点
+    HashSet<Integer> set; // flood fill中所有影响到的之前未被感染到的点
     private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int containVirus(int[][] isInfected) {
         g = isInfected;
@@ -78,11 +78,11 @@ public class LC749_ContainVirus {
             }
         }
 
-        for (int[] p : ps) g[p[0]][p[1]] = -1;
+        for (int[] p : ps) g[p[0]][p[1]] = -1; // 将选出马上隔离的已经感染的区域标记为-1
         for (HashSet<Integer> s : ss) {
             if (s.size() != cnt) {
                 for (int p : s) {
-                    g[p / n][p % n] = 1;
+                    g[p / n][p % n] = 1; // 其他未被隔离仍然在扩散的区域点都标记为1
                 }
             }
         }
@@ -108,4 +108,7 @@ public class LC749_ContainVirus {
 }
 /**
  * 找连通块 -> flood fill
+ * 把明天会影响到的点全部丢到一个set里，方便判重
+ * 同时统计下一共放多少堵墙，凡是碰到0，就是要放隔板
+ * 找到最大值，把隔离的区域全部改成-1，再把其他病毒区域向外扩展一圈
  */

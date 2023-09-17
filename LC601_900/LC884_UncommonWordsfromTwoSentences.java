@@ -21,6 +21,7 @@ public class LC884_UncommonWordsfromTwoSentences {
      * @param s2
      * @return
      */
+    // S1
     // time = O(m + n), space = O(m + n)
     public String[] uncommonFromSentences(String s1, String s2) {
         String[] arr1 = s1.split(" ");
@@ -44,5 +45,36 @@ public class LC884_UncommonWordsfromTwoSentences {
         String[] ans = new String[res.size()];
         for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
         return ans;
+    }
+
+    // S2
+    // time = O(m + n), space = O(m + n)
+    public String[] uncommonFromSentences2(String s1, String s2) {
+        HashMap<String, Integer> hm1 = new HashMap<>();
+        HashMap<String, Integer> hm2 = new HashMap<>();
+        work(s1, hm1);
+        work(s2, hm2);
+
+        List<String> res = new ArrayList<>();
+        for (String s : hm1.keySet()) {
+            if (hm1.get(s) == 1 && !hm2.containsKey(s)) res.add(s);
+        }
+
+        for (String s : hm2.keySet()) {
+            if (hm2.get(s) == 1 && !hm1.containsKey(s)) res.add(s);
+        }
+        return res.toArray(new String[res.size()]);
+    }
+
+    private void work(String s, HashMap<String, Integer> map) {
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == ' ') continue;
+            int j = i + 1;
+            while (j < n && s.charAt(j) != ' ') j++;
+            String t = s.substring(i, j);
+            map.put(t, map.getOrDefault(t, 0) + 1);
+            i = j;
+        }
     }
 }

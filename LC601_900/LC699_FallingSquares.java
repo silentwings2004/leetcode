@@ -147,6 +147,104 @@ public class LC699_FallingSquares {
     private boolean isIntersect(int l1, int r1, int l2, int r2) {
         return r2 > l1 && l2 < r1;
     }
+
+    // S3: 线段树
+    class Solution {
+        final int N = 3010;
+        Node[] tr;
+        List<Integer> xs;
+        public List<Integer> fallingSquares(int[][] positions) {
+            tr = new Node[N << 2];
+            xs = new ArrayList<>();
+
+            for (int[] p : positions) {
+                int a = p[0], b = a + p[1];
+                xs.add(a * 2);
+                xs.add(b * 2);
+                xs.add(a + b);
+            }
+            xs = new ArrayList<>(new HashSet<>(xs));
+            Collections.sort(xs);
+            build(1, 0, xs.size() - 1);
+
+            List<Integer> res = new ArrayList<>();
+            for (int[] p : positions) {
+                int a = p[0], b = a + p[1];
+                a = get(a * 2);
+                b = get(b * 2);
+                int h = query(1, a + 1, b - 1);
+                update(1, a, b, h + p[1]);
+                res.add(tr[1].v);
+            }
+            return res;
+        }
+
+        private void build(int u, int l, int r) {
+            tr[u] = new Node();
+            tr[u].l = l;
+            tr[u].r = r;
+            if (l == r) return;
+
+            int mid = l + r >> 1;
+            build(u << 1, l, mid);
+            build(u << 1 | 1, mid + 1, r);
+        }
+
+        private int get(int x) {
+            return lower_bound(x);
+        }
+
+        private int lower_bound(int x) {
+            int l = 0, r = xs.size() - 1;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (xs.get(mid) >= x) r = mid;
+                else l = mid + 1;
+            }
+            return r;
+        }
+
+        private void pushup(int u) {
+            tr[u].v = Math.max(tr[u << 1].v, tr[u << 1 | 1].v);
+        }
+
+        private void pushdown(int u) {
+            int c = tr[u].c;
+            if (c != 0) {
+                tr[u].c = 0;
+                tr[u << 1].v = tr[u << 1 | 1].v = c;
+                tr[u << 1].c = tr[u << 1 | 1].c = c;
+            }
+        }
+
+        private void update(int u, int l, int r, int c) {
+            if (tr[u].l >= l && tr[u].r <= r) {
+                tr[u].c = tr[u].v = c;
+                return;
+            }
+
+            pushdown(u);
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (l <= mid) update(u << 1, l, r, c);
+            if (r > mid) update(u << 1 | 1, l, r, c);
+            pushup(u);
+        }
+
+        private int query(int u, int l, int r) {
+            if (tr[u].l >= l && tr[u].r <= r) return tr[u].v;
+
+            pushdown(u);
+            int res = 0;
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (l <= mid) res = query(u << 1, l, r);
+            if (r > mid) res = Math.max(res, query(u << 1 | 1, l, r));
+            return res;
+        }
+
+        private class Node {
+            private int l, r, v, c;
+        }
+    }
 }
 /**
  * 共同点，叶子结点一开始都是知道的，整体什么样是可以提前建立起来的，而LC715形状一直在变，容易TLE，效率不高，需要动态开辟空间。
@@ -164,4 +262,14 @@ public class LC699_FallingSquares {
  * => 经典线段树的问题
  * 区间查询，区间修改 => 懒标记
  * 10^8 => 需要离散化，三个点 => 左右端点+中点
+ *
+ * 掉落正方形会被卡在哪个地方，就看其左右边界的区域里最高的点 => 某个区间内的最大值
+ * h + l => 让某个区间内的数变成某个数
+ * 本质上就2个操作：
+ * 1. 求区间最大值
+ * 2. 将某个区间变成同一个数
+ * => 线段树  区间查询和区间修改=> 懒标记
+ * 10^8 => 离散化 保序
+ * 查询开区间 => 查(a,b) => 离散化左右端点和中点这3个点
+ * 1000个正方形，离散化后有3000个点
  */

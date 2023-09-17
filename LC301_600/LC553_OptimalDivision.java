@@ -31,11 +31,10 @@ public class LC553_OptimalDivision {
 
         StringBuilder sb = new StringBuilder();
         sb.append(nums[0]).append('/').append('(');
-        for (int i = 1; i < n; i++) {
+        for (int i = 1; i < n - 1; i++) {
             sb.append(nums[i]).append('/');
         }
-        sb.setLength(sb.length() - 1);
-        sb.append(')');
+        sb.append(nums[n - 1]).append(')');
         return sb.toString();
     }
 }
@@ -43,4 +42,9 @@ public class LC553_OptimalDivision {
  * A / (B / C) / (D / E) / F
  * 除了A肯定是分子，剩余部分肯定是分母 -> 分子固定，分母最小
  * 脱括号，要最小 -> 全部都是除号，因为所有数都是大于1的整数 -> 越除越小
+ *
+ * 如果想要结果变大的话，应该尽可能的让除法变成乘法
+ * a / b / c => a /(b / c) = a / b * c
+ * a2 一定是除法 => a1 / (a2 / a3 ... /an) => a1 / a2 * a3 * a4 ... * an 一定是最优解
+ * 脑筋急转弯问题
  */

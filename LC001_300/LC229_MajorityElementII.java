@@ -45,6 +45,53 @@ public class LC229_MajorityElementII {
         if (c2 > n / 3) res.add(r2);
         return res;
     }
+
+    // S2: 扩展到k的情况
+    // time = O(n * k), space = O(k)
+    public List<Integer> majorityElement2(int[] nums) {
+        List<Integer> res = new ArrayList<>();
+        int k = 3;
+        int[] r = new int[k - 1], c = new int[k - 1];
+
+        for (int x : nums) {
+            boolean flag = false;
+            for (int i = 0; i < k - 1; i++) {
+                if (c[i] > 0 && x == r[i]) {
+                    c[i]++;
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                for (int i = 0; i < k - 1; i++) {
+                    if (c[i] == 0) {
+                        r[i] = x;
+                        c[i]++;
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                for (int i = 0; i < k - 1; i++) c[i]--;
+            }
+        }
+
+        Arrays.fill(c, 0);
+        for (int x : nums) {
+            for (int i = 0; i < k - 1; i++) {
+                if (r[i] == x) {
+                    c[i]++;
+                    break;
+                }
+            }
+        }
+        int n = nums.length;
+        for (int i = 0; i < k - 1; i++) {
+            if (c[i] > n / k) res.add(r[i]);
+        }
+        return res;
+    }
 }
 /**
  * 摩尔投票法

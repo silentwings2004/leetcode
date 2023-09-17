@@ -19,21 +19,14 @@ public class LC1004_MaxConsecutiveOnesIII {
      */
     // time = O(n), space = O(1)
     public int longestOnes(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int i = 0, n = nums.length, count = 0, res = 0;
-        for (int j = 0; j < n; j++) {
-            if (nums[j] == 1) {
-                res = Math.max(res, j - i + 1);
-            } else {
-                count++;
-                while (count > k) {
-                    if (nums[i] == 0) count--; // 注意先check nums[i] == 0 再移动i，否则就会漏掉对当前位置i的考虑！
-                    i++;
-                }
-                res = Math.max(res, j - i + 1);
+        int n = nums.length, cnt = 0, res = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            if (nums[i] == 0) cnt++;
+            while (cnt > k) {
+                if (nums[j] == 0) cnt--;
+                j++;
             }
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }

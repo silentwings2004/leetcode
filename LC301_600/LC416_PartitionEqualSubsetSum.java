@@ -56,6 +56,19 @@ public class LC416_PartitionEqualSubsetSum {
         }
         return f[n][sum / 2];
     }
+
+    // S3
+    public boolean canPartition3(int[] nums) {
+        BitSet f = new BitSet(10001);
+        f.set(0);
+        int sum = 0;
+        for (int x : nums) {
+            f = f.get(x, f.length());
+            sum += x;
+        }
+        if (sum % 2 != 0) return false;
+        return f.get(sum / 2);
+    }
 }
 /**
  * 本身是个NP问题，本质上还是个搜索。
@@ -89,4 +102,8 @@ public class LC416_PartitionEqualSubsetSum {
  * 2. dp[i-1][s-nums[i]] = true => dp[i][s] = true
  * dp[i][s] = dp[i-1][s] || (s >= nums[i] && dp[i-1][s-nums[i]])
  * return dp[n][sum / 2]
+ *
+ * 经典01背包问题
+ * 用位运算来优化
+ * 相当于右移x，可以用bitSet去表示，压位32位
  */

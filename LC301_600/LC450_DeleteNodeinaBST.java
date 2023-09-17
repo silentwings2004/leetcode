@@ -30,33 +30,20 @@ public class LC450_DeleteNodeinaBST {
      */
     // time = O(n), space = O(n)
     public TreeNode deleteNode(TreeNode root, int key) {
-        // corner case
-        if (root == null) return null;
+        if (root == null) return root;
 
-        if (root.val == key) {
-            if (root.left != null && root.right != null) {
-                root.val = findMin(root.right).val;
-                root.right = deleteNode(root.right, root.val);
-            } else if (root.left == null) root = root.right;
-            else root = root.left;
-        } else if (root.val < key) {
-            root.right = deleteNode(root.right, key);
-        } else root.left = deleteNode(root.left, key);
+        if (root.val < key) root.right = deleteNode(root.right, key);
+        else if (root.val > key) root.left = deleteNode(root.left, key);
+        else {
+            if (root.right == null) return root.left;
+            TreeNode cur = root.right;
+            while (cur.left != null) cur = cur.left;
+            root.val = cur.val;
+            root.right = deleteNode(root.right, cur.val);
+        }
         return root;
     }
-
-    private TreeNode findMin(TreeNode cur) {
-        if (cur == null) return cur;
-
-        while (cur.left != null) cur = cur.left;
-        return cur;
-    }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
-        public TreeNode(int val) {
-            this.val = val;
-        }
-    }
 }
+/**
+ * 找到n的后继，将后继的值覆盖到u上，然后删除其后继
+ */

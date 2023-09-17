@@ -40,7 +40,7 @@ public class LC406_QueueReconstructionbyHeight {
     }
 
     // S2: BIT
-    // time = O(nlogn), space = O(n)
+    // time = O(nlogn*logn), space = O(n)
     int n;
     int[] tr;
     public int[][] reconstructQueue2(int[][] people) {

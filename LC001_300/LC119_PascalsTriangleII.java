@@ -21,9 +21,9 @@ public class LC119_PascalsTriangleII {
     // S1: refer to LC118
     // time = O(n^2), space = O(1)
     public List<Integer> getRow(int rowIndex) {
-        List<Integer> res = new LinkedList<>();
-
-        for (int i = 0; i <= rowIndex; i++) {
+        int n = rowIndex;
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
             res.add(0, 1);
             for (int j = 1; j < res.size() - 1; j++) {
                 res.set(j, res.get(j) + res.get(j + 1));

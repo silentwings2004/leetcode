@@ -25,24 +25,6 @@ public class LC123_BestTimetoBuyandSellStockIII {
         // corner case
         if (prices == null || prices.length == 0) return 0;
 
-        int buy1 = Integer.MIN_VALUE, buy2 = Integer.MIN_VALUE;
-        int sell1 = 0, sell2 = 0;
-
-        for (int price : prices) {
-            sell2 = Math.max(sell2, buy2 + price);
-            buy2 = Math.max(buy2, sell1 - price);
-            sell1 = Math.max(sell1, buy1 + price);
-            buy1 = Math.max(buy1, -price);
-        }
-        return sell2;
-    }
-
-    // S2: dp
-    // time = O(n), space = O(1)
-    public int maxProfit2(int[] prices) {
-        // corner case
-        if (prices == null || prices.length == 0) return 0;
-
         int hold1 = Integer.MIN_VALUE, sold1 = 0, hold2 = Integer.MIN_VALUE, sold2 = 0;
         for (int p : prices) {
             int hold1_tmp = hold1;
@@ -60,18 +42,18 @@ public class LC123_BestTimetoBuyandSellStockIII {
 
     // S3: 前后缀分解
     // time = O(n), space = O(1)
-    public int maxProfit3(int[] prices) {
-        int n = prices.length, min = Integer.MAX_VALUE / 2;
+    public int maxProfit2(int[] prices) {
+        int n = prices.length;
         int[] f = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            f[i] = Math.max(f[i - 1], prices[i - 1] - min);
-            min = Math.min(min, prices[i - 1]);
+        for (int i = 1, minP = Integer.MAX_VALUE; i <= n; i++) {
+            f[i] = Math.max(f[i - 1], prices[i - 1] - minP);
+            minP = Math.min(minP, prices[i - 1]);
         }
 
-        int res = 0, max = Integer.MIN_VALUE / 2;
-        for (int i = n; i > 0; i--) {
-            res = Math.max(res, f[i - 1] + max - prices[i - 1]);
-            max = Math.max(max, prices[i - 1]);
+        int res = 0;
+        for (int i = n, maxP = 0; i > 0; i--) {
+            res = Math.max(res, maxP - prices[i - 1] + f[i - 1]);
+            maxP = Math.max(maxP, prices[i - 1]);
         }
         return res;
     }

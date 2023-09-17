@@ -47,6 +47,39 @@ public class LC403_FrogJump {
         failed.add(pos + "#" + jump);
         return false;
     }
+
+    // S2
+    final int N = 2010;
+    Boolean[][] f;
+    int[] stones;
+    HashMap<Integer, Integer> map;
+    public boolean canCross2(int[] stones) {
+        this.stones = stones;
+        map = new HashMap<>();
+        f = new Boolean[N][N];
+        f[0][1] = true;
+        int n = stones.length;
+        for (int i = 0; i < n; i++) map.put(stones[i], i);
+        for (int i = 0; i < n - 1; i++) {
+            if (dp(n - 1, i)) return true;
+        }
+        return false;
+    }
+
+    private boolean dp(int i, int j) {
+        if (f[i][j] != null) return f[i][j];
+        f[i][j] = false;
+        for (int k = Math.max(1, j - 1); k <= j + 1; k++) {
+            if (map.containsKey(stones[i] - k)) {
+                int p = map.get(stones[i] - k);
+                if (dp(p, k)) {
+                    f[i][j] = true;
+                    break;
+                }
+            }
+        }
+        return f[i][j];
+    }
 }
 /**
  * 比较直观的想法就是DFS搜索，层层递归下去。
@@ -59,4 +92,10 @@ public class LC403_FrogJump {
  * 如果思考进一步优化的算法，那显然就是记忆化，把每次搜索过的失败都记录下来。
  * 很容易想到，将已经探索过的{pos,jump}共同作为一个key存在一个集合FailureSet里，表明这个状态是失败的，
  * 以后DFS过程遇到这个状态就直接返回false。
+ *
+ * dp
+ * 状态表示 f(i,j): 从第i个石头开始跳，跳j的距离是否合法
+ * j-1,j,j+1
+ * 上一步的位置是Si-k，是否有石头代表是否合法
+ * f(p,k)
  */

@@ -23,25 +23,23 @@ public class LC599_MinimumIndexSumofTwoLists {
      * @param list2
      * @return
      */
+    // time = O(m + n), space = O(n)
     public String[] findRestaurant(String[] list1, String[] list2) {
-        List<String> res = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
-
-        int m = list1.length, n = list2.length;
-        int min = Integer.MAX_VALUE;
-        for (int i = 0; i < m; i++) map.put(list1[i], i);
-        for (int i = 0; i < n; i++) {
-            if (map.containsKey(list2[i])) {
-                int sum = i + map.get(list2[i]);
-                if (sum < min) {
-                    min = sum;
-                    res.clear();
-                    res.add(list2[i]);
-                } else if (sum == min) res.add(list2[i]);
+        for (int i = 0; i < list1.length; i++) map.put(list1[i], i);
+        int sum = Integer.MAX_VALUE;
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < list2.length; i++) {
+            String s = list2[i];
+            if (map.containsKey(s)) {
+                int t = i + map.get(s);
+                if (t < sum) {
+                    sum = t;
+                    res = new ArrayList<>();
+                    res.add(s);
+                } else if (t == sum) res.add(s);
             }
         }
-        String[] ans = new String[res.size()];
-        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
-        return ans;
+        return res.toArray(new String[res.size()]);
     }
 }

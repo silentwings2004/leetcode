@@ -26,6 +26,7 @@ public class LC935_KnightDialer {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int knightDialer(int n) {
         int[] dp = new int[10];
@@ -56,6 +57,36 @@ public class LC935_KnightDialer {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int knightDialer2(int n) {
+        int mod = (int)1e9 + 7;
+        int[][] f = new int[n][10];
+        int[][] tr = new int[][]{
+                {4, 6},
+                {6, 8},
+                {7, 9},
+                {4, 8},
+                {3, 9, 0},
+                {},
+                {1, 7, 0},
+                {2, 6},
+                {1, 3},
+                {2, 4},
+        };
+        for (int i = 0; i < 10; i++) f[0][i] = 1;
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < 10; j++) {
+                for (int k : tr[j]) {
+                    f[i][j] = (f[i][j] + f[i - 1][k]) % mod;
+                }
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < 10; i++) res = (res + f[n - 1][i]) % mod;
+        return res;
+    }
 }
 /**
  * 1 <- 6 / 8
@@ -65,4 +96,10 @@ public class LC935_KnightDialer {
  * dp[n][2] =
  * ...
  * dp[n][0]
+ *
+ * f(i,j): 跳了i次，最后位于j的方案数
+ * 4->0 => f(i-1,4)
+ * 6->0 => f(i-1,6)
+ * 递推
+ * time = O(10*n*3) = O(10n)
  */

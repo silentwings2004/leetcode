@@ -18,53 +18,28 @@ public class LC109_ConvertSortedListtoBinarySearchTree {
      * @param head
      * @return
      */
-    // S1
-    // time = O(n), space = O(n)
+    // time = O(nlogn), space = O(logn)
     public TreeNode sortedListToBST(ListNode head) {
-        // corner case
         if (head == null) return null;
 
+        int n = 0;
+        for (ListNode p = head; p != null; p = p.next) n++;
+        if (n == 1) return new TreeNode(head.val);
+
         ListNode cur = head;
-        int len = 0;
-        while (cur != null) {
-            cur = cur.next;
-            len++;
-        }
-        return helper(head, 0, len - 1);
-    }
-
-    private TreeNode helper(ListNode head, int start, int end) {
-        if (start > end) return null;
-
-        int mid = start + (end - start) / 2;
-        ListNode cur = head;
-        for (int i = 0; i < mid; i++) cur = cur.next;
-        TreeNode root = new TreeNode(cur.val);
-        root.left = helper(head, start, mid - 1);
-        root.right = helper(head, mid + 1, end); // 注意：这里依然是用head, 而不是cur.next！
-        return root;
-    }
-
-    // S2: Two pointers (最优解！)
-    // time = O(n), space = O(n)
-    public TreeNode sortedListToBST2(ListNode head) {
-        // corner case
-        if (head == null) return null;
-
-        return helper(head, null);
-    }
-
-    private TreeNode helper(ListNode head, ListNode tail) {
-        if (head == tail) return null;
-
-        ListNode slow = head, fast = head;
-        while (fast != tail && fast.next != tail) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        TreeNode root = new TreeNode(slow.val);
-        root.left = helper(head, slow);
-        root.right = helper(slow.next, tail);
+        for (int i = 0; i < n / 2 - 1; i++) cur = cur.next; // 保持左边不空，比右边多 [(n - 1) / 2] 上取整取中点
+        TreeNode root = new TreeNode(cur.next.val);
+        root.right = sortedListToBST(cur.next.next);
+        cur.next = null;
+        root.left = sortedListToBST(head);
         return root;
     }
 }
+/**
+ * 取中点 => O(n)
+ * 开一个数组变成上一题 => 空间多O(n)
+ *
+ * 不用额外空间，每次遍历一遍找中点
+ * O(n/2)
+ * logn层 => time = O(nlogn)
+ */

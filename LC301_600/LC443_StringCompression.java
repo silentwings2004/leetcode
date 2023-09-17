@@ -27,24 +27,31 @@ public class LC443_StringCompression {
      */
     // time = O(n), space = O(1)
     public int compress(char[] chars) {
-        // corner case
-        if (chars == null || chars.length == 0) return 0;
-
-        int res = 0, idx = 0;
-        while (idx < chars.length) {
-            char cur = chars[idx];
-            int count = 0;
-            while (idx < chars.length && chars[idx] == cur) {
-                idx++;
-                count++;
-            }
-            chars[res++] = cur;
-            if (count > 1) {
-                for (char c : String.valueOf(count).toCharArray()) {
-                    chars[res++] = c;
+        int k = 0, n = chars.length;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && chars[j] == chars[i]) j++;
+            int len = j - i;
+            chars[k++] = chars[i];
+            if (len > 1) {
+                int t = k;
+                while (len > 0) {
+                    chars[t++] = (char)(len % 10 + '0');
+                    len /= 10;
                 }
+                reverse(chars, k, t - 1);
+                k = t;
             }
+            i = j - 1;
         }
-        return res;
+        return k;
+    }
+
+    private void reverse(char[] chars, int i, int j) {
+        while (i < j) {
+            char t = chars[i];
+            chars[i++] = chars[j];
+            chars[j--] = t;
+        }
     }
 }

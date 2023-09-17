@@ -21,39 +21,37 @@ public class LC542_01Matrix {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    final int N = 10010;
     public int[][] updateMatrix(int[][] mat) {
-        // corner case
-        if (mat == null || mat.length == 0 || mat[0] == null || mat[0].length == 0) return null;
-
+        int[][] q = new int[N][2];
         int m = mat.length, n = mat[0].length;
-        int[][] res = new int[m][n];
-        Queue<Integer> queue = new LinkedList<>();
+        int[][] dist = new int[m][n];
+        for (int i = 0; i < m; i++) Arrays.fill(dist[i], -1);
+        int hh = 0, tt = -1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (mat[i][j] == 0) {
-                    queue.offer(i * n + j);
+                    q[++tt] = new int[]{i, j};
+                    dist[i][j] = 0;
                 }
             }
         }
 
-        int step = 1;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                int cur = queue.poll();
-                int i = cur / n, j = cur % n;
-                for (int[] dir : DIRECTIONS) {
-                    int ii = i + dir[0];
-                    int jj = j + dir[1];
-                    if (ii >= 0 && ii < m && jj >= 0 && jj < n && mat[ii][jj] == 1 && res[ii][jj] == 0) {
-                        queue.offer(ii * n + jj);
-                        res[ii][jj] = step;
-                    }
-                }
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        while (hh <= tt) {
+            int[] t = q[hh++];
+            int x = t[0], y = t[1];
+            for (int i = 0; i < 4; i++) {
+                int a = x + dx[i], b = y + dy[i];
+                if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                if (dist[a][b] != -1) continue;
+                q[++tt] = new int[]{a, b};
+                dist[a][b] = dist[x][y] + 1;
             }
-            step++;
         }
-        return res;
+        return dist;
     }
 }
+/**
+ * 多源bfs问题
+ */

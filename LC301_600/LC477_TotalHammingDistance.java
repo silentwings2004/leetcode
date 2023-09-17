@@ -20,20 +20,21 @@ public class LC477_TotalHammingDistance {
      * @param nums
      * @return
      */
-    // time = O(n), space = O(1)
+    // time = O(nlogN), space = O(1)
     public int totalHammingDistance(int[] nums) {
         int res = 0;
-        for (int i = 0; i <= 30; i++){
-            int x = 0, y = 0; // x: 0的个数，y: 1的个数
-            for (int num : nums) {
-                if ((num >> i & 1) == 1) y++;
-                else x++;
+        for (int i = 0; i < 30; i++) {
+            int a = 0, b = 0;
+            for (int x : nums) {
+                if ((x >> i & 1) == 1) b++;
+                else a++;
             }
-            res += x * y;
+            res += a * b;
         }
         return res;
     }
 }
 /**
+ * 每一位之间是相互独立的
  * 枚举每一位
  */

@@ -48,6 +48,31 @@ public class LC902_NumbersAtMostNGivenDigitSet {
             else if (c == num.charAt(pos)) dfs(cur * 10 + c - '0', pos + 1, digits); // > 肯定不合条件，就不考虑了
         }
     }
+
+    // S2
+    // time = O(logn), space = O(logn)
+    public int atMostNGivenDigitSet2(String[] digits, int n) {
+        String num = String.valueOf(n);
+        num = new StringBuilder(num).reverse().toString();
+        n = num.length();
+        int m = digits.length, res = 0;
+
+        for (int i = 1; i < n; i++) res += (int)Math.pow(m, i);
+        boolean flag = true;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = num.charAt(i) - '0', t = (int)Math.pow(m, i);
+            int j;
+            for (j = 0; j < m; j++) {
+                if (digits[j].charAt(0) - '0' < x) res += t;
+                else break;
+            }
+            if (j < m && digits[j].charAt(0) - '0' == x) continue;
+            flag = false;
+            break;
+        }
+        if (flag) res++;
+        return res;
+    }
 }
 /**
  * 可以用常规的DFS的方法将所有小于N的数都访问（构造）一遍，但是当N很大的时候就很低效。
@@ -59,5 +84,4 @@ public class LC902_NumbersAtMostNGivenDigitSet {
  * 这个代表着恰好所构造出来的上限N。
  *
  * 数位dp
- *
  */

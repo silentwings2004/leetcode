@@ -33,36 +33,34 @@ public class LC1034_ColoringABorder {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-    private int m, n;
+    int[][] g;
+    int m, n;
+    boolean[][] st;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public int[][] colorBorder(int[][] grid, int row, int col, int color) {
-        m = grid.length;
-        n = grid[0].length;
-        boolean[][] visited = new boolean[m][n];
-        if (grid[row][col] == color) return grid;
-        dfs(grid, row, col, grid[row][col], color, visited);
-        return grid;
+        g = grid;
+        m = g.length;
+        n = g[0].length;
+        st = new boolean[m][n];
+        dfs(row, col, color);
+        return g;
     }
 
-    private void dfs(int[][] grid, int i, int j, int k, int color, boolean[][] visited) {
-        // base case
-        if (i < 0 || i >= m || j < 0 || j >= n) return;
-        if (grid[i][j] != k) return;
-        if (visited[i][j]) return;
-
-        visited[i][j] = true;
-        boolean isBorder = false;
-        if (i == 0 || i == m - 1 || j == 0 || j == n - 1) isBorder = true;
-        if (i + 1 < m && grid[i + 1][j] != k) isBorder = true;
-        if (i - 1 >= 0 && grid[i - 1][j] != k) isBorder = true;
-        if (j + 1 < n && grid[i][j + 1] != k) isBorder = true;
-        if (j - 1 >= 0 && grid[i][j - 1] != k) isBorder = true;
-
-        for (int[] dir : directions) {
-            int x = i + dir[0];
-            int y = j + dir[1];
-            dfs(grid, x, y, k, color, visited);
+    private void dfs(int x, int y, int c) {
+        st[x][y] = true;
+        boolean is_border = false;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) {
+                is_border = true;
+                continue;
+            } else if (st[a][b]) continue;
+            else if (g[a][b] != g[x][y]) {
+                is_border = true;
+                continue;
+            }
+            dfs(a, b, c);
         }
-        if (isBorder) grid[i][j] = color;
+        if (is_border) g[x][y] = c;
     }
 }

@@ -26,24 +26,27 @@ public class LC142_LinkedListCycleII {
      */
     // time = O(n), space = O(1)
     public ListNode detectCycle(ListNode head) {
-        // corner case
-        if (head == null) return head;
+        if (head == null || head.next == null) return null;
 
-        ListNode slow = head, fast = head;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-            if (slow == fast) break;
+        ListNode s = head, f = head;
+        boolean flag = false;
+        while (f != null && f.next != null) {
+            s = s.next;
+            f = f.next.next;
+            if (s == f) {
+                flag = true;
+                break;
+            }
         }
+        if (!flag) return null;
 
-        if (fast == null || fast.next == null) return null;
-
-        fast = head;
-        while (slow != fast) {
-            slow = slow.next;
-            fast = fast.next;
+        s = head;
+        while (s != f) {
+            s = s.next;
+            f = f.next;
+            if (s == f) break;
         }
-        return slow;
+        return s;
     }
 }
 /**
@@ -52,4 +55,7 @@ public class LC142_LinkedListCycleII {
  * m + k2 * n + p
  * => m + k1 * n + p = 2 * (m + k2 * n + p)
  * => (k1 - 2 * k2) * n = p + m => 若干圈
+ *
+ * 从b点走x步会走到c'
+ * => 从c点走x步则会走到b
  */

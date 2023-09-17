@@ -88,4 +88,7 @@ public class LC662_MaximumWidthofBinaryTree {
  * right.val = node.val * 2 + 1
  * 优化的方法是：如果某一层只有一个节点的话，我们可以把那个节点看做成根节点，并将其序号reset成为0.
  * 这样它之后层级的节点序号就又变小了，同时也不影响最终结果。
+ *
+ * 每一层最左边重新设置id从1开始！
+ * val没有任何意义，可以直接用id替换掉！
  */

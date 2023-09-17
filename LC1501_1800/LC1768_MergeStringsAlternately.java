@@ -26,10 +26,9 @@ public class LC1768_MergeStringsAlternately {
      */
     // time = O(max(m, n)), space = O(m + n)
     public String mergeAlternately(String word1, String word2) {
-        StringBuilder sb = new StringBuilder();
         int m = word1.length(), n = word2.length();
-        int i = 0, j = 0;
-        while (i < m || j < n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, j = 0; i < m || j < n;) {
             if (i < m) sb.append(word1.charAt(i++));
             if (j < n) sb.append(word2.charAt(j++));
         }

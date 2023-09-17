@@ -1,6 +1,6 @@
 package LC901_1200;
 import java.util.*;
-public class LC931_MinimumFallingPathSum {
+public class  LC931_MinimumFallingPathSum {
     /**
      * Given an n x n array of integers matrix, return the minimum sum of any falling path through matrix.
      *

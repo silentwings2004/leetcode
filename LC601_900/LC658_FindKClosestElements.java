@@ -54,7 +54,7 @@ public class LC658_FindKClosestElements {
     }
 
     // S2: k + 1 size window (最优解！！！）
-    // time = O(logn), space = O(1)
+    // time = O(logn + k), space = O(1)
     public List<Integer> findClosestElements2(int[] arr, int k, int x) {
         List<Integer> res = new ArrayList<>();
         // corner case
@@ -73,6 +73,21 @@ public class LC658_FindKClosestElements {
         for (int i = left; i < left + k; i++) {
             res.add(arr[i]);
         }
+        return res;
+    }
+
+    // S3: heap
+    // time = O(nlogn), space = O(k)
+    public List<Integer> findClosestElements3(int[] arr, int k, int x) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o2[0] - o1[0] : o2[1] - o1[1]);
+        for (int y : arr) {
+            pq.offer(new int[]{Math.abs(x - y), y});
+            if (pq.size() > k) pq.poll();
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while (!pq.isEmpty()) res.add(pq.poll()[1]);
+        Collections.sort(res);
         return res;
     }
 }

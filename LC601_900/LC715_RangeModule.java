@@ -137,6 +137,37 @@ public class LC715_RangeModule {
             }
         }
     }
+
+    // S3
+    class RangeModule2 {
+        TreeMap<Integer, Integer> map;
+        public RangeModule2() {
+            map = new TreeMap<>();
+        }
+
+        public void addRange(int left, int right) {
+            Integer fk1 = map.floorKey(left);
+            Integer fk2 = map.floorKey(right);
+            int l = (fk1 == null || map.get(fk1) < left) ? left : fk1;
+            int r = (fk2 == null || map.get(fk2) < right) ? right : map.get(fk2);
+            map.subMap(l, true, r, false).clear();
+            map.put(l, r);
+        }
+
+        public boolean queryRange(int left, int right) {
+            Integer fk = map.floorKey(left);
+            if (fk == null) return false;
+            return map.get(fk) >= right;
+        }
+
+        public void removeRange(int left, int right) {
+            Integer fk1 = map.floorKey(left);
+            Integer fk2 = map.floorKey(right);
+            if (fk2 != null && map.get(fk2) > right) map.put(right, map.get(fk2));
+            if (fk1 != null && map.get(fk1) > left) map.put(fk1, left);
+            map.subMap(left, true, right, false).clear();
+        }
+    }
 }
 /**
  * 线段树最大的好处，

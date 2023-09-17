@@ -25,15 +25,19 @@ public class LC141_LinkedListCycle {
      */
     // time = O(n), space = O(1)
     public boolean hasCycle(ListNode head) {
-        // corner case
         if (head == null || head.next == null) return false;
 
-        ListNode slow = head, fast = head.next;
-        while (fast != null && fast.next != null) {
-            fast = fast.next.next;
-            slow = slow.next;
-            if (slow == fast) return true;
+        ListNode s = head, f = head;
+        while (f != null && f.next != null) {
+            s = s.next;
+            f = f.next.next;
+            if (s == f) return true;
         }
         return false;
     }
 }
+/**
+ * 快慢指针
+ * 迭代dx = n - x
+ * 总步数 = 3x + 3(n-x) = 3n => O(n)
+ */

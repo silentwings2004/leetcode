@@ -20,19 +20,16 @@ public class LC1027_LongestArithmeticSubsequence {
      */
     // time = O(n), space = O(n)
     public int longestArithSeqLength(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         int n = nums.length;
-        HashMap<Integer, Integer>[] dp = new HashMap[n];
-        for (int i = 0; i < n; i++) dp[i] = new HashMap<>();
+        int[][] f = new int[n][1010];
 
-        int res = 1;
+        int res = 2;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                int diff = nums[i] - nums[j];
-                dp[i].put(diff, dp[j].getOrDefault(diff, 1) + 1); // 等差数组至少长度 = 1
-                res = Math.max(res, dp[i].get(diff));
+            for (int k = 0; k < i; k++) {
+                int j = nums[i] - nums[k] + 500;
+                f[i][j] = Math.max(f[i][j], 2);
+                f[i][j] = Math.max(f[i][j], f[k][j] + 1);
+                res = Math.max(res, f[i][j]);
             }
         }
         return res;
@@ -46,4 +43,11 @@ public class LC1027_LongestArithmeticSubsequence {
  * 如果这些数没有顺序，给一个set，从这些数里面抽取数组成等差数列，最长是多少？
  * dp思想都是给你一个数组来考虑，这里的话就没法做。
  * 用双指针来做。
+ *
+ * dp
+ * 1.状态表示：f(i,j)
+ * 集合：所有以i结尾且公差为j的子序列的集合
+ * 属性：最大值
+ * 2. 状态计算；以倒数第2个数
+ * f(k,ai-ak) + 1
  */

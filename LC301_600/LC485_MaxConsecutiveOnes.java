@@ -16,17 +16,15 @@ public class LC485_MaxConsecutiveOnes {
      */
     // time = O(n), space = O(1)
     public int findMaxConsecutiveOnes(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int n = nums.length, count = 0, res = 0;
-        for (int num : nums) {
-            if (num == 1) count += 1;
-            else {
-                res = Math.max(count, res);
-                count = 0;
+        int n = nums.length, res = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                int j = i + 1;
+                while (j < n && nums[j] == 1) j++;
+                res = Math.max(res, j - i);
+                i = j; // 此时j一定指向0
             }
         }
-        return Math.max(res, count);
+        return res;
     }
 }

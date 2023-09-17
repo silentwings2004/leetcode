@@ -24,18 +24,18 @@ public class LC2187_MinimumTimetoCompleteTrips {
      */
     // time = O(nlogn), space = O(1)
     public long minimumTime(int[] time, int totalTrips) {
-        long left = 1, right = (long) 1e14;
-        while (left < right) {
-            long mid = left + (right - left) / 2;
-            if (helper(time, mid, totalTrips)) right = mid;
-            else left = mid + 1;
+        long l = 1, r = (long) 1e14;
+        while (l < r) {
+            long mid = l + r >> 1;
+            if (check(time, totalTrips, mid)) r = mid;
+            else l = mid + 1;
         }
-        return left;
+        return r;
     }
 
-    private boolean helper(int[] time, long k, int t) {
-        long count = 0;
-        for (int x : time) count += k / x;
-        return count >= t;
+    private boolean check(int[] a, int k, long t) {
+        long sum = 0;
+        for (int x : a) sum += t / x;
+        return sum >= k;
     }
 }

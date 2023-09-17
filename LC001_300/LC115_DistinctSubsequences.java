@@ -22,29 +22,26 @@ public class LC115_DistinctSubsequences {
      */
     // time = O(m * n), space = O(m * n)
     public int numDistinct(String s, String t) {
-        // corner case
-        if (s == null || t == null) return 0;
-
         int m = s.length(), n = t.length();
-        int[][] dp = new int[m + 1][n + 1];
-
-        for (int i = 0; i <= m; i++) dp[i][0] = 1;
+        int[][] f = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) f[i][0] = 1;
 
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = dp[i - 1][j];
+                f[i][j] = f[i - 1][j];
                 if (s.charAt(i - 1) == t.charAt(j - 1)) {
-                    dp[i][j] += dp[i - 1][j - 1];
+                    f[i][j] += f[i - 1][j - 1];
                 }
             }
         }
-        return dp[m][n];
+        return f[m][n];
     }
 }
 /**
  * 状态表示：
  * 集合：s[1:i]的所有和t[1:j]相等的子序列
  * 属性：数量 => f[m][n]
- * 状态计算:
- *
+ * 状态计算:考虑最后一个不同点
+ * 1.所有选择s[i]: f(i-1,j-1)
+ * 2.不选s[i]：f(i-1,j)
  */

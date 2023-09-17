@@ -23,56 +23,24 @@ public class LC124_BinaryTreeMaximumPathSum {
      * @param root
      * @return
      */
-    // S1: DFS
     // time = O(n), space = O(n)
     int res = Integer.MIN_VALUE;
     public int maxPathSum(TreeNode root) {
-        maxDownPath(root);
+        if (root == null) return 0;
+        dfs(root);
         return res;
     }
 
-    private int maxDownPath(TreeNode node) { // starting from node downward only, the max-sum path
+    private int dfs(TreeNode node) {
         if (node == null) return 0;
 
-        int leftSum = maxDownPath(node.left);
-        int rightSum = maxDownPath(node.right);
-
-        int maxTurnSum = node.val;
-        if (leftSum >= 0) maxTurnSum += leftSum;
-        if (rightSum >= 0) maxTurnSum += rightSum;
-        res = Math.max(res, maxTurnSum);
-
-        if (leftSum < 0 && rightSum < 0) return node.val;
-        else return Math.max(leftSum, rightSum) + node.val;
-    }
-
-    // S2: ResultType
-    // time = O(n), space = O(n)
-    public int maxPathSum2(TreeNode root) {
-        ResultType res = helper2(root);
-        return res.any2any;
-    }
-
-    private ResultType helper2(TreeNode root) {
-        // corner case
-        if (root == null) return new ResultType(Integer.MIN_VALUE, Integer.MIN_VALUE);
-
-        ResultType left = helper2(root.left);
-        ResultType right = helper2(root.right);
-
-        int root2any = root.val + Math.max(Math.max(0, left.root2any), Math.max(0, right.root2any));
-        int any2any = Math.max(left.any2any, right.any2any);
-        any2any = Math.max(any2any, Math.max(0, left.root2any) + Math.max(0, right.root2any) + root.val);
-        return new ResultType(root2any, any2any);
-    }
-
-    private class ResultType {
-        private int root2any;
-        private int any2any;
-        public ResultType(int root2any, int any2any) {
-            this.root2any = root2any;
-            this.any2any = any2any;
-        }
+        int l = dfs(node.left);
+        int r = dfs(node.right);
+        l = Math.max(l, 0);
+        r = Math.max(r, 0);
+        int sum = l + r + node.val;
+        res = Math.max(res, sum);
+        return Math.max(l, r) + node.val;
     }
 }
 /**

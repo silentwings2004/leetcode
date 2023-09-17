@@ -22,10 +22,8 @@ public class LC152_MaximumProductSubarray {
      */
     // time = O(n), space = O(1)
     public int maxProduct(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int res = nums[0], f = nums[0], g = nums[0];
+        int res = nums[0];
+        int f = nums[0], g = nums[0];
         int n = nums.length;
         for (int i = 1; i < n; i++) {
             int a = nums[i], fa = f * a, ga = g * a;

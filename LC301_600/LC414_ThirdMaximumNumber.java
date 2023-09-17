@@ -59,4 +59,30 @@ public class LC414_ThirdMaximumNumber {
         set.remove(secondMax);
         return Collections.max(set);
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    public int thirdMax3(int[] nums) {
+        long INF = (long) 1e10, a = -INF, b = -INF, c = -INF, s = 0;
+        for (int x : nums) {
+            if (x > a) {
+                s++;
+                c = b;
+                b = a;
+                a = x;
+            } else if (x < a && x > b) {
+                s++;
+                c = b;
+                b = x;
+            } else if (x < b && x > c) {
+                s++;
+                c = x;
+            }
+        }
+        return (int)(s < 3 ? a : c);
+    }
 }
+/**
+ * a, b, c
+ * 相同的数直接Pass掉
+ */

@@ -101,6 +101,73 @@ public class LC913_CatandMouse {
         }
         return true;
     }
+
+    // S2
+    // time = O(n^3), space = O(n^2)
+    final int N = 210;
+    int[][] g;
+    int[][][] f;
+    int n;
+    public int catMouseGame2(int[][] graph) {
+        g = graph;
+        n = g.length;
+        f = new int[n * 5 + 10][n + 10][n + 10];
+        for (int i = 0; i < n * 5 + 10; i++) {
+            for (int j = 0; j < n + 10; j++) {
+                Arrays.fill(f[i][j], -1);
+            }
+        }
+        return dp(0, 1, 2);
+    }
+
+    private int dp(int k, int i, int j) {
+        if (f[k][i][j] != -1) return f[k][i][j];
+        if (k > n * 5) {
+            f[k][i][j] = 0;
+            return 0;
+        }
+        if (i == 0) {
+            f[k][i][j] = 1;
+            return 1;
+        }
+        if (i == j) {
+            f[k][i][j] = 2;
+            return 2;
+        }
+
+        if (k % 2 == 0) {
+            int draws = 0;
+            for (int x : g[i]) {
+                int t = dp(k + 1, x, j);
+                if (t == 1) {
+                    f[k][i][j] = 1;
+                    return 1;
+                } else if (t == 0) draws++;
+            }
+            if (draws > 0) {
+                f[k][i][j] = 0;
+                return 0;
+            }
+            f[k][i][j] = 2;
+            return 2;
+        } else {
+            int draws = 0;
+            for (int x : g[j]) {
+                if (x == 0) continue;
+                int t = dp(k + 1, i, x);
+                if (t == 2) {
+                    f[k][i][j] = 2;
+                    return 2;
+                } else if (t == 0) draws++;
+            }
+            if (draws > 0) {
+                f[k][i][j] = 0;
+                return 0;
+            }
+            f[k][i][j] = 1;
+            return 1;
+        }
+    }
 }
 /**
  * game theory
@@ -126,4 +193,11 @@ public class LC913_CatandMouse {
  * m2,c2,t2 (t2==1) status = cat win
  * 如果这轮猫走投无路了，都是老鼠赢 => 只能加入队列中
  * (m',c',t') =>
+ *
+ * f(k, i, j): 鼠在i，猫在j，下一步该谁走的状态为k
+ * 1. k为偶数，老鼠先动 => f(k,i,j) = f(k+1,x,j),f(k+1,y,j)...  1->0->2
+ * 2. k为奇数 => f(k,i,j) => f(k+1,i,x)...   2->0->1
+ * 1~n, 1~n => 谁先动 * 2 => k <= 2n^2
+ * 如果能获胜，不会出现环 => 每位玩家在不可能出现平局的情况下，都不可能走重复的路
+ * 对于i,j来说，最多走n个点 => k <= 2n  => k > 2n 出现平局8
  */

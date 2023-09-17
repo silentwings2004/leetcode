@@ -21,18 +21,15 @@ public class LC540_SingleElementinaSortedArray {
      */
     // time = O(logn), space = O(1)
     public int singleNonDuplicate(int[] nums) {
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (mid % 2 == 0) {
-                if (nums[mid] == nums[mid - 1]) right = mid - 2;
-                else left = mid;
-            } else {
-                if (nums[mid] == nums[mid + 1]) right = mid - 1;
-                else left = mid + 1;
-            }
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            // mid为偶数, mid^1为mid+1
+            // mid为奇数, mid^1为mid-1
+            if (nums[mid] != nums[mid ^ 1]) r = mid;
+            else l = mid + 1;
         }
-        return nums[left];
+        return nums[r];
     }
 }
 /**

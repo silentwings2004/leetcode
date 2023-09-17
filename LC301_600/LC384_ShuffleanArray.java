@@ -25,32 +25,24 @@ public class LC384_ShuffleanArray {
      * At most 5 * 10^4 calls in total will be made to reset and shuffle.
      * @param nums
      */
-    // time = O(n), space = O(n)
-    int[] arr;
-    int[] nums;
+    int[] a;
     public LC384_ShuffleanArray(int[] nums) {
-        this.nums = nums;
-        arr = nums.clone();
+        a = nums;
     }
-
+    // time = O(1), space = O(n)
     public int[] reset() {
-        arr = nums.clone();
-        return arr;
+        return a;
     }
-
+    // time = O(n), space = O(n)
     public int[] shuffle() {
-        Random random = new Random();
-        int n = arr.length;
+        int[] b = a.clone();
+        int n = a.length;
         for (int i = 0; i < n; i++) {
-            int idx = random.nextInt(n);
-            swap(arr, i, idx);
+            int j = (int)(Math.random() * n);
+            int t = b[i];
+            b[i] = b[j];
+            b[j] = t;
         }
-        return arr;
-    }
-
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+        return b;
     }
 }

@@ -56,6 +56,40 @@ public class LC1028_RecoveraTreeFromPreorderTraversal {
         num[0] = leftNum[0] + rightNum[0] + 1; // 叶子节点左右都是0，返回节点个数为1
         return root;
     }
+
+    // S2: dfs
+    class Solution {
+        // time = O(n), space = O(n)
+        List<int[]> nodes;
+        int k = 0;
+        public TreeNode recoverFromPreorder(String traversal) {
+            nodes = new ArrayList<>();
+            int n = traversal.length();
+            for (int i = 0; i < n;) {
+                int depth = 0;
+                while (traversal.charAt(i) == '-') {
+                    depth++;
+                    i++;
+                }
+                int val = 0;
+                while (i < n && traversal.charAt(i) != '-') {
+                    val = val * 10 + traversal.charAt(i++) - '0';
+                }
+                nodes.add(new int[]{depth, val});
+            }
+            return dfs(0);
+        }
+
+        private TreeNode dfs(int d) {
+            if (k == nodes.size()) return null;
+
+            TreeNode node = new TreeNode(nodes.get(k)[1]);
+            k++;
+            if (k < nodes.size() && nodes.get(k)[0] > d) node.left = dfs(d + 1);
+            if (k < nodes.size() && nodes.get(k)[0] > d) node.right = dfs(d + 1);
+            return node;
+        }
+    }
 }
 /**
  * tree的题目基本都尽量用递归解决

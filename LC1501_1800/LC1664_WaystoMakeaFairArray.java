@@ -24,6 +24,7 @@ public class LC1664_WaystoMakeaFairArray {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int waysToMakeFair(int[] nums) {
         int n = nums.length;
@@ -41,6 +42,33 @@ public class LC1664_WaystoMakeaFairArray {
             if ((i > 0 ? leftEven[i - 1] : 0) + rightOdd == (i > 0 ? leftOdd[i - 1] : 0) + rightEven) res++;
             if (i % 2 == 0) rightEven += nums[i];
             else rightOdd += nums[i];
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int waysToMakeFair2(int[] nums) {
+        int odd = 0, even = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (i % 2 == 0) even += nums[i];
+            else odd += nums[i];
+        }
+
+        int a = 0, b = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            int x = 0, y = 0;
+            if (i % 2 == 0) {
+                x = a + (odd - b);
+                y = b + (even - a - nums[i]);
+                a += nums[i];
+            } else {
+                x = b + (even - a);
+                y = a + (odd - b - nums[i]);
+                b += nums[i];
+            }
+            if (x == y) res++;
         }
         return res;
     }

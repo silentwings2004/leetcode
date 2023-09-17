@@ -16,24 +16,21 @@ public class LC349_IntersectionofTwoArrays {
      * @param nums2
      * @return
      */
-    // S1: Two Sets
-    // time = O(m + n), space = O(m + n)
+    // S1: HashSet
+    // time = O(m + n), space = O(n)
     public int[] intersection(int[] nums1, int[] nums2) {
-        // corner case
-        if (nums1 == null || nums1.length == 0 || nums2 == null || nums2.length == 0) return new int[0];
-
-        HashSet<Integer> set1 = new HashSet<>();
-        HashSet<Integer> set2 = new HashSet<>();
-
-        for (int n : nums1) set1.add(n);
-        for (int n : nums2) {
-            if (set1.contains(n)) set2.add(n);
+        HashSet<Integer> set = new HashSet<>();
+        for (int x : nums1) set.add(x);
+        List<Integer> res = new ArrayList<>();
+        for (int x : nums2) {
+            if (set.contains(x)) {
+                res.add(x);
+                set.remove(x);
+            }
         }
-
-        int[] res = new int[set2.size()];
-        int k = 0;
-        for (int n : set2) res[k++] = n;
-        return res;
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
+        return ans;
     }
 
     // S2:

@@ -16,47 +16,27 @@ public class LC253_MeetingRoomsII {
      * @return
      */
     // S1
-    // time = O(nlogn, space = O(n)
+    // time = O(nlogn), space = O(n)
     public int minMeetingRooms(int[][] intervals) {
-        // corner case
-        if (intervals == null || intervals.length == 0 || intervals[0] == null || intervals[0].length == 0) {
-            return 0;
+        List<int[]> diff = new ArrayList<>();
+        for (int[] x : intervals) {
+            int a = x[0], b = x[1];
+            diff.add(new int[]{a, 1});
+            diff.add(new int[]{b, -1});
         }
 
-        List<EndPoint> eps = new ArrayList<>();
-        for (int[] interval : intervals) {
-            eps.add(new EndPoint(interval[0], true));
-            eps.add(new EndPoint(interval[1], false));
-        }
+        Collections.sort(diff, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
 
-        Collections.sort(eps);
-
-        int pool = 0, max = 0;
-        for (EndPoint ep : eps) {
-            if (ep.isStart) {
-                pool++;
-                max = Math.max(pool, max);
-            } else pool--;
+        int res = 0, sum = 0;
+        for (int[] x : diff) {
+            sum += x[1];
+            res = Math.max(res, sum);
         }
-        return max;
-    }
-
-    private class EndPoint implements Comparable<EndPoint> {
-        private int val;
-        private boolean isStart;
-        public EndPoint(int val, boolean isStart) {
-            this.val = val;
-            this.isStart = isStart;
-        }
-        @Override
-        public int compareTo(EndPoint that) {
-            if (this.val != that.val) return this.val - that.val;
-            else return this.isStart ? 1 : -1;
-        }
+        return res;
     }
 
     // S2: Sort + PQ
-    // time = O(nlogn, space = O(n)
+    // time = O(nlogn), space = O(n)
     public int minMeetingRooms2(int[][] intervals) {
         // corner case
         if (intervals == null || intervals.length == 0 || intervals[0] == null || intervals[0].length == 0) {
@@ -79,27 +59,20 @@ public class LC253_MeetingRoomsII {
         return count;
     }
 
-    // S3: sweep line
-    // time = O(nlogn, space = O(n)
+    // S3: diff array
+    // time = O(n), space = O(n)
+    final int N = 1000010;
     public int minMeetingRooms3(int[][] intervals) {
-        // corner case
-        if (intervals == null || intervals.length == 0 || intervals[0] == null || intervals[0].length == 0) {
-            return 0;
+        int[] b = new int[N];
+        for (int[] x : intervals) {
+            b[x[0]]++;
+            b[x[1]]--;
         }
 
-        List<int[]> diff = new ArrayList<>();
-        int n = intervals.length;
-        for (int[] interval : intervals) {
-            diff.add(new int[]{interval[0], 1});
-            diff.add(new int[]{interval[1], -1});
-        }
-
-        Collections.sort(diff, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-
-        int count = 0, res = 0;
-        for (int i = 0; i < diff.size(); i++) {
-            count += diff.get(i)[1];
-            res = Math.max(res, count);
+        int sum = 0, res = 0;
+        for (int i = 0; i <= (int)1e6; i++) {
+            sum += b[i];
+            res = Math.max(res, sum);
         }
         return res;
     }

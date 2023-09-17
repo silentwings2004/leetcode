@@ -79,6 +79,54 @@ public class LC745_PrefixandSuffixSearch {
             this.weight = 0;
         }
     }
+
+    // S2
+    // time = O(nk^2 + qk), space = O(nk^2)
+    class WordFilter {
+        final int N = 280000;
+        int[][] son;
+        int[] w;
+        int idx;
+        public WordFilter(String[] words) {
+            son = new int[N][27];
+            w = new int[N];
+            idx = 0;
+
+            int n = words.length;
+            for (int i = 0; i < n; i++) {
+                String s = "#" + words[i];
+                insert(s, i);
+                for (int j = words[i].length() - 1; j >= 0; j--) {
+                    s = words[i].charAt(j) + s;
+                    insert(s, i);
+                }
+            }
+        }
+
+        public int f(String pref, String suff) {
+            return query(suff + "#" + pref);
+        }
+
+        private void insert(String s, int id) {
+            int p = 0;
+            for (char c : s.toCharArray()) {
+                int u = c == '#' ? 26 : c - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+                w[p] = id;
+            }
+        }
+
+        private int query(String s) {
+            int p = 0;
+            for (char c : s.toCharArray()) {
+                int u = c == '#' ? 26 : c - 'a';
+                if (son[p][u] == 0) return -1;
+                p = son[p][u];
+            }
+            return w[p];
+        }
+    }
 }
 /**
  * 一个巧妙的设计就是把后缀加在单词前面，中间用"{"分隔，拼成一个新的单词，将这种新的单词加入字典树中，并在querry的时候查找。

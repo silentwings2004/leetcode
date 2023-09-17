@@ -16,6 +16,7 @@ public class LC483_SmallestGoodBase {
      * @param n
      * @return
      */
+    // S1: binary search
     // time = O((logn)^2), space = O(1)
     public String smallestGoodBase(String n) {
         long N = Long.parseLong(n);
@@ -35,6 +36,20 @@ public class LC483_SmallestGoodBase {
         }
         return String.valueOf(N - 1);
     }
+
+    // S2: Math
+    // time = O(1), space = O(1)
+    public String smallestGoodBase2(String n) {
+        long num = Long.parseLong(n);
+        for (int i = 59; i >= 2; i--) {
+            long k = (long) Math.pow(num, 1.0 / (i - 1));
+            if (k <= 1) continue;
+            long s = 0;
+            for (int j = 0; j <= i - 1; j++) s = s * k + 1;
+            if (s == num) return String.valueOf(k);
+        }
+        return String.valueOf(num - 1);
+    }
 }
 /**
  * n - 1 进制 => 11
@@ -48,4 +63,17 @@ public class LC483_SmallestGoodBase {
  * n = (k^m - 1) / (k-1)  => n * (k - 1) + 1 = k^m
  * n * k > k^m  => n > k^(m - 1) => k < n^(1 / (m - 1))
  *
+ * (n)10 = (11)n-1 => 一定有解
+ * k >= 2 => 位数只有[log2n]位 最多60位
+ * (n)10 = (1...1)k = k^(t-1) + k^(t-2) + ... + k^0
+ * => 关于k的方程
+ * 枚举完t之后，判断是否存在一个整数k >= 2 是满足这个方程的
+ * 二分？ 10^18 可能爆long long，处理边界有点复杂
+ * 能不能直接求出k?
+ * k^(t-1) <= n => k <= n^(1/(t-1))
+ * (k+1)^(t-1) = (k+1)^0 * C(t-1,0) + (k+1)*C(t-1,1) + ...+(k+1)^(t-1)*C(t-1,t-1)
+ * t = 1 => (k+1)^(t-1) = n
+ * t = 2 => (k+1)^(t-1) > n
+ * t > 2 => (k+1)^(t-1) > n
+ * => k + 1 > n^(1/(t-1))
  */

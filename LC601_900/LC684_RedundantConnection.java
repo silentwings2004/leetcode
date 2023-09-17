@@ -27,36 +27,23 @@ public class LC684_RedundantConnection {
      * @param edges
      * @return
      */
-    // time = O(n), space = O(n)  n: number of vertices
-    HashMap<Integer, Integer> parent = new HashMap<>();
+    // time = O(nlogn), space = O(n)
+    int[] p;
     public int[] findRedundantConnection(int[][] edges) {
-        // corner case
-        if (edges == null || edges.length == 0 || edges[0] == null || edges[0].length == 0) return new int[0];
-
-
-        for (int[] edge : edges) {
-            int a = edge[0];
-            int b = edge[1];
-            if (!parent.containsKey(a)) parent.put(a, a);
-            if (!parent.containsKey(b)) parent.put(b, b);
-
-            // 在做union(a,b)之前一定要先做这个，保证a的parent是最早的老祖宗，把a, b各自路径压缩一下！！！
-            if (findParent(a) == findParent(b)) return edge;
-            else union(a, b);
+        int n = edges.length;
+        p = new int[n + 1];
+        for (int i = 1; i <= n; i++) p[i] = i;
+        for (int[] e : edges) {
+            int a = find(e[0]), b = find(e[1]);
+            if (a != b) p[a] = b;
+            else return e;
         }
         return new int[0];
     }
 
-    private int findParent(int x) {
-        if (parent.get(x) != x) parent.put(x, findParent(parent.get(x)));
-        return parent.get(x);
-    }
-
-    private void union(int x, int y) {
-        x = parent.get(x);
-        y = parent.get(y);
-        if (x < y) parent.put(y, x);
-        else parent.put(x, y);
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

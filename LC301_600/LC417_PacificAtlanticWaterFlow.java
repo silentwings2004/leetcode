@@ -33,7 +33,7 @@ public class LC417_PacificAtlanticWaterFlow {
      * @return
      */
     // S1: bfs
-    // time = O(m + n), space = O(m * n)
+    // time = O(m * n), space = O(m * n)
     private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public List<List<Integer>> pacificAtlantic(int[][] matrix) {
         List<List<Integer>> res = new ArrayList<>();
@@ -96,40 +96,39 @@ public class LC417_PacificAtlanticWaterFlow {
     }
 
     // S2: dfs
-    // time = O(m + n), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    // time = O(m * n), space = O(m * n)
+    int[][] w;
+    int m, n;
+    int[][] st;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public List<List<Integer>> pacificAtlantic2(int[][] heights) {
         List<List<Integer>> res = new ArrayList<>();
-        int m = heights.length, n = heights[0].length;
-        boolean[][] pacific = new boolean[m][n];
-        boolean[][] atlantic = new boolean[m][n];
+        w = heights;
+        m = w.length;
+        n = w[0].length;
+        st = new int[m][n];
 
-        for (int i = 0; i < m; i++) dfs(heights, i, 0, pacific);
-        for (int j = 0; j < n; j++) dfs(heights, 0, j, pacific);
-        for (int i = 0; i < m; i++) dfs(heights, i, n - 1, atlantic);
-        for (int j = 0; j < n; j++) dfs(heights, m - 1, j, atlantic);
+        for (int i = 0; i < m; i++) dfs(i, 0, 1);
+        for (int j = 0; j < n; j++) dfs(0, j, 1);
+        for (int i = 0; i < m; i++) dfs(i, n - 1, 2);
+        for (int j = 0; j < n; j++) dfs(m - 1, j, 2);
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (pacific[i][j] && atlantic[i][j]) {
-                    res.add(Arrays.asList(i, j));
-                }
+                if (st[i][j] == 3) res.add(Arrays.asList(i, j));
             }
         }
         return res;
     }
 
-    private void dfs(int[][] heights, int i, int j, boolean[][] sea) {
-        int m = heights.length, n = heights[0].length;
-
-        sea[i][j] = true;
-        for (int[] dir : directions) {
-            int x = i + dir[0];
-            int y = j + dir[1];
-            if (x < 0 || x >= m || y < 0 || y >= n) continue;
-            if (sea[x][y]) continue;
-            if (heights[x][y] < heights[i][j]) continue;
-            dfs(heights, x, y, sea);
+    private void dfs(int x, int y, int t) {
+        if ((st[x][y] & t) != 0) return;
+        st[x][y] |= t;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (w[a][b] < w[x][y]) continue;
+            dfs(a, b, t);
         }
     }
 }

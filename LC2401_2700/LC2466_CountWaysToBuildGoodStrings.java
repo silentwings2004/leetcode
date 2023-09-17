@@ -44,4 +44,22 @@ public class LC2466_CountWaysToBuildGoodStrings {
         }
         return res;
     }
+
+    // S2: DP
+    // time = O(n), space = O(n)
+    public int countGoodStrings2(int low, int high, int zero, int one) {
+        int mod = (int) 1e9 + 7;
+        int[] f = new int[high + 1];
+        f[zero]++;
+        f[one]++;
+
+        for (int i = 1; i <= high; i++) {
+            if (i >= zero) f[i] = (f[i] + f[i - zero]) % mod;
+            if (i >= one) f[i] = (f[i] + f[i - one]) % mod;
+        }
+
+        int res = 0;
+        for (int i = low; i <= high; i++) res = (res + f[i]) % mod;
+        return res;
+    }
 }

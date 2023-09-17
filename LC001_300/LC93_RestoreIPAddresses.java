@@ -19,37 +19,33 @@ public class LC93_RestoreIPAddresses {
      * @param s
      * @return
      */
-    // time = O(1), space = O(1)
+    // time = O(C(n - 1, 3)), space = O(1)
+    List<String> res;
     public List<String> restoreIpAddresses(String s) {
-        List<String> res = new ArrayList<>();
-        // corner case
-        if (s == null || s.length() == 0) return res;
-
-        dfs(s, 0, 0, new StringBuilder(), res);
+        res = new ArrayList<>();
+        dfs(s, 0, 0, new StringBuilder());
         return res;
     }
 
-    private void dfs(String s, int idx, int num, StringBuilder path, List<String> res) {
-        // base case - success
-        if (idx == s.length() && num == 4) {
-            path.setLength(path.length() - 1);
-            res.add(path.toString());
+    private void dfs(String s, int u, int k, StringBuilder sb) {
+        if (u == s.length()) {
+            if (k == 4) {
+                sb.setLength(sb.length() - 1);
+                res.add(sb.toString());
+            }
             return;
         }
+        if (k == 4) return;
 
-        // base case - fail
-        if (idx == s.length() || num == 4) return;
-
-        int len = path.length(), val = 0;
-        for (int i = idx; i < idx + 3; i++) {
-            if (i >= s.length()) break;
-            val = val * 10 + s.charAt(i) - '0';
-            if (val >= 0 && val <= 255) {
-                path.append(val + ".");
-                dfs(s, i + 1, num + 1, path, res);
-                path.setLength(len);
-            }
-            if (val == 0) break;
+        int len = sb.length();
+        for (int i = u, t = 0; i < s.length(); i++) {
+            if (i > u && s.charAt(u) == '0') break;
+            t = t * 10 + s.charAt(i) - '0';
+            if (t <= 255) {
+                sb.append(t).append('.');
+                dfs(s, i + 1, k + 1, sb);
+                sb.setLength(len);
+            } else break;
         }
     }
 }

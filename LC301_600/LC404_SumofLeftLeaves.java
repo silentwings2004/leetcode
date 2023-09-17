@@ -15,24 +15,18 @@ public class LC404_SumofLeftLeaves {
      * @return
      */
     // time = O(n), space = O(n)
-    private int sum = 0;
+    private int res = 0;
     public int sumOfLeftLeaves(TreeNode root) {
-        // corner case
-        if (root == null) return 0;
-
-        dfs(root, false);
-        return sum;
+        dfs(root);
+        return res;
     }
 
-    private void dfs(TreeNode node, boolean isLeft) {
-        if (node.left == null && node.right == null) {
-            if (isLeft) {
-                sum += node.val;
-            }
-            return;
+    private void dfs(TreeNode node) {
+        if (node == null) return;
+        if (node.left != null) {
+            if (node.left.left == null && node.left.right == null) res += node.left.val;
         }
-
-        if (node.left != null) dfs(node.left, true);
-        if (node.right != null) dfs(node.right, false);
+        dfs(node.left);
+        dfs(node.right);
     }
 }

@@ -23,10 +23,14 @@ public class LC338_CountingBits {
      */
     // time = O(n), space = O(1)
     public int[] countBits(int n) {
-        int[] res = new int[n + 1];
+        int[] f = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            res[i] = i % 2 == 0 ? res[i / 2] : res[i / 2] + 1;
+            f[i] = f[i >> 1] + (i & 1);
         }
-        return res;
+        return f;
     }
 }
+/**
+ * 用递推来做
+ * f(i)
+ */

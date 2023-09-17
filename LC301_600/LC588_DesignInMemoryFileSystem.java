@@ -35,6 +35,7 @@ public class LC588_DesignInMemoryFileSystem {
      * 1 <= content.length <= 50
      * At most 300 calls will be made to ls, mkdir, addContentToFile, and readContentFromFile.
      */
+    // S1
     TrieNode root;
     HashMap<String, String> fc; // fileContent
     public LC588_DesignInMemoryFileSystem() {
@@ -96,6 +97,47 @@ public class LC588_DesignInMemoryFileSystem {
         public TrieNode() {
             this.map = new TreeMap<>();
             this.isFile = false;
+        }
+    }
+
+    // S2
+    class FileSystem {
+        HashMap<String, String> fm; // {path -> content}
+        HashMap<String, TreeSet<String>> dm; //{path -> directories + files}
+        public FileSystem() {
+            fm = new HashMap<>();
+            dm = new HashMap<>();
+        }
+
+        public List<String> ls(String path) {
+            if (fm.containsKey(path)) {
+                String[] strs = path.split("/");
+                List<String> res = new ArrayList<>();
+                res.add(strs[strs.length - 1]);
+                return res;
+            }
+            return new ArrayList<>(dm.getOrDefault(path, new TreeSet<>()));
+        }
+
+        public void mkdir(String path) {
+            String[] strs = path.split("/");
+            String s = "";
+            dm.putIfAbsent("/", new TreeSet<>());
+            dm.get("/").add(strs[1]); // strs[0]是个空字符，所以一个字符要跳过单独处理
+            for (int i = 1; i + 1 < strs.length; i++) {
+                s += "/" + strs[i];
+                dm.putIfAbsent(s, new TreeSet<>());
+                dm.get(s).add(strs[i + 1]);
+            }
+        }
+
+        public void addContentToFile(String filePath, String content) {
+            fm.put(filePath, fm.getOrDefault(filePath, "") + content);
+            mkdir(filePath);
+        }
+
+        public String readContentFromFile(String filePath) {
+            return fm.get(filePath);
         }
     }
 }

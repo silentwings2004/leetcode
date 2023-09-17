@@ -9,14 +9,18 @@ public class LC784_LetterCasePermutation {
      * Input: S = "a1b2"
      * Output: ["a1b2","a1B2","A1b2","A1B2"]
      *
+     * Input: s = "3z4"
+     * Output: ["3z4","3Z4"]
+     *
      * Constraints:
      *
-     * S will be a string with length between 1 and 12.
-     * S will consist only of letters or digits.
+     * 1 <= s.length <= 12
+     * s consists of lowercase English letters, uppercase English letters, and digits.
      *
      * @param S
      * @return
      */
+    // S1: dfs
     // time = O(2^n * n), space = O(2^n * n)
     List<String> res;
     public List<String> letterCasePermutation(String s) {
@@ -36,5 +40,24 @@ public class LC784_LetterCasePermutation {
                 chars[u] ^= 32;
             }
         }
+    }
+
+    // S2: state compression
+    // time = O(n * 2^n), space = O(n)
+    public List<String> letterCasePermutation2(String s) {
+        HashSet<String> set = new HashSet<>();
+        int n = s.length();
+        for (int state = 0; state < 1 << n; state++) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                char c = s.charAt(i);
+                if ((state >> i & 1) == 1) {
+                    if (Character.isDigit(c)) sb.append(c);
+                    else sb.append((char)(c ^ 32));
+                } else sb.append(c);
+            }
+            set.add(sb.toString());
+        }
+        return new ArrayList<>(set);
     }
 }

@@ -33,69 +33,51 @@ public class LC2096_StepByStepDirectionsFromaBinaryTreeNodetoAnother {
      * @param destValue
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
-    HashMap<TreeNode, TreeNode> map;
-    StringBuilder sb1, sb2;
+    HashMap<Integer, TreeNode> map;
     public String getDirections(TreeNode root, int startValue, int destValue) {
         map = new HashMap<>();
-        sb1 = new StringBuilder();
-        sb2 = new StringBuilder();
 
-        buildMap(root, root);
-        TreeNode ancestor = lca(root, startValue, destValue);
-        TreeNode[] nodes = findNodes(root, startValue, destValue);
+        build(root, root);
+        TreeNode fa = lca(root, startValue, destValue);
 
-        TreeNode cur = nodes[0];
-        while (cur != ancestor) {
-            cur = map.get(cur);
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+
+        // find left path
+        int p = startValue;
+        while (p != fa.val) {
+            p = map.get(p).val;
             sb1.append('U');
         }
 
-        cur = nodes[1];
-        while (cur != ancestor) {
-            TreeNode p = map.get(cur);
-            if (p.left == cur) sb2.append('L');
+        // find right path
+        p = destValue;
+        while (p != fa.val) {
+            TreeNode q = map.get(p);
+            if (q.left != null && q.left.val == p) sb2.append('L');
             else sb2.append('R');
-            cur = p;
+            p = q.val;
         }
-
-        sb1.append(sb2.reverse());
-        return sb1.toString();
+        return (sb1.append(sb2.reverse())).toString();
     }
 
-    private void buildMap(TreeNode cur, TreeNode parent) {
+    private void build(TreeNode cur, TreeNode fa) {
         if (cur == null) return;
-        map.put(cur, parent);
-        buildMap(cur.left, cur);
-        buildMap(cur.right, cur);
+        map.put(cur.val, fa);
+        build(cur.left, cur);
+        build(cur.right, cur);
     }
 
     private TreeNode lca(TreeNode root, int p, int q) {
         if (root == null) return null;
-        if (p == root.val || q == root.val) return root;
+        if (root.val == p || root.val == q) return root;
 
-        TreeNode left = lca(root.left, p, q);
-        TreeNode right = lca(root.right, p, q);
-
-        if (left != null && right != null) return root;
-        return left == null ? right : left;
-    }
-
-    private TreeNode[] findNodes(TreeNode root, int start, int end) {
-        TreeNode[] nodes = new TreeNode[2];
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-
-        while (!queue.isEmpty()) {
-            TreeNode cur = queue.poll();
-            if (cur.val == start) nodes[0] = cur;
-            if (cur.val == end) nodes[1] = cur;
-            if (nodes[0] != null && nodes[1] != null) break;
-
-            if (cur.left != null) queue.offer(cur.left);
-            if (cur.right != null) queue.offer(cur.right);
-        }
-        return nodes;
+        TreeNode l = lca(root.left, p, q);
+        TreeNode r = lca(root.right, p, q);
+        if (l != null && r != null) return root;
+        return l == null ? r : l;
     }
 
     // S2: dfs

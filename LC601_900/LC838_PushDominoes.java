@@ -169,33 +169,31 @@ public class LC838_PushDominoes {
     // S4
     // time = O(n), space = O(n)
     public String pushDominoes4(String dominoes) {
-        dominoes = "L" + dominoes + 'R';
-        int n = dominoes.length();
+        dominoes = "L" + dominoes + "R";
+        char[] s = dominoes.toCharArray();
+        int n = s.length;
         int[] l = new int[n], r = new int[n];
-
         for (int i = 0, j = 0; i < n; i++) {
-            if (dominoes.charAt(i) != '.') j = i;
+            if (s[i] != '.') j = i;
             l[i] = j;
         }
-
         for (int i = n - 1, j = 0; i >= 0; i--) {
-            if (dominoes.charAt(i) != '.') j = i;
+            if (s[i] != '.') j = i;
             r[i] = j;
         }
 
-        char[] chars = new char[n];
         for (int i = 0; i < n; i++) {
-            char lc = dominoes.charAt(l[i]), rc = dominoes.charAt(r[i]);
-            if (lc == 'L' && rc == 'R') chars[i] = '.';
-            else if (lc == 'L' && rc == 'L') chars[i] = 'L';
-            else if (lc == 'R' && rc == 'R') chars[i] = 'R';
+            char L = s[l[i]], R = s[r[i]];
+            if (L == 'L' && R == 'R') s[i] = '.';
+            else if (L == 'L' && R == 'L') s[i] = 'L';
+            else if (L == 'R' && R == 'R') s[i] = 'R';
             else {
-                if (i - l[i] > r[i] - i) chars[i] = 'L';
-                else if (i - l[i] < r[i] - i) chars[i] = 'R';
-                else chars[i] = '.';
+                if (i - l[i] < r[i] - i) s[i] = 'R';
+                else if (i - l[i] > r[i] - i) s[i] = 'L';
+                else s[i] = '.';
             }
         }
-        return String.valueOf(chars).substring(1, n - 1);
+        return String.valueOf(s).substring(1, n - 1);
     }
 }
 /**
@@ -206,4 +204,11 @@ public class LC838_PushDominoes {
  * 注意，有些骨牌可能会在此回合里既被左倾也被右倾，那么它就最终的状态是站立。
  * 这一回合结束时，我们要将所有在本回合被推倒的骨牌加入队列中。
  * 最终所有骨牌会在BFS的过程中被加入队列确认状态。
+ *
+ * 分类讨论：
+ * 1. L . R => .
+ * 2. L . L => L
+ * 3. R . R => R
+ * 4. R . L => R or . or L
+ * 预处理下左边第一个倒的块，和右边第一个倒的块
  */

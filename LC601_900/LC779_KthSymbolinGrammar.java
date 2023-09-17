@@ -25,9 +25,23 @@ public class LC779_KthSymbolinGrammar {
      * @param k
      * @return
      */
+    // S1
     // time = O(logk), space = O(1)
     public int kthGrammar(int n, int k) {
         return Integer.bitCount(k - 1) & 1;
+    }
+
+    // S2
+    // time = O(logk), space = O(1)
+    public int kthGrammar2(int n, int k) {
+        int ans = 0;
+        for (;n > 1; n--) {
+            if (k > (1 << n - 2)) {
+                ans ^= 1;
+                k -= 1 << n - 2;
+            }
+        }
+        return ans;
     }
 }
 /**

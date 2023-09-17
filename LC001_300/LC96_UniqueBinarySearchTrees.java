@@ -14,20 +14,35 @@ public class LC96_UniqueBinarySearchTrees {
      * @param n
      * @return
      */
+    // S1: dp
     // time = O(n^2), space = O(n)
     public int numTrees(int n) {
-        int[] dp = new int[n + 1];
-        dp[0] = 1;
+        int[] f = new int[n + 1];
+        f[0] = 1;
 
-        for (int i = 1; i <= n; i++) { // i: 结点的个数
-            for (int j = 0; j < i; j++) { // j: 左子树有多少个
-                dp[i] += dp[j] * dp[i - j - 1]; // 注意：这里是+=
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                f[i] += f[j - 1] * f[i - j];
             }
         }
-        return dp[n];
+        return f[n];
+    }
+
+    // S2: Math
+    // time = O(n), space = O(1)
+    public int numTrees2(int n) {
+        long res = 1;
+        for (int i = 1, j = n + 1; i <= n; i++, j++) res = res * j / i;
+        return (int)(res / (n + 1));
     }
 }
 /**
+ * 卡特兰数：
+ * S1: 两重循环递推
+ * f(i) = sum {f(j-1) * f(i - j - 1)}  j = 1 ~ i
+ *
+ * S2: 公式
+ * C(2n, n) / (n + 1)
  * 先确定root是哪个
  * 1，2，3，...,n
  *       k

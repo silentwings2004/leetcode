@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class LC728_SelfDividingNumbers {
+public class  LC728_SelfDividingNumbers {
     /**
      * A self-dividing number is a number that is divisible by every digit it contains.
      *
@@ -23,17 +23,17 @@ public class LC728_SelfDividingNumbers {
     public List<Integer> selfDividingNumbers(int left, int right) {
         List<Integer> res = new ArrayList<>();
         for (int i = left; i <= right; i++) {
-            if (helper(i)) res.add(i);
+            if (check(i)) res.add(i);
         }
         return res;
     }
 
-    private boolean helper(int num) {
-        int t = num;
-        while (t > 0) {
-            int digit = t % 10;
-            if (digit == 0 || num % digit != 0) return false;
-            t /= 10;
+    private boolean check(int x) {
+        int y = x;
+        while (x > 0) {
+            int t = x % 10;
+            if (t == 0 || y % t != 0) return false;
+            x /= 10;
         }
         return true;
     }

@@ -116,7 +116,7 @@ public class LC1601_MaximumNumberofAchievableTransferRequests {
     // S3: Gospher's hack
     // time = O(m * 2^m), space = O(1)
     public int maximumRequests3(int n, int[][] requests) {
-        int m = requests.length, res = 0;
+        int m = requests.length;
         for (int k = m; k >= 1; k--) {
             int state = (1 << k) - 1;
             while (state < (1 << m)) {

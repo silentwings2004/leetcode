@@ -25,6 +25,7 @@ public class LC978_LongestTurbulentSubarray {
      * @param arr
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int maxTurbulenceSize(int[] arr) {
         // corner case
@@ -53,4 +54,29 @@ public class LC978_LongestTurbulentSubarray {
         }
         return count;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int maxTurbulenceSize2(int[] arr) {
+        int n = arr.length, res = 1;
+        for (int i = 1, up = 1, down = 1; i < n; i++) {
+            if (arr[i] > arr[i - 1]) {
+                up = down + 1;
+                down = 1;
+            } else if (arr[i] < arr[i - 1]) {
+                down = up + 1;
+                up = 1;
+            } else up = down = 1;
+            res = Math.max(res, Math.max(up, down));
+        }
+        return res;
+    }
 }
+/**
+ * up[i]: 以i结尾且i-1 i 递增的所有区间中的最大值
+ * down[i]:             递减
+ * => 递推
+ * 1. a[i-1] < a[i] => up[i] = down[i-1] + 1, down[i] = 1;
+ * 2. a[i-1] > a[i] => down[i] = up[i-1] + 1, up[i] = 1;
+ * 3. a[i-1] = a[i] => up[i] = down[i] = 1
+ */

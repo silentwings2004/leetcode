@@ -22,21 +22,19 @@ public class LC205_IsomorphicStrings {
      * @return
      */
     // S1
-    // time = O(n), space = O(n)
+    // time = O(n), space = O(1)
     public boolean isIsomorphic(String s, String t) {
-        if (s.length() != t.length()) return false;
+        int m = s.length(), n = t.length();
+        if (m != n) return false;
 
-        HashMap<Character, Character> map = new HashMap<>();
-        int n = s.length();
-
+        HashMap<Character, Character> m1 = new HashMap<>();
+        HashMap<Character, Character> m2 = new HashMap<>();
         for (int i = 0; i < n; i++) {
-            char c1 = s.charAt(i), c2 = t.charAt(i);
-            if (map.containsKey(c1)) {
-                if (map.get(c1) != c2) return false;
-            } else {
-                if (!map.containsValue(c2)) map.put(c1, c2);
-                else return false;
-            }
+            char a = s.charAt(i), b = t.charAt(i);
+            if (m1.containsKey(a) && m1.get(a) != b) return false;
+            if (m2.containsKey(b) && m2.get(b) != a) return false;
+            m1.put(a, b);
+            m2.put(b, a);
         }
         return true;
     }

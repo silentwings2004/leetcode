@@ -12,43 +12,34 @@ public class LC472_ConcatenatedWords {
      * @return
      */
     // S1: DP
-    // time = O(n * k^2)), space = O(k), k: max length of the word in the words list
+    // time = O(n^3 * m), space = O(n)
+    HashSet<String> set;
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        set = new HashSet<>();
+        for (String word : words) set.add(word);
         List<String> res = new ArrayList<>();
-        // corner case
-        if (words == null || words.length == 0) return res;
-
-        HashSet<String> set = new HashSet<>();
-        Arrays.sort(words, new Comparator<String>() {  // O(nlogn)
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.length() - o2.length();
-            }
-        });
-
-        for (int i = 0; i < words.length; i++) { // O(n)
-            if (canForm(words[i], set)) res.add(words[i]); // O(k^2)
-            set.add(words[i]);
+        for (String word : words) { // O(m)
+            if (helper(word)) res.add(word);
         }
         return res;
     }
 
-    private boolean canForm(String word, HashSet<String> set) {
-        if (set.size() == 0) return false;
+    private boolean helper(String s) {
+        int n = s.length();
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MIN_VALUE);
+        f[0] = 0;
 
-        boolean[] dp = new boolean[word.length() + 1]; // O(k)
-        dp[0] = true;
-
-        for (int i = 0; i <= word.length(); i++) {  // O(k^2)
-            for (int j = 0; j < i; j++) {
-                if (!dp[j]) continue;
-                if (set.contains(word.substring(j, i))) {
-                    dp[i] = true;
-                    break;
+        for (int i = 0; i < n; i++) { // O(n^3)
+            if (f[i] < 0) continue;
+            for (int j = n - i; j > 0; j--) {
+                if (set.contains(s.substring(i, i + j))) {
+                    f[i + j] = Math.max(f[i + j], f[i] + 1);
+                    if (f[n] > 1) return true;
                 }
             }
         }
-        return dp[word.length()];
+        return false;
     }
 
     // We iterate through each word and see if it can be formed by using other words.
@@ -114,4 +105,12 @@ public class LC472_ConcatenatedWords {
  * 找比它长度小的单词放入字典树里去查看
  * 所有单词按照单词长度排个序
  * trie + dfs + pruning
+ *
+ * dp
+ * 状态表示；
+ * 集合：前i个单词可以拆分成哪些单词
+ * 属性：单词数量的最大值
+ * 状态计算：f(i) 按照最后一个单词的长度来划分 j
+ * f(i-j) + 1 => O(n^3 * m)
+ * 用字符串哈希 => O(n^2 * m)
  */

@@ -41,19 +41,19 @@ public class LC940_DistinctSubsequencesII {
     }
 
     // S2: dp
-    // time = O(n), space = O(n)
+    // time = O(n), space = O(1)
     public int distinctSubseqII2(String s) {
-        int mod = (int) 1e9 + 7;
+        int mod = (int)1e9 + 7;
         int[] f = new int[26];
         for (char c : s.toCharArray()) {
-            int x = c - 'a', sum = 1;
+            int x = c - 'a', t = 1;
             for (int i = 0; i < 26; i++) {
-                sum = (sum + f[i]) % mod;
+                t = (t + f[i]) % mod;
             }
-            f[x] = sum;
+            f[x] = t;
         }
         int res = 0;
-        for (int i = 0; i < 26; i++) res = (res + f[i]) % mod;
+        for (int x : f) res = (res + x) % mod;
         return res;
     }
 }
@@ -100,5 +100,6 @@ public class LC940_DistinctSubsequencesII {
  * 属性：数量
  * 状态计算：
  * (1) ai !=j => f(i,j) = f(i-1,j)
- * (2) ai == j
+ * (2) ai == j => 以最后一个j 结尾 f(i-1,k)
+ * 以ai结尾的方案数 = 以j为结尾的方案数
  */

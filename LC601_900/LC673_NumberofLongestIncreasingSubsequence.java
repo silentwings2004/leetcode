@@ -23,33 +23,25 @@ public class LC673_NumberofLongestIncreasingSubsequence {
      */
     // time = O(n^2), space = O(n)
     public int findNumberOfLIS(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
+        int n = nums.length;
+        int[] f = new int[n], g = new int[n];
+        int maxl = 0, cnt = 0;
 
-        int len = nums.length;
-        int[] dp = new int[len];
-        int[] counter = new int[len];
-        Arrays.fill(dp, 1);
-        Arrays.fill(counter, 1);
-        int max = 1;
-
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < n; i++) {
+            f[i] = g[i] = 1;
             for (int j = 0; j < i; j++) {
                 if (nums[j] < nums[i]) {
-                    if (dp[i] < dp[j] + 1) {
-                        dp[i] = dp[j] + 1;
-                        counter[i] = counter[j];
-                    } else if (dp[i] == dp[j] + 1) {
-                        counter[i] += counter[j];
-                    }
+                    if (f[i] < f[j] + 1) {
+                        f[i] = f[j] + 1;
+                        g[i] = g[j];
+                    } else if (f[i] == f[j] + 1) g[i] += g[j];
                 }
             }
-            max = Math.max(max, dp[i]);
+            if (maxl < f[i]) {
+                maxl = f[i];
+                cnt = g[i];
+            } else if (maxl == f[i]) cnt += g[i];
         }
-        int res = 0;
-        for (int i = 0; i < len; i++) {
-            if (dp[i] == max) res += counter[i];
-        }
-        return res;
+        return cnt;
     }
 }

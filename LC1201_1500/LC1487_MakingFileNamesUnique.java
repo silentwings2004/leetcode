@@ -45,4 +45,27 @@ public class LC1487_MakingFileNamesUnique {
         }
         return res;
     }
+
+    // S2
+    // time = O(n * k), space = O(n * k)
+    public String[] getFolderNames2(String[] names) {
+        HashSet<String> set = new HashSet<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        int n = names.length;
+        String[] res = new String[n];
+        for (int i = 0; i < n; i++) {
+            String x = names[i];
+            int k = 0;
+            if (map.containsKey(x)) k = map.get(x);
+            String suc = "";
+            while (set.contains(x + suc)) {
+                k++;
+                suc = "(" + k + ")";
+            }
+            map.put(x, k);
+            set.add(x + suc);
+            res[i] = x + suc;
+        }
+        return res;
+    }
 }

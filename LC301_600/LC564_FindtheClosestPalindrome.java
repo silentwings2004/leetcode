@@ -48,4 +48,29 @@ public class LC564_FindtheClosestPalindrome {
         while (idx >= 0) sb.append(sb.charAt(idx--));
         return Long.parseLong(sb.toString());
     }
+
+    // S2
+    // time = O(logn), space = O(1)
+    public String nearestPalindromic2(String n) {
+        int len = n.length();
+        TreeSet<Long> set = new TreeSet<>();
+        set.add((long) Math.pow(10, len - 1) - 1);
+        set.add((long) Math.pow(10, len) + 1);
+        long m = Long.parseLong(n.substring(0, (len + 1) / 2));
+        for (long i = m - 1; i <= m + 1; i++) {
+            String a = String.valueOf(i), b = new StringBuilder(a).reverse().toString();
+            if (len % 2 == 1) set.add(Long.parseLong(a + b.substring(1)));
+            else set.add(Long.parseLong(a + b));
+        }
+        long k = Long.parseLong(n), res = (long) 2e18;
+        if (set.contains(k)) set.remove(k);
+        for (long x : set) {
+            if (Math.abs(x - k) < Math.abs(res - k)) res = x;
+        }
+        return String.valueOf(res);
+    }
 }
+/**
+ * 只要枚举前一半数即可
+ * 考虑前一半m-1,m,m+1三种情况 + 特判2种情况：10^(len-1) 和 10^len + 1m
+ */

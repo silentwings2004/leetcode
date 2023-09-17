@@ -19,6 +19,7 @@ public class LC1238_CircularPermutationinBinaryRepresentation {
      * @param start
      * @return
      */
+    // S1
     // time = O(2^n), space = O(2^n)
     public List<Integer> circularPermutation(int n, int start) {
         List<Integer> res = new ArrayList<>();
@@ -38,6 +39,23 @@ public class LC1238_CircularPermutationinBinaryRepresentation {
         for (int i = idx; i < idx + m; i++) ans.add(res.get(i % m));
         return ans;
     }
+
+    // S2
+    // time = O(2^n), space = O(2^n)
+    public List<Integer> circularPermutation2(int n, int start) {
+        List<Integer> a = new ArrayList<>();
+        a.add(0);
+        a.add(1);
+        for (int i = 1; i < n; i++) {
+            List<Integer> b = new ArrayList<>(a);
+            for (int j = a.size() - 1; j >= 0; j--) {
+                b.add(a.get(j) + (1 << i));
+            }
+            a = b;
+        }
+        for (int i = 0; i < a.size(); i++) a.set(i, a.get(i) ^ start);
+        return a;
+    }
 }
 /**
  * ref: LC89 Gray code
@@ -51,4 +69,8 @@ public class LC1238_CircularPermutationinBinaryRepresentation {
  *            101
  *            100
  * 镜像边缘diff only by 1 bit
+ *
+ * 格雷码
+ * 构造完之后让每一个数都xor start就能让第一个数变成start
+ * 递归来构造
  */

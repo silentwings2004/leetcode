@@ -54,8 +54,27 @@ public class LC113_PathSumII {
         }
     }
 
-    class TreeNode {
-        int val;
-        TreeNode left, right;
+    // S1.2
+    // time = O(n^2), space = O(n)
+    List<List<Integer>> res;
+    List<Integer> path;
+    public List<List<Integer>> pathSum2(TreeNode root, int targetSum) {
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        if (root == null) return res;
+        helper(root, targetSum);
+        return res;
+    }
+
+    private void helper(TreeNode node, int sum) {
+        path.add(node.val);
+        sum -= node.val;
+        if (node.left == null && node.right == null) {
+            if (sum == 0) res.add(new ArrayList<>(path));
+        } else {
+            if (node.left != null) helper(node.left, sum);
+            if (node.right != null) helper(node.right, sum);
+        }
+        path.remove(path.size() - 1);
     }
 }

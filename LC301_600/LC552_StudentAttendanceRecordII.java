@@ -25,28 +25,27 @@ public class LC552_StudentAttendanceRecordII {
      * @return
      */
     // time = O(n), space = O(n)
+    final int N = 100010, mod = (int) 1e9 + 7;
     public int checkRecord(int n) {
-        long[][][] dp = new long[n + 1][2][3];
-        long M = (long)(1e9 + 7);
-        dp[0][0][0] = 1;
-
+        int[][][] f = new int[N][2][3];
+        f[0][0][0] = 1;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 3; k++) {
-                    if (j + 1 < 2) dp[i + 1][j + 1][0] = (dp[i + 1][j + 1][0] + dp[i][j][k]) % M;
-                    if (k + 1 < 3) dp[i + 1][j][k + 1] = (dp[i + 1][j][k + 1] + dp[i][j][k]) % M;
-                    dp[i + 1][j][0] = (dp[i + 1][j][0] + dp[i][j][k]) % M;
+                    if (j == 0) f[i + 1][j + 1][0] = (f[i + 1][j + 1][0] + f[i][j][k]) % mod;
+                    if (k + 1 <= 2) f[i + 1][j][k + 1] = (f[i + 1][j][k + 1] + f[i][j][k]) % mod;
+                    f[i + 1][j][0] = (f[i + 1][j][0] + f[i][j][k]) % mod;
                 }
             }
         }
 
-        long res = 0;
+        int res = 0;
         for (int j = 0; j < 2; j++) {
             for (int k = 0; k < 3; k++) {
-                res = (res + dp[n][j][k]) % M;
+                res = (res + f[n][j][k]) % mod;
             }
         }
-        return (int) res;
+        return res;
     }
 }
 /**
@@ -62,4 +61,16 @@ public class LC552_StudentAttendanceRecordII {
  * P: f[i+1][j][0]  一定合法！
  * init: 0个A，0个L => f[0][0][0]=1
  * time = O(n)
+ *
+ * f(i,j,k)
+ * i: 0~n-1
+ * j: 0~1 A
+ * k: 0~2 L
+ *  假设当前状态，然后枚举下一位可以填什么比较好
+ *  下一位填A,L,P分别对应转移到到什么状态
+ *  A: f(i+1, j+1,0) -> j+1<=1 => j <= 0 -> j = 0
+ *  L: f(i+1,j,k+1) -> k+1<=2
+ *  P: f(i+1,j,0) -> 一定合法
+ *  init: f(0,0,0) = 1
+ *  递推一遍 => O(n)
  */

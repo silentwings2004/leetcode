@@ -47,21 +47,16 @@ public class LC398_RandomPickIndex {
     // S2: HashMap
     class Solution {
         HashMap<Integer, List<Integer>> map;
-        Random random = new Random();
         public Solution(int[] nums) {
             map = new HashMap<>();
-            int n = nums.length;
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < nums.length; i++) {
                 map.putIfAbsent(nums[i], new ArrayList<>());
                 map.get(nums[i]).add(i);
             }
         }
-
         // time = O(n), space = O(1)
         public int pick(int target) {
-            if (!map.containsKey(target)) return -1;
-            int r = random.nextInt(map.get(target).size());
-            return map.get(target).get(r);
+            return map.get(target).get((int)(Math.random() * map.get(target).size()));
         }
     }
 }

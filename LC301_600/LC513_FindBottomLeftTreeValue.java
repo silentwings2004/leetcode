@@ -18,25 +18,22 @@ public class LC513_FindBottomLeftTreeValue {
      * @return
      */
     // time = O(n), space = O(n)
-    int res = 0, deepest = -1;
+    int res = 0, deepest = 0;
     public int findBottomLeftValue(TreeNode root) {
         if (root == null) return 0;
 
-        dfs(root, 0);
+        dfs(root, 1);
         return res;
     }
 
-    private void dfs(TreeNode node, int level) {
+    private void dfs(TreeNode node, int d) {
         if (node == null) return;
-        if (node.left == null && node.right == null) {
-            if (level > deepest) {
-                deepest = level;
-                res = node.val;
-            }
-            return;
+        if (d > deepest) {
+            deepest = d;
+            res = node.val;
         }
 
-        dfs(node.left, level + 1);
-        dfs(node.right, level + 1);
+        dfs(node.left, d + 1);
+        dfs(node.right, d + 1);
     }
 }

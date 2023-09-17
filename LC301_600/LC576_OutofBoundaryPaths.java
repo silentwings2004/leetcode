@@ -106,6 +106,11 @@ public class LC576_OutofBoundaryPaths {
  * 另外注意从外向内走来倒推
  *
  * f(i,j,k): 从边界外移动了k步后移到(i,j)的方案数
+ * 四个方向：
+ * 1. f(i-1,j,k-1)
+ * 2. f(i,j-1,k-1)
+ * 3. f(i+1,j,k-1)
+ * 4. f(i,j+1,k-1)
  * f(x,y,k)
  * 1 <= k <= N
  */

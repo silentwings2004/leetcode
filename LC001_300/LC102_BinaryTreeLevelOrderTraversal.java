@@ -35,9 +35,7 @@ public class LC102_BinaryTreeLevelOrderTraversal {
         }
         return res;
     }
-
-    class TreeNode {
-        int val;
-        TreeNode left, right;
-    }
 }
+/**
+ * ref: AC1259,用一个中序遍历 + 一个层序遍历来恢复一棵二叉树
+ */

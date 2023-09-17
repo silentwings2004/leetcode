@@ -48,7 +48,6 @@ public class LC899_OrderlyQueue {
             }
             return res;
         }
-
         char[] chars = s.toCharArray();
         Arrays.sort(chars);
         return String.valueOf(chars);

@@ -64,6 +64,38 @@ public class LC655_PrintBinaryTree {
         int rh = getHeight(node.right);
         return Math.max(lh, rh) + 1;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    String[][] res;
+    public List<List<String>> printTree2(TreeNode root) {
+        int[] t = dfs(root);
+        int h = t[0], w = t[1];
+        res = new String[h][w];
+        for (int i = 0; i < h; i++) Arrays.fill(res[i], "");
+        print(root, 0, 0, w - 1);
+
+        List<List<String>> ans = new ArrayList<>();
+        for (int i = 0; i < h; i++) ans.add(Arrays.asList(res[i]));
+        return ans;
+    }
+
+    private void print(TreeNode node, int h, int l, int r) {
+        if (node == null) return;
+
+        int mid = l + r >> 1;
+        res[h][mid] = String.valueOf(node.val);
+        print(node.left, h + 1, l, mid - 1);
+        print(node.right, h + 1, mid + 1, r);
+    }
+
+    private int[] dfs(TreeNode node) {
+        if (node == null) return new int[]{0, 0};
+
+        int[] l = dfs(node.left);
+        int[] r = dfs(node.right);
+        return new int[]{Math.max(l[0], r[0]) + 1, Math.max(l[1], r[1]) * 2 + 1};
+    }
 }
 /**
  * 1. 确定h, w

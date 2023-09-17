@@ -18,6 +18,7 @@ public class LC954_ArrayofDoubledPairs {
      * @param arr
      * @return
      */
+    // S1: TreeMap
     // time = O(nlogn), space = O(n)
     public boolean canReorderDoubled(int[] arr) {
         // corner case
@@ -32,6 +33,35 @@ public class LC954_ArrayofDoubledPairs {
             int val = key < 0 ? key / 2 : key * 2;
             if (key < 0 && key % 2 != 0 || map.get(key) > map.getOrDefault(val, 0)) return false;
             map.put(val, map.get(val) - map.get(key));
+        }
+        return true;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public boolean canReorderDoubled2(int[] arr) {
+        return check(arr, 1) && check(arr, -1);
+    }
+
+    private boolean check(int[] arr, int t) {
+        for (int i = 0; i < arr.length; i++) arr[i] *= t;
+        Arrays.sort(arr);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x : arr) {
+            if (x > 0) map.put(x, map.getOrDefault(x, 0) + 1);
+        }
+
+
+        for (int x : arr) {
+            if (x <= 0) continue;
+            int a = x, b = x * 2;
+
+            if (!map.containsKey(a)) continue;
+            if (!map.containsKey(b)) return false;
+            map.put(a, map.get(a) - 1);
+            map.put(b, map.get(b) - 1);
+            if (map.get(a) == 0) map.remove(a);
+            if (map.get(b) == 0) map.remove(b);
         }
         return true;
     }

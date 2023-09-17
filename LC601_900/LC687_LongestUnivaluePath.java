@@ -19,26 +19,22 @@ public class LC687_LongestUnivaluePath {
      * @return
      */
     // time = O(n), space = O(n)
-    private int res = 0;
+    int res = 0;
     public int longestUnivaluePath(TreeNode root) {
-        // corner case
         if (root == null) return 0;
-
         dfs(root);
-        return res - 1;
+        return res;
     }
 
-    private int dfs(TreeNode node) { // longest path towards leaf with same value as node
+    private int dfs(TreeNode node) {
         if (node == null) return 0;
 
-        int len1 = dfs(node.left);
-        int len2 = dfs(node.right);
-
-        int L = 0, R = 0;
-        if (node.left != null && node.left.val == node.val) L = len1;
-        if (node.right != null && node.right.val == node.val) R = len2;
-        res = Math.max(res, L + R + 1);
-        return Math.max(L, R) + 1;
+        int l = dfs(node.left);
+        int r = dfs(node.right);
+        if (node.left == null || node.left.val != node.val) l = 0;
+        if (node.right == null || node.right.val != node.val) r = 0;
+        res = Math.max(res, l + r);
+        return Math.max(l, r) + 1;
     }
 }
 /**

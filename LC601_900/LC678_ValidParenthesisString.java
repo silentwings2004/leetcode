@@ -60,4 +60,9 @@ public class LC678_ValidParenthesisString {
  * 同样做挽救：这个*就只能做左括号，也就回到了代码里的情况1，确定一定是左括号的情况下，countMax与countMin都++
  * 这样一来一去，把--变成++，差值 = 2，所以改动是countMin += 2
  * 而原题是我们可以把多出来的这一个*变成""来挽救，所以只需要恢复countMin = 0即可
+ *
+ * low = 0, high = 0;
+ * ( -> low++, high++
+ * ) -> low--, high--; low = max(0, low)
+ * * -> low--, high++
  */

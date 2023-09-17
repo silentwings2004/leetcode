@@ -81,4 +81,32 @@ public class LC1007_MinimumDominoRotationsForEqualRow {
         }
         return res == Integer.MAX_VALUE ? -1 : res;
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    final int INF = 0x3f3f3f;
+    public int minDominoRotations3(int[] tops, int[] bottoms) {
+        int res = INF, n = tops.length;
+        int[] value = new int[]{tops[0], bottoms[0]};
+        for (int x : value) {
+            int t = 0;
+            for (int i = 0; i < n; i++) {
+                if (tops[i] != x) {
+                    if (bottoms[i] != x) t = INF;
+                    else t++;
+                }
+            }
+            res = Math.min(res, t);
+
+            t = 0;
+            for (int i = 0; i < n; i++) {
+                if (bottoms[i] != x) {
+                    if (tops[i] != x) t = INF;
+                    else t++;
+                }
+            }
+            res = Math.min(res, t);
+        }
+        return res == INF ? -1 : res;
+    }
 }

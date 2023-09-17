@@ -16,15 +16,8 @@ public class LC709_ToLowerCase {
      */
     // time = O(n), space = O(n)
     public String toLowerCase(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 'A' && chars[i] <= 'Z') {
-                chars[i] = (char)(chars[i] - 'A' + 'a');
-            }
-        }
-        return String.valueOf(chars);
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) sb.append(Character.toLowerCase(c));
+        return sb.toString();
     }
 }

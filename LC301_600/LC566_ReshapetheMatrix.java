@@ -31,21 +31,10 @@ public class LC566_ReshapetheMatrix {
      */
     // time = O(m * n), space = O(1)
     public int[][] matrixReshape(int[][] mat, int r, int c) {
-        // corner case
-        if (mat == null || mat.length == 0 || mat[0] == null || mat[0].length == 0) return new int[0][0];
-
         int m = mat.length, n = mat[0].length;
-        if (r * c != m * n) return mat;
-
+        if (m * n != r * c) return mat;
         int[][] res = new int[r][c];
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                int row = (i * n + j) / c;
-                int col = (i * n + j) % c;
-                res[row][col] = mat[i][j];
-            }
-        }
+        for (int i = 0; i < m * n; i++) res[i / c][i % c] = mat[i / n][i % n];
         return res;
     }
 }

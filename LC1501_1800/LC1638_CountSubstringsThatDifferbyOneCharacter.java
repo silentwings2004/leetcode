@@ -25,36 +25,37 @@ public class LC1638_CountSubstringsThatDifferbyOneCharacter {
      * @return
      */
     // time = O(m * n), space = O(m * n)
+    final int N = 110;
     public int countSubstrings(String s, String t) {
         int m = s.length(), n = t.length();
         s = "#" + s + "#";
         t = "#" + t + "#";
 
-        int[][] dp1 = new int[105][105];
-        int[][] dp2 = new int[105][105];
+        int[][] f = new int[N][N];
+        int[][] g = new int[N][N];
 
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i) == t.charAt(j)) {
-                    dp1[i][j] = dp1[i - 1][j - 1] + 1;
-                }
-            }
-        }
-
-
-        for (int i = m; i >= 1; i--) {
-            for (int j = n; j >= 1; j--) {
-                if (s.charAt(i) == t.charAt(j)) {
-                    dp2[i][j] = dp2[i + 1][j + 1] + 1;
+                    f[i][j] = f[i - 1][j - 1] + 1;
                 }
             }
         }
 
         int res = 0;
+
+        for (int i = m; i >= 1; i--) {
+            for (int j = n; j >= 1; j--) {
+                if (s.charAt(i) == t.charAt(j)) {
+                    g[i][j] = g[i + 1][j + 1] + 1;
+                }
+            }
+        }
+
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (s.charAt(i) != t.charAt(j)) {
-                    res += (dp1[i - 1][j - 1] + 1) * (dp2[i + 1][j + 1] + 1);
+                    res += (f[i - 1][j - 1] + 1) * (g[i + 1][j + 1] + 1);
                 }
             }
         }

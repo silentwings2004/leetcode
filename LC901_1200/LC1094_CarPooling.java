@@ -29,62 +29,35 @@ public class LC1094_CarPooling {
     // time = O(nlogn), space = O(n)
     public boolean carPooling(int[][] trips, int capacity) {
         List<int[]> diff = new ArrayList<>();
-        for (int[] t : trips) {
-            diff.add(new int[]{t[1], t[0]});
-            diff.add(new int[]{t[2], -t[0]});
+        for (int[] x : trips) {
+            diff.add(new int[]{x[1], x[0]});
+            diff.add(new int[]{x[2], -x[0]});
         }
-
         Collections.sort(diff, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-
-        int total = 0;
-        for (int[] d : diff) {
-            total += d[1];
-            if (total > capacity) return false;
+        int sum = 0;
+        for (int[] x : diff) {
+            sum += x[1];
+            if (sum > capacity) return false;
         }
         return true;
     }
 
-    // S2: Interval
-    // time = O(nlogn), space = O(n)
+    // S2
+    // time = O(n), space = O(n)
     public boolean carPooling2(int[][] trips, int capacity) {
-        List<EndPoint> eps = new ArrayList<>();
-        for (int[] t : trips) {
-            eps.add(new EndPoint(t[0], t[1], true));
-            eps.add(new EndPoint(t[0], t[2], false));
+        int[] b = new int[1010];
+        for (int[] x : trips) {
+            b[x[1]] += x[0];
+            b[x[2]] -= x[0];
         }
 
-        Collections.sort(eps);
-
-        int count = 0;
-        for (EndPoint ep : eps) {
-            if (ep.isStart) {
-                count += ep.size;
-                if (count > capacity) return false;
-            } else {
-                count -= ep.size;
-            }
+        int sum = 0;
+        for (int i = 0; i <= 1000; i++) {
+            sum += b[i];
+            if (sum > capacity) return false;
         }
         return true;
     }
-
-    private class EndPoint implements Comparable<EndPoint> {
-        private int size;
-        private int val;
-        private boolean isStart;
-        public EndPoint(int size, int val, boolean isStart) {
-            this.size = size;
-            this.val = val;
-            this.isStart = isStart;
-        }
-        @Override
-        public int compareTo(EndPoint that) {
-            if (this.val != that.val) {
-                return this.val - that.val;
-            } else return isStart ? 1 : -1;
-        }
-    }
-
-
 }
 /**
  * 差分数组-扫描线

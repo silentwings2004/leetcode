@@ -37,6 +37,7 @@ public class LC982_TripleswithBitwiseANDEqualToZero {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n * k), space = O(k)  k: max value in the array
     public int countTriplets(int[] nums) {
         // corner case
@@ -58,6 +59,26 @@ public class LC982_TripleswithBitwiseANDEqualToZero {
                 if ((x & i) == 0) res += count[i];
                 // i -> i + (x & i); 把i里原先与x相同为1的位置都变成0,而i里原来为0的位置变成1不影响结果，因为x对应的位置是0
                 else i += (x & i) - 1;
+            }
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n^2 + n * 2^16), space = O(2^16)
+    public int countTriplets2(int[] nums) {
+        int[] s = new int[1 << 16];
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                s[nums[i] & nums[j]]++;
+            }
+        }
+
+        int res = 0;
+        for (int k = 0; k < n; k++) {
+            for (int x = 0; x < 1 << 16; x++) {
+                if ((nums[k] & x) == 0) res += s[x];
             }
         }
         return res;

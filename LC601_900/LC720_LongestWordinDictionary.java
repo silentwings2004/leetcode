@@ -58,4 +58,46 @@ public class LC720_LongestWordinDictionary {
             this.isEnd = false;
         }
     }
+
+    // S2
+    // time = O(n * k), space = O(n * k)
+    final int N = 30010;
+    int[][] son;
+    int[] id;
+    int idx;
+    public String longestWord2(String[] words) {
+        son = new int[N][26];
+        id = new int[N];
+        Arrays.fill(id, -1);
+        idx = 0;
+
+        int n = words.length;
+        for (int i = 0; i < n; i++) insert(words[i], i);
+
+        int[] t = dfs(0, 0);
+        if (t[1] != -1) return words[t[1]];
+        return "";
+    }
+
+    private int[] dfs(int p, int len) {
+        int[] res = new int[]{len, id[p]};
+        for (int i = 0; i < 26; i++) {
+            int j = son[p][i];
+            if (j > 0 && id[j] != -1) {
+                int[] t = dfs(j, len + 1);
+                if (res[0] < t[0]) res = t;
+            }
+        }
+        return res;
+    }
+
+    private void insert(String s, int k) {
+        int p = 0;
+        for (char c : s.toCharArray()) {
+            int u = c - 'a';
+            if (son[p][u] == 0) son[p][u] = ++idx;
+            p = son[p][u];
+        }
+        id[p] = k;
+    }
 }

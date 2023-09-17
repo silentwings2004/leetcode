@@ -40,4 +40,19 @@ public class LC848_ShiftingLetters {
         }
         return String.valueOf(chars);
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public String shiftingLetters2(String s, int[] shifts) {
+        StringBuilder sb = new StringBuilder();
+        int n = s.length();
+        for (int i = n - 1, sum = 0; i >= 0; i--) {
+            sum = (sum + shifts[i]) % 26;
+            sb.append((char)((sum + s.charAt(i) - 'a') % 26 + 'a'));
+        }
+        return sb.reverse().toString();
+    }
 }
+/**
+ * 从后往前做
+ */

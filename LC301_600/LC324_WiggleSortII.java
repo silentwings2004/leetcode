@@ -39,15 +39,19 @@ public class LC324_WiggleSortII {
     // time = O(n), space = O(logn)
     int n;
     public void wiggleSort2(int[] nums) {
-        if (nums == null || nums.length < 2) return;
         n = nums.length;
-        int pivot = quickSelect(nums, 0, n - 1, (n + 1) / 2);
+        int mid = quick_select(nums, 0, n - 1, n / 2);
+
         int i = 0, j = n - 1, t = i;
         while (t <= j) {
-            if (nums[reindex(t)] > pivot) swap(nums, reindex(t++), reindex(i++)); // 注意这里比pivot大的值2要从左到右来放！
-            else if (nums[reindex(t)] < pivot) swap(nums, reindex(t), reindex(j--)); // 小的值则是从右往左放！
+            if (nums[A(t)] > mid) swap(nums, A(t++), A(i++)); // 注意这里比pivot大的值2要从左到右来放！
+            else if (nums[A(t)] < mid) swap(nums, A(t), A(j--)); // 小的值则是从右往左放！
             else t++;
         }
+    }
+
+    private int A(int i) {
+        return (i * 2 + 1) % (n | 1);
     }
 
     private void swap(int[] nums, int i, int j) {
@@ -56,21 +60,21 @@ public class LC324_WiggleSortII {
         nums[j] = t;
     }
 
-    private int reindex(int i) {
-        return (2 * i + 1) % (n | 1);
-    }
+    private int quick_select(int[] q, int l, int r, int k) {
+        if (l >= r) return q[r];
 
-    private int quickSelect(int[] nums, int a, int b, int k) {
-        int pivot = nums[a + (b - a) / 2];
-        int i = a, j = b, t = a;
-        while (t <= j) {
-            if (nums[t] < pivot) swap(nums, t++, i++);
-            else if (nums[t] > pivot) swap(nums, t, j--);
-            else t++;
+        int x = q[l + r >> 1], i = l - 1, j = r + 1;
+        while (i < j) {
+            while (q[++i] < x);
+            while (q[--j] > x);
+            if (i < j) {
+                int t = q[i];
+                q[i] = q[j];
+                q[j] = t;
+            }
         }
-        if (b - j >= k) return quickSelect(nums, j + 1, b, k);
-        if (b - i + 1 >= k) return pivot;
-        return quickSelect(nums, a, i - 1, k - (b - i + 1));
+        if (k <= j) return quick_select(q, l, j, k);
+        return quick_select(q, j + 1, r, k);
     }
 }
 /**

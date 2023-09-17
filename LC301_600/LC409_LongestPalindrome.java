@@ -17,25 +17,33 @@ public class LC409_LongestPalindrome {
      * @param s
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int longestPalindrome(String s) {
-        int[] freq = new int[128];
-        for (char c : s.toCharArray()) {
-            freq[c]++;
-        }
-
-        boolean flag = false;
-        int count = 0;
-        for (int x : freq) {
-            if (x % 2 == 0) count += x;
-            else {
-                if (!flag) {
-                    count += x;
-                    flag = true; // 可以出现一个奇数次
+        int[] cnt = new int[128];
+        int n = s.length();
+        for (int i = 0; i < n; i++) cnt[s.charAt(i)]++;
+        int res = 0, odd = 0;
+        for (int i = 0; i < 128; i++) {
+            if (cnt[i] > 0) {
+                if (cnt[i] % 2 == 0) res += cnt[i];
+                else {
+                    res += cnt[i] - 1;
+                    odd++;
                 }
-                else count += x - 1;
             }
         }
-        return count;
+        return res + (odd > 0 ? 1 : 0);
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int longestPalindrome2(String s) {
+        int[] cnt = new int[128];
+        for (char c : s.toCharArray()) cnt[c]++;
+        int res = 0;
+        for (int i = 0; i < 128; i++) res += cnt[i] / 2 * 2;
+        if (res < s.length()) res++; // 中间还可以再加上1个字符
+        return res;
     }
 }

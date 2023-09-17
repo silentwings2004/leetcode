@@ -19,6 +19,7 @@ public class LC780_ReachingPoints {
      * @param ty
      * @return
      */
+    // S1
     // time = O(log(max(tx,ty))), space = O(1)
     public boolean reachingPoints(int sx, int sy, int tx, int ty) {
         if (sx > tx || sy > ty) return false;
@@ -28,6 +29,22 @@ public class LC780_ReachingPoints {
         if (tx > ty) return reachingPoints(sx, sy, tx % ty, ty);
         else if (tx < ty) return reachingPoints(sx, sy, tx, ty % tx);
         return false;
+    }
+
+    // S2
+    // time = O(log(max(tx,ty))), space = O(1)
+    public boolean reachingPoints2(int sx, int sy, int tx, int ty) {
+        while (tx >= sx && ty >= sy) {
+            if (tx == ty) break;
+            else if (tx > ty) {
+                if (ty > sy) tx %= ty;
+                else return (tx - sx) % ty == 0;
+            } else {
+                if (tx > sx) ty %= tx;
+                else return (ty - sy) % tx == 0;
+            }
+        }
+        return tx == sx && ty == sy;
     }
 }
 /**

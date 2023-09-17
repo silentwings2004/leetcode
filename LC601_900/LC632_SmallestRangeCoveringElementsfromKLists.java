@@ -81,6 +81,31 @@ public class LC632_SmallestRangeCoveringElementsfromKLists {
         }
         return res;
     }
+
+    // S3
+    // time = O(nklogk), space = O(k)
+    public int[] smallestRange3(List<List<Integer>> nums) {
+        int n = nums.size();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
+        int maxv = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            pq.offer(new int[]{nums.get(i).get(0), i, 0});
+            maxv = Math.max(maxv, nums.get(i).get(0));
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            int[] t = pq.poll();
+            int l = t[0], r = maxv;
+            if (res.size() == 0 || res.get(1) - res.get(0) > r - l) res = Arrays.asList(l, r);
+            int i = t[1], j = t[2] + 1;
+            if (j < nums.get(i).size()) {
+                pq.offer(new int[]{nums.get(i).get(j), i, j});
+                maxv = Math.max(maxv, nums.get(i).get(j));
+            } else break;
+        }
+        return new int[]{res.get(0), res.get(1)};
+    }
 }
 /**
  * [4 0 5] 0 - 5

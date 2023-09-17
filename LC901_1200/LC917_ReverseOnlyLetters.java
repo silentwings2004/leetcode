@@ -19,64 +19,17 @@ public class LC917_ReverseOnlyLetters {
      * @param s
      * @return
      */
-    // S1: TreeMap
-    // time = O(nlogn), space = O(n)
+    // time = O(n), space = O(n)
     public String reverseOnlyLetters(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
-        StringBuilder sb = new StringBuilder();
-        TreeMap<Integer, Character> map = new TreeMap<>();
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (Character.isLetter(c)) sb.append(c);
-            else map.put(i, c);
+        int n = s.length();
+        char[] chars = s.toCharArray();
+        for (int i = 0, j = n - 1; i < j; i++, j--) {
+            while (i < j && !Character.isLetter(chars[i])) i++;
+            while (i < j && !Character.isLetter(chars[j])) j--;
+            char c = chars[i];
+            chars[i] = chars[j];
+            chars[j] = c;
         }
-
-        sb.reverse();
-        for (int key : map.keySet()) {
-            if (key < sb.length()) sb.insert(key, map.get(key));
-            else sb.append(map.get(key));
-        }
-        return sb.toString();
-    }
-
-    // S2: stack
-    // time = O(n), space = O(n)
-    public String reverseOnlyLetters2(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
-        StringBuilder sb = new StringBuilder();
-        Stack<Character> stack = new Stack<>();
-
-        for (char c : s.toCharArray()) {
-            if (Character.isLetter(c)) stack.push(c);
-        }
-
-        for (char c : s.toCharArray()) {
-            if (Character.isLetter(c)) sb.append(stack.pop());
-            else sb.append(c);
-        }
-        return sb.toString();
-    }
-
-    // S3: two pointers
-    // time = O(n), space = O(n)
-    public String reverseOnlyLetters3(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return "";
-
-        StringBuilder sb = new StringBuilder();
-        int n = s.length(), j = n - 1;
-
-        for (int i = 0; i < n; i++) {
-            if (Character.isLetter(s.charAt(i))) {
-                while (!Character.isLetter(s.charAt(j))) j--;
-                sb.append(s.charAt(j--));
-            } else  sb.append(s.charAt(i));
-        }
-        return sb.toString();
+        return String.valueOf(chars);
     }
 }

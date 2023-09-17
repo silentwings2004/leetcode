@@ -27,38 +27,39 @@ public class LC200_NumberofIslands {
      */
     // S1: dfs
     // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    char[][] g;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public int numIslands(char[][] grid) {
-        // corner case
-        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) return 0;
-
-        int m = grid.length, n = grid[0].length, count = 0;
+        g = grid;
+        m = g.length;
+        n = g[0].length;
+        int cnt = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == '1') {
-                    dfs(grid, i, j);
-                    count++;
+                if (g[i][j] == '1') {
+                    dfs(i, j);
+                    cnt++;
                 }
             }
         }
-        return count;
+        return cnt;
     }
 
-    private void dfs(char[][] grid, int i, int j) {
-        int m = grid.length, n = grid[0].length;
-        // base case - fail
-        if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == '0') return;
-
-        grid[i][j] = '0';
-        for (int[] dir : DIRECTIONS) {
-            int ii = i + dir[0];
-            int jj = j + dir[1];
-            dfs(grid, ii, jj);
+    private void dfs(int x, int y) {
+        g[x][y] = '0';
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i];
+            int b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == '0') continue;
+            dfs(a, b);
         }
     }
 
     // S2: BFS
     // time = O(m * n), space = O(m * n)
+    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int numIslands2(char[][] grid) {
         int m = grid.length, n = grid[0].length;
         int count = 0;
@@ -72,7 +73,7 @@ public class LC200_NumberofIslands {
                 while (!queue.isEmpty()) {
                     int cur = queue.poll();
                     int x = cur / n, y = cur % n;
-                    for (int[] dir : DIRECTIONS) {
+                    for (int[] dir : directions) {
                         int ii = x + dir[0];
                         int jj = y + dir[1];
                         if (ii < 0 || ii >= m || jj < 0 || jj >= n) continue;

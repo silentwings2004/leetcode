@@ -21,34 +21,29 @@ public class LC410_SplitArrayLargestSum {
      */
     // S1: BS
     // time = O(nlogS), space = O(1)  S: sum of array
-    public int splitArray(int[] nums, int m) {
-        // corner case
-        if (nums == null || nums.length == 0 || m <= 0) return 0;
-
-        int left = 0, right = 0;
-        for (int x : nums) {
-            left = Math.max(left, x); // 单独成一组
-            right += x;
+    public int splitArray(int[] nums, int k) {
+        int sum = 0;
+        for (int x : nums) sum += x;
+        int l = 0, r = sum;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (check(nums, mid, k)) r = mid;
+            else l = mid + 1;
         }
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (!checkOK(nums, m, mid)) left = mid + 1;
-            else right = mid;
-        }
-        return left; // 当left == right，最后一定收敛于count == m
+        return r;
     }
 
-    private boolean checkOK(int[] nums, int m, int val) {
-        int count = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > val) return false;
-            int j = i, sum = 0;
-            while (j < nums.length && sum + nums[j] <= val) sum += nums[j++];
-            count++;
-            i = j - 1; // for loop里i会自增1，所以这里要先-1
+    private boolean check(int[] nums, int t, int k) {
+        int sum = 0, cnt = 1;
+        for (int x : nums) {
+            if (x > t) return false;
+            if (sum + x <= t) sum += x;
+            else {
+                sum = x;
+                cnt++;
+            }
         }
-        return count <= m;
+        return cnt <= k;
     }
 
     // S2: DP
@@ -91,4 +86,9 @@ public class LC410_SplitArrayLargestSum {
  *
  * S2: BS
  * val = [0, INT_MAX] => 32
+ *
+ * 判断是否有一种方案，使每一段总和<= mid，最少能分成多少段
+ * 贪心
+ * 1. 贪心解 >= 最优解
+ * 2. 贪心解 <= 最优解
  */

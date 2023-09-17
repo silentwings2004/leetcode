@@ -27,7 +27,8 @@ public class LC299_BullsandCows {
      * @param guess
      * @return
      */
-    // tikme = O(n), space = O(1)
+    // S1
+    // time = O(n), space = O(1)
     public String getHint(String secret, String guess) {
         int bulls = 0, cows = 0;
         int[] count = new int[10];
@@ -40,5 +41,27 @@ public class LC299_BullsandCows {
             }
         }
         return bulls + "A" + cows + "B";
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public String getHint2(String secret, String guess) {
+        int n = secret.length();
+        int[] cnt = new int[10];
+        for (char c : secret.toCharArray()) cnt[c - '0']++;
+        int tot = 0;
+        for (char c : guess.toCharArray()) {
+            int u = c - '0';
+            if (cnt[u] > 0) {
+                tot++;
+                cnt[u]--;
+            }
+        }
+
+        int bulls = 0;
+        for (int i = 0; i < n; i++) {
+            if (secret.charAt(i) == guess.charAt(i)) bulls++;
+        }
+        return bulls + "A" + (tot - bulls) + "B";
     }
 }

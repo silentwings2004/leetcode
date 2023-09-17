@@ -75,7 +75,7 @@ public class LC2448_MinimumCosttoMakeArrayEqual {
         int k = 0;
         for (int i = 0; i < n; i++) {
             count += arr[i][1];
-            if (count >= totalCost / 2) {
+            if (count >= totalCost * 1.0 / 2) {
                 k = i;
                 break;
             }

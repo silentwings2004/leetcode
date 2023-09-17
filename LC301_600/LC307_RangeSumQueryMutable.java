@@ -99,51 +99,36 @@ public class LC307_RangeSumQueryMutable {
     // S2: BIT
     // time = O(nlogn), space = O(n)
     class NumArray {
-        BIT bit;
-        int[] nums;
+        int[] tr, nums;
+        int n;
         public NumArray(int[] nums) {
             this.nums = nums;
-            int n = nums.length;
-            bit = new BIT(n);
-
-            for (int i = 0; i < n; i++) bit.update(i + 1, nums[i]);
+            n = nums.length;
+            tr = new int[n + 1];
+            for (int i = 0; i < n; i++) add(i + 1, nums[i]);
         }
 
         public void update(int index, int val) {
-            int delta = val - nums[index];
-            bit.update(index + 1, delta);
+            add(index + 1, val - nums[index]);
             nums[index] = val;
         }
 
         public int sumRange(int left, int right) {
-            return bit.sumRange(left + 1, right + 1);
+            return query(right + 1) - query(left);
         }
 
-        private class BIT {
-            int n;
-            int[] bitree;
-            public BIT(int n) {
-                this.n = n;
-                this.bitree = new int[n + 1];
-            }
+        private int lowbit(int x) {
+            return x & -x;
+        }
 
-            private void update(int x, int delta) {
-                for (int i = x; i <= n; i += i & (-i)) {
-                    bitree[i] += delta;
-                }
-            }
+        private void add(int x, int c) {
+            for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+        }
 
-            private int query(int x) {
-                int res = 0;
-                for (int i = x; i > 0; i -= i & (-i)) {
-                    res += bitree[i];
-                }
-                return res;
-            }
-
-            private int sumRange(int i, int j) {
-                return query(j) - query(i - 1);
-            }
+        private int query(int x) {
+            int res = 0;
+            for (int i = x; i > 0; i -= lowbit(i)) res += tr[i];
+            return res;
         }
     }
 }

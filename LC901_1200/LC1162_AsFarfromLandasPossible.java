@@ -66,4 +66,7 @@ public class LC1162_AsFarfromLandasPossible {
 }
 /**
  * 多源最短路问题 -> 多源BFS
+ * 想象建立一个超级源点，到每个点建立一个距离为0的边
+ * 等价于第一步将所有点加入到队列中
+ * ref: AC 173 矩阵距离
  */

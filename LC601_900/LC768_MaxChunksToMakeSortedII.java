@@ -62,6 +62,23 @@ public class LC768_MaxChunksToMakeSortedII {
         }
         return count;
     }
+
+    // S4
+    // time = O(nlogn), space = O(n)
+    public int maxChunksToSorted4(int[] arr) {
+        int[] b = arr.clone();
+        Arrays.sort(b);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int n = arr.length, res = 0;
+        for (int i = 0, s = 0; i < n; i++) {
+            map.put(arr[i], map.getOrDefault(arr[i], 0) - 1);
+            if (map.get(arr[i]) == 0) s--;
+            map.put(b[i], map.getOrDefault(b[i], 0) + 1);
+            if (map.get(b[i]) == 1) s++;
+            if (s == 0) res++;
+        }
+        return res;
+    }
 }
 /**
  * [2,1],[3],[4],[4]

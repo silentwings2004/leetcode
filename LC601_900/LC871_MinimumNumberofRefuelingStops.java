@@ -32,6 +32,7 @@ public class LC871_MinimumNumberofRefuelingStops {
      * @param stations
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(n)
     public int minRefuelStops(int target, int startFuel, int[][] stations) {
         int curFuel = startFuel; // the total added gas up to now
@@ -60,6 +61,29 @@ public class LC871_MinimumNumberofRefuelingStops {
             if (curFuel < target) return -1;
         }
         return count;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int minRefuelStops2(int target, int startFuel, int[][] stations) {
+        int n = stations.length;
+        int[][] w = new int[n + 1][2];
+        for (int i = 0; i < n; i++) w[i] = stations[i];
+        w[n] = new int[]{target, 0};
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+
+        int sum = startFuel, res = 0;
+        for (int[] t : w) {
+            int x = t[0], y = t[1];
+            while (!pq.isEmpty() && sum < x) {
+                sum += pq.poll();
+                res++;
+            }
+            if (sum < x) return -1;
+            pq.offer(y);
+        }
+        return res;
     }
 }
 /**

@@ -23,19 +23,15 @@ public class LC646_MaximumLengthofPairChain {
      */
     // time = O(nlogn), space = O(1)
     public int findLongestChain(int[][] pairs) {
-        // corner case
-        if (pairs == null || pairs.length == 0 || pairs[0] == null || pairs[0].length == 0) return 0;
-
         Arrays.sort(pairs, (o1, o2) -> o1[1] - o2[1]);
-        int n = pairs.length;
-        int i = 0, count = 0;
-        while (i < n) {
-            count++;
-            int j = i + 1;
-            while (j < n && pairs[j][0] <= pairs[i][1]) j++;
-            i = j;
+        int res = 1, ed = pairs[0][1];
+        for (int[] p : pairs) {
+            if (p[0] > ed) {
+                res++;
+                ed = p[1];
+            }
         }
-        return count;
+        return res;
     }
 }
 /**
@@ -46,4 +42,10 @@ public class LC646_MaximumLengthofPairChain {
  * dp: n^2  LIS
  * dp[i] => dp[j] + 1
  * sort by starting points: LIS
+ *
+ * 按照右端点排序
+ * 第一个区间必选
+ * 贪心解 = 最优解
+ * 1. 贪心解 <= 最优解
+ * 2. 贪心解 >= 最优解
  */

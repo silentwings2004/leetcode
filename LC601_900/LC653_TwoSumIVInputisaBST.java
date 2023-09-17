@@ -18,31 +18,22 @@ public class LC653_TwoSumIVInputisaBST {
      * @param k
      * @return
      */
-    // S1: BST
+    // S1: set
     // time = O(n), space = O(n)
+    HashSet<Integer> set;
     public boolean findTarget(TreeNode root, int k) {
-        // corner case
-        if (root == null) return false;
-
-        List<Integer> list = new ArrayList<>();
-        inorder(root, list);
-
-        int left = 0, right = list.size() - 1;
-        while (left < right) {
-            int sum = list.get(left) + list.get(right);
-            if (sum == k) return true;
-            if (sum < k) left++;
-            else right--;
-        }
-        return false;
+        set = new HashSet<>();
+        return dfs(root, k);
     }
 
-    private void inorder(TreeNode root, List<Integer> list) {
-        if (root == null) return;
+    private boolean dfs(TreeNode node, int k) {
+        if (node == null) return false;
 
-        inorder(root.left, list);
-        list.add(root.val);
-        inorder(root.right, list);
+        if (dfs(node.left, k)) return true;
+        int x = node.val;
+        if (set.contains(k - x)) return true;
+        set.add(x);
+        return dfs(node.right, k);
     }
 
     // S2: Stack

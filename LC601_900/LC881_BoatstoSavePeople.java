@@ -27,52 +27,14 @@ public class LC881_BoatstoSavePeople {
      * @param limit
      * @return
      */
-    // S1: TreeMap
-    // time = O(nlogn), space = O(n)
+    // time = O(nlogn), space = O(logn)
     public int numRescueBoats(int[] people, int limit) {
-        // corner case
-        if (people == null || people.length == 0) return 0;
-
-        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
-        for (int p : people) { // O(n)
-            treeMap.put(p, treeMap.getOrDefault(p, 0) + 1);
-        }
-
-        int res = 0;
-        while (treeMap.size() > 0) {
-            int key = treeMap.lastKey(); // O(logn)
-            int count1 = treeMap.get(key);
-            if (count1 > 1) treeMap.put(key, count1 - 1);
-            else treeMap.remove(key);
+        Arrays.sort(people);
+        int n = people.length, res = 0;
+        for (int i = 0, j = n - 1; i <= j; j--) {
+            if (people[i] + people[j] <= limit) i++;
             res++;
-            // can fit another person
-            Integer fk = treeMap.floorKey(limit - key);
-            if (fk != null) {
-                int count2 = treeMap.get(fk);
-                if (count2 > 1) treeMap.put(fk, count2 - 1);
-                else treeMap.remove(fk);
-            }
         }
         return res;
     }
-
-    // S2: Two Pointers + Greedy 最优解！！！
-    // time = O(nlogn), space = O(1)
-    public int numRescueBoats2(int[] people, int limit) {
-        // corner case
-        if (people == null || people.length == 0) return 0;
-
-        Arrays.sort(people); // O(nlogn)
-
-        int i = 0, j = people.length - 1;
-        int res = 0;
-        while (i <= j) {
-            if (people[i] + people[j] <= limit) i++; // case 1: 如果能fit 一轻一重2个人，则把轻的people[i]带上
-            j--; // case 2: 如果仅能fit重的一人，那就把当前剩下最重的人带走
-            res++; // 无论case 1还是2，都会在这一轮遍历中使用掉一艘船，所以要res++
-        }
-        return res;
-    }
-
-
 }

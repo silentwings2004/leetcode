@@ -24,7 +24,7 @@ public class LC795_NumberofSubarrayswithBoundedMaximum {
      */
     // S1
     // time = O(n), space = O(1)
-    public int numSubarrayBoundedMax4(int[] nums, int left, int right) {
+    public int numSubarrayBoundedMax(int[] nums, int left, int right) {
         int n = nums.length, res = 0, cnt = 0;
         for (int i = 0, j = 0; i < n; i++) {
             if (nums[i] > right) j = i + 1;
@@ -86,6 +86,25 @@ public class LC795_NumberofSubarrayswithBoundedMaximum {
                 }
                 if (j != -1) res += j - start + 1;
             }
+        }
+        return res;
+    }
+
+    // S4: two pointers
+    // time = O(n), space = O(n)
+    public int numSubarrayBoundedMax4(int[] nums, int left, int right) {
+        return (int)(calc(nums, right) - calc(nums, left - 1));
+    }
+
+    private long calc(int[] nums, int k) {
+        long res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > k) continue;
+            int j = i + 1;
+            while (j < nums.length && nums[j] <= k) j++;
+            int t = j - i;
+            res += (long)(t + 1) * t / 2;
+            i = j;
         }
         return res;
     }

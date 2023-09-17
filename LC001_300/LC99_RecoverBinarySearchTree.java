@@ -18,62 +18,66 @@ public class LC99_RecoverBinarySearchTree {
      */
     // S1
     // time = O(n), space = O(n)
-    private TreeNode prev = null;
+    TreeNode[] res;
+    TreeNode prev = null;
     public void recoverTree(TreeNode root) {
-        // corner case
+        res = new TreeNode[2];
         if (root == null) return;
 
-        TreeNode[] mistakes = new TreeNode[2];
-        dfs(root, mistakes);
-        swap(mistakes);
-    }
-
-    private void dfs(TreeNode cur, TreeNode[] mistakes) {
-        // base case
-        if (cur == null) return;
-
-        dfs(cur.left, mistakes);
-        if (prev != null && prev.val > cur.val) {
-            mistakes[1] = cur;
-            if (mistakes[0] == null) mistakes[0] = prev;
-        }
-        prev = cur;
-        dfs(cur.right, mistakes);
-    }
-
-    private void swap(TreeNode[] mistakes) {
-        int temp = mistakes[0].val;
-        mistakes[0].val = mistakes[1].val;
-        mistakes[1].val = temp;
-    }
-
-    // S2: dfs
-    // time = O(n), space = O(n)
-    TreeNode lastSeen = new TreeNode(Integer.MIN_VALUE), first = null, second = null;
-    public void recoverTree2(TreeNode root) {
         dfs(root);
-
-        int val = first.val;
-        first.val = second.val;
-        second.val = val;
+        int t = res[0].val;
+        res[0].val = res[1].val;
+        res[1].val = t;
     }
 
     private void dfs(TreeNode node) {
         if (node == null) return;
 
         dfs(node.left);
+        if (prev != null && prev.val > node.val) {
+            if (res[1] == null) res[0] = prev;
+            res[1] = node;
+        }
+        prev = node;
+        dfs(node.right);
+    }
 
-        if (node.val < lastSeen.val) {
-            if (first == null) {
-                first = lastSeen;
-                second = node;
+    // S2: Morris Traversal
+    // time = O(n), space = O(1)
+    public void recoverTree2(TreeNode root) {
+        TreeNode[] res = new TreeNode[2];
+        TreeNode prev = null;
+
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.left == null) {
+                if (prev != null && prev.val > cur.val) {
+                    if (res[1] == null) res[0] = prev;
+                    res[1] = cur;
+                }
+                prev = cur;
+                cur = cur.right;
             } else {
-                second = node;
+                TreeNode p = cur.left;
+                while (p.right != null && p.right != cur) p = p.right;
+                if (p.right == null) {
+                    p.right = cur;
+                    cur = cur.left;
+                } else {
+                    p.right = null;
+                    if (prev != null && prev.val > cur.val) {
+                        if (res[1] == null) res[0] = prev;
+                        res[1] = cur;
+                    }
+                    prev = cur;
+                    cur = cur.right;
+                }
             }
         }
-        lastSeen = node;
 
-        dfs(node.right);
+        int t = res[0].val;
+        res[0].val = res[1].val;
+        res[1].val = t;
     }
 }
 /**
@@ -83,4 +87,13 @@ public class LC99_RecoverBinarySearchTree {
  * 如果被交换的2个是相邻的 => 1处不和谐
  * 把所有元素抽出来转化成数组
  * 中序遍历，一边走一边看，看相邻2个是否是递增的
+ *
+ * Morris 遍历 space = O(1)
+ * 找逆序对，交换的是相邻2个数
+ * 如果交换的不是相邻2个数 => 也是找逆序对
+ * 1. 没有左子树,则直接遍历该点，然后走到右儿子
+ * 2. 如果有左子树，则找前驱节点p,将左子树的最后一个点的右指针指向当前点，从而可以继续回溯
+ * 若 p.right == null, 则p.right = root, root = root.left;
+ * 否则 p.right = null; 遍历root, root = root.right
+ * 还得判断是从上面下来的，还是从下面上来的，如果是把这个指针清空
  */

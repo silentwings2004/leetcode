@@ -15,6 +15,7 @@ public class LC386_LexicographicalNumbers {
      * @param n
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public List<Integer> lexicalOrder(int n) {
         List<Integer> res = new ArrayList<>();
@@ -31,6 +32,21 @@ public class LC386_LexicographicalNumbers {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    List<Integer> res;
+    public List<Integer> lexicalOrder2(int n) {
+        res = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) dfs(i, n);
+        return res;
+    }
+
+    private void dfs(int cur, int n) {
+        if (cur > 0 && cur <= n) res.add(cur);
+        else return;
+        for (int i = 0; i <= 9; i++) dfs(cur * 10 + i, n);
+    }
 }
 /**
  * 研究序列[1,10,11,12,13,2,3,4,5,6,7,8,9]，找出字典序的规律。
@@ -42,4 +58,8 @@ public class LC386_LexicographicalNumbers {
  * 砍掉0之后就可以重复规律1的操作了。
  * 规律3：如果上限是19，那么19后面的元素就不能是20了，该怎么办？ => 19后面是2，所以 20 % 10 == 0 -> 20 / 10 = 2
  * 答案是将19除以10，然后再重复规律2（也就是加1），也就是得到2，之后又可以重复规律1了。
+ *
+ * Trie -> 类似桶排序
+ * 想象1~n插入trie
+ * 树的遍历，从小到大搜索每个分支 => O(nlogn)
  */

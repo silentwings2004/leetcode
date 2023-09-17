@@ -30,6 +30,7 @@ public class LC904_FruitIntoBaskets {
      * @param fruits
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int totalFruit(int[] fruits) {
         int n = fruits.length, res = 0;
@@ -46,4 +47,56 @@ public class LC904_FruitIntoBaskets {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int totalFruit2(int[] fruits) {
+        int n = fruits.length, res = 0;
+        for (int i = 0, j = 0, a = -1, b = -1, s1 = 0, s2 = 0; i < n; i++) {
+            int x = fruits[i];
+            if (x == a) s1++;
+            else if (x == b) s2++;
+            else if (x != a && a == -1) {
+                a = x;
+                s1 = 1;
+            } else if (x != b && b == -1) {
+                b = x;
+                s2 = 1;
+            } else {
+                while (s1 > 0 && s2 > 0) {
+                    if (fruits[j] == a) s1--;
+                    else if (fruits[j] == b) s2--;
+                    j++;
+                }
+                if (s1 == 0) {
+                    a = x;
+                    s1 = 1;
+                } else if (s2 == 0) {
+                    b = x;
+                    s2 = 1;
+                }
+            }
+            res = Math.max(res, i - j + 1);
+        }
+        return res;
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    final int N = 100010;
+    public int totalFruit3(int[] fruits) {
+        int[] cnt = new int[N];
+        int n = fruits.length, res = 0;
+        for (int i = 0, j = 0, s = 0; i < n; i++) {
+            if (++cnt[fruits[i]] == 1) s++;
+            while (s > 2) {
+                if (--cnt[fruits[j++]] == 0) s--;
+            }
+            res = Math.max(res, i - j + 1);
+        }
+        return res;
+    }
 }
+/**
+ * 长度最长，最多包含2个元素的
+ */

@@ -51,22 +51,23 @@ public class LC801_MinimumSwapsToMakeSequencesIncreasing {
     // time = O(n), space = O(n)
     public int minSwap2(int[] nums1, int[] nums2) {
         int n = nums1.length;
-        int[][] dp = new int[n][2];
-        for (int i = 0; i < n; i++) Arrays.fill(dp[i], Integer.MAX_VALUE);
-        dp[0][0] = 0;
-        dp[0][1] = 1;
+        int[][] f = new int[n][2];
+        for (int[] x : f) Arrays.fill(x, Integer.MAX_VALUE / 2);
+        f[0][0] = 0;
+        f[0][1] = 1;
 
         for (int i = 1; i < n; i++) {
             if (nums1[i - 1] < nums1[i] && nums2[i - 1] < nums2[i]) {
-                dp[i][0] = Math.min(dp[i][0], dp[i - 1][0]);
-                dp[i][1] = Math.min(dp[i][1], dp[i - 1][1] + 1);
+                f[i][0] = Math.min(f[i][0], f[i - 1][0]);
+                f[i][1] = Math.min(f[i][1], f[i - 1][1] + 1);
+
             }
-            if (nums1[i - 1] < nums2[i] && nums2[i - 1] < nums1[i]) {
-                dp[i][0] = Math.min(dp[i][0], dp[i - 1][1]);
-                dp[i][1] = Math.min(dp[i][1], dp[i - 1][0] + 1);
+            if (nums2[i - 1] < nums1[i] && nums1[i - 1] < nums2[i]) {
+                f[i][0] = Math.min(f[i][0], f[i - 1][1]);
+                f[i][1] = Math.min(f[i][1], f[i - 1][0] + 1);
             }
         }
-        return Math.min(dp[n - 1][0], dp[n - 1][1]);
+        return Math.min(f[n - 1][0], f[n - 1][1]);
     }
 }
 /**
@@ -95,4 +96,15 @@ public class LC801_MinimumSwapsToMakeSequencesIncreasing {
  * dp[i][0]: minimum number of swaps to make both sequences A[0:i], B[0:i] strictly increasing by not swapping A[i] and B[i]
  * dp[i][1]: minimum number of swaps to make both sequences A[0:i], B[0:i] strictly increasing by swapping A[i] and B[i]
  * 今天状态只取决于昨天状态
+ *
+ * f(i,0):第i个位置没有交换过，且前i个位置已经严格递增的条件下，最少交换次数
+ * f(i,1)
+ * 第i-1个位置2种情况，不交换和交换过
+ * f(i,0):
+ * f(i-1,0): Ai-1 < Ai and Bi-1 < Bi
+ * f(i-1,1):
+ * f(i,1):
+ * f(i-1,0)+1
+ * f(i-1,1)+1
+ * min(f(i-1,0),f(i-1,1))
  */

@@ -21,39 +21,24 @@ public class LC437_PathSumIII {
      * @return
      */
     // S1: DFS
-    // time = O(n^2), space = O(n)
-    public int pathSum(TreeNode root, int targetSum) {
-        // corner case
-        if (root == null) return 0;
-
-        return helper(root, targetSum) + pathSum(root.left, targetSum) + pathSum(root.right, targetSum);
-    }
-
-    private int helper(TreeNode root, int sum) {
-        int res = 0;
-        if (root == null) return 0;
-        if (root.val == sum) res++;
-
-        res += helper(root.left, sum - root.val) + helper(root.right, sum - root.val);
-        return res;
-    }
-
-    // S2: HashMap + prefix
     // time = O(n), space = O(n)
-    public int pathSum2(TreeNode root, int targetSum) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-        map.put(0, 1);
-        return helper(root, 0, targetSum, map);
+    HashMap<Long, Integer> map;
+    int res = 0;
+    public int pathSum(TreeNode root, int targetSum) {
+        map = new HashMap<>();
+        map.put(0L, 1);
+        dfs(root, targetSum, 0);
+        return res;
     }
 
-    private int helper(TreeNode root, int curSum, int sum, HashMap<Integer, Integer> map) {
-        if (root == null) return 0;
-        curSum += root.val;
-        int res = map.getOrDefault(curSum - sum, 0); // prefix sum -> curSum - sum = diff
-        map.put(curSum, map.getOrDefault(curSum, 0) + 1);
+    private void dfs(TreeNode node, int t, long sum) {
+        if (node == null) return;
 
-        res += helper(root.left, curSum, sum, map) + helper(root.right, curSum, sum, map);
-        map.put(curSum, map.get(curSum) - 1); // setback
-        return res;
+        sum += node.val;
+        res += map.getOrDefault(sum - t, 0);
+        map.put(sum, map.getOrDefault(sum, 0) + 1);
+        dfs(node.left, t, sum);
+        dfs(node.right, t, sum);
+        map.put(sum, map.get(sum) - 1);
     }
 }

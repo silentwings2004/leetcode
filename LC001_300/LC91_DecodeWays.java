@@ -21,25 +21,19 @@ public class LC91_DecodeWays {
     // S1: DP
     // time = O(n), space = O(n)
     public int numDecodings(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
+        int n = s.length();
+        int[] f = new int[n + 1];
+        f[0] = 1;
 
-        int len = s.length();
-        int[] dp = new int[len + 1];
-        dp[0] = 1;
-
-        for (int i = 1; i <= len; i++) {
-            // case 1: decode the last digit only
-            char c = s.charAt(i - 1);
-            if (c >= '1' && c <= '9') dp[i] += dp[i - 1];
-
-            // case 2: decode the last two digits
+        for (int i = 1; i <= n; i++) {
+            int u = s.charAt(i - 1) - '0';
+            if (u >= 1 && u <= 9) f[i] += f[i - 1];
             if (i > 1) {
-                int val = (s.charAt(i - 2) - '0') * 10 + s.charAt(i - 1) - '0';
-                if (val >= 10 && val <= 26) dp[i] += dp[i - 2];
+                u = (s.charAt(i - 2) - '0') * 10 + (s.charAt(i - 1) - '0');
+                if (u >= 10 && u <= 26) f[i] += f[i - 2];
             }
         }
-        return dp[len];
+        return f[n];
     }
 
     // S2: DP2 + rolling array (最优解！！！）
@@ -76,4 +70,11 @@ public class LC91_DecodeWays {
  * 状态计算：f[i]
  * 1. 一位数字：f[i] = f[i-1] (1~9)
  * 2. 两位数字: f[i-1] = f[i-2] (10~26)
+ *
+ * f(i):
+ * 集合：所有由前i个字符可以解码回去的字符串的集合
+ * 属性：个数
+ * 状态计算：
+ * 1. 一位数字: f(i-1) (1~9)
+ * 2. 两位数字: f(i-2) (10~26)
  */

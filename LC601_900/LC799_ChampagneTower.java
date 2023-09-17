@@ -48,3 +48,6 @@ public class LC799_ChampagneTower {
         return Math.min(1.0, f[m][n]);
     }
 }
+/**
+ * if f(i,j) > 1 => x = (f(i,j) - 1) / 2
+ */

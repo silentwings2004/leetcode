@@ -26,16 +26,13 @@ public class LC1078_OccurrencesAfterBigram {
     public String[] findOcurrences(String text, String first, String second) {
         List<String> res = new ArrayList<>();
         String[] strs = text.split(" ");
-        int n = strs.length;
-        for (int i = 0; i < n - 2; i++) {
-            if (strs[i].equals(first)) {
-                if (i + 1 < n && strs[i + 1].equals(second)) {
-                    if (i + 2 < n) res.add(strs[i + 2]);
-                }
+        for (int i = 0; i + 2 < strs.length; i++) {
+            if (strs[i].equals(first) && strs[i + 1].equals(second)) {
+                res.add(strs[i + 2]);
             }
         }
         String[] ans = new String[res.size()];
-        for (int i = 0; i < res.size(); i++) ans[i] =res.get(i);
+        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
         return ans;
     }
 }

@@ -32,27 +32,23 @@ public class LC1406_StoneGameIII {
      */
     // time = O(n), space = O(n)
     public String stoneGameIII(int[] stoneValue) {
-        // corner case
-        if (stoneValue == null || stoneValue.length == 0) return "";
-
-        int n = stoneValue.length;
-        int[] dp = new int[n + 1];
-        Arrays.fill(dp, Integer.MIN_VALUE);
-        dp[n] = 0;
-        int[] presum = new int[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + stoneValue[i - 1];
-
+        int n = stoneValue.length, INF = (int) 1e8;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, -INF);
+        f[n] = 0;
+        int[] s = new int[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + stoneValue[i - 1];
         for (int i = n - 1; i >= 0; i--) {
-            int temp = 0;
+            int t = 0;
             for (int k = 1; k <= 3; k++) {
                 if (i + k - 1 >= n) break;
-                temp += stoneValue[i + k - 1];
-                dp[i] = Math.max(dp[i], temp + presum[n] - presum[i + k] - dp[i + k]);
+                t += stoneValue[i + k - 1];
+                f[i] = Math.max(f[i], t + s[n] - s[i + k] - f[i + k]);
             }
         }
-        if (dp[0] > presum[n] - dp[0]) return "Alice";
-        else if (dp[0] < presum[n] - dp[0]) return "Bob";
-        else return "Tie";
+        if (f[0] > s[n] - f[0]) return "Alice";
+        if (f[0] < s[n] - f[0]) return "Bob";
+        return "Tie";
     }
 }
 /**

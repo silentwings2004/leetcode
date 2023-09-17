@@ -30,19 +30,20 @@ public class LC971_FlipBinaryTreeToMatchPreorderTraversal {
      */
     // time = O(n), space = O(n)
     List<Integer> res;
-    int i = 0;
+    int k = 0;
     public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
         res = new ArrayList<>();
-        return dfs(root, voyage) ? res : Arrays.asList(-1);
+        if (dfs(root, voyage)) return res;
+        return Arrays.asList(-1);
     }
 
-    private boolean dfs(TreeNode node, int[] voyage) {
+    private boolean dfs(TreeNode node, int[] w) {
         if (node == null) return true;
-        if (node.val != voyage[i++]) return false;
-        if (node.left != null && node.left.val != voyage[i]) { // need flip
+        if (node.val != w[k]) return false;
+        k++;
+        if (node.left != null && node.left.val != w[k]) {
             res.add(node.val);
-            return dfs(node.right, voyage) && dfs(node.left, voyage);
-        }
-        return dfs(node.left, voyage) && dfs(node.right, voyage);
+            return dfs(node.right, w) && dfs(node.left, w);
+        } else return dfs(node.left, w) && dfs(node.right, w);
     }
 }

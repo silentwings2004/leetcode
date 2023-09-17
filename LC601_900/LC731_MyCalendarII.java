@@ -75,3 +75,8 @@ public class LC731_MyCalendarII {
         }
     }
 }
+/**
+ * 允许插入2次
+ * 与falling squre类似
+ * 这里考察差分
+ */

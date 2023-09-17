@@ -22,20 +22,15 @@ public class LC129_SumRoottoLeafNumbers {
      * @param root
      * @return
      */
-    //S1: recursion
     // time = O(n), space = O(n)
     public int sumNumbers(TreeNode root) {
-        // corner case
         if (root == null) return 0;
-
-        return helper(root, 0);
+        return dfs(root, 0);
     }
 
-    private int helper(TreeNode root, int num) {
-        if (root == null) return 0;
-
-        if (root.left == null && root.right == null) return num * 10 + root.val;
-
-        return helper(root.left, num * 10 + root.val) + helper(root.right, num * 10 + root.val);
+    private int dfs(TreeNode node, int sum) {
+        if (node == null) return 0;
+        if (node.left == null && node.right == null) return sum * 10 + node.val;
+        return dfs(node.left, sum * 10 + node.val) + dfs(node.right, sum * 10 + node.val);
     }
 }

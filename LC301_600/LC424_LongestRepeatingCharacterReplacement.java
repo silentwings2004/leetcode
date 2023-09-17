@@ -65,6 +65,23 @@ public class LC424_LongestRepeatingCharacterReplacement {
         }
         return res;
     }
+
+    // S3
+    // time = O(26n), space = O(1)
+    public int characterReplacement3(String s, int k) {
+        int res = 0, n = s.length();
+        for (char c = 'A'; c <= 'Z'; c++) {
+            for (int i = 0, j = 0, cnt = 0; i < n; i++) {
+                if (s.charAt(i) == c) cnt++;
+                while (i - j + 1 - cnt > k) {
+                    if (s.charAt(j) == c) cnt--;
+                    j++;
+                }
+                res = Math.max(res, i - j + 1);
+            }
+        }
+        return res;
+    }
 }
 /**
  * 构造一个最长的substring, subarray

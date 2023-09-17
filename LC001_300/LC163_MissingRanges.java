@@ -30,31 +30,19 @@ public class LC163_MissingRanges {
      * @return
      */
     // time = O(n), space = O(1)
-    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
-        List<String> res = new ArrayList<>();
-        // corner case
-        if (nums == null || nums.length == 0) {
-            res.add(helper(lower, upper)); // 空的range也要返回[lower, higher]这一段！！！
+    public List<List<Integer>> findMissingRanges(int[] nums, int lower, int upper) {
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        if (n == 0) {
+            res.add(Arrays.asList(lower, upper));
             return res;
         }
 
-        // case 1: treat the start
-        if (nums[0] > lower) res.add(helper(lower, nums[0] - 1));
-
-        // case 2: treat the middle: not equal or next to each other
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i + 1] != nums[i] && nums[i + 1] > nums[i] + 1) {
-                res.add(helper(nums[i] + 1, nums[i + 1] - 1));
-            }
+        if (lower < nums[0]) res.add(Arrays.asList(lower, nums[0] - 1));
+        for (int i = 0 ; i < n - 1; i++) {
+            if (nums[i] != nums[i + 1] - 1) res.add(Arrays.asList(nums[i] + 1, nums[i + 1] - 1));
         }
-
-        // case 3: treat the end
-        if (nums[nums.length - 1] < upper) res.add(helper(nums[nums.length - 1] + 1, upper));
-
+        if (nums[n - 1] < upper) res.add(Arrays.asList(nums[n - 1] + 1, upper));
         return res;
-    }
-
-    private String helper(int low, int high) {
-        return low == high? String.valueOf(low) : low + "->" + high; // 注意考虑low == high的情况
     }
 }

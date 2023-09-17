@@ -24,20 +24,23 @@ public class LC806_NumberofLinesToWriteString {
      * widths.length == 26
      * 2 <= widths[i] <= 10
      * 1 <= s.length <= 1000
-     * s contains only lowercase English letters.
+     * s contains only lowercase Engli sh letters.
      * @param widths
      * @param s
      * @return
      */
+    // time = O(n), space = O(1)
     public int[] numberOfLines(int[] widths, String s) {
-        int line = 1, curWidth = 0, n = s.length();
-        for (char c : s.toCharArray()) {
-            curWidth += widths[c - 'a'];
-            if (curWidth > 100) {
-                curWidth = widths[c - 'a'];
-                line++;
+        int r = 0, c = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int u = s.charAt(i) - 'a';
+            int w = widths[u];
+            if (c + w > 100) {
+                r++;
+                c = 0;
             }
+            c += w;
         }
-        return new int[]{line, curWidth};
+        return new int[]{r + 1, c};
     }
 }

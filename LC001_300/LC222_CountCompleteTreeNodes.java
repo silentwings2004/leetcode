@@ -29,23 +29,18 @@ public class LC222_CountCompleteTreeNodes {
         // corner case
         if (root == null) return 0;
 
-        int lh = getHeight(root.left);
-        int rh = getHeight(root.right);
-
-        if (lh == rh) { // right subtree is not full
-            return countNodes(root.right) + 1 + (int)Math.pow(2, lh) - 1;
-        } else { // left subtree is not full
-            return countNodes(root.left) + 1 + (int)Math.pow(2, rh) - 1;
+        TreeNode l = root.left, r = root.right;
+        int x = 1, y = 1;
+        while (l != null) {
+            l = l.left;
+            x++;
         }
-    }
-
-    private int getHeight(TreeNode cur) {
-        int height = 0;
-        while (cur != null) {
-            cur = cur.left;
-            height++;
+        while (r != null) {
+            r = r.right;
+            y++;
         }
-        return height;
+        if (x == y) return (1 << x) - 1;
+        return countNodes(root.left) + 1 + countNodes(root.right);
     }
 
     // S2：BS

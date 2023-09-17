@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class LC827_MakingALargeIsland {
+public class  LC827_MakingALargeIsland {
     /**
      * You are given an n x n binary matrix grid. You are allowed to change at most one 0 to be 1.
      *
@@ -137,5 +137,4 @@ public class LC827_MakingALargeIsland {
             return p[x];
         }
     }
-
 }

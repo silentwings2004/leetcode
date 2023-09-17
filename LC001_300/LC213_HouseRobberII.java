@@ -23,23 +23,19 @@ public class LC213_HouseRobberII {
     // S1: dp
     // time = O(n), space = O(1)
     public int rob(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-        if (nums.length == 1) return nums[1];
-
         int n = nums.length;
-        return Math.max(helper(nums, 0, n - 2), helper(nums, 1, n - 1));
+        if (n == 1) return nums[0];
+        return Math.max(helper(nums, 0, n - 1), helper(nums, 1, n));
     }
 
-    private int helper(int[] nums, int lo, int hi) {
-        int preNo = 0, preYes = 0;
-
-        for (int i = lo; i <= hi; i++) {
-            int temp = preNo;
-            preNo = Math.max(preNo, preYes);
-            preYes = temp + nums[i];
+    private int helper(int[] nums, int l, int r) {
+        int rob = nums[l], norob = 0;
+        for (int i = l + 1; i < r; i++) {
+            int rt = rob, nt = norob;
+            rob = nt + nums[i];
+            norob = Math.max(rt, nt);
         }
-        return preYes;
+        return Math.max(rob, norob);
     }
 
     // S2: 区间型dp

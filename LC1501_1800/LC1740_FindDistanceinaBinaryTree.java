@@ -21,9 +21,37 @@ public class LC1740_FindDistanceinaBinaryTree {
      * @param q
      * @return
      */
+    // S1:
+    // time = O(n), space = O(n)
+    int ans = 0;
+    public int findDistance(TreeNode root, int p, int q) {
+        TreeNode ancestor = lca(root, p, q);
+        dfs(ancestor, 0, p, q);
+        return ans;
+    }
+
+    private TreeNode lca(TreeNode root, int p, int q) {
+        if (root == null) return root;
+        if (root.val == p || root.val == q) return root;
+
+        TreeNode l = lca(root.left, p, q);
+        TreeNode r = lca(root.right, p, q);
+        if (l != null && r != null) return root;
+        return l == null ? r : l;
+    }
+
+    private void dfs(TreeNode node, int d, int p, int q) {
+        if (node == null) return;
+
+        if (node.val == p || node.val == q) ans += d;
+        dfs(node.left, d + 1, p, q);
+        dfs(node.right, d + 1, p, q);
+    }
+
+    // S2
     // time = O(n), space = O(n)
     int res = -1;
-    public int findDistance(TreeNode root, int p, int q) {
+    public int findDistance2(TreeNode root, int p, int q) {
         dfs(root, p, q);
         return res;
     }
@@ -47,6 +75,28 @@ public class LC1740_FindDistanceinaBinaryTree {
 
         if (dp != -1 && dq != -1 && res == -1) res = dp + dq; // 注意千万别忘了判断res == -1!!!
         return new int[]{dp, dq};
+    }
+
+    // S3
+    // time = O(n), space = O(n)
+    int da = -1, dp = -1, dq = -1;
+    public int findDistance3(TreeNode root, int p, int q) {
+        if (p == q) return 0;
+        lca(root, p, q, 0);
+        return (dp - da) + (dq - da);
+    }
+
+    private int lca(TreeNode node, int p, int q, int d) {
+        if (node == null) return 0;
+
+        int l = lca(node.left, p, q, d + 1);
+        int r = lca(node.right, p, q, d + 1);
+        int self = node.val == p || node.val == q ? 1 : 0;
+        if (node.val == p) dp = d;
+        if (node.val == q) dq = d;
+        int sum = l + r + self;
+        if (sum == 2 && da == -1) da = d;
+        return sum;
     }
 }
 /**

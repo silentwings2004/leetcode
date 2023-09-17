@@ -22,16 +22,18 @@ public class LC598_RangeAdditionII {
      * @param ops
      * @return
      */
-    // time = O(k), space = O(1)
+    // time = O(n), space = O(1)
     public int maxCount(int m, int n, int[][] ops) {
-        // corner case
-        if (ops == null || ops.length == 0 || ops[0] == null || ops[0].length == 0) return m * n;
-
         int x = m, y = n;
-        for (int[] op : ops) {
-            x = Math.min(op[0], x);
-            y = Math.min(op[1], y);
+        for (int[] p : ops) {
+            x = Math.min(x, p[0]);
+            y = Math.min(y, p[1]);
         }
         return x * y;
     }
 }
+/**
+ * 左上角这个点每次都会被加到
+ * 问题等价为问有多少个值每次都会被加到，和左上角这个点一样？
+ * => 所有子矩阵操作的交集
+ */

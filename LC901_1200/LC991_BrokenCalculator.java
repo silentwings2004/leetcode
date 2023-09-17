@@ -24,11 +24,14 @@ public class LC991_BrokenCalculator {
      */
     // time = O(log(target)), space = O(1)
     public int brokenCalc(int startValue, int target) {
-        if (startValue >= target) return startValue - target;
-        else {
-            if (target % 2 == 1) return brokenCalc(startValue, target + 1) + 1;
-            return brokenCalc(startValue, target / 2) + 1;
+        int x = startValue, y = target;
+        int res = 0;
+        while (y > x) {
+            if (y % 2 == 1) y++;
+            else y /= 2;
+            res++;
         }
+        return res + x - y;
     }
 }
 /**

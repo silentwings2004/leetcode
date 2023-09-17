@@ -25,7 +25,8 @@ public class LC1569_NumberofWaystoReorderArraytoGetSameBST {
      * @param nums
      * @return
      */
-    // time = O(n), space = O(n)
+    // S1
+    // time = O(n^2), space = O(n^2)
     long[][] comb;
     long M = (long)(1e9 + 7);
     public int numOfWays(int[] nums) {
@@ -85,6 +86,35 @@ public class LC1569_NumberofWaystoReorderArraytoGetSameBST {
         public TreeNode(int val) {
             this.val = val;
         }
+    }
+
+    // S2
+    // time = O(n^2), space = O(n^2)
+    long[][] C;
+    long mod = (long)(1e9 + 7);
+    public int numOfWays2(int[] nums) {
+        int n = nums.length;
+        C = new long[n + 1][n + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (j == 0) C[i][j] = 1;
+                else C[i][j] = (C[i - 1][j - 1] + C[i - 1][j]) % mod;
+            }
+        }
+        List<Integer> q = new ArrayList<>();
+        for (int x : nums) q.add(x);
+        return (int)((f(q) - 1 + mod) % mod);
+    }
+
+    private long f(List<Integer> nums) {
+        if (nums.size() == 0) return 1;
+        int n = nums.size(), k = nums.get(0);
+        List<Integer> left = new ArrayList<>(), right = new ArrayList<>();
+        for (int x : nums) {
+            if (x < k) left.add(x);
+            else if (x > k) right.add(x - k);
+        }
+        return C[n - 1][k - 1] * f(left) % mod * f(right) % mod;
     }
 }
 /**

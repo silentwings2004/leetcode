@@ -30,6 +30,7 @@ public class LC592_FractionAdditionandSubtraction {
      * @param expression
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public String fractionAddition(String expression) {
         int n = expression.length();
@@ -63,6 +64,38 @@ public class LC592_FractionAdditionandSubtraction {
 
     private int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public String fractionAddition2(String expression) {
+        int n = expression.length(), cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (expression.charAt(i) == '/') cnt++;
+        }
+        expression = "+" + expression;
+
+        int a = 0, b = 1, offset = 0;
+        for (int i = 0; i < cnt; i++) {
+            char e = expression.charAt(offset);
+            int j = offset + 1;
+            while (j <= n && expression.charAt(j) != '/') j++;
+            int c = Integer.parseInt(expression.substring(offset + 1, j));
+            int k = j + 1;
+            while (k <= n && Character.isDigit(expression.charAt(k))) k++;
+            int d = Integer.parseInt(expression.substring(j + 1, k));
+            offset = k;
+            if (e == '-') c = -c;
+            int x = a * d + b * c, y = b * d;
+            int z = gcd(x, y);
+            a = x / z;
+            b = y / z;
+        }
+        if (b < 0) {
+            a = -a;
+            b = -b;
+        }
+        return a + "/" + b;
     }
 }
 /**

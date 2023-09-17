@@ -84,4 +84,9 @@ public class LC793_PreimageSizeofFactorialZeroesFunction {
  * 如果能找到，那么就直接返回5，
  * 这是因为x之后的x+1,x+2,x+3,x+4必定都不含质因数5，而x+5必定会包含新的质因数5从而增加至少一个trailing zero。
  * 反之，如果二分搜索找不到，那么就返回0.
+ *
+ * 10的个数取决于5的个数
+ * calc(k):有多少个非负整数f(n) <= k
+ * calc(k) - calc(k - 1) => 二分  最后一个末尾0的个数 <= k的数
+ * 末尾0的个数和n是有单调关系的 => n/5 + n/(5^2) + n/(5^3)
  */

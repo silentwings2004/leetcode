@@ -15,27 +15,28 @@ public class LC415_AddStrings {
      * @param num2
      * @return
      */
-    // time = O(max(m, n)), space = O(max(m, n))
+    // time = O(m + n), space = O(m + n)
     public String addStrings(String num1, String num2) {
-        // corner case
-        if (num1 == null || num1.length() == 0) return num2;
-        if (num2 == null || num2.length() == 0) return num1;
-
-        int i = num1.length() - 1, j = num2.length() - 1;
-        int carry = 0;
+        List<Integer> A = new ArrayList<>();
+        List<Integer> B = new ArrayList<>();
+        int m = num1.length(), n = num2.length();
+        for (int i = m - 1; i >= 0; i--) A.add(num1.charAt(i) - '0');
+        for (int i = n - 1; i >= 0; i--) B.add(num2.charAt(i) - '0');
+        List<Integer> C = add(A, B);
         StringBuilder sb = new StringBuilder();
+        for (int i = C.size() - 1; i >= 0; i--) sb.append(C.get(i));
+        return sb.toString();
+    }
 
-        while (i >= 0 || j >= 0) {
-            if (i >= 0) {
-                carry += num1.charAt(i--) - '0';
-            }
-            if (j >= 0) {
-                carry += num2.charAt(j--) - '0';
-            }
-            sb.append(carry % 10); // 先append,再更新carry!!!
-            carry /= 10;
+    private List<Integer> add(List<Integer> A, List<Integer> B) {
+        List<Integer> C = new ArrayList<>();
+        int m = A.size(), n = B.size();
+        for (int i = 0, j = 0, t = 0; i < m || j < n || t > 0; i++, j++) {
+            if (i < m) t += A.get(i);
+            if (j < n) t += B.get(j);
+            C.add(t % 10);
+            t /= 10;
         }
-        if (carry > 0) sb.append(carry);
-        return sb.reverse().toString();
+        return C;
     }
 }

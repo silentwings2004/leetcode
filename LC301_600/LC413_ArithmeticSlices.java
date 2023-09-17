@@ -55,4 +55,26 @@ public class LC413_ArithmeticSlices {
         }
         return res;
     }
+
+    // S3: diff array
+    // time = O(n), space = O(1)
+    public int numberOfArithmeticSlices3(int[] nums) {
+        int n = nums.length;
+        for (int i = n - 1; i > 0; i--) nums[i] -= nums[i - 1];
+        int res = 0;
+        for (int i = 1; i < n; i++) { // 注意：原数组已经改造成了差分数组，所以i得从1开始才有意义!
+            int j = i;
+            while (j < n && nums[j] == nums[i]) j++;
+            int k = j - i;
+            res += k * (k - 1) / 2;
+            i = j - 1;
+        }
+        return res;
+    }
 }
+/**
+ * 至少包含3个元素
+ * 相邻2个元素之差相等
+ * 把原数组变成差分数组 => 在差分数组里找连续相等的一段
+ * 有多少个长度 >= 3的子区间
+ */

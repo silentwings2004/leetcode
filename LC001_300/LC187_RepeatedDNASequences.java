@@ -23,22 +23,47 @@ public class LC187_RepeatedDNASequences {
     // S1: sliding window
     // time = O(n), space = O(n)
     public List<String> findRepeatedDnaSequences(String s) {
-        // corner case
-        if (s == null || s.length() == 0) return new ArrayList<>();
-
-        HashSet<String> seen = new HashSet<>();
-        HashSet<String> repeated = new HashSet<>();
-
-        for (int i = 0; i < s.length() - 9; i++) {
+        HashMap<String, Integer> map = new HashMap<>();
+        int n = s.length();
+        for (int i = 0; i + 10 <= n; i++) {
             String sub = s.substring(i, i + 10);
-            if (!seen.add(sub)) repeated.add(sub);
+            map.put(sub, map.getOrDefault(sub, 0) + 1);
         }
-        return new ArrayList<>(repeated);
+
+        List<String> res = new ArrayList<>();
+        for (String key : map.keySet()) {
+            if (map.get(key) > 1) res.add(key);
+        }
+        return res;
     }
 
-    // S2： bit mask
-    // time = O(n), space = O(n)
+    // S2: string hash
+    final int P = 131;
     public List<String> findRepeatedDnaSequences2(String s) {
+        List<String> res = new ArrayList<>();
+        int n = s.length();
+        long[] p = new long[n + 1], h = new long[n + 1];
+        p[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            p[i] = p[i - 1] * P;
+            h[i] = h[i - 1] * P + s.charAt(i - 1);
+        }
+
+        HashMap<Long, Integer> map = new HashMap<>();
+        for (int i = 1; i + 9 <= n; i++) {
+            int l = i, r = i + 9;
+            long hash = h[r] - h[l - 1] * p[r - l + 1];
+            if (map.containsKey(hash) && map.get(hash) == 1) {
+                res.add(s.substring(i - 1, i + 9));
+            }
+            map.put(hash, map.getOrDefault(hash, 0) + 1);
+        }
+        return res;
+    }
+
+    // S3： bit mask
+    // time = O(n), space = O(n)
+    public List<String> findRepeatedDnaSequences3(String s) {
         List<String> res = new ArrayList<>();
         // corner case
         if (s == null || s.length() == 0) return res;

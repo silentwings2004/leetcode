@@ -21,24 +21,18 @@ public class LC297_SerializeandDeserializeBinaryTree {
      * @return
      */
     // S1: dfs
-    // Encodes a tree to a single string.
     // time = O(n), space = O(n)
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
         if (root == null) return "#";
-        return root.val + "," + serialize(root.left) + "," + serialize(root.right); // 注意：root.right序列化后不要加','!!!
+        return root.val + "," + serialize(root.left) + "," + serialize(root.right);
     }
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
-        Queue<String> queue = new LinkedList<>(); // queue里只要按照"根左右"的顺序读出string，交给dfs去做反序列化递归即可！！！
-        int n = data.length();
-        for (int i = 0; i < n; i++) {
-            int j = i;
-            while (j < n && data.charAt(j) != ',') j++;
-            queue.offer(data.substring(i, j));
-            i = j;
-        }
+        Queue<String> queue = new LinkedList<>();
+        String[] strs = data.split(",");
+        for (String s : strs) queue.offer(s);
         return dfs(queue);
     }
 
@@ -46,7 +40,7 @@ public class LC297_SerializeandDeserializeBinaryTree {
         String cur = queue.poll();
         if (cur.equals("#")) return null;
 
-        TreeNode root = new TreeNode(Integer.valueOf(cur));
+        TreeNode root = new TreeNode(Integer.parseInt(cur));
         root.left = dfs(queue);
         root.right = dfs(queue);
         return root;

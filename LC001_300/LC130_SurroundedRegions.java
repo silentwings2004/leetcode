@@ -18,49 +18,42 @@ public class LC130_SurroundedRegions {
      * @param board
      */
     // time = O(m * n), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    char[][] g;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
     public void solve(char[][] board) {
-        // corner case
-        if (board == null || board.length == 0 || board[0] == null || board[0].length == 0) return;
+        g = board;
+        m = g.length;
+        n = g[0].length;
 
-        int row = board.length, col = board[0].length;
-        Queue<Integer> queue = new LinkedList<>();
-
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if ((i == 0 || i == row - 1 || j == 0 || j == col - 1) && board[i][j] == 'O') {
-                    queue.offer(i * col + j);
-                    board[i][j] = 'Y';
-                    bfs(board, queue);
-                }
-            }
+        for (int i = 0; i < m; i++) {
+            if (g[i][0] == 'O') dfs(i, 0);
+            if (g[i][n - 1] == 'O') dfs(i, n - 1);
+        }
+        for (int i = 0; i < n; i++) {
+            if (g[0][i] == 'O') dfs(0, i);
+            if (g[m - 1][i] == 'O') dfs(m - 1, i);
         }
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if (board[i][j] == 'O') board[i][j] = 'X';
-                else if (board[i][j] == 'Y') board[i][j] = 'O';
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (g[i][j] == 'O') g[i][j] = 'X';
+                if (g[i][j] == 'Y') g[i][j] = 'O';
             }
         }
     }
 
-    private void bfs(char[][] board, Queue<Integer> queue) {
-        int row = board.length, col = board[0].length;
-
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            int i = cur / col, j = cur % col;
-            for (int[] dir : DIRECTIONS) {
-                int ii = i + dir[0];
-                int jj = j + dir[1];
-                if (ii >= 0 && ii < row && jj >= 0 && jj < col && board[ii][jj] == 'O') {
-                    queue.offer(ii * col + jj);
-                    board[ii][jj] = 'Y';
-                }
-            }
+    private void dfs(int x, int y) {
+        g[x][y] = 'Y';
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] != 'O') continue;
+            dfs(a, b);
         }
     }
 }
 /**
+ * flood fill 算法
  * 直接在沿海地带找，有O的话肯定不会被X包围，反着来
  */

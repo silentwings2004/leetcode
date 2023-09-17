@@ -37,16 +37,12 @@ public class LC1598_CrawlerLogFolder {
      */
     // time = O(n), space = O(1)
     public int minOperations(String[] logs) {
-        int n = logs.length, depth = 0;
+        int d = 0;
         for (String x : logs) {
-            if (x.charAt(0) != '.') depth++;
-            else {
-                if (x.equals("./")) continue;
-                else {
-                    if (depth > 0) depth--;
-                }
-            }
+            if (x.equals("../")) d = Math.max(d - 1, 0);
+            else if (x.equals("./")) continue;
+            else d++;
         }
-        return depth;
+        return Math.max(d, 0);
     }
 }

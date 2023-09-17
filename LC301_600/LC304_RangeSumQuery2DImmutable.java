@@ -31,26 +31,19 @@ public class LC304_RangeSumQuery2DImmutable {
      * @param matrix
      */
     // time = O(m * n), space = O(m * n)
-    int[][] presum;
+    int[][] s;
     public LC304_RangeSumQuery2DImmutable(int[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
-            return;
-        }
-
         int m = matrix.length, n = matrix[0].length;
-        presum = new int[m + 1][n + 1];
+        s = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                presum[i][j] = presum[i - 1][j] + presum[i][j - 1] - presum[i - 1][j - 1] + matrix[i - 1][j - 1];
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
             }
         }
     }
 
     public int sumRegion(int row1, int col1, int row2, int col2) {
-        row1++;
-        col1++;
-        row2++;
-        col2++;
-        return presum[row2][col2] - presum[row2][col1 - 1] - presum[row1 - 1][col2] + presum[row1 - 1][col1 - 1];
+        int x1 = row1 + 1, y1 = col1 + 1, x2 = row2 + 1, y2 = col2 + 1;
+        return s[x2][y2] - s[x2][y1 - 1] - s[x1 - 1][y2] + s[x1 - 1][y1 - 1];
     }
 }

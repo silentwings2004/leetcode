@@ -35,97 +35,22 @@ public class LC1861_RotatingtheBox {
      * @param box
      * @return
      */
-    // S1: 最优解！
     // time = O(m * n), space = O(1)
     public char[][] rotateTheBox(char[][] box) {
         int m = box.length, n = box[0].length;
         char[][] res = new char[n][m];
-        for (int i = 0; i < n; i++) Arrays.fill(res[i], '.');
-
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                int count = 0;
-                int k = j;
-                while (k < n && box[i][k] != '*') {
-                    if (box[i][k] == '#') count++; // record the number of stones above the obstacle
-                    k++;
-                } // k will be landing on the obstacle or the end of the row
-                // (i, k) -> (k, m-1-i) rotate the row
-                if (k != n) {  // if not reach the end of the row
-                    res[k][m - 1 - i] = '*';
+            int k = n;
+            for (int j = n - 1; j >= 0; j--) {
+                if (box[i][j] == '*') k = j;
+                else if (box[i][j] == '#') {
+                    box[i][j] = '.';
+                    box[i][--k] = '#';
                 }
-                for (int s = 1; s <= count; s++) {
-                    res[k - s][m - 1 - i] = '#';
-                }
-                j = k; // 调整下寻找下一个挡板的起点
             }
+            for (int j = 0; j < n; j++) res[j][m - 1 - i] = box[i][j];
         }
         return res;
-    }
-
-    // S2 [Test Solution]
-    // time = O(m * n), space = O(n)
-    private boolean isOver = false;
-    public char[][] rotateTheBox2(char[][] box) {
-        // corner case
-        if (box == null || box.length == 0 || box[0] == null || box[0].length == 0) return null;
-
-        int m = box.length, n = box[0].length;
-        for (char[] b : box) { // O(m)
-            isOver = false;
-            helper(b, n - 1); // O(n)
-        }
-
-        // rotate matrix
-        char[][] res = new char[n][m];
-        for (int i = 0; i < m; i++) { // O(m * n)
-            for (int j = 0; j < n; j++) {
-                res[j][m - 1 - i] = box[i][j];
-            }
-        }
-        return res;
-    }
-
-    private void helper(char[] b, int end) {
-        int[] ans = findObs(b, end); // O(n)
-        int cur = ans[0];
-        if (cur == -1) {
-            isOver = true;
-            return;
-        }
-        for (int i = ans[1]; i >= 0; i--) { // O9n)
-            if (isOver) return;
-            if (b[i] == '#' && i < cur) {
-                b[i] = '.';
-                b[cur--] = '#';
-            } else if (b[i] == '*') {
-                helper(b, i);
-            }
-        }
-        isOver = true;
-    }
-
-    private int[] findObs(char[] b, int end) {
-        for (int i = end; i >= 0; i--) { // O(n)
-            if (b[i] == '.') {
-                // check if there is a stone above it without any obs
-                boolean hasObs = false;
-                int obs = i - 1, stone = i - 1;
-                for (int j = i - 1; j >= 0; j--) {
-                    if (b[j] == '*') {
-                        hasObs = true;
-                        obs = j;
-                        break;
-                    } else if (b[j] == '#') {
-                        stone = j;
-                        break;
-                    }
-                }
-                if (!hasObs) return new int[]{i, stone};
-                else i = obs;
-            }
-        }
-        return new int[]{-1, -1};
     }
 }
 /**

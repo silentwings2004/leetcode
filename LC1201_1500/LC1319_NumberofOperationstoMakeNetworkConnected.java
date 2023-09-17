@@ -30,45 +30,24 @@ public class LC1319_NumberofOperationstoMakeNetworkConnected {
      * @return
      */
     // time = O(m * a(n)), space = O(n)
-    int[] parent;
+    int[] p;
     public int makeConnected(int n, int[][] connections) {
-        parent = new int[n];
-        for (int i = 0; i < n; i++) parent[i] = i;
-        int[] cables = new int[n];
-
-        for (int[] edge : connections) { // O(m)
-            int a = edge[0], b = edge[1];
-            if (findParent(a) != findParent(b)) union(a, b);
-            cables[a]++;
-            cables[b]++;
+        if (connections.length < n - 1) return -1;
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+        int res = n;
+        for (int[] x : connections) {
+            int a = x[0], b = x[1];
+            if (find(a) != find(b)) {
+                p[find(a)] = find(b);
+                res--;
+            }
         }
-
-        HashMap<Integer, Integer> totalCables = new HashMap<>(); // root -> # of cables
-        HashMap<Integer, Integer> totalElements = new HashMap<>(); // root -> # of elements
-
-        for (int i = 0; i < n; i++) {
-            int p = findParent(i);
-            totalCables.put(p, totalCables.getOrDefault(p, 0) + cables[i]);
-            totalElements.put(p, totalElements.getOrDefault(p, 0) + 1);
-        }
-
-        int redundant = 0;
-        for (int x : totalCables.keySet()) {
-            redundant += totalCables.get(x) / 2 - (totalElements.get(x) - 1);
-        }
-        if (redundant >= totalCables.size() - 1) return totalCables.size() - 1;
-        return -1;
+        return res - 1;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }

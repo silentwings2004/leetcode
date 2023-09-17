@@ -20,22 +20,19 @@ public class LC543_DiameterofBinaryTree {
      * @return
      */
     // time = O(n), space = O(n)
-    private int res = 0;
+    int res = 0;
     public int diameterOfBinaryTree(TreeNode root) {
-        // corner case
-        if (root == null) return 0;
-
-        longestPathToLeaf(root);
-        return res - 1; // 求的是边数 = 点数 - 1
+        dfs(root);
+        return res - 1;
     }
 
-    private int longestPathToLeaf(TreeNode node) {
+    private int dfs(TreeNode node) {
         if (node == null) return 0;
 
-        int leftPath = longestPathToLeaf(node.left);
-        int rightPath = longestPathToLeaf(node.right);
-        res = Math.max(res, leftPath + 1 + rightPath);
-        return Math.max(leftPath, rightPath) + 1; // + node自身
+        int l = dfs(node.left);
+        int r = dfs(node.right);
+        res = Math.max(res, l + r + 1);
+        return Math.max(l, r) + 1;
     }
 }
 /**

@@ -24,6 +24,7 @@ public class LC385_MiniParser {
      * @param s
      * @return
      */
+    // S1: stack
     // time = O(n), space = O(n)
     public NestedInteger deserialize(String s) {
         if (s.charAt(0) != '[') return new NestedInteger(Integer.parseInt(s));
@@ -47,6 +48,31 @@ public class LC385_MiniParser {
             }
         }
         return stack.peek();
+    }
+
+    // S2: dfs
+    // time = O(n), space = O(n)
+    int u = 0;
+    public NestedInteger deserialize2(String s) {
+        return dfs(s);
+    }
+
+    private NestedInteger dfs(String s) {
+        NestedInteger res = new NestedInteger();
+        int n = s.length();
+        if (s.charAt(u) == '[') {
+            u++;
+            while (u < n && s.charAt(u) != ']') res.add(dfs(s));
+            u++;
+            if (u < n && s.charAt(u) == ',') u++;
+        } else {
+            int k = u;
+            while (k < n && s.charAt(k) != ',' && s.charAt(k) != ']') k++;
+            res.setInteger(Integer.parseInt(s.substring(u, k)));
+            if (k < n && s.charAt(k) == ',') k++;
+            u = k;
+        }
+        return res;
     }
 }
 /**
@@ -79,4 +105,5 @@ public class LC385_MiniParser {
  */
 /**
  * 本质判断有无中括号
+ * 遇到左括号，递归，右括号结束就返回
  */

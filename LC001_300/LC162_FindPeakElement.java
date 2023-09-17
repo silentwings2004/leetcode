@@ -24,38 +24,15 @@ public class LC162_FindPeakElement {
      * @param nums
      * @return
      */
-    // S1: BS
     // time = O(logn), space = O(1)
     public int findPeakElement(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) {
-            return -1;
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] > nums[mid + 1]) r = mid;
+            else l = mid + 1;
         }
-
-        if (nums.length == 1) return 0;
-
-        int start = 0, end = nums.length - 1;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (nums[mid] < nums[mid + 1]) start = mid;
-            else end = mid;
-        }
-        return nums[start] > nums[end] ? start : end;
-    }
-
-    // S2: BS
-    // time = O(logn), space = O(1)
-    public int findPeakElement2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return -1;
-
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < nums[mid + 1]) left = mid + 1;
-            else right = mid;
-        }
-        return left;
+        return r;
     }
 }
 /**

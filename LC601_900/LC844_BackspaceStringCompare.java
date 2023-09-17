@@ -23,18 +23,15 @@ public class LC844_BackspaceStringCompare {
     // S1: StringBuilder
     // time = O(m + n), space = O(m + n)
     public boolean backspaceCompare(String s, String t) {
-        s = helper(s);
-        t = helper(t);
-        return s.equals(t);
+        return get(s).equals(get(t));
     }
 
-    private String helper(String s) {
+    private String get(String s) {
         StringBuilder sb = new StringBuilder();
         for (char c : s.toCharArray()) {
-            if (c != '#') sb.append(c);
-            else {
+            if (c == '#') {
                 if (sb.length() > 0) sb.setLength(sb.length() - 1);
-            }
+            } else sb.append(c);
         }
         return sb.toString();
     }

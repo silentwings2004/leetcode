@@ -38,7 +38,7 @@ public class LC1096_BraceExpansionII {
      * @return
      */
     // S1: stack
-    // time = O(n), space = O(n)
+    // time = O(nlogn), space = O(n)
     public List<String> braceExpansionII(String expression) {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
@@ -97,7 +97,7 @@ public class LC1096_BraceExpansionII {
     }
 
     // S2: dfs
-    // time = O(n), space = O(n)
+    // time = O(nlogn), space = O(n)
     public List<String> braceExpansionII2(String expression) {
         HashSet<String> cur = helper(expression, 0, expression.length() - 1);
         List<String> res = new ArrayList<>(cur);
@@ -140,6 +140,69 @@ public class LC1096_BraceExpansionII {
         }
         return cur;
     }
+
+    // S3: TreeSet
+    // time = O(nlogn), space = O(n)
+    String str;
+    int k;
+    public List<String> braceExpansionII3(String expression) {
+        str = expression;
+        k = 0;
+        TreeSet<String> res = dfs();
+        return new ArrayList<>(res);
+    }
+
+    private TreeSet<String> dfs() {
+        TreeSet<String> A = new TreeSet<>();
+        TreeSet<String> B = new TreeSet<>();
+        B.add("");
+
+        int n = str.length();
+        while (k < n && str.charAt(k) != '}') {
+            if (str.charAt(k) == ',') k++;
+            else if (str.charAt(k) == '{') {
+                boolean is_add = true;
+                if (k == 0 || str.charAt(k - 1) != ',') is_add = false;
+                k++; // 跳过 {
+                TreeSet<String> C = dfs();
+                k++; // 跳过 }
+
+                if (is_add) {
+                    A = add(A, B);
+                    B = C;
+                } else B = mul(B, C);
+            } else {
+                boolean is_add = true;
+                if (k == 0 || str.charAt(k - 1) != ',') is_add = false;
+                StringBuilder sb = new StringBuilder();
+                while (k < n && Character.isLowerCase(str.charAt(k))) sb.append(str.charAt(k++));
+                TreeSet<String> C = new TreeSet<>();
+                C.add(sb.toString());
+
+                if (is_add) {
+                    A = add(A, B);
+                    B = C;
+                } else B = mul(B, C);
+            }
+        }
+        return add(A, B);
+    }
+
+    private TreeSet<String> add(TreeSet<String> A, TreeSet<String> B) {
+        TreeSet<String> C = new TreeSet<>(A);
+        for (String x : B) C.add(x);
+        return C;
+    }
+
+    private TreeSet<String> mul(TreeSet<String> A, TreeSet<String> B) {
+        TreeSet<String> C = new TreeSet<>();
+        for (String x : A) {
+            for (String y : B) {
+                C.add(x + y);
+            }
+        }
+        return C;
+    }
 }
 /**
  * ref: LC1087   List -> HashSet
@@ -153,4 +216,9 @@ public class LC1096_BraceExpansionII {
  * S2: dfs
  * 同一级里只有逗号，平级相加，
  * 碰到逗号就压栈，最后把所有元素加起来
+ *
+ * 只有+和*
+ * 维护一个a + b * _ 的结构
+ * + c *
+ * a' + b'
  */

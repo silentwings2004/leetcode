@@ -14,6 +14,7 @@ public class LC440_KthSmallestinLexicographicalOrder {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int findKthNumber(int n, int k) {
         long cur = 1;
@@ -42,4 +43,45 @@ public class LC440_KthSmallestinLexicographicalOrder {
         }
         return (int) total;
     }
+
+    // S2
+    // time = O(logn * logn), space = O(1)
+    public int findKthNumber2(int n, int k) {
+        int prefix = 1;
+        while (k > 1) {
+            int cnt = f(prefix, n);
+            if (k > cnt) {
+                k -= cnt;
+                prefix++;
+            } else {
+                k--;
+                prefix *= 10;
+            }
+        }
+        return prefix;
+    }
+
+    private int f(int prefix, int n) {
+        long p = 1;
+        String A = String.valueOf(n), B = String.valueOf(prefix);
+        int dt = A.length() - B.length(), res = 0;
+        for (int i = 0; i < dt; i++) {
+            res += p;
+            p *= 10;
+        }
+        A = A.substring(0, B.length());
+        if (A.equals(B)) res += n - prefix * p + 1;
+        else if (A.compareTo(B) > 0) res += p;
+        return res;
+    }
 }
+/**
+ * 按位去看答案的前缀是多少
+ * 一位一位来看答案的前缀
+ * 首位 1
+ * f(prefix n): 1~n中有多少个数的前缀是prefix
+ * cnt = f(1, n)
+ * k = 1
+ * k > cnt: prefix++; k-= cnt
+ * 1 < k <= cnt => 则开始确定前缀的下一位， prefix * 10, k--
+ */

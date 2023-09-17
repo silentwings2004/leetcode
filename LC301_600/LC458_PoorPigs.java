@@ -38,8 +38,9 @@ public class LC458_PoorPigs {
      */
     // time = O(1), space = O(1)
     public int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
-        int t = minutesToTest / minutesToDie + 1;
-        return (int) Math.ceil(Math.log(buckets) / Math.log(t));
+        int t = minutesToTest / minutesToDie + 1, res = 0;
+        while (Math.pow(res, t) < buckets) res++;
+        return res;
     }
 }
 /**

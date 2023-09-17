@@ -45,9 +45,8 @@ public class LC352_DataStreamasDisjointIntervals {
             map.remove(hk);
         } else if (lk != null && val <= map.get(lk)[1] + 1) { // val落在左半边，最远可以拓展到low key对应的interval end + 1
             map.get(lk)[1] = Math.max(map.get(lk)[1], val);
-        } else if (hk != null && map.get(hk)[0] - 1 == val) { // val落在右半边，最大只能到high key对应interval start - 1
-            map.put(val, new int[]{val, map.get(hk)[1]});
-            map.remove(hk);
+        } else if (hk != null && map.get(hk)[0] - 1 <= val) { // val落在右半边，最大只能到high key对应interval start - 1
+            map.get(hk)[0] = Math.min(map.get(hk)[0], val);
         } else map.put(val, new int[]{val, val}); // val落在中间，左右都不接壤，只能自立门户
     }
 
@@ -56,9 +55,7 @@ public class LC352_DataStreamasDisjointIntervals {
         int n = map.size();
         int[][] res = new int[n][2];
         int i = 0;
-        for (int key : map.keySet()) {
-            res[i++] = map.get(key);
-        }
+        for (int key : map.keySet()) res[i++] = map.get(key);
         return res;
     }
 }

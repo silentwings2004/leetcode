@@ -22,6 +22,7 @@ public class LC906_SuperPalindromes {
      * @param right
      * @return
      */
+    // S1
     // time = O(w^(1/4) * logw), space = O(logw)   w: 10^18
     // time complexity O(W^(1/4)∗logW). W^(1/4) is the magic number k. There are two loops from 1 to k. In each loop,
     // concatenating the k and k' takes O(len(k)) = O(log(k)) = O(log(W^(1/4)) = O(logW),
@@ -65,6 +66,35 @@ public class LC906_SuperPalindromes {
         }
         return true;
     }
+
+    // S2
+    // time = O(w^(1/4) * logw), space = O(logw)
+    public int superpalindromesInRange2(String left, String right) {
+        int res = 0;
+        for (int i = 1; i <= 20001; i++) {
+            String a = String.valueOf(i);
+            String b = new StringBuilder(a).reverse().toString();
+            if (check(a + b, left, right)) res++;
+            if (check(a + b.substring(1), left, right)) res++;
+        }
+        return res;
+    }
+
+    private boolean check(String s, String left, String right) {
+        long x = Long.parseLong(s);
+        long l = Long.parseLong(left);
+        long r = Long.parseLong(right);
+        if (x > Integer.MAX_VALUE) return false;
+        x *= x;
+        if (x < l || x > r) return false;
+
+        s = String.valueOf(x);
+        int n = s.length();
+        for (int i = 0, j = n - 1; i < j; i++, j--) {
+            if (s.charAt(i) != s.charAt(j)) return false;
+        }
+        return true;
+    }
 }
 /**
  * refer: LC866 prime palindrome -> 先遍历比较稀疏的 -> 先遍历回文数,因为回文数比较好构造
@@ -73,4 +103,9 @@ public class LC906_SuperPalindromes {
  * 1e5 -> 1e9 -> 1e18   => 1000 0 0001
  * 遍历他的平方根的前一半，撬动它的平方根，数字扩大一倍，再回文一下，再扩大一倍
  * 尽量用小杠杆撬动大杠杆
+ *
+ * < 10^18 => < 10^9 => 平方根最多有8位，它的一半最多只有5位  1~99999 => 构造回文数
+ * 偶数：直接复制
+ * 奇数
+ * 暴力枚举即可
  */

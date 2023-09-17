@@ -17,7 +17,7 @@ public class LC962_MaximumWidthRamp {
      * @param nums
      * @return
      */
-    // S1: B.S.
+    // S1: TreeSet
     // time = O(nlogn), space = O(n)
     public int maxWidthRamp(int[] nums) {
         TreeSet<int[]> set = new TreeSet<>((o1, o2) -> o1[0] - o2[0]);
@@ -45,6 +45,22 @@ public class LC962_MaximumWidthRamp {
 
         for (int j = n - 1; j >= 0; j--) {  // 再遍历一遍，寻找最大值
             while (!stack.isEmpty() && nums[stack.peek()] <= nums[j]) res = Math.max(res, j - stack.pop());
+        }
+        return res;
+    }
+
+    // S3: Sort
+    // time = O(nlogn), space = O(n)
+    public int maxWidthRamp3(int[] nums) {
+        int n = nums.length;
+        Integer[] p = new Integer[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+        Arrays.sort(p, (o1, o2) -> nums[o1] != nums[o2] ? nums[o1] - nums[o2] : o1 - o2);
+
+        int res = 0;
+        for (int j = 1, i = p[0]; j < n; j++) {
+            res = Math.max(res, p[j] - i);
+            i = Math.min(i, p[j]);
         }
         return res;
     }

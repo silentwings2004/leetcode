@@ -39,6 +39,24 @@ public class LC1653_MinimumDeletionstoMakeStringBalanced {
         }
         return res;
     }
+
+    // S1.2
+    // time = O(n), space = O(n)
+    public int minimumDeletions2(String s) {
+        int n = s.length();
+        int[] a = new int[n + 2], b = new int[n + 2];
+        for (int i = 1; i <= n; i++) {
+            a[i] = a[i - 1] + (s.charAt(i - 1) == 'b' ? 1 : 0);
+        }
+        for (int i = n; i >= 1; i--) {
+            b[i] = b[i + 1] + (s.charAt(i - 1) == 'a' ? 1 : 0);
+        }
+        int res = n;
+        for (int i = 0; i <= n; i++) {
+            res = Math.min(res, a[i] + b[i + 1]);
+        }
+        return res;
+    }
 }
 /**
  * TwoPass ref: LC1769

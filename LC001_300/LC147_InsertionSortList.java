@@ -23,25 +23,17 @@ public class LC147_InsertionSortList {
      */
     // time = O(n^2), space = O(1)
     public ListNode insertionSortList(ListNode head) {
-        // corner case
-        if (head == null || head.next == null) return head;
-
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode cur = head;
-        ListNode temp = null, prev = null;
-
-        while (cur != null && cur.next != null) {
-            if (cur.val <= cur.next.val) cur = cur.next;
-            else {
-                temp = cur.next;
-                cur.next = temp.next;
-                prev = dummy;
-                while (prev.next.val <= temp.val) prev = prev.next;
-                temp.next = prev.next;
-                prev.next = temp;
-            }
+        ListNode dummy = new ListNode(-1);
+        for (ListNode p = head; p != null;) {
+            ListNode cur = dummy, next = p.next;
+            while (cur.next != null && cur.next.val <= p.val) cur = cur.next;
+            p.next = cur.next;
+            cur.next = p;
+            p = next;
         }
         return dummy.next;
     }
 }
+/**
+ * 找到第一个大于它的节点的前面
+ */

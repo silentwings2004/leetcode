@@ -74,4 +74,48 @@ public class LC208_ImplementTrie {
             this.isEnd = false;
         }
     }
+
+    // S1.2
+    class Trie {
+        // time = O(26n), space = O(26n)
+        final int N = 2010 * 26;
+        int[][] son;
+        int[] cnt;
+        int idx;
+        public Trie() {
+            son = new int[N][26];
+            cnt = new int[N];
+            idx = 0;
+        }
+
+        public void insert(String word) {
+            int p = 0;
+            for (char c : word.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+            }
+            cnt[p]++;
+        }
+
+        public boolean search(String word) {
+            int p = 0;
+            for (char c : word.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) return false;
+                p = son[p][u];
+            }
+            return cnt[p] > 0;
+        }
+
+        public boolean startsWith(String prefix) {
+            int p = 0;
+            for (char c : prefix.toCharArray()) {
+                int u = c - 'a';
+                if (son[p][u] == 0) return false;
+                p = son[p][u];
+            }
+            return true;
+        }
+    }
 }

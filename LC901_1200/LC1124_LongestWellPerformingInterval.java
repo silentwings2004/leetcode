@@ -45,6 +45,23 @@ public class LC1124_LongestWellPerformingInterval {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int longestWPI2(int[] hours) {
+        int n = hours.length, res = 0, sum = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            if (hours[i] > 8) sum++;
+            else sum--;
+            if (sum > 0) res = Math.max(res, i + 1);
+            else {
+                if (map.containsKey(sum - 1)) res = Math.max(res, i - map.get(sum - 1));
+                if (!map.containsKey(sum)) map.put(sum, i);
+            }
+        }
+        return res;
+    }
 }
 /**
  * 1 1 0 0 0 0 1

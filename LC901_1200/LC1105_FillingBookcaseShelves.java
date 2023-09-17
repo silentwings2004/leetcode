@@ -36,21 +36,20 @@ public class LC1105_FillingBookcaseShelves {
     // time = O(n^2), space = O(n)
     public int minHeightShelves(int[][] books, int shelfWidth) {
         int n = books.length;
-        int[] dp = new int[n + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
-        dp[0] = 0;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, 0x3f3f3f3f);
+        f[0] = 0;
 
         for (int i = 1; i <= n; i++) {
-            int maxHeight = 0;
-            int totalWidth = 0;
-            for (int j = i; j >= 1; j--) {
-                maxHeight = Math.max(maxHeight, books[j - 1][1]);
-                totalWidth += books[j - 1][0];
-                if (totalWidth > shelfWidth) break;
-                dp[i] = Math.min(dp[i], dp[j - 1] + maxHeight);
+            int s = 0, h = 0;
+            for (int j = i; j > 0; j--) {
+                s += books[j - 1][0];
+                if (s > shelfWidth) break;
+                h = Math.max(h, books[j - 1][1]);
+                f[i] = Math.min(f[i], f[j - 1] + h);
             }
         }
-        return dp[n];
+        return f[n];
     }
 }
 /**
@@ -61,4 +60,11 @@ public class LC1105_FillingBookcaseShelves {
  * 但是这道题并没有告诉你分几个subarray，所以是第二类的基本型，1D就可以
  * dp[j] => j = 1, 2, 3, ..., i-1
  * x x x x j x x x i   dp[i]取决于dp[j]
+ *
+ * dp:
+ * 1. 状态表示：
+ * 集合：所有前i本书的摆放方案的集合
+ * 属性：最小值
+ * 2. 状态计算：最后一段的起点 i i-1 i-2... 1
+ * f(i) = min{f(j-1) + h[j~i]}
  */

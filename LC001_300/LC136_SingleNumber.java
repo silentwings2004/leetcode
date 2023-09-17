@@ -19,11 +19,8 @@ public class LC136_SingleNumber {
      */
     // time = O(n), space = O(1)
     public int singleNumber(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         int res = 0;
-        for (int n : nums) res ^= n;
+        for (int x : nums) res ^= x;
         return res;
     }
 }
@@ -40,4 +37,9 @@ public class LC136_SingleNumber {
  *
  * a ^ b = b ^ a
  * a ^ b ^ c ^ b = b ^ b ^ c ^ a = c ^ a
+ *
+ * xor:
+ * 1. 交换律
+ * 2. 结合律
+ * 3. x ^ x = 0
  */

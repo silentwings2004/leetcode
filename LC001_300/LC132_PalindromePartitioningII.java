@@ -17,6 +17,7 @@ public class LC132_PalindromePartitioningII {
      * @param s
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n^2)
     public int minCut(String s) {
         int n = s.length();
@@ -39,4 +40,37 @@ public class LC132_PalindromePartitioningII {
         }
         return f[n] - 1;
     }
+
+    // S1.2
+    // time = O(n^2), space = O(n^2)
+    public int minCut2(String s) {
+        int n = s.length();
+        s = '#' + s;
+        boolean[][] g = new boolean[n + 1][n + 1];
+        int[] f = new int[n + 1];
+        Arrays.fill(f, (int) 1e8);
+
+        for (int j = 1; j <= n; j++) {
+            for (int i = 1; i <= j; i++) {
+                if (i == j) g[i][j] = true;
+                else if (s.charAt(i) == s.charAt(j)) {
+                    if (i + 1 > j - 1 || g[i + 1][j - 1]) g[i][j] = true;
+                }
+            }
+        }
+
+        f[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                if (g[j][i]) f[i] = Math.min(f[i], f[j - 1] + 1);
+            }
+        }
+        return f[n] - 1;
+    }
 }
+/**
+ * f(i):
+ * 1. 集合：s[1~i]的所有分割方案
+ * 2. 属性：最小值
+ * 状态计算：f(i) = f(k-1) + 1
+ */

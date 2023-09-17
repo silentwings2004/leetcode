@@ -54,6 +54,25 @@ public class LC382_LinkedListRandomNode {
         }
         return x;
     }
+
+    // S2
+    class Solution {
+        ListNode h;
+        Random random;
+        public Solution(ListNode head) {
+            random = new Random();
+            h = head;
+        }
+        // time = O(n), space = O(1)
+        public int getRandom() {
+            int c = -1, n = 0;
+            for (ListNode p = h; p != null; p = p.next) {
+                n++;
+                if (random.nextInt(n) % n == 0) c = p.val;
+            }
+            return c;
+        }
+    }
 }
 /**
  * i = rand()%N => [0,N-1]
