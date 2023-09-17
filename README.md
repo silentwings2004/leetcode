@@ -1,5 +1,7 @@
-# leetcode
-leetcode solutions for coding interviews
+# leetcode 
+leetcode solutions for coding interviews (Java)
+
+keep updating ...
 
 Reference links:
 
