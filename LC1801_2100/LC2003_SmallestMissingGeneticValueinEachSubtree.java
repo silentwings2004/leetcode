@@ -156,6 +156,42 @@ public class LC2003_SmallestMissingGeneticValueinEachSubtree {
             res[node] = x;
         }
     }
+
+    // S3
+    // time = O(n), space = O(n)
+    public int[] smallestMissingValueSubtree3(int[] parents, int[] nums) {
+        int n = parents.length;
+        int[] res = new int[n];
+        Arrays.fill(res, 1);
+        int node = -1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                node = i;
+                break;
+            }
+        }
+
+        List<Integer>[] adj = new List[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+        for (int i = 1; i < n; i++) adj[parents[i]].add(i);
+        HashSet<Integer> set = new HashSet<>();
+        int mex = 2;
+        while (node >= 0) {
+            dfs(node, adj, set, nums);
+            while (set.contains(mex)) mex++;
+            res[node] = mex;
+            node = parents[node];
+        }
+        return res;
+    }
+
+    private void dfs(int u, List<Integer>[] adj, HashSet<Integer> set, int[] nums) {
+        set.add(nums[u]);
+        for (int j : adj[u]) {
+            if (set.contains(nums[j])) continue;
+            dfs(j, adj, set, nums);
+        }
+    }
 }
 /**
  * offline queries

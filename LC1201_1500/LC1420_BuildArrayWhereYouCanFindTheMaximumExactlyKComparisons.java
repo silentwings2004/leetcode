@@ -61,4 +61,11 @@ public class LC1420_BuildArrayWhereYouCanFindTheMaximumExactlyKComparisons {
  *
  * if arr[i] is not the largest among arr[1:i] => arr[i] <= j
  * dp[i][j][k] += dp[i-1][j][k] * j
+ *
+ * 考虑假设我们在处理第i个元素的时候新增一次cost，那么意味着nums[i]就是前i个元素的最大值，即是j。
+ * 于是我们需要前i-1个元素的最大值小于j就可以了。
+ * 因此有dp[i][j][k] = dp[i-1][j'][k-1]，其中j'=1,2,...,j-1.
+ *
+ * 考虑假设我们在处理第i个元素的时候没有新增一次cost，那么意味着nums[i]并不是前i个元素的最大值，因此nums[i]的取值可以是1,2,..j.
+ * 而对于前i-1个元素的最大值则必须是j。因此有dp[i][j][k] = dp[i-1][j][k]*j.
  */

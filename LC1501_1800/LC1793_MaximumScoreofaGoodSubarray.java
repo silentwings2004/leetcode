@@ -37,6 +37,28 @@ public class LC1793_MaximumScoreofaGoodSubarray {
         }
         return res;
     }
+
+    // S2: 单调栈
+    // time = O(n), space = O(n)
+    public int maximumScore2(int[] nums, int k) {
+        int n = nums.length;
+        int[] stk = new int[n + 1], l = new int[n], r = new int[n];
+        int tt = 0;
+        for (int i = 0; i <= n; i++) {
+            int h = i == n ? 0 : nums[i];
+            while (tt > 0 && nums[stk[tt]] >= h) r[stk[tt--]] = i;
+            if (i < n) l[i] = tt == 0 ? -1 : stk[tt];
+            stk[++tt] = i;
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (l[i] < k && r[i] > k) {
+                res = Math.max(res, (r[i] - l[i] - 1) * nums[i]);
+            }
+        }
+        return res;
+    }
 }
 /**
  * 一定要包含k，左边界一定在k的左边，右边界则一定在k的右边

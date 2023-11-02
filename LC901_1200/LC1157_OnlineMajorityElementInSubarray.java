@@ -180,7 +180,7 @@ public class LC1157_OnlineMajorityElementInSubarray {
 
             for (int x : a) cnt.put(x, cnt.getOrDefault(x, 0) + 1);
             for (int x : cnt.keySet()) {
-                if (cnt.get(x) > len) {
+                if (cnt.get(x) > len / 2) {
                     map.put(x, new int[n + 1]);
                     for (int i = 1; i <= n; i++) {
                         map.get(x)[i] = map.get(x)[i - 1];
@@ -201,6 +201,23 @@ public class LC1157_OnlineMajorityElementInSubarray {
                 for (int x : map.keySet()) {
                     if (map.get(x)[right + 1] - map.get(x)[left] >= threshold) return x;
                 }
+            }
+            return -1;
+        }
+    }
+
+    // S4: brute-force
+    class MajorityChecker2 {
+        final int N = 20010;
+        int[] arr;
+        public MajorityChecker2(int[] arr) {
+            this.arr = arr;
+        }
+
+        public int query(int left, int right, int threshold) {
+            int[] w = new int[N];
+            for (int i = left; i <= right; i++) {
+                if (++w[arr[i]] >= threshold) return arr[i];
             }
             return -1;
         }

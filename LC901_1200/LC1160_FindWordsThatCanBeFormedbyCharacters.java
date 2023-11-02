@@ -22,23 +22,21 @@ public class LC1160_FindWordsThatCanBeFormedbyCharacters {
      */
     // time = O(n * (k + l)), space = O(1)
     public int countCharacters(String[] words, String chars) {
+        int[] cnt = new int[26];
+        for (char c : chars.toCharArray()) cnt[c - 'a']++;
         int res = 0;
-        for (String word : words) { // O(n)
-            if (checkOK(word, chars)) res += word.length();
+        for (String w : words) {
+            int[] b = cnt.clone();
+            boolean flag = true;
+            for (char c : w.toCharArray()) {
+                b[c - 'a']--;
+                if (b[c - 'a'] < 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) res += w.length();
         }
         return res;
-    }
-
-    private boolean checkOK(String word, String s) {
-        if (word.length() > s.length()) return false;
-
-        int[] freq = new int[26];
-        for (char c : s.toCharArray()) freq[c - 'a']++;
-
-        for (char c : word.toCharArray()) {
-            freq[c - 'a']--;
-            if (freq[c - 'a'] < 0) return false;
-        }
-        return true;
     }
 }

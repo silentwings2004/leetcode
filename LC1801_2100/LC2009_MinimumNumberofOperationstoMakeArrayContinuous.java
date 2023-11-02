@@ -81,6 +81,24 @@ public class LC2009_MinimumNumberofOperationstoMakeArrayContinuous {
         }
         return res;
     }
+
+    // S3: Two Pointers
+    // time = O(nlogn), space = O(n)
+    public int minOperations3(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length, t = n - 1, res = n - 1;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0, j = 0; i < n; i++) {
+            res = Math.min(res, n - map.size());
+            while (nums[i] - nums[j] > t) {
+                map.put(nums[j], map.get(nums[j]) - 1);
+                if (map.get(nums[j]) == 0) map.remove(nums[j]);
+                j++;
+            }
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        }
+        return Math.min(res, n - map.size());
+    }
 }
 /**
  * 连续，递增1 => 确定一个左端点和一个右端点

@@ -1,6 +1,6 @@
 package LC901_1200;
 
-public class LC1155_NumberofDiceRollsWithTargetSum {
+public class  LC1155_NumberofDiceRollsWithTargetSum {
     /**
      * You have n dice and each die has k faces numbered from 1 to k.
      *

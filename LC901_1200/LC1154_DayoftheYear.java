@@ -18,21 +18,21 @@ public class LC1154_DayoftheYear {
      */
     // time = O(1), space = O(1)
     public int dayOfYear(String date) {
-        String[] arr = date.split("-");
-        int year = Integer.parseInt(arr[0]);
-        int month = Integer.parseInt(arr[1]);
-        int day = Integer.parseInt(arr[2]);
-        boolean flag = false;
-        if (year % 4 == 0) flag = true;
+        int[] days = new int[]{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        String[] strs = date.split("-");
+        int year = Integer.parseInt(strs[0]);
+        int month = Integer.parseInt(strs[1]);
+        int day = Integer.parseInt(strs[2]);
         int res = 0;
-        for (int i = 1; i < month; i++) {
-            if (i == 1 || i == 3 || i == 5 || i == 7 || i == 8 || i == 10 || i == 12) res += 31;
-            else if (i == 4 || i == 6 || i == 9 || i == 11) res += 30;
-            else if (i == 2) {
-                if (flag) res += 29;
-                else res += 28;
-            }
+        for (int i = 0; i < month; i++) {
+            res += days[i];
+            if (i == 2) res += is_leap(year);
         }
         return res + day;
+    }
+
+    private int is_leap(int year) {
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) return 1;
+        return 0;
     }
 }

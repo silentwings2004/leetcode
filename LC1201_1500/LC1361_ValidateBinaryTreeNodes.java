@@ -22,6 +22,7 @@ public class LC1361_ValidateBinaryTreeNodes {
      * @param rightChild
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
         int[][] graph = new int[n][2];
@@ -52,5 +53,44 @@ public class LC1361_ValidateBinaryTreeNodes {
             }
         }
         return count == n;
+    }
+
+    // S2: bfs
+    // time = O(n), space = O(n)
+    public boolean validateBinaryTreeNodes2(int n, int[] leftChild, int[] rightChild) {
+        int[] d = new int[n];
+        for (int i = 0; i < n; i++) {
+            int a = leftChild[i], b = rightChild[i];
+            if (a != -1) d[a]++;
+            if (b != -1) d[b]++;
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        boolean[] st = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            if (d[i] == 0) {
+                q.offer(i);
+                st[i] = true;
+            }
+        }
+        if (q.size() != 1) return false;
+
+        int cnt = 0;
+        while (!q.isEmpty()) {
+            int t = q.poll();
+            cnt++;
+            int a = leftChild[t], b = rightChild[t];
+            if (a != -1) {
+                if (st[a]) return false;
+                st[a] = true;
+                q.offer(a);
+            }
+            if (b != -1) {
+                if (st[b]) return false;
+                st[b] = true;
+                q.offer(b);
+            }
+        }
+        return cnt == n;
     }
 }

@@ -28,20 +28,16 @@ public class LC2038_RemoveColoredPiecesifBothNeighborsaretheSameColor {
      */
     // time = O(n), space = O(1)
     public boolean winnerOfGame(String colors) {
-        int n = colors.length(), countA = 0, countB = 0, i = 0;
-        while (i < n) {
-            int j = i;
-            if (colors.charAt(j) == 'A') {
-                while (j < n && colors.charAt(j) == 'A') j++;
-                int count = j - i;
-                if (count > 2) countA += count - 2;
-            } else {
-                while (j < n && colors.charAt(j) == 'B') j++;
-                int count = j - i;
-                if (count > 2) countB += count - 2;
-            }
-            i = j;
+        int n = colors.length(), a = 0, b = 0;
+        for (int i = 0; i < n; i++) {
+            char c = colors.charAt(i);
+            int j = i + 1;
+            while (j < n && colors.charAt(j) == c) j++;
+            int len = j - i;
+            if (c == 'A') a += Math.max(0, len - 2);
+            else b += Math.max(0, len - 2);
+            i = j - 1;
         }
-        return countA > countB ? true : false;
+        return a > b;
     }
 }

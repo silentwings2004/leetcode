@@ -72,6 +72,43 @@ public class LC2127_MaximumEmployeestoBeInvitedtoaMeeting {
         }
         return Math.max(max_multi_node_circle, max_link);
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int maximumInvitations2(int[] favorite) {
+        int n = favorite.length;
+        int[] d = new int[n];
+        for (int x : favorite) d[x]++;
+        int[] maxDepth = new int[n];
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (d[i] == 0) q.offer(i);
+        }
+
+        while (!q.isEmpty()) { // 拓扑排序，剪掉图上所有树枝
+            int t = q.poll();
+            int j = favorite[t]; // x 只有一条出边
+            maxDepth[j] = maxDepth[t] + 1; // 后面即使被更新，也只会越更新越大，满足最大深度的定义
+            if (--d[j] == 0) q.offer(j);
+        }
+
+        int maxRingSize = 0, sumChainSize = 0;
+        for (int i = 0; i < n; i++) {
+            if (d[i] == 0) continue;
+
+            // 遍历基环上的点
+            d[i] = 0; // 将基环上的点的入度标记为 0，避免重复访问
+            int ringSize = 1;
+            for (int x = favorite[i]; x != i; x = favorite[x]) {
+                d[x] = 0;
+                ringSize++;
+            }
+            // 基环长度为 2
+            if (ringSize == 2) sumChainSize += maxDepth[i] + maxDepth[favorite[i]] + 2; // 累加两条最长链的长度
+            else maxRingSize = Math.max(maxRingSize, ringSize); // 取所有基环长度的最大值
+        }
+        return Math.max(maxRingSize, sumChainSize);
+    }
 }
 /**
  * 突破口：每个人指向自己所喜欢的人
