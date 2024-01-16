@@ -37,4 +37,52 @@ public class LC311_SparseMatrixMultiplication {
         }
         return res;
     }
+
+    // S2
+    // time = O(m * n), space = O(m * n)
+    public int[][] multiply2(int[][] mat1, int[][] mat2) {
+        int m = mat1.length, k = mat1[0].length, n = mat2[0].length;
+        List<int[]>[] q1 = new List[m];
+        List<int[]>[] q2 = new List[n];
+        for (int i = 0; i < m; i++) q1[i] = new ArrayList<>();
+        for (int i = 0; i < n; i++) q2[i] = new ArrayList<>();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < k; j++) {
+                if (mat1[i][j] != 0) {
+                    q1[i].add(new int[]{j, mat1[i][j]});
+                }
+            }
+        }
+
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < k; i++) {
+                if (mat2[i][j] != 0) {
+                    q2[j].add(new int[]{i, mat2[i][j]});
+                }
+            }
+        }
+
+        int[][] res = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res[i][j] = dotProduct(q1[i], q2[j]);
+            }
+        }
+        return res;
+    }
+
+    private int dotProduct(List<int[]> vec1, List<int[]> vec2) {
+        int m = vec1.size(), n = vec2.size();
+        int res = 0;
+        for (int i = 0, j = 0; i < m && j < n;) {
+            if (vec1.get(i)[0] == vec2.get(j)[0]) {
+                res += vec1.get(i)[1] * vec2.get(j)[1];
+                i++;
+                j++;
+            } else if (vec1.get(i)[0] > vec2.get(j)[0]) j++;
+            else i++;
+        }
+        return res;
+    }
 }

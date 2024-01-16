@@ -29,10 +29,13 @@ public class LC2828_CheckifaStringIsanAcronymofWords {
      * @param s
      * @return
      */
-    // time = O(n), space = O(n)
+    // time = O(n), space = O(1)
     public boolean isAcronym(List<String> words, String s) {
-        StringBuilder sb = new StringBuilder();
-        for (String w : words) sb.append(w.charAt(0));
-        return sb.toString().equals(s);
+        if (s.length() != words.size()) return false;
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != words.get(i).charAt(0)) return false;
+        }
+        return true;
     }
 }

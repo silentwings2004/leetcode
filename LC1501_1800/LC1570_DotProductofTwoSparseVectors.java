@@ -50,6 +50,34 @@ public class LC1570_DotProductofTwoSparseVectors {
         return res;
     }
 
+    // S2
+    // time = O(n), space = O(L)
+    class SparseVector {
+        List<int[]> q;
+        SparseVector(int[] nums) {
+            q = new ArrayList<>();
+            int n = nums.length;
+            for (int i = 0; i < n; i++) {
+                if (nums[i] != 0) q.add(new int[]{i, nums[i]});
+            }
+        }
+
+        // Return the dotProduct of two sparse vectors
+        public int dotProduct(SparseVector vec) {
+            int res = 0;
+            int m = q.size(), n = vec.q.size();
+            for (int i = 0, j = 0; i < m && j < n;) {
+                if (q.get(i)[0] == vec.q.get(j)[0]) {
+                    res += q.get(i)[1] * vec.q.get(j)[1];
+                    i++;
+                    j++;
+                } else if (q.get(i)[0] > vec.q.get(j)[0]) j++;
+                else i++;
+            }
+            return res;
+        }
+    }
+
 // Your SparseVector object will be instantiated and called as such:
 // SparseVector v1 = new SparseVector(nums1);
 // SparseVector v2 = new SparseVector(nums2);

@@ -27,57 +27,31 @@ public class LC1578_MinimumTimetoMakeRopeColorful {
      * 1 <= n <= 10^5
      * 1 <= neededTime[i] <= 10^4
      * colors contains only lowercase English letters.
-     * @param s
-     * @param cost
+     * @param colors
+     * @param neededTime
      * @return
      */
-    // S1: Greedy
-    // time = O(nlogn), space = O(n)
-    public int minCost(String s, int[] cost) {
-        int n = s.length(), res = 0;
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for (int i = 0; i < n; i++) {
-            if (i + 1 < n && s.charAt(i + 1) == s.charAt(i)) {
-                pq.offer(cost[i]);
-                int j = i + 1;
-                while (j < n && s.charAt(j) == s.charAt(i)) pq.offer(cost[j++]);
-                while (pq.size() > 1) res += pq.poll();
-                pq.clear();
-                i = j - 1;
+    // S1: DP
+    // time = O(26 * n), space = O(26 * n)
+    public int minCost(String colors, int[] neededTime) {
+        int n = neededTime.length, inf = 0x3f3f3f3f;
+        int[][] f = new int[n + 1][26];
+        for (int i = 1; i <= n; i++) Arrays.fill(f[i], inf);
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < 26; j++) f[i][j] = f[i - 1][j] + neededTime[i - 1];
+            int u = colors.charAt(i - 1) - 'a';
+            for (int j = 0; j < 26; j++) {
+                if (u != j) f[i][u] = Math.min(f[i][u], f[i - 1][j]);
             }
         }
+        int res = inf;
+        for (int i = 0; i < 26; i++) res = Math.min(res, f[n][i]);
         return res;
     }
 
-    // S2: DP
-    // time = O(n), space = O(n)
-    public int minCost2(String s, int[] cost) {
-        int n = cost.length, INF = (int) 1e9;
-        int[][] f = new int[n][27];
-        for (int[] x : f) Arrays.fill(x, INF);
-        f[0][s.charAt(0) - 'a'] = 0; // not delete
-        f[0][26] = cost[0]; // delete
-
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < 27; j++) {
-                f[i][j] = f[i - 1][j] + cost[i];
-            }
-            int j = s.charAt(i) - 'a';
-            for (int k = 0; k < 27; k++) {
-                if (k != j) {
-                    f[i][j] = Math.min(f[i][j], f[i - 1][k]);
-                }
-            }
-        }
-
-        int res = INF;
-        for (int i = 0; i < 27; i++) res = Math.min(res, f[n - 1][i]);
-        return res;
-    }
-
-    // S3: Greedy
+    // S2: Greedy
     // time = O(n), space = O(1)
-    public int minCost3(String colors, int[] neededTime) {
+    public int minCost2(String colors, int[] neededTime) {
         int prev = 0, res = 0, n = colors.length();
         for (int i = 1; i < n; i++) {
             if (colors.charAt(prev) != colors.charAt(i)) prev = i;

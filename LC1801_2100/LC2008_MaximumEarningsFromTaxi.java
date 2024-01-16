@@ -52,32 +52,45 @@ public class LC2008_MaximumEarningsFromTaxi {
     // S2: DP
     // time = O(mlogm), space = O(m)
     public long maxTaxiEarnings2(int n, int[][] rides) {
-        int m = rides.length;
         Arrays.sort(rides, (o1, o2) -> o1[1] - o2[1]);
-
-        int[] endPoints = new int[m];
-        for (int i = 0; i < m; i++) {
-            endPoints[i] = rides[i][1];
-        }
-
-        long[] dp = new long[m + 1];
+        int m = rides.length;
+        long[] f = new long[m + 1];
         for (int i = 1; i <= m; i++) {
-            dp[i] = dp[i - 1];
-            int s = rides[i - 1][0];
-            int j = upperBound(endPoints, s);
-            dp[i] = Math.max(dp[i], dp[j + 1] + rides[i - 1][1] - rides[i - 1][0] + rides[i - 1][2]);
+            f[i] = f[i - 1];
+            int pos = find(rides, rides[i - 1][0]);
+            f[i] = Math.max(f[i], f[pos + 1] + rides[i - 1][1] - rides[i - 1][0] + rides[i - 1][2]);
         }
-        return dp[m];
+        return f[m];
     }
 
-    private int upperBound(int[] nums, int t) {
-        int left = 0, right = nums.length - 1;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
-            if (nums[mid] <= t) left = mid;
-            else right = mid - 1;
+    private int find(int[][] rides, int t) {
+        int l = 0, r = rides.length - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (rides[mid][1] <= t) l = mid;
+            else r = mid - 1;
         }
-        return nums[left] <= t ? left : left - 1;
+        return rides[r][1] <= t ? r : r - 1;
+    }
+
+    // S3
+    // time = O(m + n), space = O(m + n)
+    public long maxTaxiEarnings3(int n, int[][] rides) {
+        long[] f = new long[n + 1];
+        HashMap<Integer, List<int[]>> map = new HashMap<>();
+        for (int[] r : rides) {
+            map.putIfAbsent(r[1], new ArrayList<>());
+            map.get(r[1]).add(new int[]{r[0], r[1] - r[0] + r[2]});
+        }
+
+        for (int i = 1; i <= n; i++) {
+            f[i] = f[i - 1];
+            for (int[] t : map.getOrDefault(i, new ArrayList<>())) {
+                int j = t[0], w = t[1];
+                f[i] = Math.max(f[i], f[j] + w);
+            }
+        }
+        return f[n];
     }
 }
 /**

@@ -28,27 +28,24 @@ public class LC1657_DetermineifTwoStringsAreClose {
      * @param word2
      * @return
      */
-    // time = O(m + n), space = O(1)
+    // time = O(n), space = O(1)
     public boolean closeStrings(String word1, String word2) {
-        HashSet<Character> set1 = new HashSet<>();
-        HashSet<Character> set2 = new HashSet<>();
-        int[] count1 = new int[26];
-        int[] count2 = new int[26];
-
-        // 词频统计
-        for (char ch : word1.toCharArray()) { // O(m)
-            set1.add(ch);
-            count1[ch - 'a']++;
+        int m = word1.length(), n = word2.length();
+        if (m != n) return false;
+        int[] c1 = new int[26], c2 = new int[26];
+        for (int i = 0; i < n; i++) {
+            c1[word1.charAt(i) - 'a']++;
+            c2[word2.charAt(i) - 'a']++;
         }
 
-        for (char ch : word2.toCharArray()) { // O(n)
-            set2.add(ch);
-            count2[ch - 'a']++;
+        for (int i = 0; i < 26; i++) {
+            if (c1[i] != c2[i] && (c1[i] == 0 || c2[i] == 0)) {
+                return false;
+            }
         }
-
-        Arrays.sort(count1); // O(1)
-        Arrays.sort(count2); // O(1)
-        return set1.equals(set2) && Arrays.equals(count1, count2);
+        Arrays.sort(c1);
+        Arrays.sort(c2);
+        return Arrays.equals(c1, c2);
     }
 }
 

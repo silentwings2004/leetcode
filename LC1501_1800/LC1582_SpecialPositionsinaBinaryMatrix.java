@@ -22,6 +22,7 @@ public class LC1582_SpecialPositionsinaBinaryMatrix {
      * @param mat
      * @return
      */
+    // S1
     // time = O(m * n * max(m, n)), space = O(1)
     public int numSpecial(int[][] mat) {
         int m = mat.length, n = mat[0].length, res = 0;
@@ -46,6 +47,28 @@ public class LC1582_SpecialPositionsinaBinaryMatrix {
                     }
                     if (flag) res++;
                 }
+            }
+        }
+        return res;
+    }
+
+    // S1
+    // time = O(m * n), space = O(m + n)
+    public int numSpecial2(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        int[] r = new int[m], c = new int[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (mat[i][j] == 1) {
+                    r[i]++;
+                    c[j]++;
+                }
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (mat[i][j] == 1 && r[i] == 1 && c[j] == 1) res++;
             }
         }
         return res;

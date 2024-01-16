@@ -24,44 +24,15 @@ public class LC1838_FrequencyoftheMostFrequentElement {
     // S1: Sliding Window
     // time = O(nlogn), space = O(1)
     public int maxFrequency(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         Arrays.sort(nums);
-
-        int max = 0, start = 0;
-        long sum = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];
-            while (nums[i] * (i - start + 1) - sum > k) { // 超出了k的范围，则收缩左边界，否则继续扩大右边界
-                sum -= nums[start];
-                start++;
-            }
-            max = Math.max(max, i - start + 1);
+        int n = nums.length, res = 1;
+        long s = 0;
+        for (int i = 1, j = 0; i < n; i++) {
+            s += (i - j) * (nums[i] - nums[i - 1]);
+            while (s > k) s -= nums[i] - nums[j++];
+            res = Math.max(res, i - j + 1);
         }
-        return max;
-    }
-
-    // S1.2: Two Pointers 第二种写法
-    // time = O(nlogn), space = O(1)
-    public int maxFrequency2(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0 || k <= 0) return 0;
-
-        Arrays.sort(nums);
-        int j = 0;
-        int count = 0;
-        int ret = 1; // 至少频次为1
-        for (int i = 1; i < nums.length; i++) {
-            count += (i - j) * (nums[i] - nums[i - 1]);
-            while (count > k) {
-                count -= nums[i] - nums[j];
-                j++;
-            }
-            ret = Math.max(ret, i - j + 1);
-        }
-        return ret;
+        return res;
     }
 }
 /**
@@ -75,6 +46,8 @@ public class LC1838_FrequencyoftheMostFrequentElement {
  *  排序 + 双指针
  *  x x [j x x x i-1 i]
  *
+ * 性质1：最高频数可以为原数组中的数
+ * => 二分
  */
 
 

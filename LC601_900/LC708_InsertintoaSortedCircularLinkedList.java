@@ -52,6 +52,43 @@ public class LC708_InsertintoaSortedCircularLinkedList {
         return head;
     }
 
+    // S2: time = O(n), space = O(1)
+    public Node insert2(Node head, int insertVal) {
+        int x = insertVal;
+        Node node = new Node(x);
+        if (head == null) {
+            node.next = node;
+            return node;
+        }
+
+        Node start = head;
+        int minv = head.val;
+        for (Node p = head.next; p != head; p = p.next) {
+            if (p.val < minv) {
+                minv = p.val;
+                start = p;
+            }
+        }
+
+        boolean flag = false;
+        Node p = start;
+        while (true) {
+            if (p.val <= x && x < p.next.val) {
+                node.next = p.next;
+                p.next = node;
+                flag = true;
+                break;
+            }
+            if (p.next == start) break;
+            p = p.next;
+        }
+        if (!flag) {
+            p.next = node;
+            node.next = start;
+        }
+        return head;
+    }
+
     class Node {
         public int val;
         public Node next;

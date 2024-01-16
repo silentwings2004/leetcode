@@ -22,16 +22,15 @@ public class LC1897_RedistributeCharacterstoMakeAllStringsEqual {
      */
     // time = O(n * k), space = O(1)
     public boolean makeEqual(String[] words) {
-        // corner case
-        if (words == null || words.length == 0) return false;
-
-        int[] arr = new int[128];
-        for (String word : words) {
-            for (char c : word.toCharArray()) arr[c]++;
+        int[] cnt = new int[26];
+        int n = words.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < words[i].length(); j++) {
+                cnt[words[i].charAt(j) - 'a']++;
+            }
         }
-
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] % words.length != 0) return false;
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] % n != 0) return false;
         }
         return true;
     }

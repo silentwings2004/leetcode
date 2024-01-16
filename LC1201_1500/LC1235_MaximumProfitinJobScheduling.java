@@ -86,29 +86,27 @@ public class LC1235_MaximumProfitinJobScheduling {
     // S3: DP
     // time = O(nlogn), space = O(n)
     public int jobScheduling3(int[] startTime, int[] endTime, int[] profit) {
-        int n = startTime.length;
-        int[][] jobs = new int[n][3];
-        for (int i = 0; i < n; i++) {
-            jobs[i] = new int[]{startTime[i], endTime[i], profit[i]};
-        }
-        Arrays.sort(jobs, (o1, o2) -> o1[1] - o2[1]);
+        int n = profit.length;
+        int[][] w = new int[n][3];
+        for (int i = 0; i < n; i++) w[i] = new int[]{startTime[i], endTime[i], profit[i]};
+        Arrays.sort(w, (o1, o2) -> o1[1] - o2[1]);
 
-        int[] f = new int[n];
-        f[0] = jobs[0][2];
-
-        for (int i = 1; i < n; i++) {
-            f[i] = Math.max(f[i - 1], jobs[i][2]);
-            if (jobs[0][1] <= jobs[i][0]) {
-                int l = 0, r = i - 1;
-                while (l < r) {
-                    int mid = l + r + 1 >> 1;
-                    if (jobs[mid][1] <= jobs[i][0]) l = mid;
-                    else r = mid - 1;
-                }
-                f[i] = Math.max(f[i], f[r] + jobs[i][2]);
-            }
+        int[] f = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int j = find(w, w[i - 1][0]);
+            f[i] = Math.max(f[i - 1], f[j + 1] + w[i - 1][2]);
         }
-        return f[n - 1];
+        return f[n];
+    }
+
+    private int find(int[][] w, int t) {
+        int l = 0, r = w.length - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (w[mid][1] <= t) l = mid;
+            else r = mid - 1;
+        }
+        return w[r][1] <= t ? r : r - 1;
     }
 }
 /**

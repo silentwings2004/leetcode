@@ -1,5 +1,5 @@
 package LC1501_1800;
-
+import java.util.*;
 public class LC1531_StringCompressionII {
     /**
      * Run-length encoding is a string compression method that works by replacing consecutive identical characters
@@ -93,6 +93,37 @@ public class LC1531_StringCompressionII {
             }
         }
         return res;
+    }
+
+    // S2
+    // time = O(n^2 * k), space = O(n * k)
+    public int getLengthOfOptimalCompression2(String s, int k) {
+        int n = s.length(), inf = 0x3f3f3f3f;
+        int[][] f = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], inf);
+        f[0][0] = 0;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= k; j++) {
+                int cnt = 0, del = 0;
+                for (int l = i; l >= 1; l--) {
+                    if (s.charAt(i - 1) == s.charAt(l - 1)) cnt++;
+                    else del++;
+                    if (j >= del) {
+                        f[i][j] = Math.min(f[i][j], f[l - 1][j - del] + 1 + check(cnt));
+                    }
+                    if (j > 0) f[i][j] = Math.min(f[i][j], f[i - 1][j - 1]);
+                }
+            }
+        }
+        return f[n][k];
+    }
+
+    private int check(int x) {
+        if (x >= 100) return 3;
+        if (x >= 10) return 2;
+        if (x >= 2) return 1;
+        return 0;
     }
 }
 /**

@@ -1,6 +1,6 @@
 package LC2401_2700;
 
-public class LC2646_NumberofPairsSatisfyingInequality {
+public class LC2426_NumberofPairsSatisfyingInequality {
     /**
      * You are given two 0-indexed integer arrays nums1 and nums2, each of size n, and an integer diff. Find the number
      * of pairs (i, j) such that:

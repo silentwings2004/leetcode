@@ -67,41 +67,40 @@ public class LC1631_PathWithMinimumEffort {
 
     // S2: Greedy + Union Find
     // time = O(m * n * log(m * n)), space = O(m * n)
-    int[] parent;
+    int[] p;
     public int minimumEffortPath2(int[][] heights) {
         int m = heights.length, n = heights[0].length;
-        parent = new int[m * n];
-        for (int i = 0; i < m * n; i++) parent[i] = i;
-
+        p = new int[m * n];
+        for (int i = 0; i < m * n; i++) p[i] = i;
         List<int[]> edges = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 // 每个点只管右边和下边2条边即可
-                if (j < n - 1) edges.add(new int[]{Math.abs(heights[i][j] - heights[i][j + 1]), i * n + j, i * n + j + 1});
-                if (i < m - 1) edges.add(new int[]{Math.abs(heights[i][j] - heights[i + 1][j]), i * n + j, (i + 1) * n + j});
+                if (j + 1 < n) {
+                    edges.add(new int[]{Math.abs(heights[i][j] - heights[i][j + 1]), i * n + j, i * n + j + 1});
+                }
+                if (i + 1 < m) {
+                    edges.add(new int[]{Math.abs(heights[i][j] - heights[i + 1][j]), i * n + j, (i + 1) * n + j});
+                }
             }
         }
-
         Collections.sort(edges, (o1, o2) -> o1[0] - o2[0]);
 
-        for (int[] edge : edges) {
-            int a = edge[1], b = edge[2];
-            if (findParent(a) != findParent(b)) union(a, b);
-            if (findParent(0) == findParent((m - 1) * n + n - 1)) return edge[0];
+        int dest = (m - 1) * n + n - 1, res = 0;
+        for (int[] x : edges) {
+            int w = x[0], a = x[1], b = x[2];
+            if (find(a) != find(b)) p[find(a)] = find(b);
+            if (p[find(0)] == p[find(dest)]) {
+                res = w;
+                break;
+            }
         }
-        return 0;
+        return res;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 

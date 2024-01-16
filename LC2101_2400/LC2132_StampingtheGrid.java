@@ -35,60 +35,38 @@ public class LC2132_StampingtheGrid {
      * @param stampWidth
      * @return
      */
-    // S1: 2d presum
+    // S1: 2D diff array
     // time = O(m * n), space = O(m * n)
     public boolean possibleToStamp(int[][] grid, int stampHeight, int stampWidth) {
         int m = grid.length, n = grid[0].length;
-        int[][] stamps = new int[m][n];
-
-        // 标记所有可以用来作为放置邮票右下角的点
-        RegionSum Grid = new RegionSum(grid);
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) { // 左上角
-                int x = i + stampHeight - 1;
-                int y = j + stampWidth - 1;
-                if (x >= m || y >= n) continue;
-                int area = Grid.query(i, j, x, y);
-                if (area == 0) stamps[x][y] = 1;
+        int[][] s = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + grid[i - 1][j - 1];
             }
         }
 
-        RegionSum Stamps = new RegionSum(stamps);
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 1) continue;
-                // 注意：这里越界也是可以的， 只要看能拉出的区域里有上面标记过的点即可
-                int x = Math.min(m - 1,i + stampHeight - 1);
-                int y = Math.min(n - 1, j + stampWidth - 1);
-                int area = Stamps.query(i, j, x, y);
-                if (area == 0) return false;
-            }
-        }
-        return true;
-    }
-
-    private class RegionSum {
-        int[][] presum;
-        public RegionSum(int[][] A) {
-            int m = A.length, n = A[0].length;
-            presum = new int[m][n];
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    int a = i == 0 ? 0 : presum[i - 1][j];
-                    int b = j == 0 ? 0 : presum[i][j - 1];
-                    int c = (i == 0 || j == 0) ? 0 : presum[i - 1][j - 1];
-                    presum[i][j] = a + b - c + A[i][j];
+        int[][] b = new int[m + 2][n + 2];
+        for (int i = stampHeight; i <= m; i++) {
+            for (int j = stampWidth; j <= n; j++) {
+                int x1 = i - stampHeight + 1, y1 = j - stampWidth + 1;
+                int x2 = i, y2 = j;
+                int t = s[x2][y2] - s[x2][y1 - 1] - s[x1 - 1][y2] + s[x1 - 1][y1 - 1];
+                if (t == 0) {
+                    b[x1][y1]++;
+                    b[x1][y2 + 1]--;
+                    b[x2 + 1][y1]--;
+                    b[x2 + 1][y2 + 1]++;
                 }
             }
         }
-
-        private int query(int i, int j, int x, int y) {
-            int a = i == 0 ? 0 : presum[i - 1][y];
-            int b = j == 0 ? 0 : presum[x][j - 1];
-            int c = (i == 0 || j == 0) ? 0 : presum[i - 1][j - 1];
-            int area = presum[x][y] - a - b + c;
-            return area;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                b[i][j] += b[i - 1][j] + b[i][j - 1] - b[i - 1][j - 1];
+                if (grid[i - 1][j - 1] == 0 && b[i][j] == 0) return false;
+            }
         }
+        return true;
     }
 
     // S2: 2d diff array

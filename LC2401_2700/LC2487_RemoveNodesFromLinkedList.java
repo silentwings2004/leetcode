@@ -24,27 +24,15 @@ public class LC2487_RemoveNodesFromLinkedList {
     // time = O(n), space = O(n)
     final int N = 100010;
     public ListNode removeNodes(ListNode head) {
-        int[] q = new int[N];
+        ListNode[] stk = new ListNode[N];
         int tt = 0;
-
-        ListNode cur = head;
-        for (ListNode p = cur; p != null; p = p.next) {
-            while (tt > 0 && q[tt] < p.val) tt--;
-            q[++tt] = p.val;
+        for (ListNode p = head; p != null; p = p.next) {
+            while (tt > 0 && stk[tt].val < p.val) tt--;
+            stk[++tt] = p;
         }
 
-        ListNode dummy = new ListNode(0);
-        cur = dummy;
-        int hh = 1;
-        for (ListNode p = head; p != null && hh <= tt; p = p.next) {
-            if (p.val != q[hh]) continue;
-            else {
-                cur.next = p;
-                cur = cur.next;
-                hh++;
-            }
-        }
-        cur.next = null;
+        ListNode dummy = new ListNode(0), p = dummy;
+        for (int i = 1; i <= tt; i++) p = p.next = stk[i];
         return dummy.next;
     }
 }

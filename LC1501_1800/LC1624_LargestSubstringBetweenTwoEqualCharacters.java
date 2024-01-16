@@ -22,20 +22,13 @@ public class LC1624_LargestSubstringBetweenTwoEqualCharacters {
      */
     // time = O(n), space = O(1)
     public int maxLengthBetweenEqualCharacters(String s) {
-        int n = s.length();
-        int[][] cnt = new int[26][2];
-        for (int i = 0; i < 26; i++) Arrays.fill(cnt[i], -1);
-
+        int n = s.length(), res = -1;
+        int[] pos = new int[26];
+        Arrays.fill(pos, -1);
         for (int i = 0; i < n; i++) {
-            char c = s.charAt(i);
-            if (cnt[c - 'a'][0] == -1) cnt[c- 'a'][0] = i;
-            else cnt[c - 'a'][1] = i;
-        }
-
-        int res = -1;
-        for (int i = 0; i < 26; i++) {
-            if (cnt[i][0] == -1 || cnt[i][1] == -1) continue;
-            res = Math.max(res, cnt[i][1] - cnt[i][0] - 1);
+            int u = s.charAt(i) - 'a';
+            if (pos[u] == -1) pos[u] = i;
+            else res = Math.max(res, i - pos[u] - 1);
         }
         return res;
     }

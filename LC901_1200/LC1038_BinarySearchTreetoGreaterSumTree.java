@@ -24,6 +24,7 @@ public class LC1038_BinarySearchTreetoGreaterSumTree {
      * @param root
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     int sum = 0;
     public TreeNode bstToGst(TreeNode root) {
@@ -35,5 +36,19 @@ public class LC1038_BinarySearchTreetoGreaterSumTree {
         root.val = sum;
         bstToGst(root.left);
         return root;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public TreeNode bstToGst2(TreeNode root) {
+        dfs(root, 0);
+        return root;
+    }
+
+    private int dfs(TreeNode node, int s) {
+        if (node == null) return s;
+
+        node.val += dfs(node.right, s);
+        return dfs(node.left, node.val);
     }
 }

@@ -93,4 +93,22 @@ public class LC2454_NextGreaterElementIV {
         }
         return res;
     }
+
+    // S3: Two Monotonic Stack
+    // time = O(n), space = O(n)
+    public int[] secondGreaterElement3(int[] nums) {
+        int n = nums.length;
+        int[] stk1 = new int[n + 1], stk2 = new int[n + 1];
+        int tt1 = 0, tt2 = 0;
+        int[] res = new int[n];
+        Arrays.fill(res, -1);
+        for (int i = 0; i < n; i++) {
+            while (tt2 > 0 && nums[stk2[tt2]] < nums[i]) res[stk2[tt2--]] = nums[i];
+            int pos = tt1;
+            while (tt1 > 0 && nums[stk1[tt1]] < nums[i]) tt1--;
+            for (int j = tt1 + 1; j <= pos; j++) stk2[++tt2] = stk1[j];
+            stk1[++tt1] = i;
+        }
+        return res;
+    }
 }

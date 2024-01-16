@@ -38,37 +38,41 @@ public class LC2477_MinimumFuelCosttoReporttotheCapital {
      * @return
      */
     // time = O(n), space = O(n)
-    List<Integer>[] graph;
-    long[] st;
-    long res = 0;
-    int seats;
+    final int N = 100010, M = N * 2;
+    int[] h, e, ne;
+    int idx, seats;
+    long res;
     public long minimumFuelCost(int[][] roads, int seats) {
-        int n = roads.length + 1;
+        h = new int[N];
+        e = new int[M];
+        ne = new int[M];
+        Arrays.fill(h, -1);
+        idx = 0;
         this.seats = seats;
-        st = new long[n];
-        graph = new List[n];
-        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-        for (int[] x : roads) {
-            int a = x[0], b = x[1];
-            graph[a].add(b);
-            graph[b].add(a);
-        }
 
+        for (int[] r : roads) {
+            int a = r[0], b = r[1];
+            add(a, b);
+            add(b, a);
+        }
         dfs(0, -1);
         return res;
     }
 
-    private long dfs(int u, int fa) {
-        for (int next : graph[u]) {
-            if (next == fa) continue;
-            st[u] += dfs(next, u);
+    private int dfs(int u, int fa) {
+        int p = u == 0 ? 0 : 1;
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (j == fa) continue;
+            p += dfs(j, u);
         }
+        if (u > 0) res += (p + seats - 1) / seats;
+        return p;
+    }
 
-        if (u != 0) {
-            st[u]++;
-            long t = st[u] % seats == 0 ? st[u] / seats : st[u] / seats + 1;
-            res += t;
-        }
-        return st[u];
+    private void add(int a, int b) {
+        e[idx] = b;
+        ne[idx] = h[a];
+        h[a] = idx++;
     }
 }

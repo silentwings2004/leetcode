@@ -37,7 +37,8 @@ public class LC466_CountTheRepetitions {
         List<Integer> cnt = new ArrayList<>();
         HashMap<Integer, Integer> map = new HashMap<>();
         int m = s1.length(), n = s2.length();
-        for (int i = 0, k = 0; i < n1; i++) {
+        int k = 0;
+        for (int i = 0; i < n1; i++) {
             for (int j = 0; j < m; j++) {
                 if (s1.charAt(j) == s2.charAt(k % n)) k++;
             }
@@ -57,8 +58,7 @@ public class LC466_CountTheRepetitions {
             }
             map.put(k % n, i);
         }
-        if (cnt.size() == 0) return 0;
-        return cnt.get(cnt.size() - 1) / n / n2;
+        return k / n / n2;
     }
 }
 /**

@@ -40,4 +40,20 @@ public class LC2264_Largest3SameDigitNumberinString {
         for (char c : s.toCharArray()) set.add(c);
         return set.size() == 1;
     }
+
+    // S2
+    // time = O(n), space = O(1)
+    public String largestGoodInteger2(String num) {
+        int n = num.length();
+        String res = "";
+        for (int i = 0; i + 2 < n; i++) {
+            if (num.charAt(i + 1) == num.charAt(i) && num.charAt(i + 2) == num.charAt(i)) {
+                String t = num.substring(i, i + 3);
+                if (res.length() == 0 || res.compareTo(t) < 0) {
+                    res = t;
+                }
+            }
+        }
+        return res;
+    }
 }

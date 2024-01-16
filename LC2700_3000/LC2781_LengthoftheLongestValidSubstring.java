@@ -71,4 +71,27 @@ public class LC2781_LengthoftheLongestValidSubstring {
     private long get(int l, int r) {
         return h[r] - h[l - 1] * p[r - l + 1];
     }
+
+    // S2
+    // time = O(L + n * k^2), space = O(L)
+    public int longestValidSubstring2(String word, List<String> forbidden) {
+        HashSet<String> set = new HashSet<>(forbidden);
+        int ans = 0, l = 0, n = word.length();
+        for (int r = 0; r < n; r++) {
+            for (int i = r; i > Math.max(r - 10, l - 1); i--) {
+                String t = word.substring(i, r + 1);
+                if (set.contains(t)) {
+                    l = i + 1;
+                    break;
+                }
+            }
+            ans = Math.max(ans, r - l + 1);
+        }
+        return ans;
+    }
 }
+/**
+ * forbidden[i].length <= 10
+ * 暴力
+ * 左端点一旦右移，绝对不会再左移了
+ */

@@ -17,13 +17,13 @@ public class LC1464_MaximumProductofTwoElementsinanArray {
      */
     // time = O(n), space = O(1)
     public int maxProduct(int[] nums) {
-        int max = nums[0], sec = 0, n = nums.length;
-        for (int i = 1; i < n; i++) {
-            if (nums[i] > max) {
-                sec = max;
-                max = nums[i];
-            } else if (nums[i] > sec) sec = nums[i];
+        int a = nums[0], b = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] >= a) {
+                b = a;
+                a = nums[i];
+            } else if (nums[i] > b) b = nums[i];
         }
-        return (max - 1) * (sec - 1);
+        return (a - 1) * (b - 1);
     }
 }

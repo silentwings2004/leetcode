@@ -23,6 +23,7 @@ public class LC333_LargestBSTSubtree {
      * @param root
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     private int res = 0;
     public int largestBSTSubtree(TreeNode root) {
@@ -56,6 +57,31 @@ public class LC333_LargestBSTSubtree {
         if (!flag || left == -1 || right == -1) return -1;
         res = Math.max(res, left + right + 1);
         return left + right + 1;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    final int inf = 0x3f3f3f3f;
+    int ans = 0;
+    public int largestBSTSubtree2(TreeNode root) {
+        if (root == null) return 0;
+        dfs(root);
+        return ans;
+    }
+
+    private int[] dfs(TreeNode node) {
+        if (node == null) return new int[]{0, inf, -inf};
+
+        int[] l = dfs(node.left);
+        int[] r = dfs(node.right);
+        int[] t = new int[]{0, -inf, inf};
+        if (l[2] < node.val && node.val < r[1]) {
+            t[0] = l[0] + 1 + r[0];
+            t[1] = l[1] == inf ? node.val : l[1];
+            t[2] = r[2] == -inf ? node.val : r[2];
+        }
+        ans = Math.max(ans, t[0]);
+        return t;
     }
 }
 /**

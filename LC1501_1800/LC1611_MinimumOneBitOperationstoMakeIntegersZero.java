@@ -19,67 +19,66 @@ public class LC1611_MinimumOneBitOperationstoMakeIntegersZero {
      * @return
      */
     // S1: recursion
-    // time = O(logn), space = O(logn)
-    HashMap<String, Integer> map = new HashMap<>();
-    HashMap<String, Integer> map2 = new HashMap<>();
+    // time = O((logn)^2), space = O(logn)
+    HashMap<String, Integer> mem, mem2;
     public int minimumOneBitOperations(int n) {
-        String str = Integer.toBinaryString(n);
-        return dfs(str);
+        mem = new HashMap<>();
+        mem2 = new HashMap<>();
+        return dfs(Integer.toBinaryString(n));
     }
 
     private int dfs(String s) {
         if (s.equals("0")) return 0;
         if (s.equals("1")) return 1;
-        if (map.containsKey(s)) return map.get(s);
+        if (mem.containsKey(s)) return mem.get(s);
 
-        if (s.charAt(0) == '0') return dfs(s.substring(1)); // remove all leading 0
-
-        String m = s.substring(1);
-        StringBuilder p = new StringBuilder();
-        p.append('1');
-        for (int i = 0; i < m.length() - 1; i++) p.append('0');
-        map.put(s, helper(m) + 1 + dfs(p.toString()));
-        return map.get(s);
+        int v = 0;
+        if (s.charAt(0) == '0') v = dfs(s.substring(1));
+        else {
+            String t = s.substring(1);
+            StringBuilder sb = new StringBuilder();
+            sb.append('1').append("0".repeat(t.length() - 1));
+            v = 1 + helper(t) + dfs(sb.toString());
+        }
+        mem.put(s, v);
+        return v;
     }
 
     private int helper(String s) {
         if (s.equals("0")) return 1;
         if (s.equals("1")) return 0;
-        if (map2.containsKey(s)) return map2.get(s);
+        if (mem2.containsKey(s)) return mem2.get(s);
 
-        if (s.charAt(0) == '1') map2.put(s, dfs(s.substring(1)));
+        int v = 0;
+        if (s.charAt(0) == '1') v = dfs(s.substring(1));
         else {
-            String m = s.substring(1);
-            StringBuilder p = new StringBuilder();
-            p.append('1');
-            for (int i = 0; i < m.length() - 1; i++) p.append('0');
-            map2.put(s, helper(m) + 1 + dfs(p.toString()));
+            String t = s.substring(1);
+            StringBuilder sb = new StringBuilder();
+            sb.append('1').append("0".repeat(t.length() - 1));
+            v = 1 + helper(t) + dfs(sb.toString());
         }
-        return map2.get(s);
+        mem2.put(s, v);
+        return v;
     }
 
     // S2: Gray code
     // time = O(1), space = O(1)
     public int minimumOneBitOperations2(int n) {
-        // corner case
         if (n == 0) return 0;
-
-        String str = Integer.toBinaryString(n);
+        String s = Integer.toBinaryString(n);
         int i = 0;
-        while (i < str.length() && str.charAt(i) == '0') i++;
-        str = str.substring(i);
+        while (i < s.length() && s.charAt(i) == '0') i++;
+        s = s.substring(i);
 
-        int lastDigit = 0;
-        i = 0;
-        for (int k = 0; k < str.length(); k++) {
+        int last = 0, ans = 0;
+        for (i = 0; i < s.length(); i++) {
             int x = 0;
-            // i[k]^lastDigit = str[k]
-            if (str.charAt(k) == '1') x = 1 - lastDigit;
-            else x = lastDigit;
-            i = i * 2 + x;
-            lastDigit = x;
+            if (s.charAt(i) == '1') x = last ^ 1;
+            else x = last;
+            last = x;
+            ans = ans * 2 + x;
         }
-        return i;
+        return ans;
     }
 }
 /**

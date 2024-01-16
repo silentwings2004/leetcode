@@ -30,4 +30,21 @@ public class LC1716_CalculateMoneyinLeetcodeBank {
         for (int i = 0; i < days; i++) res += weeks + i + 1;
         return res;
     }
+
+    // S2
+    // time = O(1), space = O(1)
+    public int totalMoney2(int n) {
+        int t = n / 7, r = n % 7, v = (1 + 7) * 7 / 2;
+        int res = 0;
+        for (int i = 0; i < t; i++) {
+            res += v;
+            v += 7;
+        }
+        int last = t + 1;
+        for (int i = 0; i < r; i++) {
+            res += last;
+            last++;
+        }
+        return res;
+    }
 }
