@@ -66,7 +66,7 @@ public class LC2809_MinimumTimetoMakeArraySumAtMostx {
  * 1. if we apply clearance to nums[i]
  * dp[i][j] = dp[i-1][j-1] + 0 + nums2[1:i-1]
  * 2. if we do not apply clearance to nums[i]
- * dp[i][j] = d[i-1][j] + nums1[i]+nums2[i]*j
+ * dp[i][j] = d[i-1][j] + nums1[i] + nums2[i]*j
  * min{dp[i][j]}
  * => dp[n][T] <= x
  * 清0次数与最终结果并无单调性

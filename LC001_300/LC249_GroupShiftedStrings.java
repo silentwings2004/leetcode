@@ -27,19 +27,23 @@ public class LC249_GroupShiftedStrings {
         List<List<String>> res = new ArrayList<>();
         HashMap<String, List<String>> map = new HashMap<>();
         for (String s : strings) {
-            int offset = s.charAt(0) - 'a';
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.length(); i++) {
-                char c = (char)(s.charAt(i) - offset);
-                if (c < 'a') c += 26; // 注意：这里是diff < 'a' 而不是diff < 0
-                sb.append(c);
-            }
-            String key = sb.toString();
-            map.putIfAbsent(key, new ArrayList<>());
-            map.get(key).add(s);
+            String t = convert(s);
+            map.putIfAbsent(t, new ArrayList<>());
+            map.get(t).add(s);
         }
         res.addAll(map.values());
         return res;
+    }
+
+    private String convert(String s) {
+        if (s.charAt(0) == 'a') return s;
+        int d = 'a' - s.charAt(0) + 26;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char c = (char)((s.charAt(i) - 'a' + d) % 26 + 'a');
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }
 /**

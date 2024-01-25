@@ -55,22 +55,20 @@ public class LC907_SumofSubarrayMinimums {
 
     // S1.2: Monotonic Stack - One pass
     // time = O(n), space = O(n)
-    final int N = 30010;
     public int sumSubarrayMins2(int[] arr) {
-        int n = arr.length, tt = 0;
-        int[] stk = new int[N];
-
+        int n = arr.length;
+        int[] stk = new int[n + 1];
+        int tt = 0;
         long mod = (long)(1e9 + 7), res = 0;
         for (int i = 0; i <= n; i++) {
-            int h = i == n ? 0 : arr[i];
-            while (tt > 0 && arr[stk[tt]] > h) {
-                int idx = stk[tt--];
-                long sum = (long) arr[idx] * (i - idx) % mod * (tt == 0 ? idx + 1 : idx - stk[tt]) % mod;
-                res = (res + sum) % mod;
+            int x = i == n ? 0 : arr[i];
+            while (tt > 0 && arr[stk[tt]] > x) {
+                int y = stk[tt--];
+                res = (res + 1L * arr[y] * (i - y) * (tt == 0 ? y + 1 : y - stk[tt])) % mod;
             }
             stk[++tt] = i;
         }
-        return (int) res;
+        return (int)res;
     }
 }
 /**
