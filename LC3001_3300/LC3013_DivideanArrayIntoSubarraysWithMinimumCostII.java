@@ -36,63 +36,68 @@ public class LC3013_DivideanArrayIntoSubarraysWithMinimumCostII {
      * @return
      */
     // time = O(nlogn), space = O(n)
-    TreeMap<Integer, Integer> minh, maxh;
     int k, sz;
+    long s;
+    TreeMap<Integer, Integer> minh, maxh;
     public long minimumCost(int[] nums, int k, int dist) {
         this.k = k;
         sz = 0;
         minh = new TreeMap<>();
         maxh = new TreeMap<>((o1, o2) -> o2 - o1);
         int n = nums.length;
-        long res = (long)1e18, s = 0;
+        long res = (long)1e18;
         for (int i = 1, j = 1; i < n; i++) {
-            int x = nums[i];
-            if (i - j + 1 <= k - 1) s += x;
-            else {
-                if (x < get()) s += x - get();
-            }
-            insert(x);
-            if (i - j > dist) {
-                int y = nums[j];
-                if (minh.containsKey(y)) remove(minh, y);
-                else {
-                    remove(maxh, y);
-                    sz--;
-                    if (!minh.isEmpty()) {
-                        int t = minh.firstKey();
-                        remove(minh, t);
-                        maxh.put(t, maxh.getOrDefault(t, 0) + 1);
-                        sz++;
-                    }
-                }
-                if (get() >= y) s += get() - y;
-                j++;
-            }
+            add(nums[i]);
+            if (i - j > dist) remove(nums[j++]);
             if (i - j + 1 >= k - 1) res = Math.min(res, s);
         }
         return res + nums[0];
     }
 
-    private void insert(int x) {
+    private void add(int x) {
         minh.put(x, minh.getOrDefault(x, 0) + 1);
         int t = minh.firstKey();
-        remove(minh, t);
+        minh.put(t, minh.get(t) - 1);
+        if (minh.get(t) == 0) minh.remove(t);
         maxh.put(t, maxh.getOrDefault(t, 0) + 1);
+        s += t;
         sz++;
         if (sz > k - 1) {
             t = maxh.firstKey();
-            remove(maxh, t);
+            maxh.put(t, maxh.get(t) - 1);
+            if (maxh.get(t) == 0) maxh.remove(t);
+            s -= t;
             sz--;
             minh.put(t, minh.getOrDefault(t, 0) + 1);
         }
     }
 
-    private void remove(TreeMap<Integer, Integer> map, int x) {
-        map.put(x, map.get(x) - 1);
-        if (map.get(x) == 0) map.remove(x);
-    }
-
-    private int get() {
-        return maxh.firstKey();
+    private void remove(int x) {
+        if (minh.containsKey(x)) {
+            minh.put(x, minh.get(x) - 1);
+            if (minh.get(x) == 0) minh.remove(x);
+        } else {
+            maxh.put(x, maxh.get(x) - 1);
+            if (maxh.get(x) == 0) maxh.remove(x);
+            s -= x;
+            sz--;
+            if (sz < k - 1 && minh.size() > 0) {
+                int t = minh.firstKey();
+                minh.put(t, minh.get(t) - 1);
+                if (minh.get(t) == 0) minh.remove(t);
+                maxh.put(t, maxh.getOrDefault(t, 0) + 1);
+                s += t;
+                sz++;
+            }
+        }
     }
 }
+/**
+ * 确定了第二个数的位置,...,第k个数的位置，那么分割方案就唯一确定了
+ * nums[0] + (n-1 选 k-1 个数，且这 k-1 哥数的第一个数和最后一个数的下标只差不超过dist)
+ * 滑动窗口
+ * 从一个大小为dist+1的滑动窗口中的 k-1 个最小数
+ * 滑动窗口求中位数
+ * multiset
+ * 懒删除堆  HashMap
+ */

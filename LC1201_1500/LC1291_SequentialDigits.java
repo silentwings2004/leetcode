@@ -20,17 +20,16 @@ public class LC1291_SequentialDigits {
     // time = O(1), space = O(1)
     public List<Integer> sequentialDigits(int low, int high) {
         List<Integer> res = new ArrayList<>();
-        String s1 = String.valueOf(low), s2 = String.valueOf(high);
-
-
-        for (int i = s1.length(); i <= s2.length(); i++) {
-            for (int j = 1; j + i - 1 <= 9; j++) {
-                StringBuilder sb = new StringBuilder();
-                for (int k = j; k < j + i; k++) {
-                    sb.append(k);
+        String s = String.valueOf(low), t = String.valueOf(high);
+        int m = s.length(), n = t.length();
+        for (int len = m; len <= n; len++) {
+            for (int i = 1; i + len - 1 <= 9; i++) {
+                int v = i, last = i;
+                for (int j = 1; j < len; j++) {
+                    v = v * 10 + (last + 1);
+                    last++;
                 }
-                int num = Integer.parseInt(sb.toString());
-                if (num >= low && num <= high) res.add(num);
+                if (v >= low && v <= high) res.add(v);
             }
         }
         return res;
@@ -41,10 +40,10 @@ public class LC1291_SequentialDigits {
     public List<Integer> sequentialDigits2(int low, int high) {
         List<Integer> res = new ArrayList<>();
         for (int i = 1; i <= 9; i++) {
-            int num = i;
-            for (int j = i + 1; j <= 9; j++) {
-                num = num * 10 + j;
-                if (num >= low && num <= high) res.add(num);
+            int x = 0;
+            for (int j = i; j <= 9; j++) {
+                x = x * 10 + j;
+                if (x >= low && x <= high) res.add(x);
             }
         }
         Collections.sort(res);

@@ -239,7 +239,6 @@ public class LC1825_FindingMKAverage {
             }
         }
     }
-
 }
 /**
  * ref: LC295

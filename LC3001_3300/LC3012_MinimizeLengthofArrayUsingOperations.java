@@ -28,8 +28,21 @@ public class LC3012_MinimizeLengthofArrayUsingOperations {
      * @param nums
      * @return
      */
-    // time = O(nlogn), space = O(n)
+    // S1
+    // time = O(n), space = O(1)
     public int minimumArrayLength(int[] nums) {
+        int minv = nums[0], cnt = 0;
+        for (int x : nums) minv = Math.min(minv, x);
+        for (int x : nums) {
+            if (x % minv != 0) return 1;
+            if (x == minv) cnt++;
+        }
+        return (cnt + 1) / 2;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int minimumArrayLength2(int[] nums) {
         TreeMap<Integer, Integer> map = new TreeMap<>();
         int n = nums.length;
         for (int x : nums) map.put(x, map.getOrDefault(x, 0) + 1);
@@ -53,3 +66,20 @@ public class LC3012_MinimizeLengthofArrayUsingOperations {
         return (cnt + 1) / 2;
     }
 }
+/**
+ * 如果取模得到是一个非0数字，那么可以继续操作这个数字
+ * 2 3 4 5 6
+ * 用最小的数字操作
+ * 相当于每次操作，删除一个大于2的数
+ * 如果最小的数只有一个，那么最后就只剩下一个数了(最优解)
+ * 能不能得到一个小于 min(nums) 的数
+ *
+ * 设 x 不是 m 的倍数
+ * 那么 0 < x % m < m
+ *
+ * 如果 nums 的所有数字都是 m 的倍数呢？
+ * 6m 9m [1,m-1] 3m
+ * 最优做法：把大于 m 的数字都去掉，然后剩下的 cnt 个 m 两两一对
+ * (cnt + 1) / 2
+ * 求gcd
+ */

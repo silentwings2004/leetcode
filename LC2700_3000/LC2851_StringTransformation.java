@@ -56,7 +56,7 @@ public class LC2851_StringTransformation {
             while (j > 0 && s.charAt(i) != p.charAt(j + 1)) j = ne[j];
             if (s.charAt(i) == p.charAt(j + 1)) j++;
             if (j == n) {
-                if (i - n + 1 <= n) cnt++;
+                if (i - n + 1 <= m / 2) cnt++;
                 j = ne[j];
             }
         }
@@ -90,3 +90,31 @@ public class LC2851_StringTransformation {
         return f;
     }
 }
+/**
+ * (n-1)^k
+ * 本质相当于扑克切牌
+ * abcd => dabc
+ * ab | cd => cdab
+ * a | bcd => bcda
+ * 1: +1,+2,+3,...,+n-1
+ * 2: +1,+2,+3,...,+n-1
+ * 3: +1,+2,+3,...,+n-1
+ * ...
+ * k: +1,+2,+3,...,+n-1
+ * s' = s(1),s(2),s(3),...s(n-1)
+ *            t
+ * a b [c d a b] c d
+ * p: how many strings of shift of s that equals to t
+ * f[j]: the # of bad strings after j rounds
+ * g[j]: the # of good strings after j rounds
+ *
+ * f[j-1], g[j-1]
+ * f[j] = f[j-1] * (n - p - 1) + g[j - 1] * (n - p)
+ * g[j] = f[j-1] * p + g[j-1] * (p-1)
+ *
+ * f[0], g[0] = (0, 1) if (s == t)
+ *            = (1, 0) if (s != t)
+ * f[k], g[k]
+ * 矩阵相乘，有结合律，没有交换律
+ * => T^k
+ */

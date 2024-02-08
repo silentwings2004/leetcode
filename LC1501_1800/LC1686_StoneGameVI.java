@@ -34,27 +34,18 @@ public class LC1686_StoneGameVI {
      */
     // time = O(nlogn), space = O(n)
     public int stoneGameVI(int[] aliceValues, int[] bobValues) {
-        // corner case
-        if (aliceValues == null || aliceValues.length == 0 || bobValues == null || bobValues.length == 0) return 0;
-
         int n = aliceValues.length;
-        int[][] temp = new int[n][2];
-        for (int i = 0; i < n; i++) {
-            temp[i] = new int[]{aliceValues[i] + bobValues[i], i};
-        }
-        Arrays.sort(temp, (o1, o2) -> o2[0] - o1[0]);
+        int[][] w = new int[n][3];
+        for (int i = 0; i < n; i++) w[i] = new int[]{aliceValues[i] + bobValues[i], aliceValues[i], bobValues[i]};
+        Arrays.sort(w, (o1, o2) -> o2[0] - o1[0]);
 
-        int x = 0, y = 0;
-        for (int i = 0; i < n; i++) {
-            if (i % 2 == 0) {
-                x += aliceValues[temp[i][1]];
-            } else {
-                y += bobValues[temp[i][1]]; // Bob其实和alice是等价的，对应的策略也是可以互换的
-            }
+        int res = 0;
+        for (int i = 0, j = n - 1; i < n; i++, j--) {
+            if (i % 2 == 0) res += w[i][1];
+            else res -= w[i][2];
         }
-        if (x > y) return 1;
-        if (x < y) return -1;
-        return 0;
+        if (res == 0) return 0;
+        return res > 0 ? 1 : -1;
     }
 }
 /**

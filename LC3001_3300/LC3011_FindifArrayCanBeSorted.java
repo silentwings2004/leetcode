@@ -26,9 +26,27 @@ public class LC3011_FindifArrayCanBeSorted {
      * @param nums
      * @return
      */
+    // S1
+    // time = O(nlogn), space = O(logn)
+    public boolean canSortArray(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            int t = Integer.bitCount(nums[i]);
+            int j = i + 1;
+            while (j < n && Integer.bitCount(nums[j]) == t) j++;
+            Arrays.sort(nums, i, j);
+            i = j - 1;
+        }
+        for (int i = 0; i + 1 < n; i++) {
+            if (nums[i] > nums[i + 1]) return false;
+        }
+        return true;
+    }
+
+    // S2
     // time = O(nlogn), space = O(1)
     int[] p;
-    public boolean canSortArray(int[] nums) {
+    public boolean canSortArray2(int[] nums) {
         int n = nums.length;
         p = new int[n];
         for (int i = 0; i < n; i++) p[i] = i;
@@ -60,3 +78,8 @@ public class LC3011_FindifArrayCanBeSorted {
         return p[x];
     }
 }
+/**
+ * 分组循环
+ * nums[i] <= nums[i+1]
+ * 每一段分别排序
+ */

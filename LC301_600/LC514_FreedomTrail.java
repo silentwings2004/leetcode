@@ -114,5 +114,4 @@ public class LC514_FreedomTrail {
  * 属性：最小值
  * 2.状态计算 f(i, j)
  * 倒数第二步：k->j 按按钮 f(i-1,k)
- *
  */

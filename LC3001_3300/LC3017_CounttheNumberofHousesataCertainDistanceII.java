@@ -34,6 +34,7 @@ public class LC3017_CounttheNumberofHousesataCertainDistanceII {
      * @param y
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public long[] countOfPairs(int n, int x, int y) {
         if (x > y) return countOfPairs(n, y, x);
@@ -50,6 +51,58 @@ public class LC3017_CounttheNumberofHousesataCertainDistanceII {
         }
         for (int i = 1; i < n; i++) res[i] += res[i - 1];
         return res;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    int[] b;
+    public long[] countOfPairs2(int n, int x, int y) {
+        if (x > y) return countOfPairs2(n, y, x);
+
+        b = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            add(1, i - 1, 1);
+            add(1, n - i, 1);
+            if (x + 1 >= y) continue; // 不影响最短路
+            if (i <= x) update(i, x, y, n);
+            else if (i >= y) update(n + 1 - i, n + 1 - y, n + 1 - x, n);
+            else if (i < (x + y) / 2) update2(i, x, y, n);
+            else if (i > (x + y + 1) / 2) update2(n + 1 - i, n + 1 - y, n + 1 - x, n);
+        }
+
+        long[] res = new long[n];
+        long s = 0;
+        for (int i = 0; i < n; i++) {
+            s += b[i + 1];
+            res[i] = s;
+        }
+        return res;
+    }
+
+    private void add(int l, int r, int c) {
+        if (l > r) return;
+        b[l] += c;
+        b[r + 1] -= c;
+    }
+
+    private void update(int i, int x, int y, int n) {
+        add(y - i, n - i, -1); // 撤销[y,n]
+        int dec = y - x - 1; // 缩短的距离
+        add(y - i - dec, n - i - dec, 1);
+
+        int j = (x + y + 1) / 2 + 1;
+        add(j - i, y - 1 - i, -1); // 撤销[j, y-1]
+        add(x - i + 2, x - i + y - j + 1, 1);
+    }
+
+    private void update2(int i, int x, int y, int n) {
+        add(y - i, n - i, -1);
+        int dec = (y - i) - (i - x + 1);
+        add(y - i - dec, n - i - dec, 1);
+
+        int j = i + (y - x + 1) / 2 + 1;
+        add(j - i, y - 1 - i, -1); // 撤销[j,y-1]
+        add(i - x + 2, i - x + y - j + 1, 1);
     }
 }
 /**
@@ -71,5 +124,23 @@ public class LC3017_CounttheNumberofHousesataCertainDistanceII {
  * 差分数组，把一堆连续的数字都+1
  *
  * i 到左边的房子：[1,i-1] + 1
- * i 到右边的房子：[i+1,n-i] + 1
+ * i 到右边的房子：[1,n-i] + 1
+ *
+ * 1. 1 <= i <= x
+ * 2. x < i < (x + y) / 2
+ * 3. (x + y) / 2 < i < y
+ * 4. y <= i <= n
+ * => 只要讨论1和2即可，3，4是前2种的对称
+ *
+ * 1 <= i <= x
+ * 撤销: [y-i, n-i] - 1
+ *      dec = y-x-1
+ * 新增: [y-i-dec, n-i-dec]+1
+ * j-i > x-i+1+y-j
+ * 2j > x+y+1 => j > (x+y+1)/2
+ * => j = (x+y+1)/2+1
+ * 从 j 到 y-1，这些点到 i 的距离都变小了
+ * 撤销：[j-i,y-i-1] -1
+ * dec = (j-i)-(x-i+1+y-j) = 2j-x-y-1
+ * 新增：[j-i-dec, y-1-i-dec] +1
  */
