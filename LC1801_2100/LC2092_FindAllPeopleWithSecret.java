@@ -35,94 +35,45 @@ public class LC2092_FindAllPeopleWithSecret {
      * @return
      */
     // S1: Union Find
-    // time = O((m * (logm + logn)), space = O(n)
-//    private int[] parent;
-//    public List<Integer> findAllPeople(int n, int[][] meetings, int firstPerson) {
-//        parent = new int[n];
-//        for (int i = 0; i < n; i++) parent[i] = i;
-//
-//        union(0, firstPerson);
-//        Arrays.sort(meetings, (o1, o2) -> o1[2] - o2[2]); // O(mlogm)
-//
-//        int i = 0, m = meetings.length;
-//        while (i < m) { // O(mlogn)
-//            List<Integer> temp = new ArrayList<>();
-//            int time = meetings[i][2];
-//            while (i < m && meetings[i][2] == time) {
-//                int a = meetings[i][0], b = meetings[i][1];
-//                if (findParent(a) != findParent(b)) union(a, b);
-//                temp.add(a);
-//                temp.add(b);
-//                i++;
-//            }
-//            for (int x : temp) { // check if they were unioned to 0
-//                if (findParent(x) != 0) parent[x] = x; // not pointing to 0 -> revert
-//            }
-//        }
-//        List<Integer> res = new ArrayList<>();
-//        for (i = 0; i < n; i++) {
-//            if (findParent(i) == 0) res.add(i);
-//        }
-//        return res;
-//    }
-//
-//    private int findParent(int x) {
-//        if (x != parent[x]) parent[x] = findParent(parent[x]);
-//        return parent[x];
-//    }
-//
-//    private void union(int x, int y) {
-//        x = parent[x];
-//        y = parent[y];
-//        if (x < y) parent[y] = x;
-//        else parent[x] = y;
-//    }
-
-    // S1.2: Union Find
-    // time = O((m * (logm + logn)), space = O(n)
-    private int[] parent;
+    // time = O((mlogm + n), space = O(m + n)
+    int[] p;
     public List<Integer> findAllPeople(int n, int[][] meetings, int firstPerson) {
-        parent = new int[n];
-        for (int i = 0; i < n; i++) parent[i] = i;
+        p = new int[n];
+        for (int i = 0; i < n; i++) p[i] = i;
+        p[firstPerson] = 0;
 
         Arrays.sort(meetings, (o1, o2) -> o1[2] - o2[2]);
-        union(0, firstPerson);
-        HashSet<Integer> set = new HashSet<>();
-        set.add(0);
-        set.add(firstPerson);
-
-        for (int i = 0; i < meetings.length; i++) {
-            int j = i;
-            int time = meetings[i][2];
-            HashSet<Integer> persons = new HashSet<>();
-            while (j < meetings.length && meetings[j][2] == time) {
-                int a = meetings[j][0], b = meetings[j][1];
-                persons.add(a);
-                persons.add(b);
-                if (findParent(a) != findParent(b)) union(a, b);
+        int m = meetings.length;
+        for (int i = 0; i < m; i++) {
+            HashSet<Integer> set = new HashSet<>();
+            int a = meetings[i][0], b = meetings[i][1], ts = meetings[i][2];
+            p[find(a)] = find(b);
+            set.add(a);
+            set.add(b);
+            int j = i + 1;
+            while (j < m && meetings[j][2] == ts) {
+                a = meetings[j][0];
+                b = meetings[j][1];
+                p[find(a)] = find(b);
+                set.add(a);
+                set.add(b);
                 j++;
             }
-            for (int x : persons) {
-                if (findParent(x) == 0) set.add(x);
-                else parent[x] = x;
+            for (int x : set) {
+                if (find(x) != find(0)) p[x] = x;
             }
             i = j - 1;
         }
         List<Integer> res = new ArrayList<>();
-        res.addAll(set);
+        for (int i = 0; i < n; i++) {
+            if (find(i) == find(0)) res.add(i);
+        }
         return res;
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
-    }
-
-    private void union(int x, int y) {
-        x = parent[x];
-        y = parent[y];
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**

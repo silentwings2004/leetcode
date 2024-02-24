@@ -17,38 +17,30 @@ public class LC364_NestedListWeightSumII {
      * Input: [1,[4,[6]]]
      * Output: 17
      *
+     * Constraints:
+     *
+     * 1 <= nestedList.length <= 50
+     * The values of the integers in the nested list is in the range [-100, 100].
+     * The maximum depth of any integer is less than or equal to 50.
      * @param nestedList
      * @return
      */
     // time = O(n), space = O(n)
-    // n: the total number of nested elements in the input list
     public int depthSumInverse(List<NestedInteger> nestedList) {
-        // corner case
-        if (nestedList == null || nestedList.size() == 0) {
-            throw new IllegalArgumentException("Invalid input");
-        }
+        Queue<NestedInteger> q = new LinkedList<>();
+        for (NestedInteger x : nestedList) q.add(x);
 
-        Queue<NestedInteger> queue = new LinkedList<>();
-
-        // init
-        for (NestedInteger ni : nestedList) {
-            queue.offer(ni);
-        }
-
-        // bfs
-        int res = 0, nodeSum = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                NestedInteger cur = queue.poll();
-                if (cur.isInteger()) nodeSum += cur.getInteger();
+        int res = 0, s = 0;
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            while (sz-- > 0) {
+                NestedInteger t = q.poll();
+                if (t.isInteger()) s += t.getInteger();
                 else {
-                    for (NestedInteger ni : cur.getList()) {
-                        queue.offer(ni);
-                    }
+                    for (NestedInteger x : t.getList()) q.offer(x);
                 }
             }
-            res += nodeSum;
+            res += s;
         }
         return res;
     }

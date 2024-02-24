@@ -59,4 +59,22 @@ public class LC3031_MinimumTimetoRevertWordtoInitialStateII {
         r++;
         return h[r] - h[l - 1] * p[r - l + 1];
     }
+
+    // S2: Z algorithm
+    // time = O(n), space = O(n)
+    public int minimumTimeToInitialState2(String word, int k) {
+        int n = word.length();
+        int[] z = new int[n];
+        int l = 0, r = 0;
+        for (int i = 1; i < n; i++) {
+            if (i <= r) z[i] = Math.min(z[i - l], r - i + 1);
+            while (i + z[i] < n && word.charAt(z[i]) == word.charAt(i + z[i])) {
+                l = i;
+                r = i + z[i];
+                z[i]++;
+            }
+            if (i % k == 0 && z[i] == n - i) return i / k;
+        }
+        return (n + k - 1) / k;
+    }
 }

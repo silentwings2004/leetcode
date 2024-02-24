@@ -20,71 +20,34 @@ public class LC368_LargestDivisibleSubset {
      * @param nums
      * @return
      */
-    // S1
+    // S1: DP
     // time = O(n^2), space = O(n)
     public List<Integer> largestDivisibleSubset(int[] nums) {
-        List<Integer> res = new LinkedList<>();
-        // corner case
-        if (nums == null || nums.length == 0) return res;
-
         Arrays.sort(nums);
-        int n = nums.length;
-        int[] dp = new int[n]; // dp[i]: considering nums[0:i], the largest devisible subset ending with nums[i]
-        int[] prev = new int[n];
-        Arrays.fill(dp, 1); // 任何元素都可以自己作为一个subset
-        Arrays.fill(prev, -1);
+        int n = nums.length, maxv = 0, t = 0;
+        int[] f = new int[n], path = new int[n];
+        Arrays.fill(f, 1);
+        Arrays.fill(path, -1);
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 1; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 if (nums[i] % nums[j] == 0) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                    if (dp[i] == dp[j] + 1) {
-                        prev[i] = j;
+                    if (f[i] < f[j] + 1) {
+                        f[i] = f[j] + 1;
+                        path[i] = j;
                     }
                 }
             }
-        }
-
-        int max = 0, idx = -1;
-        for (int i = 0; i < n; i++) {
-            if (dp[i] > max) {
-                max = dp[i];
-                idx = i;
+            if (maxv < f[i]) {
+                maxv = f[i];
+                t = i;
             }
         }
 
-        while (idx != -1) {
-            res.add(0, nums[idx]);
-            idx = prev[idx]; // 回推
-        }
-        return res;
-    }
-
-    // S2
-    // time = O(n^2), space = O(n)
-    public List<Integer> largestDivisibleSubset2(int[] nums) {
         List<Integer> res = new LinkedList<>();
-        Arrays.sort(nums);
-        int n = nums.length, k = 0;
-        int[] f = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            f[i] = 1;
-            for (int j = 0; j < i; j++) {
-                if (nums[i] % nums[j] == 0) f[i] = Math.max(f[i], f[j] + 1);
-            }
-            if (f[k] < f[i]) k = i;
-        }
-
-        res.add(0, nums[k]);
-        while (f[k] > 1) {
-            for (int i = 0; i < k; i++) {
-                if (nums[k] % nums[i] == 0 && f[k] == f[i] + 1) {
-                    res.add(0, nums[i]);
-                    k = i;
-                    break;
-                }
-            }
+        while (t != -1) {
+            res.add(0, nums[t]);
+            t = path[t];
         }
         return res;
     }

@@ -27,7 +27,8 @@ public class LC3026_MaximumGoodSubarraySum {
      * @param k
      * @return
      */
-    // time = O(n), space = O(n)_
+    // S1
+    // time = O(n), space = O(n)
     public long maximumSubarraySum(int[] nums, int k) {
         int n = nums.length;
         long[] s = new long[n + 1];
@@ -59,4 +60,33 @@ public class LC3026_MaximumGoodSubarraySum {
         }
         return res == -inf ? 0 : res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public long maximumSubarraySum2(int[] nums, int k) {
+        HashMap<Integer, Long> map = new HashMap<>();
+        long inf = (long)1e18;
+        long s = 0, res = -inf;
+        for (int x : nums) {
+            if (map.containsKey(x)) map.put(x, Math.min(map.get(x), s));
+            else map.put(x, s);
+            s += x;
+            if (map.containsKey(x - k)) res = Math.max(res, s - map.get(x - k));
+            if (map.containsKey(x + k)) res = Math.max(res, s - map.get(x + k));
+        }
+        return res == -inf ? 0 : res;
+    }
 }
+/**
+ * 前缀和与哈希表
+ * s[0] = 0
+ * s[1] = nums[0]
+ * s[2] = nums[0] + nums[1]
+ * s[i+1] = nums[0] + ... + nums[i]
+ * nums[i] + ... + nums[j] = s[j+1] - s[i]
+ * 满足|nums[i] - nums[j]| == k
+ * 计算s[j+1] - s[i] 的最大值
+ * 枚举 j 问题变成计算 s[i] 的最小值
+ * nums[i] = nums[j] - k 或者 nums[j] + k
+ * 维护一个hashmap, key 是 nums[i], value 是 s[i] 的最小值
+ */

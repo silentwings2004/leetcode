@@ -1,6 +1,6 @@
 package LC301_600;
 import java.util.*;
-public class LC398_RandomPickIndex {
+public class    LC398_RandomPickIndex {
     /**
      * Given an integer array nums with possible duplicates, randomly output the index of a given target number. You
      * can assume that the given target number must exist in the array.

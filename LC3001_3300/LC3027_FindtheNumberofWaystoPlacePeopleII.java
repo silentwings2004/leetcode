@@ -44,6 +44,7 @@ public class LC3027_FindtheNumberofWaystoPlacePeopleII {
      * @param points
      * @return
      */
+    // S1: Fenwick
     // time = O(nlogn), space = O(n)
     int[] tr;
     List<Integer> q;
@@ -101,4 +102,26 @@ public class LC3027_FindtheNumberofWaystoPlacePeopleII {
     private int rangeSum(int l, int r) {
         return sum(r) - sum(l - 1);
     }
+
+    // S2: 二维偏序
+    // time = O(n^2), space = O(logn)
+    public int numberOfPairs2(int[][] points) {
+        Arrays.sort(points, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o2[1] - o1[1]);
+        int n = points.length, res = 0, inf = 0x3f3f3f3f;
+        for (int i = 0; i < n; i++) {
+            int max_y = -inf;
+            for (int j = i + 1; j < n; j++) {
+                if (max_y < points[j][1] && points[j][1] <= points[i][1]) {
+                    max_y = points[j][1];
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
 }
+/**
+ * 枚举左上角的点 p, 和右下角的点 q
+ * 检查 p 是否在 q 的左上方向
+ * 矩形内及边界不能有除了 p 和 q 的其它点
+ */

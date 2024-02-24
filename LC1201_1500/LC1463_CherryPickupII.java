@@ -59,6 +59,41 @@ public class LC1463_CherryPickupII {
         }
         return res;
     }
+
+    // S1.2: dp
+    // time = O(m * n^2 * 9), space = O(m * n^2)
+    public int cherryPickup2(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[][][] f = new int[m][n][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    f[i][j][k] = -1;
+                }
+            }
+        }
+        f[0][0][n - 1] = grid[0][0] + grid[0][n - 1];
+
+        int res = 0;
+        for (int k = 1; k < m; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    for (int a = i - 1; a <= i + 1; a++) {
+                        for (int b = j - 1; b <= j + 1; b++) {
+                            if (a < 0 || a >= n || b < 0 || b >= n) continue;
+                            int t = f[k - 1][a][b];
+                            if (t == -1) continue;
+                            if (i == j) t += grid[k][i];
+                            else t += grid[k][i] + grid[k][j];
+                            f[k][i][j] = Math.max(f[k][i][j], t);
+                            res = Math.max(res, f[k][i][j]);
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
 }
 /**
  * 时间序列中，dp
@@ -68,4 +103,9 @@ public class LC1463_CherryPickupII {
  * dp[r][i][j] = dp[r-1][a][b] + grid[r][i] + grid[r][j];
  * ref: LC741 cherry pick 1
  * dp[i][j][p][q] = dp[a][b][x][y] 可以省掉一维
+ *
+ * 状态表示：f(k,i,j)
+ * 集合：所有走了k步，第一个机器人位于第i列，第2个机器人位于第j列的所有走法
+ * 属性：最大值
+ * 状态计算：最后一步9种走法
  */

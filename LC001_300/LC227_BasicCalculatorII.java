@@ -129,7 +129,7 @@ public class LC227_BasicCalculatorII {
         return sum;
     }
 
-    // S3: stack
+    // S4: stack
     // time = O(n), space = O(n)
     public int calculate4(String s) {
         Stack<Integer> num = new Stack<>();
@@ -171,6 +171,40 @@ public class LC227_BasicCalculatorII {
         else if (c == '*') r = a * b;
         else r = a / b;
         num.push(r);
+    }
+
+    // S5
+    // time = O(n), space = O(1)
+    public int calculate5(String s) {
+        int n = s.length();
+        int res = 0, last = 0;
+        char op = '+';
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == ' ') continue;
+            if (Character.isDigit(c)) {
+                int j = i + 1;
+                while (j < n && Character.isDigit(s.charAt(j))) j++;
+                int val = Integer.parseInt(s.substring(i, j));
+                if (op == '+') {
+                    res += val;
+                    last = val;
+                } else if (op == '-') {
+                    res -= val;
+                    last = -val;
+                } else if (op == '*') {
+                    res -= last;
+                    res += last * val;
+                    last *= val;
+                } else {
+                    res -= last;
+                    res += last / val;
+                    last /= val;
+                }
+                i = j - 1;
+            } else op = c;
+        }
+        return res;
     }
 }
 /**

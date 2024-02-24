@@ -131,6 +131,38 @@ public class LC65_ValidNumber {
         }
         return true;
     }
+
+    // S4
+    // time = O(n), space = O(1)
+    public boolean isNumber4(String s) {
+        int n = s.length(), idx = -1;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == 'e' || s.charAt(i) == 'E') {
+                if (idx == -1) idx = i;
+                else return false;
+            }
+        }
+        boolean ans = true;
+        if (idx != -1) {
+            ans &= check(s, 0, idx - 1, false);
+            ans &= check(s, idx + 1, n - 1, true);
+        } else ans &= check(s, 0, n - 1, false);
+        return ans;
+    }
+
+    private boolean check(String s, int l, int r, boolean isInteger) {
+        if (l > r) return false;
+        if (s.charAt(l) == '+' || s.charAt(l) == '-') l++;
+        boolean hasDot = false, hasNum = false;
+        for (int i = l; i <= r; i++) {
+            if (s.charAt(i) == '.') {
+                if (isInteger || hasDot) return false;
+                hasDot = true;
+            } else if (Character.isDigit(s.charAt(i))) hasNum = true;
+            else return false;
+        }
+        return hasNum;
+    }
 }
 /**
  * aeb -> [+a] e [-b]  大方向：找e，然后分而治之
