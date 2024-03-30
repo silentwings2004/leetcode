@@ -31,6 +31,7 @@ public class LC2617_MinimumNumberofVisitedCellsinaGrid {
      * @param grid
      * @return
      */
+    // S1
     // time = O(m * n * log(m * n)), space = O(m * n)
     public int minimumVisitedCells(int[][] grid) {
         int m = grid.length, n = grid[0].length;
@@ -79,4 +80,67 @@ public class LC2617_MinimumNumberofVisitedCellsinaGrid {
         }
         return -1;
     }
+
+    // S2
+    // time = O(m * n * log(m * n)), space = O(m * n)
+    public int minimumVisitedCells2(int[][] grid) {
+        int m = grid.length, n = grid[0].length, inf = 0x3f3f3f3f;
+        List<int[]>[] cs = new List[n];
+        for (int i = 0; i < n; i++) cs[i] = new ArrayList<>();
+        List<int[]> rs = new ArrayList<>();
+        int minv = 0;
+        for (int i = m - 1; i >= 0; i--) {
+            rs.clear();
+            for (int j = n - 1; j >= 0; j--) {
+                int v = grid[i][j];
+                minv = i < m - 1 || j < n - 1 ? inf : 1;
+                if (v > 0) {
+                    int k = find(rs, v + j);
+                    if (k < rs.size()) minv = Math.min(minv, rs.get(k)[0] + 1);
+                    k = find(cs[j], v + i);
+                    if (k < cs[j].size()) minv = Math.min(minv, cs[j].get(k)[0] + 1);
+                }
+                if (minv < inf) {
+                    while (!rs.isEmpty() && rs.get(rs.size() - 1)[0] >= minv) rs.remove(rs.size() - 1);
+                    rs.add(new int[]{minv, j});
+                    while (!cs[j].isEmpty() && cs[j].get(cs[j].size() - 1)[0] >= minv) cs[j].remove(cs[j].size() - 1);
+                    cs[j].add(new int[]{minv, i});
+                }
+            }
+        }
+        return minv < inf ? minv : -1;
+    }
+
+    private int find(List<int[]> stk, int t) {
+        if (stk.size() == 0) return 0;
+        int l = 0, r = stk.size() - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (stk.get(mid)[1] <= t) r = mid;
+            else l = mid + 1;
+        }
+        return stk.get(r)[1] <= t ? r : r + 1;
+    }
 }
+/**
+ * 从(0,0)->(0,1)->(1,1)
+ * 从(0,0)->(1,0)->(1,1)
+ * 有重叠子问题 => 用dp来优化
+ * dfs(0,0) -> dfs(x,y)
+ * g = grid[i][j]
+ * dfs(i,j) 枚举 k, 计算 min(dfs(i,k), for k in [j+1,j+g])
+ *                 计算 min(dfs(k,j), for k in [i+1,i+g])
+ * 优化前：O(mn(m+n))
+ * f[i][j] = min{
+ *                min(f[i][k], k in [j+1,j+g])
+ *                min(f[k][j], k in [i+1,i+g])
+ *          }
+ * i 和 j 倒序枚举
+ * 从右到左计算的时候，如果计算出的f[i][j] <= 之前的数，那么之前的数就没用了
+ * => 单调栈，从底往顶值和下标不断变大的单调栈
+ * [j+1,j+g]
+ * j+1一定在栈顶左侧
+ * j+g? 在单调栈上二分
+ * m, n = len(grid), len(grid[0])
+ * 需要 n + 1 个单调栈
+ */

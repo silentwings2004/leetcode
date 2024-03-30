@@ -77,6 +77,21 @@ public class LC1539_KthMissingPositiveNumber {
         l = arr[l] - (l + 1) >= k ? l : l + 1;
         return l + k; // k - (a[l - 1] - (l - 1 + 1) + a[l - 1] = k + l
     }
+
+    // S4
+    // time = O(logn), space = O(1)
+    public int findKthPositive4(int[] arr, int k) {
+        int n = arr.length;
+        if (k < arr[0]) return k;
+        k -= arr[0] - 1;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (arr[mid] - arr[0] + 1 - (mid + 1) < k) l = mid;
+            else r = mid - 1;
+        }
+        return arr[0] + k + r;
+    }
 }
 /**
  * 二分搜索。和1060.Missing-Element-in-Sorted-Array一样的思路。

@@ -75,6 +75,25 @@ public class LC1424_DiagonalTraverseII {
             this.val = val;
         }
     }
+
+    // S3: BFS
+    // time = O(m * n), space = O(sqrt(m * n))
+    public int[] findDiagonalOrder3(List<List<Integer>> nums) {
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0});
+        List<Integer> res = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int x = t[0], y = t[1];
+            res.add(nums.get(x).get(y));
+            if (y == 0 && x + 1 < nums.size()) q.offer(new int[]{x + 1, y});
+            if (y + 1 < nums.get(x).size()) q.offer(new int[]{x, y + 1});
+        }
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
+        return ans;
+    }
 }
 
 // 1. Notice that numbers with equal sums of row and column indexes belong to the same diagonal.

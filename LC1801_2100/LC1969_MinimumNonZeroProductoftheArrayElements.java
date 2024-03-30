@@ -25,6 +25,7 @@ public class LC1969_MinimumNonZeroProductoftheArrayElements {
      * @param p
      * @return
      */
+    // S1
     // time = O(p), space = O(1)
     long M = (long)(1e9 + 7);
     public int minNonZeroProduct(int p) {
@@ -37,6 +38,25 @@ public class LC1969_MinimumNonZeroProductoftheArrayElements {
         if (N == 0) return 1;
         long y = quickMul(x, N / 2);
         return N % 2 == 0 ? (y * y % M) : (y * y % M * x % M);
+    }
+
+    // S2
+    // time = O(logn), space = O(1)
+    long mod = (long)(1e9 + 7);
+    public int minNonZeroProduct2(int p) {
+        long cnt = (long)Math.pow(2, p) - 1;
+        long t = qmi(2, p) - 2;
+        return (int)((t + 1) * qmi(t, (cnt - 3) / 2 + 1) % mod);
+    }
+
+    private long qmi(long a, long k) {
+        long res = 1;
+        while (k > 0) {
+            if ((k & 1) == 1) res = res * a % mod;
+            a = a * a % mod;
+            k >>= 1;
+        }
+        return res;
     }
 }
 /**

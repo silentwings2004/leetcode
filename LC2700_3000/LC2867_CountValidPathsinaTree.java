@@ -178,3 +178,17 @@ public class LC2867_CountValidPathsinaTree {
         }
     }
 }
+/**
+ * 1. 枚举？选一个点当做根
+ * 2. 如果从非质数开始枚举的话，必须经过一个质数，比较麻烦
+ * 3. 能否从质数开始枚举？
+ * 避免相同路径算2次：只和左边的点乘
+ * count path by primes
+ * 只会看合数，路径可能会很长，取任意一个起点都可以
+ * sum = 0;
+ * for (int i = 1; i <= M; i++) {
+ *     sum += m_i * (total - m_i);
+ * }
+ * res += sum / 2 + total (以 p 为起点)
+ * 把所有合数的节点并起来
+ */

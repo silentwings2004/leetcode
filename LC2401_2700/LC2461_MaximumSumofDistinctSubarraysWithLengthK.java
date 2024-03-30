@@ -37,11 +37,9 @@ public class LC2461_MaximumSumofDistinctSubarraysWithLengthK {
         long res = 0;
         for (int i = 0, j = 0; i < n; i++) {
             if (map.containsKey(nums[i])) j = Math.max(j, map.get(nums[i]) + 1);
+            j = Math.max(j, i - k + 1);
+            if (i - j + 1 == k) res = Math.max(res, s[i + 1] - s[j]);
             map.put(nums[i], i);
-            if (i - j + 1 == k) {
-                res = Math.max(res, s[i + 1] - s[j]);
-                j++;
-            }
         }
         return res;
     }
@@ -67,4 +65,6 @@ public class LC2461_MaximumSumofDistinctSubarraysWithLengthK {
         }
         return res;
     }
+
+    // S3
 }

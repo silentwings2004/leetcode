@@ -1,5 +1,5 @@
 package LC901_1200;
-
+import java.util.*;
 public class LC992_SubarrayswithKDifferentIntegers {
     /**
      * Given an integer array nums and an integer k, return the number of good subarrays of nums.
@@ -64,6 +64,38 @@ public class LC992_SubarrayswithKDifferentIntegers {
                 j2++;
             }
             res += j2 - j1;
+        }
+        return res;
+    }
+
+    // S3: TreeSet
+    // time = O(nlogn), space = O(n)
+    public int subarraysWithKDistinct3(int[] nums, int k) {
+        int[] cnt = new int[N];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        TreeSet<Integer> set = new TreeSet<>();
+        int n = nums.length, res = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            int x = nums[i];
+            cnt[x]++;
+            if (map.containsKey(x)) {
+                int last = map.get(x);
+                set.remove(last);
+            }
+            map.put(x, i);
+            set.add(i);
+            while (map.size() > k) {
+                cnt[nums[j]]--;
+                if (cnt[nums[j]] == 0) {
+                    set.remove(j);
+                    map.remove(nums[j]);
+                }
+                j++;
+            }
+            if (map.size() == k) {
+                int r = set.first();
+                res += r - j + 1;
+            }
         }
         return res;
     }

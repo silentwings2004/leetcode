@@ -37,36 +37,37 @@ public class LC3049_EarliestSecondtoMarkIndicesII {
     // time = O(n + m(logm)^2), space = O(n + m)
     public int earliestSecondToMarkIndices(int[] nums, int[] changeIndices) {
         int n = nums.length, m = changeIndices.length;
+        if (n > m) return -1;
         long tot = 0;
         for (int x : nums) tot += x;
-        HashSet<Integer> set = new HashSet<>();
-        for (int i = 0; i < m; i++) {
-            changeIndices[i]--;
-            if (!set.add(changeIndices[i]) || nums[changeIndices[i]] == 0) changeIndices[i] = -1;
-        }
-
-        int l = 0, r = m - 1;
+        int l = n, r = m;
         while (l < r) {
             int mid = l + r >> 1;
-            if (check(nums, changeIndices, tot, mid)) r = mid;
+            if (check(nums, changeIndices, mid, tot)) r = mid;
             else l = mid + 1;
         }
-        return check(nums, changeIndices, tot, r) ? r + 1 : -1;
+        return check(nums, changeIndices, r, tot) ? r : -1;
     }
 
-    private boolean check(int[] nums, int[] c, long tot, int mid) {
+    private boolean check(int[] nums, int[] changeIndices, int mid, long tot) {
+        int[] c = changeIndices.clone();
         int n = nums.length, m = c.length;
+        int[] first = new int[n];
+        Arrays.fill(first, -1);
+        for (int i = 0; i < mid; i++) {
+            if (first[c[i] - 1] == -1 && nums[c[i] - 1] != 0) first[c[i] - 1] = i;
+            else c[i] = -1;
+        }
+
         PriorityQueue<Integer> pq = new PriorityQueue<>();
         for (int i = mid - 1; i >= 0; i--) {
-            if (c[i] >= 0) {
-                pq.offer(nums[c[i]]);
-                if (pq.size() > (mid - i + 1) / 2) pq.poll();
-            }
+            if (c[i] == -1) continue;
+            pq.offer(nums[c[i] - 1]);
+            if (pq.size() > mid - i - pq.size()) pq.poll();
         }
-        int sz = pq.size();
         long s = 0;
         for (int x : pq) s += x;
-        return mid + 1 - sz >= tot - s + n;
+        return s + (mid - n - pq.size()) >= tot;
     }
 }
 /**
@@ -90,4 +91,8 @@ public class LC3049_EarliestSecondtoMarkIndicesII {
  *   -> 多出来的这2天时间，用来做当前这门课程的快速复习 + 考试
  *
  *  从右往左遍历结束后，检查没有考试的课程，用慢速复习搞定
+ *
+ * 每个index 第一次出现时做mark
+ * => 可能没机会做mark
+ * 从后往前扫一遍
  */

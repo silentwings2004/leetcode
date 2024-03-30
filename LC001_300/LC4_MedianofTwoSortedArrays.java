@@ -23,29 +23,30 @@ public class LC4_MedianofTwoSortedArrays {
      * @return
      */
     // S1: Recursion
-    // time = O(log(m + n)), space = O(1)
+    // time = O(log(m + n)), space = O(logm + logn)
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int tot = nums1.length + nums2.length;
-        if (tot % 2 == 0) {
-            int left = find(nums1, 0, nums2, 0, tot / 2);
-            int right = find(nums1, 0, nums2, 0, tot / 2 + 1);
-            return (left + right) / 2.0;
+        int m = nums1.length, n = nums2.length;
+        if ((m + n) % 2 == 1) {
+            return findKth(nums1, 0, nums2, 0, (m + n) / 2 + 1);
+        } else {
+            return (findKth(nums1, 0, nums2, 0, (m + n) / 2) + findKth(nums1, 0, nums2, 0, (m + n) / 2 + 1)) / 2.0;
         }
-        return find(nums1, 0, nums2, 0, tot / 2 + 1) * 1.0;
     }
 
-    private int find(int[] nums1, int i, int[] nums2, int j, int k) {
+    private int findKth(int[] nums1, int a, int[] nums2, int b, int k) {
         int m = nums1.length, n = nums2.length;
-        if (m - i > n - j) return find(nums2, j, nums1, i, k);
-        if (i == m) return nums2[j + k - 1];
-        if (k == 1) return Math.min(nums1[i], nums2[j]);
+        if (m - a > n - b) return findKth(nums2, b, nums1, a, k);
+        if (m - a == 0) return nums2[b + k - 1];
+        if (k == 1) return Math.min(nums1[a], nums2[b]);
 
-        int k1 = Math.min(m - i, k / 2);
-        int k2 = k - k1;
-        if (nums1[i + k1 - 1] > nums2[j + k2 -1]) {
-            return find(nums1, i, nums2, j + k2, k - k2);
+        int k1 = 0, k2 = 0;
+        if (a + k / 2 >= m) k1 = m - a;
+        else k1 = k / 2;
+        k2 = k - k1;
+        if (nums1[a + k1 - 1] < nums2[b + k2 - 1]) {
+            return findKth(nums1, a + k1, nums2, b, k - k1);
         }
-        return find(nums1, i + k1, nums2, j, k - k1);
+        return findKth(nums1, a, nums2, b + k2, k - k2);
     }
 
     // S2: 最优解！！！

@@ -71,4 +71,23 @@ public class LC2673_MakeCostsofPathsEqualinaBinaryTree {
         dfs(u * 2, sum + w[u - 1]);
         dfs(u * 2 + 1, sum + w[u - 1]);
     }
+
+    // S2：Greedy
+    // time = O(n), space = O（1）
+    public int minIncrements2(int n, int[] cost) {
+        int res = 0;
+        for (int i = n / 2; i > 0; i--) {
+            res += Math.abs(cost[2 * i - 1] - cost[i * 2]);
+            cost[i - 1] += Math.max(cost[2 * i - 1], cost[i * 2]);
+        }
+        return res;
+    }
 }
+/**
+ * 应该先修改上面的节点还是下面的节点
+ * 操作只有增加，没有减少
+ * 把小的叶子节点改成和大的叶子一样，修改上面是没有意义的
+ * 贪心：把叶子节点里的最小值变成最大值即可
+ * 先修改叶子，把路径和传给父节点，可以直接比较2个父节点的值
+ * 由于是满2叉树，所以不需要用递归，只要循环即可。
+ */

@@ -35,20 +35,18 @@ public class LC948_BagofTokens {
     // S1
     // time = O(nlogn), space = O(1)
     public int bagOfTokensScore(int[] tokens, int power) {
+        int n = tokens.length;
         Arrays.sort(tokens);
-        int n = tokens.length, score = 0, res = 0;
-        int i = 0, j = n - 1;
-        while (i <= j && power >= tokens[i]) {
-            while (i <= j && power >= tokens[i]) {
-                power -= tokens[i];
-                score++;
-                i++;
-                res = Math.max(res, score);
-            }
-            while (i <= j && score > 0 && power < tokens[i]) {
-                power += tokens[j];
-                score--;
-                j--;
+        int res = 0, t = 0;
+        for (int i = 0, j = n - 1; i <= j;) {
+            if (power >= tokens[i]) {
+                power -= tokens[i++];
+                t++;
+                res = Math.max(res, t);
+            } else {
+                if (t == 0) break;
+                power += tokens[j--];
+                t--;
             }
         }
         return res;

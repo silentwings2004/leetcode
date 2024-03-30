@@ -70,4 +70,25 @@ public class LC1261_FindElementsinaContaminatedBinaryTree {
             dfs(node.right);
         }
     }
+
+    // S2: Bit
+    class FindElements {
+        // time = O(1), space = O(1)
+        TreeNode root;
+        public FindElements(TreeNode root) {
+            this.root = root;
+        }
+
+        public boolean find(int target) {
+            target++;
+            TreeNode cur = root;
+            for (int i = 30 - Integer.numberOfLeadingZeros(target); i >= 0; i--) {
+                int x = target >> i & 1;
+                if (x == 0) cur = cur.left;
+                else cur = cur.right;
+                if (cur == null) return false;
+            }
+            return true;
+        }
+    }
 }

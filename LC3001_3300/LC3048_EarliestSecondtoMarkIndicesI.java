@@ -33,6 +33,7 @@ public class LC3048_EarliestSecondtoMarkIndicesI {
      * @param changeIndices
      * @return
      */
+    // S1
     // time = O(mlogm), space = O(1)
     public int earliestSecondToMarkIndices(int[] nums, int[] changeIndices) {
         int n = nums.length, m = changeIndices.length;
@@ -62,6 +63,38 @@ public class LC3048_EarliestSecondtoMarkIndicesI {
         }
         return waste <= tot && set.size() == nums.length;
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int earliestSecondToMarkIndices2(int[] nums, int[] changeIndices) {
+        int l = nums.length, r = changeIndices.length;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (isOK(nums, changeIndices, mid)) r = mid;
+            else l = mid + 1;
+        }
+        return isOK(nums, changeIndices, r) ? r : -1;
+    }
+
+    private boolean isOK(int[] nums, int[] c, int mid) {
+        int n = nums.length, m = c.length;
+        int[] last = new int[n];
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 0; i < mid; i++) {
+            last[c[i] - 1] = i; // 记录最后一次出现的位置，必须要进行mark
+            set.add(c[i] - 1); // 记录可以被mark的下标，如果最终有下标未出现，则一定不行！
+        }
+        if (set.size() != n) return false;
+        int cnt = 0;
+        for (int i = 0; i < mid; i++) {
+            if (i != last[c[i] - 1]) cnt++; // 不是最后一次就不停累积
+            else {
+                cnt -= nums[c[i] - 1]; // 最后一次就一定要mark
+                if (cnt < 0) return false;
+            }
+        }
+        return true;
+    }
 }
 /**
  * nums[i] 当做第 i 门课程需要 nums[i] 天复习
@@ -76,4 +109,6 @@ public class LC3048_EarliestSecondtoMarkIndicesI {
  * 考试的那天越晚越好，这样前面用来复习的时间就越多
  * 但是，我应该复习哪一门课程呢？
  * 规划一下：
+ *
+ * 到最后再Mark，前面积累减1操作即可
  */

@@ -26,27 +26,16 @@ public class LC29_DivideTwoIntegers {
     // S1
     // time = O(logk), space = O(1)
     public int divide(int dividend, int divisor) {
-        long a = (long) dividend, b = (long) divisor;
-        int sign = 1;
-        if (a < 0 && b > 0 || a > 0 && b < 0) sign = -1;
-
-        a = Math.abs(a);
-        b = Math.abs(b);
-
-        long res = 0;
-        while (a >= b) {
-            long c = b, sum = 1;
-            while ((c << 1) < a) {
-                c <<= 1;
-                sum <<= 1;
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+        int sign = (dividend >= 0) == (divisor >= 0) ? 1 : -1;
+        int a = Math.abs(dividend), b = Math.abs(divisor), res = 0;
+        for (int i = 31; i >= 0; i--) {
+            if ((a >>> i) - b >= 0) { // 注意：这里必须是无符号右移 >>> !
+                res |= 1 << i;
+                a -= b << i;
             }
-            a -= c;
-            res += sum;
         }
-
-        res *= sign;
-        if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE) return Integer.MAX_VALUE;
-        return (int) res;
+        return res * sign;
     }
 
     // S2

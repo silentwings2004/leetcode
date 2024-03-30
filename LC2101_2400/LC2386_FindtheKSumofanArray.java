@@ -57,6 +57,39 @@ public class LC2386_FindtheKSumofanArray {
         }
         return maxSum - sum;
     }
+
+    // S2: 多路归并
+    // time = O(nlogn + k^2), space = O(n)
+    public long kSum2(int[] nums, int k) {
+        long s = 0;
+        List<Integer> q = new ArrayList<>();
+        for (int x : nums) {
+            if (x >= 0) {
+                s += x;
+                q.add(-x);
+            } else q.add(x);
+        }
+        Collections.sort(q, (o1, o2) -> o2 - o1);
+        while (q.size() > k) q.remove(q.size() - 1);
+
+        List<Long> a = new ArrayList<>();
+        a.add(s);
+
+        int t = 1;
+        for (int x : q) {
+            int i = 0, j = 0;
+            t = Math.min(t * 2, k);
+            List<Long> b = new ArrayList<>();
+            while (i < a.size() && j < a.size() && b.size() < t) {
+                if (a.get(i) > a.get(j) + x) b.add(a.get(i++));
+                else b.add(a.get(j++) + x);
+            }
+            while (i < a.size() && b.size() < t) b.add(a.get(i++));
+            while (j < a.size() && b.size() < t) b.add(a.get(j++) + x);
+            a = new ArrayList<>(b);
+        }
+        return a.get(k - 1);
+    }
 }
 /**
  * 多路归并算法

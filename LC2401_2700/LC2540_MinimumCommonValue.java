@@ -25,16 +25,14 @@ public class LC2540_MinimumCommonValue {
      */
     // time = O(min(m, n)), space = O(1)
     public int getCommon(int[] nums1, int[] nums2) {
-        int m = nums1.length, n = nums2.length, res = Integer.MAX_VALUE;
-        for (int i = 0, j = 0; i < m && j < n;) {
+        int res = -1;
+        for (int i = 0, j = 0; i < nums1.length && j < nums2.length;) {
             if (nums1[i] == nums2[j]) {
-                res = Math.min(res, nums1[i]);
-                i++;
-                j++;
-            }
-            else if (nums1[i] < nums2[j]) i++;
+                res = nums1[i];
+                break;
+            } else if (nums1[i] < nums2[j]) i++;
             else j++;
         }
-        return res == Integer.MAX_VALUE ? -1 : res;
+        return res;
     }
 }

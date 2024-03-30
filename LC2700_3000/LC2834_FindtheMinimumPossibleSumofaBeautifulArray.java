@@ -9,7 +9,7 @@ public class LC2834_FindtheMinimumPossibleSumofaBeautifulArray {
      * nums.length == n.
      * nums consists of pairwise distinct positive integers.
      * There doesn't exist two distinct indices, i and j, in the range [0, n - 1], such that nums[i] + nums[j] == target.
-     * Return the minimum possible sum that a beautiful array could have.
+     * Return the minimum possible sum that a beautiful array could have modulo 10^9 + 7.
      *
      * Input: n = 2, target = 3
      * Output: 4
@@ -22,15 +22,15 @@ public class LC2834_FindtheMinimumPossibleSumofaBeautifulArray {
      *
      * Constraints:
      *
-     * 1 <= n <= 10^5
-     * 1 <= target <= 10^5
+     * 1 <= n <= 10^9
+     * 1 <= target <= 10^9
      * @param n
      * @param target
      * @return
      */
     // time = O(1), space = O(1)
-    public long minimumPossibleSum(int n, int target) {
-        long m = Math.min(target / 2, n);
-        return (1 + m) * m / 2 + (target + target + n - m - 1) * (n - m) / 2;
+    public int minimumPossibleSum(int n, int target) {
+        int m = Math.min(target / 2, n), mod = (int)1e9 + 7;
+        return (int)(((m + 1L) * m / 2 + (target * 2L + n - m - 1) * (n - m) / 2) % mod);
     }
 }

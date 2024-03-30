@@ -163,4 +163,10 @@ public class LC2581_CountNumberofPossibleRootNodes {
  * 如果AB边原本是一个逆序的猜想，那么此刻就会变成顺序。
  * 所以本题的做法就是，先以任意节点（比如说0）为根，一遍dfs计算有多少正确的guess，假设叫做count。
  * 然后递归处理它相邻的节点作为根的情况，只需要考察这条相邻边的正逆序变化改变了多少猜想，更新count即可。
+ *
+ * 1. 把以0为根的猜对次数算出来 cnt0 dfs
+ * 2. 再跑一次dfs,
+ * cnt
+ * 0 -> 1
+ * cnt - (0,1) in s + (1,0) in s
  */
