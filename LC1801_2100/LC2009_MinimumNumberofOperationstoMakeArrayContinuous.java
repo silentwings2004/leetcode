@@ -86,18 +86,18 @@ public class LC2009_MinimumNumberofOperationstoMakeArrayContinuous {
     // time = O(nlogn), space = O(n)
     public int minOperations3(int[] nums) {
         Arrays.sort(nums);
-        int n = nums.length, t = n - 1, res = n - 1;
+        int n = nums.length, res = n;
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0, j = 0; i < n; i++) {
-            res = Math.min(res, n - map.size());
-            while (nums[i] - nums[j] > t) {
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+            while (nums[i] - nums[j] > n - 1) {
                 map.put(nums[j], map.get(nums[j]) - 1);
                 if (map.get(nums[j]) == 0) map.remove(nums[j]);
                 j++;
             }
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+            res = Math.min(res, n - map.size());
         }
-        return Math.min(res, n - map.size());
+        return res;
     }
 }
 /**

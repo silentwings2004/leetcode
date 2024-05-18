@@ -33,26 +33,34 @@ public class LC1652_DefusetheBomb {
      * @param k
      * @return
      */
-    // time = O(n * k), space = O(n)
+    // S1
+    // time = O(n * k), space = O(1)
     public int[] decrypt(int[] code, int k) {
         int n = code.length;
         int[] res = new int[n];
+        if (k == 0) return res;
         for (int i = 0; i < n; i++) {
-            if (k > 0) {
-                int sum = 0;
-                for (int j = 1; j <= k; j++) {
-                    int idx = (i + j) % n;
-                    sum += code[idx];
-                }
-                res[i] = sum;
-            } else if (k < 0) {
-                int sum = 0;
-                for (int j = 1; j <= -k; j++) {
-                    int idx = (i - j + n) % n;
-                    sum += code[idx];
-                }
-                res[i] = sum;
-            } else res[i] = 0;
+            int t = 0;
+            for (int j = 1; j <= Math.abs(k); j++) {
+                int idx = k > 0 ? (i + j) % n : (i - j + n) % n;
+                t += code[idx];
+            }
+            res[i] = t;
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int[] decrypt2(int[] code, int k) {
+        int n = code.length;
+        int[] res = new int[n];
+        if (k == 0) return res;
+        int[] s = new int[n * 2 + 1];
+        for (int i = 1; i <= n * 2; i++) s[i] = s[i - 1] + code[(i - 1) % n];
+        for (int i = 1; i <= n; i++) {
+            if (k < 0) res[i - 1] = s[i - 1 + n] - s[i - 1 + k + n];
+            else res[i - 1] = s[i + k] - s[i];
         }
         return res;
     }

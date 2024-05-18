@@ -26,6 +26,7 @@ public class LC861_ScoreAfterFlippingMatrix {
      * @param grid
      * @return
      */
+    // S1
     // time = O(m * n), space = O(1)
     public int matrixScore(int[][] grid) {
         int m = grid.length, n = grid[0].length;
@@ -44,6 +45,40 @@ public class LC861_ScoreAfterFlippingMatrix {
                 if (grid[i][j] == 1) cnt++;
             }
             res += (1 << n - 1 - j) * Math.max(cnt, m - cnt);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(m * n), space = O(1)
+    public int matrixScore2(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            if (grid[i][0] == 1) continue;
+            for (int j = 0; j < n; j++) {
+                grid[i][j] ^= 1;
+            }
+        }
+
+        for (int j = 0; j < n; j++) {
+            int t = 0;
+            for (int i = 0; i < m; i++) {
+                t += grid[i][j];
+            }
+            if (t < (m + 1) / 2) {
+                for (int i = 0; i < m; i++) {
+                    grid[i][j] ^= 1;
+                }
+            }
+        }
+
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            int t = 0;
+            for (int j = 0; j < n; j++) {
+                t = t * 2 + grid[i][j];
+            }
+            res += t;
         }
         return res;
     }

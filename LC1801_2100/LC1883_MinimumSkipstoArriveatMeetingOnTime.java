@@ -35,6 +35,7 @@ public class LC1883_MinimumSkipstoArriveatMeetingOnTime {
      * @param hoursBefore
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n^2)
     public int minSkips(int[] dist, int speed, int hoursBefore) {
         // corner case
@@ -60,6 +61,27 @@ public class LC1883_MinimumSkipstoArriveatMeetingOnTime {
         for (int j = 0; j <= n; j++) {
             dp[n][j] = dp[n - 1][j] + dist[n - 1] * 1.0 / speed;
             if (dp[n][j] <= hoursBefore) return j;
+        }
+        return -1;
+    }
+
+    // S2
+    // time = O(n^2), space = O(n^2)
+    final double eps = 1e-8, inf = 1e9;
+    public int minSkips2(int[] dist, int speed, int hoursBefore) {
+        int n = dist.length;
+        double[][] f = new double[n + 1][n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            double t = 1.0 * dist[i - 1] / speed;
+            for (int j = 0; j <= i; j++) {
+                f[i][j] = inf;
+                if (j <= i - 1) f[i][j] = Math.min(f[i][j], Math.ceil(f[i - 1][j] + t - eps));
+                if (j > 0) f[i][j] = Math.min(f[i][j], f[i - 1][j - 1] + t);
+            }
+        }
+        for (int i = 0; i <= n; i++) {
+            if (f[n][i] <= hoursBefore) return i;
         }
         return -1;
     }

@@ -104,6 +104,37 @@ public class LC741_CherryPickup {
         }
         return Math.max(0, f[n][n][2 * n]);
     }
+
+    // S2.2
+    // time = O(n^3), space = O(n^3)
+    public int cherryPickup3(int[][] grid) {
+        int n = grid.length, inf = 0x3f3f3f3f;
+        int[][][] f = new int[n * 2 + 1][n + 1][n + 1];
+        for (int i = 0; i <= n * 2; i++) {
+            for (int j = 0; j <= n; j++) {
+                Arrays.fill(f[i][j], -inf);
+            }
+        }
+        if (grid[0][0] != -1) f[2][1][1] = grid[0][0];
+        for (int k = 3; k <= n * 2; k++) {
+            for (int i1 = 1; i1 <= n; i1++) {
+                for (int i2 = 1; i2 <= n; i2++) {
+                    int j1 = k - i1, j2 = k - i2;
+                    if (i1 < 1 || i1 > n || i1 < 1 || i2 > n) continue;
+                    if (j1 < 1 || j1 > n || j2 < 1 || j2 > n) continue;
+                    if (grid[i1 - 1][j1 - 1] == -1 || grid[i2 - 1][j2 - 1] == -1) continue;
+                    int t = grid[i1 - 1][j1 - 1];
+                    if (i1 != i2) t += grid[i2 - 1][j2 - 1];
+                    for (int a = 0; a <= 1; a++) {
+                        for (int b = 0; b <= 1; b++) {
+                            f[k][i1][i2] = Math.max(f[k][i1][i2], f[k - 1][i1 - a][i2 - b] + t);
+                        }
+                    }
+                }
+            }
+        }
+        return Math.max(0, f[n * 2][n][n]);
+    }
 }
 /**
  * for (int i = 0; i < n; i++) {

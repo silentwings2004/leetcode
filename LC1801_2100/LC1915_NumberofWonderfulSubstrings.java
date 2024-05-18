@@ -21,30 +21,21 @@ public class LC1915_NumberofWonderfulSubstrings {
      * @param word
      * @return
      */
-    // time = O(n), space = O(1)
+    // time = O(n * 2^10), space = O(2^10)
     public long wonderfulSubstrings(String word) {
-        // corner case
-        if (word == null || word.length() == 0) return 0;
-
         int n = word.length();
-        int state = 0;
-        int[] count = new int[1 << 10];
-        count[0] += 1; // 什么字符都没有，意味着所有字符出现0次，也是一种前缀
-
+        long[] f = new long[1 << 10];
+        f[0] = 1;
         long res = 0;
-        for (int i = 0; i < n; i++) {
-            int k = word.charAt(i) - 'a';
-
-            // case 1: all even/odd
-            state ^= (1 << k); // state[i] -> flip state[i - 1] -> update cur state
-            res  += count[state]; // all letter freqs are even, directly read the same previous states
-
-            // case 2: only one odd
-            for (k = 0; k < 10; k++) {
-                int stateJ = state ^ (1 << k); // check previous states that meet this enumerated state
-                res += count[stateJ]; // stateJ is past state, not cur, so can't use it to update cur state!!!
+        for (int i = 0, t = 0; i < n; i++) {
+            int u = word.charAt(i) - 'a';
+            t ^= 1 << u;
+            for (int j = 0; j < 10; j++) {
+                int x = 1 << j, y = t ^ x;
+                res += f[y];
             }
-            count[state] += 1; // don't forget to update the current state in the count to use later!!!
+            res += f[t];
+            f[t]++;
         }
         return res;
     }

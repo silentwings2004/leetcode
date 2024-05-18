@@ -68,4 +68,17 @@ public class LC331_VerifyPreorderSerializationofaBinaryTree {
         k++;
         return dfs() && dfs();
     }
+
+    // S3
+    // time = O(n), space = O(n)
+    public boolean isValidSerialization3(String preorder) {
+        String[] strs = preorder.split(",");
+        int k = 1;
+        for (String s : strs) {
+            k--;
+            if (k < 0) return false;
+            if (!s.equals("#")) k += 2;
+        }
+        return k == 0;
+    }
 }

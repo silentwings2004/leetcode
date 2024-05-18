@@ -1,5 +1,5 @@
 package LC301_600;
-
+import java.util.*;
 public class LC494_TargetSum {
     /**
      * You are given an integer array nums and an integer target.
@@ -39,6 +39,23 @@ public class LC494_TargetSum {
             }
         }
         return f[n][target + offset];
+    }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int findTargetSumWays2(int[] nums, int target) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+
+        for (int x : nums) {
+            HashMap<Integer, Integer> hm = new HashMap<>(map);
+            map.clear();
+            for (int y : hm.keySet()) {
+                map.put(y + x, map.getOrDefault(y + x, 0) + hm.get(y));
+                map.put(y - x, map.getOrDefault(y - x, 0) + hm.get(y));
+            }
+        }
+        return map.getOrDefault(target, 0);
     }
 }
 /**

@@ -30,48 +30,60 @@ public class LC1992_FindAllGroupsofFarmland {
      * @param land
      * @return
      */
+    // S1
+    // time = O(m * n), space = O(m * n)
+    int[][] g;
+    int m, n;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    List<int[]> res;
     public int[][] findFarmland(int[][] land) {
-        // corner case
-        if (land == null || land.length == 0 || land[0] == null || land[0].length == 0) return new int[0][0];
-
-        List<int[]> res = new ArrayList<>();
-        int m = land.length, n = land[0].length;
+        g = land;
+        m = g.length;
+        n = g[0].length;
+        res = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (land[i][j] == 1) {
-                    helper(land, i, j, res);
+                if (g[i][j] == 1) {
+                    int[] t = new int[]{i, j, i, j};
+                    dfs(i, j, t);
+                    res.add(t);
                 }
             }
         }
-        int[][] ans = new int[res.size()][4];
-        for (int i = 0; i < res.size(); i++) ans[i] = res.get(i);
-        return ans;
+        return res.toArray(new int[res.size()][]);
     }
 
-    private void helper(int[][] land, int x, int y, List<int[]> res) {
+    private void dfs(int x, int y, int[] t) {
+        g[x][y] = 0;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == 0) continue;
+            t[2] = Math.max(t[2], a);
+            t[3] = Math.max(t[3], b);
+            dfs(a, b, t);
+        }
+    }
+
+    // S2
+    // time = O(m * n), space = O(m * n)
+    public int[][] findFarmland2(int[][] land) {
         int m = land.length, n = land[0].length;
-        int r = -1, c = -1;
-
-        int i = x, j = y;
-        for (j = y; j < n; j++) {
-            if (land[i][j] == 0) break;
-        }
-        j--;
-
-        for (i = x; i < m; i++) {
-            if (land[i][j] == 1) land[i][j] = 0;
-            else break;
-        }
-
-        i--;
-        r = i;
-        c = j;
-        res.add(new int[]{x, y, r, c});
-
-        for (i = x; i <= r; i++) {
-            for (j = y; j <= c; j++) {
-                land[i][j] = 0;
+        List<int[]> res = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (land[i][j] == 1) {
+                    int x = i, y = j;
+                    for (x = i; x < m && land[x][j] == 1; x++) {
+                        for (y = j; y < n && land[x][y] == 1; y++) {
+                            land[x][y] = 0;
+                        }
+                    }
+                    int[] t = new int[]{i, j, x - 1, y - 1};
+                    res.add(t);
+                }
             }
         }
+        return res.toArray(new int[res.size()][]);
     }
 }

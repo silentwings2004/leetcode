@@ -41,15 +41,16 @@ public class LC2812_FindtheSafestPathinaGrid {
     // S1
     // time = O(n^2*logn), space = O(n^2)
     public int maximumSafenessFactor(List<List<Integer>> grid) {
-        int n = grid.size(), INF = 0x3f3f3f3f;
-        int[][] dist = new int[n][n];
-        for (int i = 0; i < n; i++) Arrays.fill(dist[i], INF);
+        int n = grid.size(), inf = 0x3f3f3f3f;
+        if (grid.get(0).get(0) == 1 || grid.get(n - 1).get(n - 1) == 1) return 0;
         Queue<int[]> q = new LinkedList<>();
+        int[][] d = new int[n][n];
+        for (int i = 0; i < n; i++) Arrays.fill(d[i], inf);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid.get(i).get(j) == 1) {
                     q.offer(new int[]{i, j});
-                    dist[i][j] = 0;
+                    d[i][j] = 0;
                 }
             }
         }
@@ -61,32 +62,33 @@ public class LC2812_FindtheSafestPathinaGrid {
             for (int i = 0; i < 4; i++) {
                 int a = x + dx[i], b = y + dy[i];
                 if (a < 0 || a >= n || b < 0 || b >= n) continue;
-                if (dist[a][b] != INF) continue;
-                dist[a][b] = Math.min(dist[a][b], dist[x][y] + 1);
+                if (grid.get(a).get(b) == 1) continue;
+                if (d[a][b] != inf) continue;
+                d[a][b] = d[x][y] + 1;
                 q.offer(new int[]{a, b});
             }
         }
 
-        int res = INF;
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]);
-        pq.offer(new int[]{dist[0][0], 0, 0});
+        pq.offer(new int[]{d[0][0], 0, 0});
         boolean[][] st = new boolean[n][n];
 
         while (!pq.isEmpty()) {
             int[] t = pq.poll();
-            int d = t[0], x = t[1], y = t[2];
+            int v = t[0], x = t[1], y = t[2];
             if (st[x][y]) continue;
             st[x][y] = true;
-            res = Math.min(res, d);
-            if (x == n - 1 && y == n - 1) break;
+            if (x == n - 1 && y == n - 1) return v;
+
             for (int i = 0; i < 4; i++) {
                 int a = x + dx[i], b = y + dy[i];
                 if (a < 0 || a >= n || b < 0 || b >= n) continue;
+                if (grid.get(a).get(b) == 1) continue;
                 if (st[a][b]) continue;
-                pq.offer(new int[]{dist[a][b], a, b});
+                pq.offer(new int[]{Math.min(v, d[a][b]), a, b});
             }
         }
-        return res;
+        return 0;
     }
 
     // S2

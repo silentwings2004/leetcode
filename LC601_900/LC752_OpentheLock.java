@@ -28,6 +28,7 @@ public class LC752_OpentheLock {
      * @param target
      * @return
      */
+    // S1
     // time = O(n^2 * a^n + k) = O(16 + 10^4 + k) = O(k), space = O(a^n + k) = O(10^4 + k) = O(k)
     // a表示数字的个数 = 10，n表示状态的位数 = 4，k表示数组deadends的大小
     public int openLock(String[] deadends, String target) {
@@ -56,6 +57,47 @@ public class LC752_OpentheLock {
                     }
                 }
             }
+        }
+        return -1;
+    }
+
+    // S2
+    // time = O(n^2 * a^n + k) = O(16 + 10^4 + k) = O(k), space = O(a^n + k) = O(10^4 + k) = O(k)
+    public int openLock2(String[] deadends, String target) {
+        HashSet<String> dset = new HashSet<>();
+        HashSet<String> vis = new HashSet<>();
+        for (String s : deadends) dset.add(s);
+        String start = "0000";
+        if (dset.contains(start)) return -1;
+        Queue<String> q = new LinkedList<>();
+        q.offer(start);
+        vis.add(start);
+
+        int step = 0;
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            while (sz-- > 0) {
+                String t = q.poll();
+                if (t.equals(target)) return step;
+                char[] s = t.toCharArray();
+                for (int i = 0; i < 4; i++) {
+                    char c = s[i];
+                    // +
+                    if (s[i] == '9') s[i] = '0';
+                    else s[i]++;
+                    String nt= String.valueOf(s);
+                    if (vis.add(nt) && !dset.contains(nt)) q.offer(nt);
+
+                    s[i] = c;
+                    // -
+                    if (s[i] == '0') s[i] = '9';
+                    else s[i]--;
+                    nt = String.valueOf(s);
+                    if (vis.add(nt) && !dset.contains(nt)) q.offer(nt);
+                    s[i] = c;
+                }
+            }
+            step++;
         }
         return -1;
     }

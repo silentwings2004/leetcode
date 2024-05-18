@@ -38,27 +38,16 @@ public class LC2462_TotalCosttoHireKWorkers {
     // time = O(nlogn), space = O(n)
     public long totalCost(int[] costs, int k, int candidates) {
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-        int n = costs.length;
-        int i = 0, j = n - 1;
-        while (candidates-- > 0 && i <= j) {
-            pq.offer(new int[]{costs[i], i, 0});
-            if (i != j) pq.offer(new int[]{costs[j], j, 1});
-            i++;
-            j--;
-        }
+        int i = 0, n = costs.length, j = n - 1;
+        for (i = 0; i < candidates; i++) pq.offer(new int[]{costs[i], i});
+        for (j = n - 1; n - j <= candidates && j >= i; j--) pq.offer(new int[]{costs[j], j});
 
-        int cnt = 0;
         long res = 0;
-        while (i <= j && cnt < k) {
+        while (k-- > 0) {
             int[] t = pq.poll();
             res += t[0];
-            cnt++;
-            if (t[2] == 0) pq.offer(new int[]{costs[i], i++, 0});
-            else pq.offer(new int[]{costs[j], j--, 1});
-        }
-        while (cnt < k) {
-            res += pq.poll()[0];
-            cnt++;
+            if (t[1] < i && i <= j) pq.offer(new int[]{costs[i], i++});
+            else if (t[1] > j && j >= i) pq.offer(new int[]{costs[j], j--});
         }
         return res;
     }

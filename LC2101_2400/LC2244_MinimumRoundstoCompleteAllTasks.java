@@ -21,6 +21,7 @@ public class LC2244_MinimumRoundstoCompleteAllTasks {
      * @param tasks
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int minimumRounds(int[] tasks) {
         HashMap<Integer, Integer> map = new HashMap<>();
@@ -31,6 +32,23 @@ public class LC2244_MinimumRoundstoCompleteAllTasks {
             if (map.get(key) < 2) return -1;
             int amount = map.get(key);
             res += amount % 3 == 0 ? amount / 3 : amount / 3 + 1;
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(logn)
+    public int minimumRounds2(int[] tasks) {
+        Arrays.sort(tasks);
+        int n = tasks.length, res = 0;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1;
+            while (j < n && tasks[j] == tasks[i]) j++;
+            int len = j - i;
+            if (len == 1) return -1;
+            if (len % 3 == 0) res += len / 3;
+            else res += len / 3 + 1;
+            i = j - 1;
         }
         return res;
     }

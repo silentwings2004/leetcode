@@ -29,28 +29,13 @@ public class LC2444_CountSubarraysWithFixedBounds {
      */
     // time = O(n), space = O(1)
     public long countSubarrays(int[] nums, int minK, int maxK) {
-        int n = nums.length, smin = 0, smax = 0;
+        int n = nums.length, preMin = -1, preMax = -1, boundary = -1;
         long res = 0;
-        for (int i = 0, last = 0, j = 0; i < n; i++) {
-            if (nums[i] < minK || nums[i] > maxK) {
-                j = last = i + 1;
-                smin = smax = 0;
-                continue;
-            }
-
-            if (nums[i] == minK) smin++;
-            if (nums[i] == maxK) smax++;
-            while (j <= i) {
-                if (nums[j] == minK) smin--;
-                if (nums[j] == maxK) smax--;
-                if (smin == 0 || smax == 0) {
-                    if (nums[j] == minK) smin++;
-                    if (nums[j] == maxK) smax++;
-                    break;
-                }
-                j++;
-            }
-            if (smin > 0 && smax > 0) res += j - last + 1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == minK) preMin = i;
+            if (nums[i] == maxK) preMax = i;
+            if (nums[i] < minK || nums[i] > maxK) boundary = i;
+            res += Math.max(0, Math.min(preMin, preMax) - boundary);
         }
         return res;
     }

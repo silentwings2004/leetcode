@@ -141,6 +141,67 @@ public class LC1766_TreeofCoprimes {
         ne[idx] = h[a];
         h[a] = idx++;
     }
+
+    // S3
+    // time = O(n * 50), space = O(n + 50)
+    class Solution {
+        final int inf = 0x3f3f3f3f;
+        List<Integer>[] adj, p, q;
+        int n;
+        int[] nums, depth, d, res;
+        public int[] getCoprimes(int[] nums, int[][] edges) {
+            this.nums = nums;
+            n = nums.length;
+            depth = new int[n];
+            d = new int[n];
+            Arrays.fill(d, inf);
+            res = new int[n];
+            Arrays.fill(res, -1);
+            adj = new List[n];
+            for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+            p = new List[51];
+            q = new List[51];
+            for (int i = 0; i <= 50; i++) p[i] = new ArrayList<>();
+            for (int i = 0; i <= 50; i++) q[i] = new ArrayList<>();
+            for (int i = 1; i <= 50; i++) {
+                for (int j = i; j <= 50; j++) {
+                    if (gcd(i, j) == 1) {
+                        p[i].add(j);
+                        p[j].add(i);
+                    }
+                }
+            }
+            for (int[] e : edges) {
+                int a = e[0], b = e[1];
+                adj[a].add(b);
+                adj[b].add(a);
+            }
+            dfs(0, -1);
+            return res;
+        }
+
+        private void dfs(int u, int fa) {
+            q[nums[u]].add(u);
+            for (int v : adj[u]) {
+                if (v == fa) continue;
+                depth[v] = depth[u] + 1;
+                for (int x : p[nums[v]]) {
+                    for (int y : q[x]) {
+                        if (d[v] > depth[v] - depth[y]) {
+                            d[v] = depth[v] - depth[y];
+                            res[v] = y;
+                        }
+                    }
+                }
+                dfs(v, u);
+            }
+            q[nums[u]].remove(q[nums[u]].size() - 1);
+        }
+
+        private int gcd(int a, int b) {
+            return b == 0 ? a : gcd(b, a % b);
+        }
+    }
 }
 /**
  * 1 <= nums[i] <= 50 => 不需要回看所有支路上的祖先

@@ -27,33 +27,33 @@ public class LC1219_PathwithMaximumGold {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-    int res = 0;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    int[][] g;
+    int m, n, res;
     public int getMaximumGold(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
+        g = grid;
+        m = g.length;
+        n = g[0].length;
+        res = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] != 0) {
-                    boolean[][] visited = new boolean[m][n];
-                    dfs(grid, i, j, grid[i][j], visited);
-                }
+                if (g[i][j] > 0) dfs(i, j, 0);
             }
         }
         return res;
     }
 
-    private void dfs(int[][] grid, int i, int j, int sum, boolean[][] visited) {
-        int m = grid.length, n = grid[0].length;
-
-        visited[i][j] = true;
-        for (int[] dir : directions) {
-            int x = i + dir[0];
-            int y = j + dir[1];
-            if (x < 0 || x >= m || y < 0 || y >= n) continue;
-            if (grid[i][j] == 0 || visited[i][j]) continue;
-            dfs(grid, x, y, sum + grid[x][y], visited);
+    private void dfs(int x, int y, int t) {
+        t += g[x][y];
+        res = Math.max(res, t);
+        int v = g[x][y];
+        g[x][y] = 0;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a < 0 || a >= m || b < 0 || b >= n) continue;
+            if (g[a][b] == 0) continue;
+            dfs(a, b, t);
         }
-        res = Math.max(res, sum);
-        visited[i][j] = false;
+        g[x][y] = v;
     }
 }

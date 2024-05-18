@@ -47,4 +47,27 @@ public class LC2997_MinimumNumberofOperationstoMakeArrayXOREqualtoK {
         for (int x : nums) k ^= x;
         return Integer.bitCount(k);
     }
+
+    // S3
+    // time = O(n), space = O(1)
+    public int minOperations3(int[] nums, int k) {
+        int[] cnt = new int[20];
+        for (int x : nums) {
+            for (int i = 0; i < 20; i++) {
+                if ((x >> i & 1) == 1) cnt[i]++;
+            }
+        }
+
+        int n = nums.length, res = 0;
+        for (int i = 0; i < 20; i++) {
+            int x = k >> i & 1;
+            int a = cnt[i] % 2, b = (n - cnt[i]) % 2;
+            if (x == 0) {
+                if (a == 1) res++;
+            } else {
+                if (a == 0) res++;
+            }
+        }
+        return res;
+    }
 }

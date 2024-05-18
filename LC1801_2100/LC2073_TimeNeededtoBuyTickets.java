@@ -27,6 +27,7 @@ public class LC2073_TimeNeededtoBuyTickets {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int timeRequiredToBuy(int[] tickets, int k) {
         int n = tickets.length, diff = 0, count = 0;
@@ -38,5 +39,16 @@ public class LC2073_TimeNeededtoBuyTickets {
             }
         }
         return total - diff - (n - 1 - k - count);
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int timeRequiredToBuy2(int[] tickets, int k) {
+        int n = tickets.length, res = 0;
+        for (int i = 0; i < n; i++) {
+            if (i <= k) res += Math.min(tickets[i], tickets[k]);
+            else res += Math.min(tickets[i], tickets[k] - 1);
+        }
+        return res;
     }
 }

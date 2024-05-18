@@ -27,27 +27,22 @@ public class LC377_CombinationSumIV {
     // S1: DFS + pruning
     // time = O(n * t), space = O(t)   t: target value
     public int combinationSum4(int[] nums, int target) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        return dfs(nums, target, map);
+        int[] f = new int[target + 1];
+        Arrays.fill(f, -1);
+        return dfs(nums, target, f);
     }
 
-    private int dfs(int[] nums, int target, HashMap<Integer, Integer> map) {
-        // base case - success
-        if (target == 0)  return 1;
-
-        // base case - fail
-        if (target < 0) return 0;
-
-        if (map.containsKey(target)) return map.get(target);
+    private int dfs(int[] nums, int t, int[] f) {
+        if (t == 0) return 1;
+        if (f[t] != -1) return f[t];
 
         int res = 0;
-        for (int i = 0; i < nums.length; i++) {
-            res += dfs(nums, target - nums[i], map);
+        for (int x : nums) {
+            if (t >= x) {
+                res += dfs(nums, t - x, f);
+            }
         }
-        map.put(target, res);
+        f[t] = res;
         return res;
     }
 
