@@ -29,29 +29,15 @@ public class LC1673_FindtheMostCompetitiveSubsequence {
     // S1: 单调栈
     // time = O(n), space = O(n)
     public int[] mostCompetitive(int[] nums, int k) {
-        // corner case
-        if (nums == null || nums.length == 0 || k <= 0) return new int[0];
-
-        int count = nums.length - k; // 最多能够删除 len - k 个数组元素
-        Stack<Integer> stack = new Stack<>();
-
-        for (int n : nums) {
-            if (stack.isEmpty() || n >= stack.peek()) { // 单调升序时可压入栈里
-                stack.push(n);
-            } else {
-                while (count > 0 && !stack.isEmpty() && n < stack.peek()) { // 非单调升序且依然可以有配额删除元素时弹栈
-                    stack.pop();
-                    count--;
-                }
-                stack.push(n); // 弹栈完成后切记要将当前元素压栈！！！
-            }
+        int n = nums.length;
+        int[] stk = new int[n + 1];
+        int tt = 0;
+        for (int i = 0; i < n; i++) {
+            while (tt > 0 && nums[stk[tt]] > nums[i] && n - i + tt - 1 >= k) tt--;
+            stk[++tt] = i;
         }
-        while (count-- > 0) stack.pop(); // 出了for loop之后很有可能栈中元素依然超过k个，那么此刻要把多余的也要弹出直至只留k个
         int[] res = new int[k];
-        int i = k - 1;
-        while (!stack.isEmpty()) {
-            res[i--] = stack.pop(); // 从栈顶开始逆序倒入res array之中
-        }
+        for (int i = 1; i <= k; i++) res[i - 1] = nums[stk[i]];
         return res;
     }
 }

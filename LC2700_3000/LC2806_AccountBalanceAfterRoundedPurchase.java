@@ -29,6 +29,7 @@ public class LC2806_AccountBalanceAfterRoundedPurchase {
      * @param purchaseAmount
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public int accountBalanceAfterPurchase(int purchaseAmount) {
         int minv = 100, t = 0;
@@ -39,5 +40,13 @@ public class LC2806_AccountBalanceAfterRoundedPurchase {
             }
         }
         return 100 - t;
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public int accountBalanceAfterPurchase2(int purchaseAmount) {
+        int a = purchaseAmount / 10 * 10, b = (purchaseAmount + 9) / 10 * 10;
+        if (purchaseAmount - a < b - purchaseAmount) return 100 - a;
+        return 100 - b;
     }
 }

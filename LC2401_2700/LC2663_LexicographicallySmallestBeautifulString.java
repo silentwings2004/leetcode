@@ -32,6 +32,7 @@ public class LC2663_LexicographicallySmallestBeautifulString {
      * @param k
      * @return
      */
+    // S1
     // time = O(26 * n), space = O(n)
     public String smallestBeautifulString(String s, int k) {
         char[] chars = s.toCharArray();
@@ -59,4 +60,33 @@ public class LC2663_LexicographicallySmallestBeautifulString {
         }
         return String.valueOf(chars);
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public String smallestBeautifulString2(String s, int k) {
+        char[] chars = s.toCharArray();
+        int n = chars.length, i = n - 1;
+        chars[i]++;
+        while (i >= 0 && i < n) {
+            if (chars[i] - 'a' == k) {
+                if (i == 0) return "";
+                chars[i] = 'a';
+                i--;
+                chars[i]++;
+            } else if (i > 0 && chars[i] == chars[i - 1] || i > 1 && chars[i] == chars[i - 2]) chars[i]++;
+            else i++;
+        }
+        return String.valueOf(chars);
+    }
 }
+/**
+ * 字符中不能能有长为2的和长为3的回文串
+ * next_permutation
+ * 从右到左去修改
+ * 用进位的概念，把字符串看成一个 k 进制数
+ * dacd
+ * dada
+ * dbaa
+ * dbab
+ * dbac
+ */

@@ -19,6 +19,7 @@ public class LC1248_LeastNumberofUniqueIntegersafterKRemovals {
      * @param k
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     public int numberOfSubarrays(int[] nums, int k) {
         int n = nums.length;
@@ -33,6 +34,23 @@ public class LC1248_LeastNumberofUniqueIntegersafterKRemovals {
             int diff = presum[i] - k;
             res += map.getOrDefault(diff, 0);
             map.put(presum[i], map.getOrDefault(presum[i], 0) + 1);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int numberOfSubarrays2(int[] nums, int k) {
+        int n = nums.length, res = 0, last = -1;
+        for (int i = 0, j = -1, cnt = 0; i < n; i++) {
+            cnt += nums[i] % 2;
+            if (nums[i] % 2 == 1 && j == -1) j = i;
+            if (cnt > k) {
+                last = j;
+                while (cnt > k) cnt -= nums[j++] % 2;
+                while (nums[j] % 2 == 0) j++;
+            }
+            if (cnt == k) res += j - last;
         }
         return res;
     }

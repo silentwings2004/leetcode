@@ -114,6 +114,54 @@ public class LC2597_TheNumberofBeautifulSubsets {
         }
         return res - 1;
     }
+
+    // S4: 枚举
+    // time = O(n * 2^n), space = O(n)
+    public int beautifulSubsets4(int[] nums, int k) {
+        int n = nums.length, res = 0;
+        for (int i = 1; i < 1 << n; i++) {
+            HashSet<Integer> set = new HashSet<>();
+            boolean flag = true;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) {
+                    int v = nums[j];
+                    int x = v - k, y = v + k;
+                    if (set.contains(x) || set.contains(y)) {
+                        flag = false;
+                        break;
+                    }
+                    set.add(v);
+                }
+            }
+            if (flag) res++;
+        }
+        return res;
+    }
+
+    // S5: dfs + backtracking
+    // time = O(2^n), space = O(n)
+    int[] nums, cnt;
+    int k, res;
+    public int beautifulSubsets5(int[] nums, int k) {
+        this.nums = nums;
+        this.k = k;
+        cnt = new int[3010];
+        f(0);
+        return res - 1;
+    }
+
+    private void f(int u) {
+        if (u == nums.length) res++;
+        else {
+            f(u + 1);
+            int x = nums[u] - k, y = nums[u] + k;
+            if (cnt[x + 1000] == 0 && cnt[y + 1000] == 0) {
+                cnt[nums[u] + 1000]++;
+                f(u + 1);
+                cnt[nums[u] + 1000]--;
+            }
+        }
+    }
 }
 /**
  * num % k = 0,1,2,...k-1

@@ -36,93 +36,73 @@ public class LC2662_MinimumCostofaPathWithSpecialRoads {
      * @return
      */
     // time = O(nlogn), space = O(n)
-    final int N = 410, M = N * N, INF = 0x3f3f3f3f;
-    int[] h, e, w, ne;
+    final int N = 100010, inf = 0x3f3f3f3f;
+    int n;
+    int[][] g;
     int[] dist;
     boolean[] st;
-    int idx, id;
-    HashMap<String, Integer> map;
-    HashSet<String> set;
     public int minimumCost(int[] start, int[] target, int[][] specialRoads) {
-        map = new HashMap<>();
-        set = new HashSet<>();
-        h = new int[N];
-        e = new int[M];
-        ne = new int[M];
-        w = new int[M];
-        dist = new int[N];
-        st = new boolean[N];
-        id = 0;
-        Arrays.fill(h, -1);
-        idx = 0;
-
-        String s = convert(start[0], start[1]), t = convert(target[0], target[1]);
-        if (s.equals(t)) return 0;
-        map.put(s, id++);
-        map.put(t, id++);
-
-        for (int[] w : specialRoads) {
-            int x1 = w[0], y1 = w[1], x2 = w[2], y2 = w[3], c = w[4];
-            String str1 = convert(x1, y1), str2 = convert(x2, y2);
-            if (!map.containsKey(str1)) map.put(str1, id++);
-            if (!map.containsKey(str2)) map.put(str2, id++);
-            int a = map.get(str1), b = map.get(str2);
-            int d = get(x1, y1, x2, y2);
-            c = Math.min(d, c);
-            if (set.add(convert(a, b))) add(a, b, c);
+        List<int[]> p = new ArrayList<>();
+        p.add(start);
+        p.add(target);
+        for (int[] x : specialRoads) {
+            p.add(new int[]{x[0], x[1]});
+            p.add(new int[]{x[2], x[3]});
         }
 
-        for (String x : map.keySet()) {
-            for (String y : map.keySet()) {
-                if (x.equals(y)) continue;
-                int a = map.get(x), b = map.get(y);
-                String[] str1 = x.split("#"), str2 = y.split("#");
-                int x1 = Integer.parseInt(str1[0]), y1 = Integer.parseInt(str1[1]);
-                int x2 = Integer.parseInt(str2[0]), y2 = Integer.parseInt(str2[1]);
-                int c = get(x1, y1, x2, y2);
-                if (set.add(a + "#" + b)) add(a, b, c);
-                if (set.add(b + "#" + a)) add(b, a, c);
+        HashMap<Long, Integer> map = new HashMap<>();
+        int idx = 0;
+        for (int[] x : p) {
+            long key = get(x[0], x[1]);
+            if (map.containsKey(key)) continue;
+            map.put(key, idx++);
+        }
+
+        n = map.size();
+        g = new int[n][n];
+        dist = new int[n];
+        st = new boolean[n];
+
+        for (int i = 0; i < n; i++) Arrays.fill(g[i], inf);
+        for (int i = 0; i < p.size(); i++) {
+            for (int j = i; j < p.size(); j++) {
+                int a = map.get(get(p.get(i)[0], p.get(i)[1]));
+                int b = map.get(get(p.get(j)[0], p.get(j)[1]));
+                g[a][b] = g[b][a] = cal(p.get(i)[0], p.get(i)[1], p.get(j)[0], p.get(j)[1]);
             }
         }
-        return dijkstra(0);
+
+        for (int[] x : specialRoads) {
+            int a = map.get(get(x[0], x[1])), b = map.get(get(x[2], x[3])), c = x[4];
+            g[a][b] = Math.min(g[a][b], c);
+        }
+
+        dijkstra(map.get(get(start[0], start[1])));
+        int res = dist[map.get(get(target[0], target[1]))];
+        return res == inf ? -1 : res;
     }
 
-    private int dijkstra(int start) {
-        Arrays.fill(dist, INF);
+    private void dijkstra(int start) {
+        Arrays.fill(dist, inf);
         dist[start] = 0;
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
-        pq.offer(new int[]{0, start});
 
-        while (!pq.isEmpty()) {
-            int[] t = pq.poll();
-            int ver = t[1], distance = t[1];
-            if (ver == 1) break;
-            if (st[ver]) continue;
-            st[ver] = true;
-
-            for (int i = h[ver]; i != -1; i = ne[i]) {
-                int j = e[i];
-                if (dist[j] > dist[ver] + w[i]) {
-                    dist[j] = dist[ver] + w[i];
-                    pq.offer(new int[]{dist[j], j});
-                }
+        for (int i = 0; i < n; i++) {
+            int t = -1;
+            for (int j = 0; j < n; j++) {
+                if (!st[j] && (t == -1 || dist[t] > dist[j])) t = j;
+            }
+            st[t] = true;
+            for (int j = 0; j < n; j++) {
+                dist[j] = Math.min(dist[j], dist[t] + g[t][j]);
             }
         }
-        return dist[1];
     }
 
-    private void add(int a, int b, int c) {
-        e[idx] = b;
-        w[idx] = c;
-        ne[idx] = h[a];
-        h[a] = idx++;
+    private long get(int x, int y) {
+        return 1L * x * N + y;
     }
 
-    private String convert(int x, int y) {
-        return x + "#" + y;
-    }
-
-    private int get(int x1, int y1, int x2, int y2) {
+    private int cal(int x1, int y1, int x2, int y2) {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1);
     }
 }

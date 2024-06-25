@@ -1,6 +1,6 @@
 package LC3001_3300;
 
-public class LC3151_MaximumNumberofUpgradableServers {
+public class LC3155_MaximumNumberofUpgradableServers {
     /**
      * You have n data centers and need to upgrade their servers.
      *

@@ -39,22 +39,14 @@ public class LC2938_SeparateBlackandWhiteBalls {
     }
 
     // S2
-    // time = O(n), space = O(n)
+    // time = O(n), space = O(1)
     public long minimumSteps2(String s) {
-        int n = s.length(), last = 0;
+        int n = s.length();
         long res = 0;
-        char[] t = s.toCharArray();
-        for (int i = 0; i < n; i++) {
-            if (t[i] == '0') continue;
-            else {
-                int j = i + 1;
-                while (j < n && t[j] == '1') j++;
-                if (j == n) break;
-                int len = j - i;
-                res += last + len;
-                last += len - 1;
-                i = j - 1;
-                t[j] = '1';
+        for (int i = 0, j = -1; i < n; i++) {
+            if (s.charAt(i) == '0') {
+                res += i - j - 1;
+                j++;
             }
         }
         return res;

@@ -30,24 +30,21 @@ public class LC3040_MaximumNumberofOperationsWiththeSameScoreII {
      */
     // time = O(n^2), space = O(n^2)
     int[][] f;
-    HashMap<Integer, Integer> map;
     public int maxOperations(int[] nums) {
         int n = nums.length;
         f = new int[n][n];
         for (int i = 0; i < n; i++) Arrays.fill(f[i], -1);
-        int a = 1 + dfs(nums, 2, n - 1, nums[0] + nums[1]);
-        int b = 1 + dfs(nums, 0, n - 3, nums[n - 2] + nums[n - 1]);
-        int c = 1 + dfs(nums, 1, n - 2, nums[0] + nums[n - 1]);
-        return Math.max(a, Math.max(b, c));
+        return dfs(nums, 0, n - 1, -1);
     }
 
     private int dfs(int[] nums, int l, int r, int t) {
         if (l >= r) return 0;
         if (f[l][r] != -1) return f[l][r];
+
         int res = 0;
-        if (nums[l] + nums[l + 1] == t) res = Math.max(res, 1 + dfs(nums, l + 2, r, t));
-        if (nums[r] + nums[r - 1] == t) res = Math.max(res, 1 + dfs(nums, l, r - 2, t));
-        if (nums[l] + nums[r] == t) res = Math.max(res, 1 + dfs(nums, l + 1, r - 1, t));
+        if (t == -1 || nums[l] + nums[l + 1] == t) res = Math.max(res, 1 + dfs(nums, l + 2, r, nums[l] + nums[l + 1]));
+        if (t == -1 || nums[r] + nums[r - 1] == t) res = Math.max(res, 1 + dfs(nums, l, r - 2, nums[r] + nums[r - 1]));
+        if (t == -1 || nums[l] + nums[r] == t) res = Math.max(res, 1 + dfs(nums, l + 1, r - 1, nums[l] + nums[r]));
         f[l][r] = res;
         return res;
     }

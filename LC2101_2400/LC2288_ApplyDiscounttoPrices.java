@@ -31,24 +31,20 @@ public class LC2288_ApplyDiscounttoPrices {
      * @param discount
      * @return
      */
-    // time = O(n * k), space = O(n * k)
+    // time = O(n), space = O(n)
     public String discountPrices(String sentence, int discount) {
         String[] strs = sentence.split(" ");
         int n = strs.length;
-        StringBuilder sb = new StringBuilder();
+        double d = 1 - discount / 100.0;
         for (int i = 0; i < n; i++) {
-            if (helper(strs[i])) {
-                double price = Double.parseDouble(strs[i].substring(1));
-                price *= (1.0 - discount * 1.0 / 100);
-                sb.append('$').append(String.format("%.2f", price));
-            } else sb.append(strs[i]);
-            sb.append(' ');
+            if (check(strs[i])) {
+                strs[i] = String.format("$%.2f", Long.parseLong(strs[i].substring(1)) * d);
+            }
         }
-        sb.setLength(sb.length() - 1);
-        return sb.toString();
+        return String.join(" ", strs);
     }
 
-    private boolean helper(String s) {
+    private boolean check(String s) {
         int n = s.length();
         if (s.charAt(0) != '$') return false;
         if (n == 1) return false;

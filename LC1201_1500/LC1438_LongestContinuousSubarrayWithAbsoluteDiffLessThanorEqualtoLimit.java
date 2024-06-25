@@ -17,22 +17,19 @@ public class LC1438_LongestContinuousSubarrayWithAbsoluteDiffLessThanorEqualtoLi
      * @param limit
      * @return
      */
-    // S1: TreeSet
+    // S1: TreeMap
     // time = O(nlogn), space = O(n)
     public int longestSubarray(int[] nums, int limit) {
-        TreeSet<int[]> set = new TreeSet<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
-        set.add(new int[]{nums[0], 0});
-        int n= nums.length;
-
-        int res = 0, j = 0; // right pointer
-        for (int i = 0; i < n; i++) {
-            while (j < n && set.last()[0] - set.first()[0] <= limit) {
-                res = Math.max(res, j - i + 1);
+        int n = nums.length, res = 0;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int i = 0, j = 0; i < n; i++) {
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+            while (map.lastKey() - map.firstKey() > limit) {
+                map.put(nums[j], map.get(nums[j]) - 1);
+                if (map.get(nums[j]) == 0) map.remove(nums[j]);
                 j++;
-                if (j < n) set.add(new int[]{nums[j], j});
             }
-            if (j == n) break; // j走到底了，i再移动已经毫无意义了
-            set.remove(new int[]{nums[i], i});
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }
@@ -40,36 +37,26 @@ public class LC1438_LongestContinuousSubarrayWithAbsoluteDiffLessThanorEqualtoLi
     // S2: deque
     // time = O(n), space = O(n)
     public int longestSubarray2(int[] nums, int limit) {
-        Deque<Integer> qmax = new LinkedList<>();
-        Deque<Integer> qmin = new LinkedList<>();
-        qmax.offer(0);
-        qmin.offer(0);
+        int n = nums.length, res = 0;
+        int[] q1 = new int[n + 1], q2 = new int[n + 1];
+        int hh1 = 0, tt1 = -1, hh2 = 0, tt2 = -1;
 
-        int n = nums.length, j = 0, res = 0, max = nums[0], min = nums[0];
-        for (int i = 0; i < n; i++) {
-            while (max - min <= limit) {
-                res = Math.max(res, j - i + 1);
+        for (int i = 0, j = 0; i < n; i++) {
+            while (hh1 <= tt1 && nums[q1[tt1]] <= nums[i]) tt1--;
+            q1[++tt1] = i;
+
+            while (hh2 <= tt2 && nums[q2[tt2]] >= nums[i]) tt2--;
+            q2[++tt2] = i;
+
+            int a = nums[q1[hh1]], b = nums[q2[hh2]];
+            while (a - b > limit) {
+                if (q1[hh1] == j) hh1++;
+                if (q2[hh2] == j) hh2++;
+                a = nums[q1[hh1]];
+                b = nums[q2[hh2]];
                 j++;
-                if (j == n) break;
-                // add nums[i] to qmax and qmin
-                // get updated with max and min
-                while (!qmax.isEmpty() && nums[qmax.peekLast()] <= nums[j]) qmax.pollLast();
-                qmax.offer(j);
-                max = nums[qmax.peekFirst()]; // not move i yet, so do not need to check if the head is outdated or not
-
-                while (!qmin.isEmpty() && nums[qmin.peekLast()] >= nums[j]) qmin.pollLast();
-                qmin.offer(j);
-                min = nums[qmin.peekFirst()];
             }
-            if (j == n) break;
-            if (!qmax.isEmpty() && qmax.peekFirst() == i) {
-                qmax.pollFirst();
-                if (!qmax.isEmpty()) max = nums[qmax.peekFirst()];
-            }
-            if (!qmin.isEmpty() && qmin.peekFirst() == i) {
-                qmin.pollFirst();
-                if (!qmin.isEmpty()) min = nums[qmin.peekFirst()];
-            }
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }

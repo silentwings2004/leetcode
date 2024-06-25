@@ -91,6 +91,44 @@ public class LC2982_FindLongestSpecialSubstringThatOccursThriceII {
         }
         return res > 0 ? res : -1;
     }
+
+    // S3
+    // time = O(nlogn), space = O(n)
+    public int maximumLength3(String s) {
+        int n = s.length();
+        List<Integer>[] cnt = new List[26];
+        for (int i = 0; i < 26; i++) cnt[i] = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            int u = s.charAt(i) - 'a';
+            int j = i + 1;
+            while (j < n && s.charAt(j) == s.charAt(i)) j++;
+            cnt[u].add(j - i);
+            i = j - 1;
+        }
+
+        int res = -1;
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i].size() == 0) continue;
+            Collections.sort(cnt[i]);
+            int l = 0, r = cnt[i].get(cnt[i].size() - 1);
+            while (l < r) {
+                int mid = l + r + 1 >> 1;
+                if (check(cnt[i], mid)) l = mid;
+                else r = mid - 1;
+            }
+            if (r > 0) res = Math.max(res, r);
+        }
+        return res;
+    }
+
+    private boolean check(List<Integer> q, int mid) {
+        int t = 0;
+        for (int x : q) {
+            if (x < mid) continue;
+            t += x - mid + 1;
+        }
+        return t >= 3;
+    }
 }
 /**
  * 1.设字母 a 的最长特殊子串的长度是L1,那么可以选3个长为L1-2的相同特殊子串

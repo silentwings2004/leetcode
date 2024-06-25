@@ -30,6 +30,7 @@ public class LC1103_DistributeCandiestoPeople {
      * @param num_people
      * @return
      */
+    // S1: Simulation
     // time = O(m), space = O(1)
     public int[] distributeCandies(int candies, int num_people) {
         int m = candies, n = num_people;
@@ -38,6 +39,21 @@ public class LC1103_DistributeCandiestoPeople {
             int t = Math.min(j, m);
             res[i] += t;
             m -= t;
+        }
+        return res;
+    }
+
+    // S2: Math
+    // time = O(n), space = O(1)
+    public int[] distributeCandies2(int candies, int num_people) {
+        int m = (int)((Math.sqrt(8.0 * candies + 1) - 1) / 2);
+        int n = num_people;
+        int k = m / n, r = m % n;
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = k * (i + 1) + (k - 1) * k / 2 * n;
+            if (i < r) res[i] += k * n + (i + 1);
+            else if (i == r) res[i] += candies - m * (m + 1) / 2;
         }
         return res;
     }

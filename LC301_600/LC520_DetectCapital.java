@@ -19,6 +19,7 @@ public class LC520_DetectCapital {
      * @param word
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public boolean detectCapitalUse(String word) {
         int n = word.length(), cnt = 0;
@@ -31,5 +32,26 @@ public class LC520_DetectCapital {
             }
         }
         return cnt == 0 || cnt == n || cnt == 1 && flag;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public boolean detectCapitalUse2(String word) {
+        char c = word.charAt(0);
+        if (Character.isUpperCase(c)) return helper(word, 0) || helper(word, 1);
+        return helper(word, 1);
+    }
+
+    private boolean helper(String s, int op) {
+        if (op == 0) {
+            for (int i = 1; i < s.length(); i++) {
+                if (Character.isLowerCase(s.charAt(i))) return false;
+            }
+        } else {
+            for (int i = 1; i < s.length(); i++) {
+                if (Character.isUpperCase(s.charAt(i))) return false;
+            }
+        }
+        return true;
     }
 }

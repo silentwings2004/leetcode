@@ -29,18 +29,12 @@ public class LC2486_AppendCharacterstoStringtoMakeSubsequence {
      */
     // time = O(n), space = O(1)
     public int appendCharacters(String s, String t) {
-        int m = s.length(), n = t.length(), i = 0, j = 0;
-        while (i < m && j < n) {
-            if (s.charAt(i) == t.charAt(j)) {
-                i++;
-                j++;
-            } else {
-                while (i < m && s.charAt(i) != t.charAt(j)) i++;
-                if (i == m) return n - j;
-                i++;
-                j++;
-            }
+        int n = s.length(), m = t.length();
+        int j = 0;
+        for (int i = 0; i < n && j < m;) {
+            if (s.charAt(i) == t.charAt(j)) j++;
+            i++;
         }
-        return i == m ? n - j : 0;
+        return m - j;
     }
 }

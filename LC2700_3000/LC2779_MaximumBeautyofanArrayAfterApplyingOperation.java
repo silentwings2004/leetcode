@@ -1,5 +1,5 @@
 package LC2700_3000;
-
+import java.util.*;
 public class LC2779_MaximumBeautyofanArrayAfterApplyingOperation {
     /**
      * You are given a 0-indexed array nums and a non-negative integer k.
@@ -31,27 +31,31 @@ public class LC2779_MaximumBeautyofanArrayAfterApplyingOperation {
      * @param k
      * @return
      */
+    // S1: diff array
     // time = O(n), space = O(n)
-    final int N = 100010;
     public int maximumBeauty(int[] nums, int k) {
-        int[] b = new int[N * 3];
+        int[] b = new int[300010];
+        int offset = 100000;
         for (int x : nums) {
-            b[x - k + N]++;
-            b[x + k + N + 1]--;
+            b[x - k + offset]++;
+            b[x + k + 1 + offset]--;
         }
-
-        int maxv = -1, t = -1;
-        for (int i = 0, s = 0; i < N * 2; i++) {
-            s += b[i];
-            if (s > maxv) {
-                maxv = s;
-                t = i;
-            }
+        int res = 0, t = 0;
+        for (int i = 0; i < 300010; i++) {
+            t += b[i];
+            res = Math.max(res, t);
         }
+        return res;
+    }
 
-        int res = 0;
-        for (int x : nums) {
-            if (t >= x - k + N && t <= x + k + N) res++;
+    // S2: two pointers
+    // time = O(nlogn), space = O(logn)
+    public int maximumBeauty2(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length, res = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            while (nums[i] - nums[j] > k * 2) j++;
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }

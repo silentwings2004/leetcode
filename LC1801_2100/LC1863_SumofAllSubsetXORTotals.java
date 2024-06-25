@@ -21,26 +21,33 @@ public class LC1863_SumofAllSubsetXORTotals {
      * @param nums
      * @return
      */
-    // time = O(2^n), space = O(n);
-    private int res = 0;
+    // S1: dfs
+    // time = O(n * 2^n), space = O(n);
+    int res;
     public int subsetXORSum(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
         dfs(nums, 0, 0);
         return res;
     }
 
-    private void dfs(int[] nums, int idx, int xor) {
-        // base case
-        if (idx == nums.length) {
-            res += xor;
-            return;
-        };
+    private void dfs(int[] nums, int u, int t) {
+        if (u == nums.length) return;
+        for (int i = u; i < nums.length; i++) {
+            res += t ^ nums[i];
+            dfs(nums, i + 1, t ^ nums[i]);
+        }
+    }
 
-        // case 1: not xor
-        dfs(nums, idx + 1, xor);
-        // case 2: xor with nums[idx]
-        dfs(nums, idx + 1, xor ^ nums[idx]);
+    // S2
+    // time = O(2 ^n * n), space = O(1)
+    public int subsetXORSum2(int[] nums) {
+        int n = nums.length, res = 0;
+        for (int i = 1; i < 1 << n; i++) {
+            int t = 0;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) t ^= nums[j];
+            }
+            res += t;
+        }
+        return res;
     }
 }

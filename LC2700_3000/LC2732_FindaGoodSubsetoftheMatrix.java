@@ -37,8 +37,34 @@ public class LC2732_FindaGoodSubsetoftheMatrix {
      * @param grid
      * @return
      */
-    // time = O(m * n), space = O(m)
+    // S1
+    // time = O(m * 2^n), space = O(n)
     public List<Integer> goodSubsetofBinaryMatrix(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < m; i++) {
+            int state = 0;
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) state |= 1 << j;
+            }
+            if (state == 0) return Arrays.asList(i);
+
+            for (int j = 0; j < 1 << n; j++) {
+                if ((state & j) == 0) {
+                    if (map.containsKey(j)) {
+                        return Arrays.asList(map.get(j).get(0), i);
+                    }
+                }
+            }
+            map.putIfAbsent(state, new ArrayList<>());
+            map.get(state).add(i);
+        }
+        return new ArrayList<>();
+    }
+
+    // S2
+    // time = O(m * n), space = O(m)
+    public List<Integer> goodSubsetofBinaryMatrix2(int[][] grid) {
         int m = grid.length, n = grid[0].length;
         HashMap<Integer, List<Integer>> map = new HashMap<>();
         List<Integer> res = new LinkedList<>();

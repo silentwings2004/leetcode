@@ -78,6 +78,23 @@ public class LC995_MinimumNumberofKConsecutiveBitFlips {
         }
         return s[n];
     }
+
+    // S4: diff array
+    // time = O(n), space = O(n)
+    public int minKBitFlips4(int[] nums, int k) {
+        int n = nums.length, res = 0;
+        int[] b = new int[n + 1];
+        for (int i = 0, s = 0; i < n; i++) {
+            s += b[i];
+            if (nums[i] != s % 2) continue;
+            s++;
+            res++;
+            b[i]++;
+            if (i + k > n) return -1;
+            b[i + k]--;
+        }
+        return res;
+    }
 }
 /**
  * 1 1 [0 x x 1] x x x x  -> 前面搞定了就不要去动了，百害而无一利
