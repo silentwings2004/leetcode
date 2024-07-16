@@ -28,6 +28,7 @@ public class LC2192_AllAncestorsofaNodeinaDirectedAcyclicGraph {
      * @param edges
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n^2)
     public List<List<Integer>> getAncestors(int n, int[][] edges) {
         List<Integer>[] graph = new List[n];
@@ -67,5 +68,37 @@ public class LC2192_AllAncestorsofaNodeinaDirectedAcyclicGraph {
             res.add(list);
         }
         return res;
+    }
+
+    // S2
+    // time = O(n + m), space = O(n + m)
+    List<Integer>[] res, adj;
+    int[] st;
+    public List<List<Integer>> getAncestors2(int n, int[][] edges) {
+        res = new List[n];
+        adj = new List[n];
+        st = new int[n];
+        Arrays.fill(st, -1);
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+            res[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            adj[a].add(b);
+        }
+
+        for (int i = 0; i < n; i++) dfs(i, i);
+        return Arrays.asList(res);
+    }
+
+    private void dfs(int u, int fa) {
+        st[u] = fa;
+        for (int v : adj[u]) {
+            if (st[v] == fa) continue;
+            res[v].add(fa);
+            dfs(v, fa);
+        }
     }
 }

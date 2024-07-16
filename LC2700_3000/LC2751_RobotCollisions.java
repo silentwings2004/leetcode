@@ -45,50 +45,51 @@ public class LC2751_RobotCollisions {
      */
     // time = O(nlogn), space = O(n)
     public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
-        List<Integer> res = new ArrayList<>();
-        TreeMap<Integer, int[]> ml = new TreeMap<>();
-        TreeMap<Integer, int[]> mr = new TreeMap<>((o1, o2) -> o2 - o1);
+        TreeSet<int[]> hl = new TreeSet<>((o1, o2) -> o1[0] - o2[0]);
+        TreeSet<int[]> hr = new TreeSet<>((o1, o2) -> o1[0] - o2[0]);
+
         int n = positions.length;
         for (int i = 0; i < n; i++) {
-            int p = positions[i], h = healths[i];
-            if (directions.charAt(i) == 'L') ml.put(p, new int[]{h, i});
-            else mr.put(p, new int[]{h, i});
+            if (directions.charAt(i) == 'L') hl.add(new int[]{positions[i], healths[i], i});
+            else hr.add(new int[]{positions[i], healths[i], i});
         }
-
-        boolean[] st = new boolean[n];
-        for (int rk : mr.keySet()) {
-            int ha = mr.get(rk)[0], ia = mr.get(rk)[1];
-            int pos = rk;
-            List<Integer> rem = new ArrayList<>();
-            while (ml.higherKey(pos) != null) {
-                int hk = ml.higherKey(pos);
-                int hb = ml.get(hk)[0], ib = ml.get(hk)[1];
-                if (ha == hb) {
-                    st[ia] = true;
-                    st[ib] = true;
-                    rem.add(hk);
-                    break;
-                } else if (ha > hb) {
-                    ha--;
-                    st[ib] = true;
-                    rem.add(hk);
-                    pos = hk;
+        int[] res = new int[n];
+        while (!hl.isEmpty() && !hr.isEmpty()) {
+            int[] t1 = hr.last();
+            int[] t2 = hl.higher(t1);
+            if (t2 == null) {
+                res[t1[2]] = t1[1];
+                hr.remove(t1);
+            } else {
+                if (t1[1] > t2[1]) {
+                    t1[1]--;
+                    hl.remove(t2);
+                } else if (t1[1] < t2[1]) {
+                    t2[1]--;
+                    hr.remove(t1);
                 } else {
-                    hb--;
-                    st[ia] = true;
-                    ml.put(hk, new int[]{hb, ib});
-                    break;
+                    hr.remove(t1);
+                    hl.remove(t2);
                 }
             }
-            for (int x : rem) ml.remove(x);
-            if (!st[ia]) mr.put(rk, new int[]{ha, ia});
         }
 
-        for (int i = 0; i < n; i++) {
-            if (st[i]) continue;
-            if (directions.charAt(i) == 'L') res.add(ml.get(positions[i])[0]);
-            else res.add(mr.get(positions[i])[0]);
+        while (!hl.isEmpty()) {
+            int[] t = hl.last();
+            res[t[2]] = t[1];
+            hl.remove(t);
         }
-        return res;
+
+        while (!hr.isEmpty()) {
+            int[] t = hr.last();
+            res[t[2]] = t[1];
+            hr.remove(t);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (res[i] > 0) ans.add(res[i]);
+        }
+        return ans;
     }
 }

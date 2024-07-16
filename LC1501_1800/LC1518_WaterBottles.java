@@ -19,6 +19,7 @@ public class LC1518_WaterBottles {
      * @param numExchange
      * @return
      */
+    // S1
     // time = O(1), space = O(1)
     public int numWaterBottles(int numBottles, int numExchange) {
         int count = 0, remain = 0;
@@ -29,5 +30,18 @@ public class LC1518_WaterBottles {
             numBottles /= numExchange;
         }
         return count;
+    }
+
+    // S2
+    // time = O(1), space = O(1)
+    public int numWaterBottles2(int numBottles, int numExchange) {
+        int res = 0, a = numBottles, b = numExchange, r = 0;
+        while (a + r >= b) {
+            res += a;
+            int t = (a + r) / b;
+            r = (a + r) % b;
+            a = t;
+        }
+        return res + a;
     }
 }

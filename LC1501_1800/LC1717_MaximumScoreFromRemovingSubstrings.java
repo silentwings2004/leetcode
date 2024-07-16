@@ -28,39 +28,40 @@ public class LC1717_MaximumScoreFromRemovingSubstrings {
      * @return
      */
     // S1: StringBuilder
-    // time = O(n), space = o(n)
+    // time = O(n), space = O(n)
     public int maximumGain(String s, int x, int y) {
-        // corner case
-        if (s == null || s.length() == 0) return 0;
-
-        int res = 0;
-
-        if (x < y) { // 从左到右优先删ba -> 从右向左优先删ab == reverse后还是从左到右删ab,但是记得x与y互换保证x > y
+        if (x < y) {
             s = reverse(s);
-            return maximumGain(s, y, x);
+            int t = x;
+            x = y;
+            y = t;
         }
 
-        // Step 1: delete all "ab"
-        StringBuilder sb = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            sb.append(c);
-            // check当前StringBuilder最后2位是否为"ab"
-            while (sb.length() >= 2 && sb.substring(sb.length() - 2).equals("ab")) {
-                sb.setLength(sb.length() - 2);
+        int n = s.length();
+        char[] stk = new char[n + 1];
+        int tt = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == 'b' && tt > 0 && stk[tt] == 'a') {
                 res += x;
+                tt--;
+                continue;
             }
+            stk[++tt] = s.charAt(i);
         }
 
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= tt; i++) sb.append(stk[i]);
         s = sb.toString();
-        // Step 2: delete all "ba"
-        sb = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            sb.append(c);
-            // check当前StringBuilder最后2位是否为"ab"
-            while (sb.length() >= 2 && sb.substring(sb.length() - 2).equals("ba")) {
-                sb.setLength(sb.length() - 2);
+        n = s.length();
+        stk = new char[n + 1];
+        tt = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == 'a' && tt > 0 && stk[tt] == 'b') {
                 res += y;
+                tt--;
+                continue;
             }
+            stk[++tt] = s.charAt(i);
         }
         return res;
     }

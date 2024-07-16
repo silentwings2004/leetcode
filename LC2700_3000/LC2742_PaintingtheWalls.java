@@ -116,4 +116,10 @@ public class LC2742_PaintingtheWalls {
  * f[i][j]: 前i个物品，选的体积和至少是j的时候，最小的价值和
  * return f[n][n]
  * j-time[i]-1会得到一个负数 => 与0取一个最大值(至少为-1与至少为0其实是一样的)
+ *
+ * dp[i][j]: the minimum cost if you complete the first i tasks, with the time difference between paid workers and free
+ * workers as j
+ * min {dp[n][j]} where j >= 0
+ * x x x x i x x x x
+ *
  */

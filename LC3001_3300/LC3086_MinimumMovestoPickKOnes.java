@@ -45,26 +45,26 @@ public class LC3086_MinimumMovestoPickKOnes {
                 pos.add(i);
                 cnt = Math.max(cnt, 1);
                 if (i > 0 && nums[i - 1] == 1) {
-                    if (i > 1 && nums[i - 2] == 1) cnt = 3;
-                    else cnt = Math.max(cnt, 2);
+                    if (i > 1 && nums[i - 2] == 1) {
+                        cnt = 3;
+                    } else cnt = Math.max(cnt, 2);
                 }
             }
         }
-        if (k - cnt <= 0) return k - 1;
+        cnt = Math.min(k, cnt);
         if (maxChanges >= k - cnt) return Math.max(0, cnt - 1) + 2 * (k - cnt);
 
-        int m = pos.size();
-        long[] s = new long[m + 1];
-        for (int i = 1; i <= m; i++) s[i] = s[i - 1] + pos.get(i - 1);
+        int d = k - maxChanges;
+        n = pos.size();
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + pos.get(i - 1);
 
         long res = Long.MAX_VALUE;
-        int remain = k - maxChanges;
-        for (int r = remain - 1; r < m; r++) {
-            int l = r - remain + 1;
-            int mid = l + r >> 1, idx = pos.get(mid);
-            long sl = 1L * idx * (mid - l) - (s[mid + 1] - s[l]);
-            long sr = (s[r + 1] - s[mid]) - 1L * idx * (r - mid);
-            res = Math.min(res, sl + sr);
+        for (int l = 0, r = d - 1; r < n; l++, r++) {
+            int mid = l + r >> 1;
+            long s1 = (long)pos.get(mid) * (mid - l + 1) - (s[mid + 1] - s[l]);
+            long s2 = (s[r + 1] - s[mid]) - (long)pos.get(mid) * (r - mid + 1);
+            res = Math.min(res, s1 + s2);
         }
         return res + maxChanges * 2;
     }

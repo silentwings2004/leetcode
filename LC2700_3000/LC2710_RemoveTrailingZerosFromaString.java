@@ -20,9 +20,7 @@ public class LC2710_RemoveTrailingZerosFromaString {
      */
     // time = O(n), space = O(1)
     public String removeTrailingZeros(String num) {
-        int n = num.length();
-        if (num.charAt(n - 1) != '0') return num;
-        int i = n - 1;
+        int n = num.length(), i = n - 1;
         while (i >= 0 && num.charAt(i) == '0') i--;
         return num.substring(0, i + 1);
     }

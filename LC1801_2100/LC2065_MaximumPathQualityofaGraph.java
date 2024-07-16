@@ -36,34 +36,35 @@ public class LC2065_MaximumPathQualityofaGraph {
      * @return
      */
     // time = O(4^10), space = O(n)
-    private int res = 0;
+    List<int[]>[] adj;
+    int[] val;
+    int[] st;
+    int n, mt, res;
     public int maximalPathQuality(int[] values, int[][] edges, int maxTime) {
-        int n = values.length;
-        List<int[]>[] graph = new List[n];
-        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-        for (int[] edge : edges) {
-            int a = edge[0], b = edge[1], c = edge[2];
-            graph[a].add(new int[]{b, c}); // {node, time}
-            graph[b].add(new int[]{a, c});
+        this.val = values;
+        mt = maxTime;
+        n = values.length;
+        adj = new List[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+        for (int[] e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            adj[a].add(new int[]{b, c});
+            adj[b].add(new int[]{a, c});
         }
-
-        int[] visited = new int[n];
-        visited[0]++;
-        dfs(graph, 0, values, maxTime, values[0], visited);
+        st = new int[n];
+        dfs(0, 0, val[0]);
         return res;
     }
 
-    private void dfs(List<int[]>[] graph, int cur, int[] values, int curTime, int total, int[] visited) {
-        // base case
-        if (cur == 0) res = Math.max(res, total);
-
-        for (int[] x : graph[cur]) {
-            int next = x[0], time = x[1];
-            if (curTime - time < 0) continue;
-            visited[next]++;
-            dfs(graph, next, values, curTime - time, total + (visited[next] == 1 ? values[next] : 0), visited);
-            visited[next]--;
+    private void dfs(int u, int t, int cost) {
+        if (u == 0) res = Math.max(res, cost);
+        st[u]++;
+        for (int[] x : adj[u]) {
+            int v = x[0], c = x[1];
+            if (t + c > mt) continue;
+            dfs(v, t + c, cost + (st[v] > 0 ? 0 : val[v]));
         }
+        st[u]--;
     }
 }
 /**

@@ -29,18 +29,12 @@ public class LC1701_AverageWaitingTime {
      */
     // time = O(n), space = O(1)
     public double averageWaitingTime(int[][] customers) {
-        int n = customers.length;
-        double sum = 0, t = 0;
-        for (int[] x : customers) {
-            int a = x[0], b = x[1];
-            if (a >= t) {
-                sum += b;
-                t = a + b;
-            } else {
-                sum += t - a + b;
-                t += b;
-            }
+        int n = customers.length, t = 0;
+        double res = 0;
+        for (int i = 0; i < n; i++) {
+            t = Math.max(t, customers[i][0]) + customers[i][1];
+            res += t - customers[i][0];
         }
-        return sum / n;
+        return res / n;
     }
 }

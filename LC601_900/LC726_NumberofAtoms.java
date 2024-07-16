@@ -34,6 +34,7 @@ public class LC726_NumberofAtoms {
      * @param formula
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n)
     public String countOfAtoms(String formula) {
         Stack<TreeMap<String, Integer>> stack = new Stack<>(); // 元素种类与个数
@@ -126,6 +127,89 @@ public class LC726_NumberofAtoms {
             }
         }
         return map;
+    }
+
+    // S3
+    // time = O(n^2), space = O(n)
+    public String countOfAtoms3(String formula) {
+        int n = formula.length(), d = 0;
+        HashMap<Integer, List<Pair>> hash = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            char c = formula.charAt(i);
+            if (Character.isUpperCase(c)) {
+                if (sb.length() > 0) {
+                    hash.putIfAbsent(d, new ArrayList<>());
+                    hash.get(d).add(new Pair(sb.toString(), 1));
+                    sb = new StringBuilder();
+                }
+                sb.append(c);
+            } else if (Character.isLowerCase(c)) sb.append(c);
+            else if (Character.isDigit(c)) {
+                int v = 0, j = i;
+                while (j < n && Character.isDigit(formula.charAt(j))) {
+                    v = v * 10 + formula.charAt(j++) - '0';
+                }
+                String t = sb.toString();
+                sb = new StringBuilder();
+                hash.putIfAbsent(d, new ArrayList<>());
+                hash.get(d).add(new Pair(t, v));
+                i = j - 1;
+            } else if (c == '(') {
+                if (sb.length() > 0) {
+                    String t = sb.toString();
+                    sb = new StringBuilder();
+                    hash.putIfAbsent(d, new ArrayList<>());
+                    hash.get(d).add(new Pair(t, 1));
+                }
+                d++;
+            } else {
+                if (sb.length() > 0) {
+                    String t = sb.toString();
+                    sb = new StringBuilder();
+                    hash.putIfAbsent(d, new ArrayList<>());
+                    hash.get(d).add(new Pair(t, 1));
+                }
+                int v = 0, j = i + 1;
+                while (j < n && Character.isDigit(formula.charAt(j))) {
+                    v = v * 10 + formula.charAt(j++) - '0';
+                }
+                if (v == 0) v = 1;
+                i = j - 1;
+                for (Pair x : hash.getOrDefault(d, new ArrayList<>())) {
+                    String t = x.str;
+                    int num = x.v;
+                    hash.putIfAbsent(d - 1, new ArrayList<>());
+                    hash.get(d - 1).add(new Pair(t, num * v));
+                }
+                hash.remove(d);
+                d--;
+            }
+        }
+        if (sb.length() > 0) {
+            hash.putIfAbsent(d, new ArrayList<>());
+            hash.get(d).add(new Pair(sb.toString(), 1));
+        }
+
+        TreeMap<String, Integer> map = new TreeMap<>();
+        for (Pair x : hash.get(0)) {
+            map.put(x.str, map.getOrDefault(x.str, 0) + x.v);
+        }
+        sb = new StringBuilder();
+        for (String key : map.keySet()) {
+            sb.append(key);
+            if (map.get(key) > 1) sb.append(map.get(key));
+        }
+        return sb.toString();
+    }
+
+    class Pair {
+        String str;
+        int v;
+        public Pair(String str, int v) {
+            this.str = str;
+            this.v = v;
+        }
     }
 }
 /**

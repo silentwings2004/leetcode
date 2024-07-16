@@ -22,43 +22,41 @@ public class LC1245_TreeDiameter {
     // time = O(n), space = O(n)   n: # of nodes in the graph
     public int treeDiameter(int[][] edges) {
         int n = edges.length + 1;
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-        for (int[] edge : edges) {
-            graph.get(edge[0]).add(edge[1]);
-            graph.get(edge[1]).add(edge[0]);
+        List<Integer>[] adj = new List[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            adj[a].add(b);
+            adj[b].add(a);
         }
 
-        int[] t1 = bfs(graph, 0, n);
-        int[] t2 = bfs(graph, t1[0], n);
-        return t2[1];
+        int[] x = bfs(adj, n, 0);
+        int[] y = bfs(adj, n, x[0]);
+        return y[1];
     }
 
-    private int[] bfs(List<List<Integer>> graph, int start, int n) {
+    private int[] bfs(List<Integer>[] adj, int n, int start) {
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(start);
         int[] dist = new int[n];
-        Arrays.fill(dist, -1);
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(start);
+        Arrays.fill(dist, 0x3f3f3f3f);
         dist[start] = 0;
 
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            for (int next : graph.get(cur)) {
-                if (dist[next] == -1) { // -1就能表示没访问过，相当于check visited
-                    queue.offer(next);
-                    dist[next] = dist[cur] + 1;
+        int[] res = new int[2];
+        while (!q.isEmpty()) {
+            int t = q.poll();
+            for (int j : adj[t]) {
+                if (dist[j] > dist[t] + 1) {
+                    dist[j] = dist[t] + 1;
+                    if (dist[j] > res[1]) {
+                        res[0] = j;
+                        res[1] = dist[j];
+                    }
+                    q.offer(j);
                 }
             }
         }
-
-        int maxDist = 0, nodeIdx = -1;
-        for (int i = 0; i < n; i++) {
-            if (dist[i] > maxDist) {
-                maxDist = dist[i];
-                nodeIdx = i;
-            }
-        }
-        return new int[]{nodeIdx, maxDist};
+        return res;
     }
 
     // S2

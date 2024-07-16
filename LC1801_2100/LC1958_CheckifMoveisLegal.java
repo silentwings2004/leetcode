@@ -35,6 +35,7 @@ public class LC1958_CheckifMoveisLegal {
      * @param color
      * @return
      */
+    // S1
     // time = O(n), space = O(n)
     private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 1}, {1, -1}, {-1, -1}, {1, 1}};
     public boolean checkMove(char[][] board, int rMove, int cMove, char color) {
@@ -57,5 +58,35 @@ public class LC1958_CheckifMoveisLegal {
         if (i < 0 || i >= n || j < 0 || j >= n || board[i][j] == '.') return false;
         if (board[i][j] == color) return true;
         return dfs(board, i + r, j + c, color, r, c); // r and c are kept to record the direction it is heading to
+    }
+
+    // S2
+    // time = O(m * n), space = O(1)
+    public boolean checkMove2(char[][] board, int rMove, int cMove, char color) {
+        int m = board.length, n = board[0].length;
+        int x = rMove, y = cMove;
+        board[x][y] = color;
+
+        int[] dx = new int[]{-1, 0, 1, 0, -1, -1, 1, 1};
+        int[] dy = new int[]{0, 1, 0, -1, -1, 1, 1, -1};
+
+        for (int u = 0; u < 8; u++) {
+            int a = x + dx[u], b = y + dy[u], cnt = 0;
+            while (check(board, a, b) && board[a][b] != color) {
+                cnt++;
+                a += dx[u];
+                b += dy[u];
+            }
+            if (check(board, a, b) && board[a][b] == color && cnt > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean check(char[][] g, int x, int y) {
+        int m = g.length, n = g[0].length;
+        if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] == '.') return false;
+        return true;
     }
 }

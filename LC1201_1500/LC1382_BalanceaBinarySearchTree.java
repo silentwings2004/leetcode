@@ -20,30 +20,29 @@ public class LC1382_BalanceaBinarySearchTree {
      * @return
      */
     // time = O(n), space = O(n)
+    List<Integer> q;
     public TreeNode balanceBST(TreeNode root) {
-        // corner case
         if (root == null) return root;
-
-        List<TreeNode> list = new ArrayList<>();
-        inorder(root, list);
-        return arrToBst(list, 0, list.size() - 1);
+        q = new ArrayList<>();
+        dfs(root);
+        return dfs2(0, q.size() - 1);
     }
 
-    private void inorder(TreeNode root, List<TreeNode> list) {
-        if (root == null) return;
+    private void dfs(TreeNode node) {
+        if (node == null) return;
 
-        inorder(root.left, list);
-        list.add(root);
-        inorder(root.right, list);
+        dfs(node.left);
+        q.add(node.val);
+        dfs(node.right);
     }
 
-    private TreeNode arrToBst(List<TreeNode> list, int left, int right) {
-        if (left > right) return null;
+    private TreeNode dfs2(int l, int r) {
+        if (l > r) return null;
 
-        int mid = left + (right - left) / 2;
-        TreeNode root = list.get(mid);
-        root.left = arrToBst(list, left, mid - 1);
-        root.right = arrToBst(list, mid + 1, right);
-        return root;
+        int mid = l + r >> 1;
+        TreeNode node = new TreeNode(q.get(mid));
+        node.left = dfs2(l, mid - 1);
+        node.right = dfs2(mid + 1, r);
+        return node;
     }
 }

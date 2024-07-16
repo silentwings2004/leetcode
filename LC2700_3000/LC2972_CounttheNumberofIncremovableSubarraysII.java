@@ -86,4 +86,28 @@ public class LC2972_CounttheNumberofIncremovableSubarraysII {
         }
         return res;
     }
+
+    // S3: TreeMap
+    // time = O(nlogn), space = O(n)
+    public long incremovableSubarrayCount3(int[] nums) {
+        int n = nums.length;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] > nums[i - 1]) map.put(nums[i], i);
+            else {
+                res += i;
+                break;
+            }
+        }
+        if (map.size() == n) return 1L * (n + 1) * n / 2;
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (i == n - 1 || nums[i] < nums[i + 1]) {
+                Integer lk = map.lowerKey(nums[i]);
+                res += (lk != null ? map.get(lk) + 1 : 0) + 1;
+            } else break;
+        }
+        return res + 1;
+    }
 }

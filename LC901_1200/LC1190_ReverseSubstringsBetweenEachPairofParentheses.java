@@ -22,25 +22,21 @@ public class LC1190_ReverseSubstringsBetweenEachPairofParentheses {
     // S1
     // time = O(n^2), space = O(n)
     public String reverseParentheses(String s) {
+        int n = s.length();
         StringBuilder sb = new StringBuilder();
-        Stack<Integer> stack = new Stack<>();
-        for (char c : s.toCharArray()) {
-            if (Character.isLowerCase(c)) sb.append(c);
-            else if (c == '(') stack.push(sb.length());
-            else {
-                int i = stack.pop();
-                sb = reverse(sb, i, sb.length());
-            }
+        Stack<String> stk = new Stack<>();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                stk.push(sb.toString());
+                sb = new StringBuilder();
+            } else if (c == ')') {
+                String t = sb.reverse().toString();
+                if (!stk.isEmpty()) t = stk.pop() + t;
+                sb = new StringBuilder(t);
+            } else sb.append(c);
         }
         return sb.toString();
-    }
-
-    private StringBuilder reverse(StringBuilder sb, int start, int end) {
-        StringBuilder res = new StringBuilder();
-        res.append(sb.subSequence(start, end));
-        res.reverse();
-        res.insert(0, sb.substring(0, start)).append(sb.substring(end));
-        return res;
     }
 
     // S2
