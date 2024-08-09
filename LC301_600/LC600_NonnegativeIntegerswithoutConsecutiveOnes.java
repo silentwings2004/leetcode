@@ -86,6 +86,31 @@ public class LC600_NonnegativeIntegerswithoutConsecutiveOnes {
         }
         return res + 1;
     }
+
+    // S3
+    // time = O(logn), space = O(logn)
+    char[] s;
+    int[][] f;
+    public int findIntegers3(int n) {
+        s = Integer.toBinaryString(n).toCharArray();
+        int m = s.length;
+        f = new int[m][2];
+        for (int i = 0; i < m; i++) Arrays.fill(f[i], -1);
+        return dfs(0, 0, true);
+    }
+
+    private int dfs(int u, int pre, boolean isLimit) {
+        if (u == s.length) return 1;
+        if (!isLimit && f[u][pre] != -1) return f[u][pre];
+
+        int res = 0;
+        int up = isLimit ? s[u] - '0' : 1;
+        for (int i = 0; i <= up; i++) {
+            if (i + pre <= 1) res += dfs(u + 1, i, isLimit && i == up);
+        }
+        if (!isLimit) f[u][pre] = res;
+        return res;
+    }
 }
 /**
  * dp[m]: 有多少个m位的01序列，里面不包含相连的1

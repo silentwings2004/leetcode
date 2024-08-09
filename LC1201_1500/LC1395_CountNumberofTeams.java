@@ -25,56 +25,50 @@ public class LC1395_CountNumberofTeams {
      */
     // time = O(nlogn), space = O(n)
     public int numTeams(int[] rating) {
-        int res = 0, n = rating.length;
-        // prevSmaller
-        BIT bit1 = new BIT((int) 1e5);
-        int[] prevSmaller = new int[n];
-
+        Fenwick f1 = new Fenwick(100010);
+        Fenwick f2 = new Fenwick(100010);
+        int n = rating.length;
+        int[] l = new int[n], r = new int[n];
         for (int i = 0; i < n; i++) {
-            prevSmaller[i] = bit1.sumRange(2, rating[i]);
-            bit1.update(rating[i] + 1, 1);
+            l[i] = f1.sum(rating[i] - 1);
+            f1.add(rating[i] - 1, 1);
         }
-
-        // nextSmaller
-        BIT bit2 = new BIT((int) 1e5);
-        int[] nextSmaller = new int[n];
-
         for (int i = n - 1; i >= 0; i--) {
-            nextSmaller[i] = bit2.sumRange(2, rating[i]);
-            bit2.update(rating[i] + 1, 1);
+            r[i] = f2.sum(rating[i] - 1);
+            f2.add(rating[i] - 1, 1);
         }
 
-        for (int i = 0; i < n; i++) {
-            res += prevSmaller[i] * (n - i - 1 - nextSmaller[i]);
-            res += (i - prevSmaller[i]) * nextSmaller[i];
+        int res = 0;
+        for (int i = 1; i < n - 1; i++) {
+            res += l[i] * (n - 1 - i - r[i]) + (i - l[i]) * r[i];
         }
         return res;
     }
 
-    private class BIT {
+    private class Fenwick {
         private int n;
-        private int[] bitree;
-        public BIT(int n) {
+        private int[] a;
+        public Fenwick(int n) {
             this.n = n;
-            this.bitree = new int[n + 1];
+            this.a = new int[n + 1];
         }
 
-        private void update(int x, int delta) {
-            for (int i = x; i <= n; i += i & (-i)) {
-                bitree[i] += delta;
+        private void add(int x, int v) {
+            for (int i = x + 1; i <= n; i += i & -i) {
+                a[i - 1] = a[i - 1] + v;
             }
         }
 
-        private int query(int x) {
-            int res = 0;
-            for (int i = x; i > 0; i -= i & (-i)) {
-                res += bitree[i];
+        private int sum(int x) {
+            int ans = 0;
+            for (int i = x; i > 0; i -= i & -i) {
+                ans = ans + a[i - 1];
             }
-            return res;
+            return ans;
         }
 
-        private int sumRange(int i, int j) {
-            return query(j) - query(i - 1);
+        private int rangeSum(int l, int r) {
+            return sum(r) - sum(l);
         }
     }
 }

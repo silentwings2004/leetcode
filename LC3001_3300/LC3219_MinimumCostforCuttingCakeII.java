@@ -37,6 +37,7 @@ public class LC3219_MinimumCostforCuttingCakeII {
      * @param verticalCut
      * @return
      */
+    // S1: heap
     // time = O(nlogn), space = O(n)
     public long minimumCost(int m, int n, int[] horizontalCut, int[] verticalCut) {
         PriorityQueue<Integer> hp = new PriorityQueue<>((o1, o2) -> o2 - o1);
@@ -63,4 +64,41 @@ public class LC3219_MinimumCostforCuttingCakeII {
         }
         return res;
     }
+
+    // S2: Sort
+    // time = O(mlogm + nlogn), space = O(logm + logn)
+    public long minimumCost2(int m, int n, int[] horizontalCut, int[] verticalCut) {
+        Arrays.sort(horizontalCut);
+        Arrays.sort(verticalCut);
+        long res = 0;
+        int i = m - 2, j = n - 2;
+        int cnt_h = 1, cnt_v = 1;
+        while (i >= 0 || j >= 0) {
+            if (j < 0 || i >= 0 && horizontalCut[i] > verticalCut[j]) {
+                res += (long)horizontalCut[i] * cnt_v;
+                cnt_h++;
+                i--;
+            } else {
+                res += (long)verticalCut[j] * cnt_h;
+                cnt_v++;
+                j--;
+            }
+        }
+        return res;
+    }
 }
+/**
+ * 最小总开销 = 一堆横切竖切开销的和
+ * 没有一切到底的开销 = 一切到底的开销，所以下面分析就用一切到底来分析
+ * cntH 表示母亲啊横切的次数, cntV 表示目前竖切的次数
+ * V0 -> h0 -> h1 -> V1 -> V2
+ * h1->v1: 2h1 + 3v1
+ * v1->h1: 2v1 + 3h1
+ * h -> v: (cv + 1) * h + (ch + 2) * v
+ * v -> h: (ch + 1) * v + (cv + 2) * h
+ * 横切竖切，谁的开销大，就先切谁。并且，先后次序和 cntH cntV 无关
+ *
+ * 另一种解释：
+ * 先切竖的，那么任意(还没切)的横切都会增加"一个" h
+ * 先切横的，那么任意(还没切)的竖切都会增加"一个" v
+ */

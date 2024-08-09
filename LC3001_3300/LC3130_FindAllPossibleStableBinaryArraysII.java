@@ -30,6 +30,7 @@ public class LC3130_FindAllPossibleStableBinaryArraysII {
      * @param limit
      * @return
      */
+    // S1
     // time = O(m * n), space = O(m * n)
     public int numberOfStableArrays(int zero, int one, int limit) {
         long mod = (long)(1e9 + 7);
@@ -46,6 +47,28 @@ public class LC3130_FindAllPossibleStableBinaryArraysII {
             }
         }
         return (int)((f[zero][one][0] + f[zero][one][1]) % mod);
+    }
+
+    // S2
+    // time = O(m * n), space = O(m * n)
+    public int numberOfStableArrays2(int zero, int one, int limit) {
+        int n = zero, m = one;
+        long mod = (long)(1e9 + 7);
+        long[][] f = new long[n + 1][m + 1];
+        long[][] g = new long[n + 1][m + 1];
+        long[][] s0 = new long[n + 1][m + 1];
+        long[][] s1 = new long[m + 1][n + 1];
+        f[0][0] = g[0][0] = s0[0][0] = s1[0][0] = 1;
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                f[i][j] = (f[i][j] + (i >= 1 ? s1[j][i - 1] : 0) - (i >= limit + 1 ? s1[j][i - limit - 1] : 0) + mod) % mod;
+                g[i][j] = (g[i][j] + (j >= 1 ? s0[i][j - 1] : 0) - (j >= limit + 1 ? s0[i][j - limit - 1] : 0) + mod) % mod;
+                s0[i][j] = ((j >= 1 ? s0[i][j - 1] : 0) + f[i][j]) % mod;
+                s1[j][i] = ((i >= 1 ? s1[j][i - 1] : 0) + g[i][j]) % mod;
+            }
+        }
+        return (int)((f[n][m] + g[n][m]) % mod);
     }
 }
 /**

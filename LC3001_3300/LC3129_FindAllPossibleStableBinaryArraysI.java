@@ -30,21 +30,31 @@ public class LC3129_FindAllPossibleStableBinaryArraysI {
      * @param limit
      * @return
      */
-    // time = O(m * n), space = O(m * n)
+    // time = O(m * n * limit), space = O(m * n)
     public int numberOfStableArrays(int zero, int one, int limit) {
+        int n = zero, m = one;
         long mod = (long)(1e9 + 7);
-        long[][][] f = new long[zero + 1][one + 1][2];
-        for (int i = 0; i <= Math.min(zero, limit); i++) f[i][0][0] = 1;
-        for (int i = 0; i <= Math.min(one, limit); i++) f[0][i][1] = 1;
+        long[][] f = new long[n + 1][m + 1];
+        long[][] g = new long[n + 1][m + 1];
+        f[0][0] = g[0][0] = 1;
 
-        for (int i = 1; i <= zero; i++) {
-            for (int j = 1; j <= one; j++) {
-                f[i][j][0] = (f[i - 1][j][0] + f[i - 1][j][1]) % mod;
-                if (i > limit) f[i][j][0] = (f[i][j][0] - f[i - limit - 1][j][1] + mod) % mod;
-                f[i][j][1] = (f[i][j - 1][0] + f[i][j - 1][1]) % mod;
-                if (j > limit) f[i][j][1] = (f[i][j][1] - f[i][j - limit - 1][0] + mod) % mod;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (int k = 1; k <= limit; k++) {
+                    if (i >= k) f[i][j] = (f[i][j] + g[i - k][j]) % mod;
+                    if (j >= k) g[i][j] = (g[i][j] + f[i][j - k]) % mod;
+                }
             }
         }
-        return (int)((f[zero][one][0] + f[zero][one][1]) % mod);
+        return (int)((f[n][m] + g[n][m]) % mod);
     }
 }
+/**
+ * x x x x ?
+ * dp0[i][j]: the total number of stable binary arrays with i 0s and j 1s, and ending with 0
+ * dp1[i][j]: the total number of stable binary arrays with i 0s and j 1s, and ending with 1
+ * 不能出现超过limit个0，之前的1最早出现在哪里？
+ * x x x 1 x x x x 0
+ * dp0[i][j] = dp1[i-limit][j] + dp1[i-limit+1][j] + ...+ dp[i-1][j]
+ * dp1[i][j] = dp0[i][j-limit] + dp0[i][j-limit+1] + ...+ dp[i][j-1]
+ */

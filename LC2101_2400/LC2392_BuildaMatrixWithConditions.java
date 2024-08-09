@@ -131,6 +131,54 @@ public class LC2392_BuildaMatrixWithConditions {
         }
         return cnt == k ? res : new int[0];
     }
+
+    // S3
+    // time = O(k^2 + n + m), space = O(k + n + m)
+    int k;
+    public int[][] buildMatrix3(int k, int[][] rowConditions, int[][] colConditions) {
+        this.k = k;
+        int[] r = bfs(rowConditions);
+        int[] c = bfs(colConditions);
+        if (r == null || c == null) return new int[0][];
+        int[][] g = new int[k][k];
+        for (int i = 1; i <= k; i++) {
+            int x = r[i], y = c[i];
+            g[x][y] = i;
+        }
+        return g;
+    }
+
+    private int[] bfs(int[][] edges) {
+        int[] d = new int[k + 1];
+        List<Integer>[] adj = new List[k + 1];
+        for (int i = 1; i <= k; i++) adj[i] = new ArrayList<>();
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            d[b]++;
+            adj[a].add(b);
+        }
+
+        Queue<int[]> q = new LinkedList<>();
+        int r = 0;
+        for (int i = 1; i <= k; i++) {
+            if (d[i] == 0) q.offer(new int[]{i, r++});
+        }
+
+        int cnt = 0;
+        int[] res = new int[k + 1];
+        Arrays.fill(res, -1);
+        while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int u = t[0], x = t[1];
+            res[u] = x;
+            cnt++;
+            for (int v : adj[u]) {
+                if (--d[v] == 0) q.offer(new int[]{v, r++});
+            }
+        }
+        if (cnt < k) return null;
+        return res;
+    }
 }
 /**
  * 行和列是完全独立的

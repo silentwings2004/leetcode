@@ -47,3 +47,9 @@ public class LC3205_MaximumArrayHoppingScoreI {
         return res;
     }
 }
+/**
+ * Hop from i to k, get (k-i)*nums[k] == (j-i)*nums[k] + (k-j)*nums[k] points.
+ * Hop from i to j then from j to k, get (j-i)*nums[j] + (k-j)*nums[k] points.
+ * nums[k] > nums[j] <=> score1 > score2.
+ * By induction, we always choose the maximum element on the right to hop from the current i.
+ */

@@ -28,6 +28,7 @@ public class LC2844_MinimumOperationstoMakeaSpecialNumber {
      * @param num
      * @return
      */
+    // S1
     // time = O(n^2), space = O(1)
     public int minimumOperations(String num) {
         int n = num.length(), res = n;
@@ -45,6 +46,33 @@ public class LC2844_MinimumOperationstoMakeaSpecialNumber {
             }
         }
         return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int minimumOperations2(String num) {
+        int n = num.length();
+        int res = num.indexOf('0') != -1 ? n - 1 : n;
+        res = Math.min(res, helper(num, "25"));
+        res = Math.min(res, helper(num, "50"));
+        res = Math.min(res, helper(num, "75"));
+        res = Math.min(res, helper(num, "00"));
+        return res;
+    }
+
+    private int helper(String s, String t) {
+        int n = s.length(), m = t.length();
+        int i = n - 1, j = m - 1;
+        while (i >= 0 && j >= 0) {
+            if (s.charAt(i) == t.charAt(j)) j--;
+            i--;
+        }
+        if (j >= 0) return n;
+        if (t.equals("00")) {
+            if (i >= 0) return n - m - (i + 1);
+            return n;
+        }
+        return n - m - (i + 1);
     }
 }
 /**

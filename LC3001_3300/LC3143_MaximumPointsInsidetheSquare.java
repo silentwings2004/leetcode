@@ -1,5 +1,5 @@
 package LC3001_3300;
-
+import java.util.*;
 public class LC3143_MaximumPointsInsidetheSquare {
     /**
      * You are given a 2D array points and a string s where, points[i] represents the coordinates of point i, and s[i]
@@ -36,6 +36,7 @@ public class LC3143_MaximumPointsInsidetheSquare {
      * @param s
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(1)
     int res;
     public int maxPointsInsideSquare(int[][] points, String s) {
@@ -62,5 +63,28 @@ public class LC3143_MaximumPointsInsidetheSquare {
         }
         res = Integer.bitCount(state);
         return true;
+    }
+
+    // S2
+    // time = O(1), space = O(n)
+    public int maxPointsInsideSquare2(int[][] points, String s) {
+        int[] p = new int[26];
+        Arrays.fill(p, Integer.MAX_VALUE);
+        int min2 = Integer.MAX_VALUE;
+        int n = points.length;
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0], y = points[i][1];
+            int d = Math.max(Math.abs(x), Math.abs(y));
+            int u = s.charAt(i) - 'a';
+            if (d < p[u]) {
+                min2 = Math.min(min2, p[u]);
+                p[u] = d;
+            } else min2 = Math.min(min2, d);
+        }
+        int res = 0;
+        for (int x : p) {
+            if (x < min2) res++;
+        }
+        return res;
     }
 }
