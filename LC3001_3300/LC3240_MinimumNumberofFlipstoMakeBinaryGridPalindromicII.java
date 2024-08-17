@@ -92,3 +92,22 @@ public class LC3240_MinimumNumberofFlipstoMakeBinaryGridPalindromicII {
         return res + 2;
     }
 }
+/**
+ * 1. 单独讨论中间一行和中间一列
+ * 2. 镜像位置，如果都一样，那么能不改，就尽量不改
+ *    在这种情况下，先统计这种不改的位置上有多少个 1，记作 cnt1
+ *    以及有多少对镜像位置需要修改，记作 diff
+ * 3. 分类讨论：
+ *    cnt1 % 4 == 0
+ *    这 diff 对需要修改的位置，全部改成 0 就行
+ *
+ *    cnt1 % 4 == 2
+ *    如果 diff > 0，那么可以选一对出来，都改成 1
+ *    其余 diff - 1 对都改成0
+ *
+ *    如果 diff = 0，只能把 cnt1 中的两个 1 改成 0
+ *    需要额外操作 2 次
+ * 4. 总结：
+ *      diff > 0: 只需要额外把 diff 加入答案
+ *      diff = 0: 额外答案增加 cnt1 % 4
+ */

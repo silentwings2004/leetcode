@@ -94,3 +94,9 @@ public class LC3241_TimeTakentoMarkAllNodes {
         }
     }
 }
+/**
+ * 给你一棵有向树
+ * 有 2n - 2 条有向边，每条边都是有边权的
+ * 求 ans[i] 表示以 i 为根节点的时候，这棵树的最大深度是多少？
+ * 或者说 i 到最远点的距离
+ */

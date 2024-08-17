@@ -32,6 +32,7 @@ public class LC1937_MaximumNumberofPointswithCost {
      * @param points
      * @return
      */
+    // S1
     // time = O(m * n), space = O(m * n)
     public long maxPoints(int[][] points) {
         // corner case
@@ -61,6 +62,39 @@ public class LC1937_MaximumNumberofPointswithCost {
         for (int j = 0; j < n; j++) {
             res = Math.max(res, dp[m - 1][j]);
         }
+        return res;
+    }
+
+    // S2: dp
+    // time = O(m * n), space = O(m * n)
+    public long maxPoints2(int[][] points) {
+        int m = points.length, n = points[0].length;
+        long[][] f = new long[m][n];
+        long[] l = new long[n], r = new long[n];
+        for (int i = 0; i < n; i++) {
+            f[0][i] = points[0][i];
+            if (i == 0) l[i] = f[0][i] + i;
+            else l[i] = Math.max(l[i - 1], f[0][i] + i);
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            if (i == n - 1) r[i] = f[0][i] - i;
+            else r[i] = Math.max(r[i + 1], f[0][i] - i);
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                f[i][j] = Math.max(points[i][j] - j + l[j], points[i][j] + j + r[j]);
+                if (j == 0) l[j] = f[i][j] + j;
+                else l[j] = Math.max(l[j - 1], f[i][j] + j);
+            }
+            for (int j = n - 1; j >= 0; j--) {
+                if (j == n - 1) r[j] = f[i][j] - j;
+                else r[j] = Math.max(r[j + 1], f[i][j] - j);
+            }
+        }
+
+        long res = 0;
+        for (int i = 0; i < n; i++) res = Math.max(res, f[m - 1][i]);
         return res;
     }
 }

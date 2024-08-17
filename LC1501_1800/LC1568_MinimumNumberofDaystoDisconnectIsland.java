@@ -76,51 +76,55 @@ public class LC1568_MinimumNumberofDaystoDisconnectIsland {
 
     // S2
     // time = O(m^2 * n^2), space = O(m * n)
-    int m, n;
-    int[][] g;
-    boolean[][] st;
+    int[] p;
     int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    int m, n;
     public int minDays2(int[][] grid) {
-        g = grid;
-        m = g.length;
-        n = g[0].length;
+        m = grid.length;
+        n = grid[0].length;
+        if (check(grid)) return 0;
 
-        if (check()) return 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (g[i][j] == 1) {
-                    g[i][j] = 0;
-                    if (check()) return 1;
-                    g[i][j] = 1;
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;
+                    if (check(grid)) return 1;
+                    grid[i][j] = 1;
                 }
             }
         }
         return 2;
     }
 
-    private boolean check() {
-        int cnt = 0;
-        st = new boolean[m][n];
+    private boolean check(int[][] grid) {
+        p = new int[m * n];
+        for (int i = 0; i < m * n; i++) p[i] = i;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (!st[i][j] && g[i][j] == 1) {
-                    cnt++;
-                    dfs(i, j);
+                if (grid[i][j] == 1) {
+                    int u = i * n + j;
+                    for (int k = 0; k < 4; k++) {
+                        int a = i + dx[k], b = j + dy[k];
+                        if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                        if (grid[a][b] == 0) continue;
+                        int v = a * n + b;
+                        p[find(v)] = find(u);
+                    }
                 }
             }
         }
-        return cnt > 1 || cnt == 0;
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) set.add(find(i * n + j));
+            }
+        }
+        return set.size() != 1;
     }
 
-    private void dfs(int x, int y) {
-        st[x][y] = true;
-        for (int i = 0; i < 4; i++) {
-            int a = x + dx[i], b = y + dy[i];
-            if (a < 0 || a >= m || b < 0 || b >= n) continue;
-            if (st[a][b]) continue;
-            if (g[a][b] == 0) continue;
-            dfs(a, b);
-        }
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 }
 /**
