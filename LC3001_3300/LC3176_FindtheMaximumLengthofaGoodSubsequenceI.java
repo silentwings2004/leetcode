@@ -45,3 +45,10 @@ public class LC3176_FindtheMaximumLengthofaGoodSubsequenceI {
         return res;
     }
 }
+/**
+ * dp[i][t]: the maximum possible length of a good subsequence from [0:i] && there are t times of such situations
+ * x x x x j x x i
+ * if (nums[j] == nums[i]) dp[i][t] = dp[j][t] + 1
+ * else dp[i][t] = dp[j][t - 1] + 1
+ * return max(dp[i][t])
+ */

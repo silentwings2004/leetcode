@@ -21,6 +21,7 @@ public class LC238_ProductofArrayExceptSelf {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int[] productExceptSelf(int[] nums) {
         // corner case
@@ -40,6 +41,21 @@ public class LC238_ProductofArrayExceptSelf {
             res[i] = res[i] * right; // 最右点已经是除自己之外的前面所有元素的累积，所以right从1开始
             right *= nums[i]; // right代表当前元素之后的所有元素的累积，所以必须乘以当前元素的值，以便loop到前一个元素时它能表示之后所有元素的累积
         }
+        return res;
+    }
+
+    // S2: 前后缀分解
+    // time = O(n), space = O(n)
+    public int[] productExceptSelf2(int[] nums) {
+        int n = nums.length;
+        int[] pre = new int[n];
+        Arrays.fill(pre, 1);
+        for (int i = 1; i < n; i++) pre[i] = pre[i - 1] * nums[i - 1];
+        int[] suf = new int[n];
+        Arrays.fill(suf, 1);
+        for (int i = n - 2; i >= 0; i--) suf[i] = suf[i + 1] * nums[i + 1];
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) res[i] = pre[i] * suf[i];
         return res;
     }
 }

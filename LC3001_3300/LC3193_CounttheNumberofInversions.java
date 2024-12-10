@@ -1,6 +1,7 @@
 package LC3001_3300;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class LC3193_CounttheNumberofInversions {
     /**
@@ -65,4 +66,58 @@ public class LC3193_CounttheNumberofInversions {
         }
         return (int)res;
     }
+
+    // S2
+    // time = O(n^3), space = O(n^3)
+    public int numberOfPermutations2(int n, int[][] requirements) {
+        long mod = (long)(1e9 + 7);
+        long[][] f = new long[310][410];
+        f[0][0] = 1;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int[] r : requirements) map.put(r[0], r[1]);
+
+        int l = 0;
+        long res = 0;
+        for (int i = 1; i <= n; i++) {
+            if (map.containsKey(i - 1)) l = map.get(i - 1);
+            Integer ck = map.ceilingKey(i - 1);
+            int r = map.get(ck);
+            for (int j = l; j <= r; j++) {
+                for (int k = 0; k <= j; k++) {
+                    if (j - k <= i - 1) f[i][j] = (f[i][j] + f[i - 1][k]) % mod;
+                }
+            }
+            if (map.higherKey(i - 1) == null) {
+                res = f[i][r] * fact(n - i) % mod;
+                break;
+            }
+        }
+        return (int)res;
+    }
+
+    private long fact(int x) {
+        long res = 1, mod = (long)1e9 + 7;
+        for (int i = 1; i <= x; i++) res = res * i % mod;
+        return res;
+    }
 }
+/**
+ * permutation dp
+ * dp[i][j]: from the numbers 1~i elements, the number of valid permutations (i.e. with inverse pair numbers as j)
+ * x x x i
+ * dp[4] += dp[3]
+ * dp[i] = i * dp[i-1]
+ * for (int i = 1; i <= n; i++) {
+ *     for (int j = a; j <= b; j++) {
+ *         for (int k = 0; k <= j; k++) {
+ *              if (j - k <= i - 1) {
+ *                  dp[i][j] += dp[i-1][k];
+ *              }
+ *         }
+ *     }
+ * }
+ * return dp[n][?]
+ * [x x x i x x x]
+ * dp[i][j] => dp[i-1][k]
+ * dp[5][5] * 3!
+ */

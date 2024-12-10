@@ -31,7 +31,7 @@ public class LC3171_FindSubarrayWithBitwiseANDClosesttoK {
      * @param k
      * @return
      */
-    // S1: Two Pointers
+    // S1: Two Pointers (AND)
     // time = O(n), space = O(1)
     public int minimumDifference(int[] nums, int k) {
         int n = nums.length, res = Integer.MAX_VALUE;
@@ -56,7 +56,7 @@ public class LC3171_FindSubarrayWithBitwiseANDClosesttoK {
         return res;
     }
 
-    // S2
+    // S2: Log Trick (AND)
     // time = O(nlogU), space = O(1)  U: max val of nums
     public int minimumDifference2(int[] nums, int k) {
         int res = Integer.MAX_VALUE, n = nums.length;

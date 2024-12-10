@@ -27,12 +27,14 @@ public class LC2860_HappyStudents {
     // time = O(nlogn), space = O(logn)
     public int countWays(List<Integer> nums) {
         Collections.sort(nums);
-        int n = nums.size(), res = 0;
+        int res = 0, n = nums.size();
         if (nums.get(0) > 0) res++;
-        for (int i = 0; i + 1 < n; i++) {
-            if (i + 1 > nums.get(i) && i + 1 < nums.get(i + 1)) res++;
+        for (int i = 0; i < n; i++) {
+            if (i + 1 > nums.get(i)) {
+                if (i + 1 == n || nums.get(i + 1) > i + 1) res++;
+            }
         }
-        return res + 1; // 都选 nums[i] < nums.length
+        return res;
     }
 }
 /**

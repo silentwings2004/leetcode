@@ -52,4 +52,34 @@ public class LC2054_TwoBestNonOverlappingEvents {
         }
         return nums[left][1] < t ? left : left - 1;
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int maxTwoEvents2(int[][] events) {
+        Arrays.sort(events, (o1, o2) -> o1[0] - o2[0]);
+        int n = events.length;
+        int[] suf = new int[n];
+        suf[n - 1] = events[n - 1][2];
+        for (int i = n - 2; i >= 0; i--) {
+            suf[i] = Math.max(suf[i + 1], events[i][2]);
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            res = Math.max(res, events[i][2]);
+            int it = find(events, events[i][1] + 1);
+            if (it < n) res = Math.max(res, events[i][2] + suf[it]);
+        }
+        return res;
+    }
+
+    private int find(int[][] a, int t) {
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (a[mid][0] >= t) r = mid;
+            else l = mid + 1;
+        }
+        return a[r][0] >= t ? r : r + 1;
+    }
 }

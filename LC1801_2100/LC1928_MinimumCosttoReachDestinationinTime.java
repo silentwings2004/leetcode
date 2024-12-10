@@ -121,6 +121,55 @@ public class LC1928_MinimumCosttoReachDestinationinTime {
         }
         return res == Integer.MAX_VALUE? -1 : res;
     }
+
+    // S1.2
+    // time = O(V + ElogE) = O(m + n + nlogn), space = O(V + E) = O(n * maxTime)
+    public int minCost3(int maxTime, int[][] edges, int[] passingFees) {
+        final int inf = 0x3f3f3f3f;
+        int n = passingFees.length;
+        List<int[]>[] adj = new List[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+        for (int[] e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            adj[a].add(new int[]{b, c});
+            adj[b].add(new int[]{a, c});
+        }
+
+        int[] dist = new int[n];
+        int[] price = new int[n];
+        Arrays.fill(dist, inf);
+        Arrays.fill(price, inf);
+        dist[0] = 0;
+        price[0] = passingFees[0];
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] != o2[1] ? o1[1] - o2[1] : o1[2] - o2[2]);
+        pq.offer(new int[]{0, 0, passingFees[0]});
+
+        int res = inf;
+        while (!pq.isEmpty()) {
+            int[] t = pq.poll();
+            int x = t[0], d = t[1], p = t[2];
+            if (d > dist[x] && p > price[x]) continue;
+            dist[x] = Math.min(dist[x], d);
+            price[x] = Math.min(price[x], p);
+            if (x == n - 1) {
+                if (d <= maxTime) {
+                    res = Math.min(res, p);
+                }
+                continue;
+            }
+
+            for (int[] nxt : adj[x]) {
+                int y = nxt[0], w = nxt[1];
+                if (dist[y] > d + w || p + passingFees[y] < price[y]) {
+                    if (d + w <= maxTime) {
+                        pq.offer(new int[]{y, d + w, p + passingFees[y]});
+                    }
+                }
+            }
+        }
+        return res == inf ? -1 : res;
+    }
 }
 /**
  * S

@@ -113,4 +113,26 @@ public class LC2398_MaximumNumberofRobotsWithinBudget {
         }
         return false;
     }
+
+    // S3
+    // time = O(n), space = O(n)
+    public int maximumRobots3(int[] chargeTimes, int[] runningCosts, long budget) {
+        int n = chargeTimes.length;
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + runningCosts[i - 1];
+        int[] q = new int[n + 1];
+        int hh = 0, tt = -1;
+        int res = 0;
+
+        for (int i = 0, j = 0; i < n; i++) {
+            while (hh <= tt && chargeTimes[q[tt]] <= chargeTimes[i]) tt--;
+            q[++tt] = i;
+            while (hh <= tt && chargeTimes[q[hh]] + 1L * (i - j + 1) * (s[i + 1] - s[j]) > budget) {
+                if (q[hh] == j) hh++;
+                j++;
+            }
+            res = Math.max(res, i - j + 1);
+        }
+        return res;
+    }
 }

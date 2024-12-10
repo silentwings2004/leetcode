@@ -19,6 +19,7 @@ public class LC1574_ShortestSubarraytobeRemovedtoMakeArraySorted {
      * @param arr
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public int findLengthOfShortestSubarray(int[] arr) {
         // corner case
@@ -38,6 +39,25 @@ public class LC1574_ShortestSubarraytobeRemovedtoMakeArraySorted {
             res = Math.min(res, j - i - 1);
         }
         return res;
+    }
+
+    // S1.2
+    // time = O(n), space = O(1)
+    public int findLengthOfShortestSubarray2(int[] arr) {
+        int n = arr.length;
+        if (n == 1) return 0;
+        int l = 1, r = n - 2;
+        while (l < n && arr[l] >= arr[l - 1]) l++;
+        while (r >= 0 && arr[r] <= arr[r + 1]) r--;
+        l--;
+        r++;
+        if (l > r) return 0;
+        int res = Math.max(l + 1, n - r);
+        for (int i = 0, j = r; i <= l; i++) {
+            while (j < n && arr[j] < arr[i]) j++;
+            res = Math.max(res, i + 1 + n - j);
+        }
+        return n - res;
     }
 }
 /**

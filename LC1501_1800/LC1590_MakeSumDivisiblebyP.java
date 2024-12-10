@@ -23,26 +23,19 @@ public class LC1590_MakeSumDivisiblebyP {
      */
     // time = O(n), space = O(n)
     public int minSubarray(int[] nums, int p) {
-        int n = nums.length;
-        long totalSum = 0;
-        HashMap<Long, Integer> map = new HashMap<>();
-        map.put(0L, -1); // 用前缀和之前，别忘了设置一个初始值(0, -1)
-        for (int a : nums) totalSum += a;
-        long r0 = totalSum % p;
-        if (r0 == 0) return 0; // 如果一开始整个数组和 % p == 0 -> 1个都不用删除，直接return 0
-
-        long presum = 0, res = n;
-        for (int j = 0; j < n; j++) {
-            presum += nums[j];
-            long r = presum % p;
-            long dr = (r - r0 + p) % p;
-            if (map.containsKey(dr)) {
-                int i = map.get(dr) + 1; // i - 1 = map.get(r - r0)
-                res = Math.min(res, j - i + 1);
-            }
-            map.put(presum % p, j);
+        int n = nums.length, s = 0;
+        for (int x : nums) s = (s + x) % p;
+        if (s == 0) return 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int sum = 0, res = n;
+        for (int i = 0; i < n; i++) {
+            sum = (sum + nums[i]) % p;
+            int v = (sum - s + p) % p;
+            if (map.containsKey(v)) res = Math.min(res, i - map.get(v));
+            map.put(sum, i);
         }
-        return res == n ? -1 : (int) res;
+        return res == n ? -1 : res;
     }
 }
 /**

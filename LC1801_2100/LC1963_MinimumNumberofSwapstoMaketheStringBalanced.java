@@ -48,18 +48,17 @@ public class LC1963_MinimumNumberofSwapstoMaketheStringBalanced {
     // S2: Greedy (最优解!)
     // time = O(n), space = O(1)
     public int minSwaps2(String s) {
-        int count = 0; // temporarily unmatched left bracket
-        int unmatch = 0; // permanently unmatched right bracket
-
-        for (char ch : s.toCharArray()) {
-            if (ch == '[') count++;
-            else count--;
-            if (count < 0) {
-                unmatch++; // 注定无法匹配，count从0开始
-                count = 0;
+        int n = s.length(), t = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '[') t++;
+            else t--;
+            if (t < 0) {
+                t = 1;
+                res++;
             }
         }
-        return (unmatch + 1) / 2;
+        return res;
     }
 }
 /**

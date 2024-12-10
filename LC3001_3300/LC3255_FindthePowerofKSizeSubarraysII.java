@@ -24,6 +24,7 @@ public class LC3255_FindthePowerofKSizeSubarraysII {
      * @param k
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(n)
     public int[] resultsArray(int[] nums, int k) {
         int n = nums.length;
@@ -41,6 +42,20 @@ public class LC3255_FindthePowerofKSizeSubarraysII {
             Integer fk = map.floorKey(i);
             if (fk == null || map.get(fk) < j) res[i] = -1;
             else res[i] = nums[j];
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(n), space = O(1)
+    public int[] resultsArray2(int[] nums, int k) {
+        int n = nums.length, cnt = 0;
+        int[] res = new int[n - k + 1];
+        Arrays.fill(res, -1);
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] == nums[i - 1] + 1) cnt++;
+            else cnt = 1;
+            if (cnt >= k) res[i - k + 1] = nums[i];
         }
         return res;
     }

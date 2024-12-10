@@ -26,26 +26,10 @@ public class LC2982_FindLongestSpecialSubstringThatOccursThriceII {
      * 3 <= s.length <= 5 * 10^5
      * s consists of only lowercase English letters.
      */
-    // time = O(nlogn), space = O(n)
-    int[] pos;
+    // time = O(nlogn), space = O(1)
     public int maximumLength(String s) {
         int n = s.length();
-        pos = new int[n];
-        TreeMap<Integer, Integer> map = new TreeMap<>();
-        for (int i = 0; i < n; i++) {
-            int j = i + 1;
-            while (j < n && s.charAt(j) == s.charAt(i)) j++;
-            map.put(i, j - 1);
-            i = j - 1;
-        }
-
-        for (int i = 0; i < n; i++) {
-            Integer fk = map.floorKey(i);
-            int v = map.get(fk);
-            pos[i] = v;
-        }
-
-        int l = 1, r = n - 2;
+        int l = 1, r = n;
         while (l < r) {
             int mid = l + r + 1 >> 1;
             if (check(s, mid)) l = mid;
@@ -56,13 +40,15 @@ public class LC2982_FindLongestSpecialSubstringThatOccursThriceII {
 
     private boolean check(String s, int mid) {
         int n = s.length();
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i + mid - 1 < n; i++) {
-            int j = i + mid - 1, u = s.charAt(i) - 'a';
-            if (pos[i] >= j) map.put(u, map.getOrDefault(u, 0) + 1);
-        }
-        for (int v : map.values()) {
-            if (v >= 3) return true;
+        int[] cnt = new int[26];
+        for (int i = 0; i < n; i++) {
+            int u = s.charAt(i) - 'a';
+            int j = i + 1;
+            while (j < n && s.charAt(j) == s.charAt(i)) j++;
+            int len = j - i;
+            cnt[u] += Math.max(0, len - mid + 1);
+            if (cnt[u] >= 3) return true;
+            i = j - 1;
         }
         return false;
     }
@@ -90,44 +76,6 @@ public class LC2982_FindLongestSpecialSubstringThatOccursThriceII {
             res = Math.max(res, Math.max(L1 - 2, Math.max(Math.min(L1 - 1, L2), L3)));
         }
         return res > 0 ? res : -1;
-    }
-
-    // S3
-    // time = O(nlogn), space = O(n)
-    public int maximumLength3(String s) {
-        int n = s.length();
-        List<Integer>[] cnt = new List[26];
-        for (int i = 0; i < 26; i++) cnt[i] = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            int u = s.charAt(i) - 'a';
-            int j = i + 1;
-            while (j < n && s.charAt(j) == s.charAt(i)) j++;
-            cnt[u].add(j - i);
-            i = j - 1;
-        }
-
-        int res = -1;
-        for (int i = 0; i < 26; i++) {
-            if (cnt[i].size() == 0) continue;
-            Collections.sort(cnt[i]);
-            int l = 0, r = cnt[i].get(cnt[i].size() - 1);
-            while (l < r) {
-                int mid = l + r + 1 >> 1;
-                if (check(cnt[i], mid)) l = mid;
-                else r = mid - 1;
-            }
-            if (r > 0) res = Math.max(res, r);
-        }
-        return res;
-    }
-
-    private boolean check(List<Integer> q, int mid) {
-        int t = 0;
-        for (int x : q) {
-            if (x < mid) continue;
-            t += x - mid + 1;
-        }
-        return t >= 3;
     }
 }
 /**

@@ -24,6 +24,7 @@ public class LC1671_MinimumNumberofRemovalstoMakeMountainArray {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n^2), space = O(n)
     public int minimumMountainRemovals(int[] nums) {
         int n = nums.length;

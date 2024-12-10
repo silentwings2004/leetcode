@@ -30,41 +30,40 @@ public class LC685_RedundantConnectionII {
      * @return
      */
     // time = O(n), space = O(n)
-    int[] parent;
+    int[] p;
     public int[] findRedundantDirectedConnection(int[][] edges) {
         int n = edges.length;
-        parent = new int[n + 1];
+        p = new int[n + 1];
         int[] cand1 = null, cand2 = null;
-        for (int[] edge : edges) {
-            int a = edge[0], b = edge[1];
-            if (parent[b] != 0) {
-                cand1 = edge;
-                cand2 = new int[]{parent[b], b};
+        for (int[] e : edges) {
+            int a = e[0], b = e[1];
+            if (p[b] != 0) {
+                cand1 = e;
+                cand2 = new int[]{p[b], b};
                 break;
-            } else parent[b] = a;
+            } else p[b] = a;
         }
 
-        for (int i = 1; i <= n; i++) parent[i] = i;
+        for (int i = 1; i <= n; i++) p[i] = i;
 
         // 先任意删一个，然后判断剩下的是否能成环 -> union find / dfs 搜索
         // tree -> n edges => n + 1 nodes now we have n edges with one fake edge -> we have n nodes
-        for (int[] edge : edges) {
-            if (edge == cand1) continue; // 相当于当做没有这条边存在，不参与union
-            int a = edge[0], b = edge[1];
-            if (findParent(a) != findParent(b)) parent[b] = a;
+        for (int[] e : edges) {
+            if (e == cand1) continue; // 相当于当做没有这条边存在，不参与union
+            int a = e[0], b = e[1];
+            if (find(a) != find(b)) p[find(b)] = find(a);
             else { // a, b之间本身已经连通，现在再加一条连通边就成环了
                 // cand1, cand2可能都是空 -> 就是这条边造成了环，并且肯定连接到了root上，所有结点都有一个入度，连root都有1个root =>
                 // 整张图就是一个指向root的环，环里任何一条边切断都可以
-                if (cand2 == null) return edge;
-                return cand2;
+                return cand2 == null ? e : cand2;
             }
         }
         return cand1; // cand1切掉之后相安无事 => 罪魁祸首就是cand1
     }
 
-    private int findParent(int x) {
-        if (x != parent[x]) parent[x] = findParent(parent[x]);
-        return parent[x];
+    private int find(int x) {
+        if (x != p[x]) p[x] = find(p[x]);
+        return p[x];
     }
 
     // S2: tarjan

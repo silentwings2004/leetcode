@@ -33,13 +33,12 @@ public class LC2825_MakeStringaSubsequenceUsingCyclicIncrements {
      */
     // time = O(n), space = O(1)
     public boolean canMakeSubsequence(String str1, String str2) {
-        int m = str1.length(), n = str2.length();
-        if (m < n) return false;
-        int i, j;
-        for (i = 0, j = 0; i < m && j < n; i++) {
-            char c1 = str1.charAt(i), c2 = str2.charAt(j);
-            if (c1 == c2 || c2 - c1 == 1 || c1 == 'z' && c2 == 'a') j++;
+        int n = str1.length(), m = str2.length();
+        int j = 0;
+        for (int i = 0; i < n && j < m; i++) {
+            int a = str1.charAt(i) - 'a', b = str2.charAt(j) - 'a';
+            if (b - a == 0 || b - a == 1 || a == 25 && b == 0) j++;
         }
-        return j == n;
+        return j == m;
     }
 }

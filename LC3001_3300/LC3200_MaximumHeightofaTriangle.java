@@ -32,18 +32,16 @@ public class LC3200_MaximumHeightofaTriangle {
         return Math.max(helper(red, blue), helper(blue, red));
     }
 
-    private int helper(int x, int y) {
-        boolean flag = false;
-        int res = 0;
-        for (int i = 1;; i++) {
-            if (!flag) {
-                if (x >= i) x -= i;
-                else break;
-            } else {
-                if (y >= i) y -= i;
-                else break;
-            }
-            flag = !flag;
+    private int helper(int a, int b) {
+        int res = 0, x = 1, y = 2;
+        while (true) {
+            if (a < x) break;
+            a -= x;
+            x += 2;
+            res++;
+            if (b < y) break;
+            b -= y;
+            y += 2;
             res++;
         }
         return res;

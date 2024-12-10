@@ -46,23 +46,17 @@ public class LC2044_CountNumberofMaximumBitwiseORSubsets {
     // S2: bitmask
     // time = O(2^n), space = O(1）
     public int countMaxOrSubsets2(int[] nums) {
-        // corner case
-        if (nums == null || nums.length == 0) return 0;
-
-        int max = 0, n = nums.length;
-        for (int x : nums) max |= x;
-
-        int count = 0;
-        for (int state = 0; state < (1 << n); state++) {
-            int val = 0;
-            for (int i = 0; i < n; i++) {
-                if (((state >> i) & 1) == 1) {
-                    val |= nums[i];
-                }
+        int mx = 0;
+        for (int x : nums) mx |= x;
+        int n = nums.length, res = 0;
+        for (int i = 0; i < 1 << n; i++) {
+            int t = 0;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) t |= nums[j];
             }
-            if (val == max) count++;
+            if (t == mx) res++;
         }
-        return count;
+        return res;
     }
 
     // S3: DFS (better solution)

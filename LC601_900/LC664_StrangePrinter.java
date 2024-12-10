@@ -77,6 +77,25 @@ public class LC664_StrangePrinter {
         }
         return dp[0][n - 1];
     }
+
+    // S3
+    // time = O(n^3), space = O(n^2)
+    public int strangePrinter3(String s) {
+        int n = s.length();
+        int[][] f = new int[n + 1][n + 1];
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                f[i][j] = f[i + 1][j] + 1;
+                for (int k = i + 1; k <= j; k++) {
+                    if (s.charAt(i) == s.charAt(k)) {
+                        f[i][j] = Math.min(f[i][j], f[i][k - 1] + f[k + 1][j]);
+                    }
+                }
+            }
+        }
+        return f[0][n - 1];
+    }
 }
 /**
  * aaabaaa

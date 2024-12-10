@@ -25,35 +25,48 @@ public class LC1140_StoneGameII {
      * @param piles
      * @return
      */
-    // time = O(n), space = O(n^2)
+    // S1
+    // time = O(n^3), space = O(n^2)
+    int[] s;
+    int[][] f;
+    int n;
     public int stoneGameII(int[] piles) {
-        // corner case
-        if (piles == null || piles.length == 0) return 0;
-
-        int n = piles.length;
-        int[][] dp = new int[n + 1][n + 1];
-        int[] suf = new int[n + 1];
-
-        suf[n] = 0;
-        for (int i = n - 1; i >= 0; i--) suf[i] = suf[i + 1] + piles[i];
-        return solve(piles, 0, 1, dp, suf);
+        s = piles;
+        n = s.length;
+        f = new int[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) Arrays.fill(f[i], -1);
+        for (int i = n - 2; i >= 0; i--) s[i] += s[i + 1];
+        return dfs(0, 1);
     }
 
-    private int solve(int[] piles, int i, int M, int[][] dp, int[] suf) {
-        int n = piles.length;
-        // base case
-        if (i == piles.length) return 0;
+    private int dfs(int u, int m) {
+        if (u + m * 2 >= n) return s[u];
+        if (f[u][m] != -1) return f[u][m];
 
-        if (dp[i][M] != 0) return dp[i][M];
-
-        int sum = 0;
-        for (int x = 1; x <= 2 * M; x++) {
-            if (i + x - 1 >= n) break;
-            sum += piles[i + x - 1];
-            dp[i][M] = Math.max(dp[i][M], sum + suf[i + x] - solve(piles, i + x, Math.max(x, M), dp, suf))
-            ;
+        int t = 0;
+        for (int x = 1; x <= m * 2; x++) {
+            t = Math.max(t, s[u] - dfs(u + x, Math.max(x, m)));
         }
-        return dp[i][M];
+        f[u][m] = t;
+        return t;
+    }
+
+    // S2
+    // time = O(n^3), space = O(n^2)
+    public int stoneGameII2(int[] piles) {
+        int n = piles.length;
+        int[][] f = new int[n + 2][n + 1];
+        int[] s = new int[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + piles[i - 1];
+
+        for (int i = n; i > 0; i--) {
+            for (int j = 1; j <= n; j++) {
+                for (int k = 1; i + k - 1 <= n && k <= j * 2; k++) {
+                    f[i][j] = Math.max(f[i][j], s[n] - s[i - 1] - f[i + k][Math.max(k, j)]);
+                }
+            }
+        }
+        return f[1][1];
     }
 }
 /**

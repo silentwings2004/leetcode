@@ -28,47 +28,71 @@ public class LC1381_DesignaStackWithIncrementOperation {
      * At most 1000 calls will be made to each method of increment, push and pop each separately.
      * @param maxSize
      */
-    // S1: Deque
-    Deque<Integer> deque;
-    Stack<Integer> stack;
-    int maxSize;
+    // S1
+    // time = O(k), space = O(n)
+    int[] stk;
+    int tt, mx;
     public LC1381_DesignaStackWithIncrementOperation(int maxSize) {
-        this.deque = new LinkedList<>();
-        this.stack = new Stack<>();
-        this.maxSize = maxSize;
+        mx = maxSize;
+        stk = new int[maxSize + 1];
+        tt = 0;
     }
 
-    // time = O(1), space = O(n)
     public void push(int x) {
-        if (deque.size() < maxSize) deque.offerLast(x);
+        if (tt < mx) stk[++tt] = x;
     }
 
-    // time = O(1), space = O(n)
     public int pop() {
-        return deque.isEmpty() ? -1 : deque.pollLast();
+        return tt == 0 ? -1 : stk[tt--];
     }
 
-    // time = O(n), space = O(n)
     public void increment(int k, int val) {
-        int n = deque.size();
-        for (int i = 0; i < Math.min(k, n); i++) {
-            stack.push(deque.pollFirst() + val);
-        }
-        while (!stack.isEmpty()) deque.offerFirst(stack.pop());
+        for (int i = 1; i <= Math.min(k, tt); i++) stk[i] += val;
     }
 
-    // S2: Diff Array (optimal solution)
+    // S2: lazy add
+    // time = O(1), space = O(n)
     class CustomStack {
+        int[] stk, inc;
+        int tt, mx;
+        public CustomStack(int maxSize) {
+            mx = maxSize;
+            stk = new int[mx + 1];
+            inc = new int[mx + 1];
+            tt = 0;
+        }
+
+        public void push(int x) {
+            if (tt < mx) stk[++tt] = x;
+        }
+
+        public int pop() {
+            if (tt == 0) return -1;
+            int val = stk[tt] + inc[tt];
+            inc[tt - 1] += inc[tt];
+            inc[tt] = 0;
+            tt--;
+            return val;
+        }
+
+        public void increment(int k, int val) {
+            int x = Math.min(k, tt);
+            inc[x] += val;
+        }
+    }
+
+    // S3: diff array
+    // time = O(1), space = O(n)
+    class CustomStack2 {
         int[] nums, offset;
         int maxSize, count, diff;
-        public CustomStack(int maxSize) {
+        public CustomStack2(int maxSize) {
             this.maxSize = maxSize;
             this.count = 0;
             this.nums = new int[maxSize];
             this.offset = new int[maxSize];
         }
 
-        // time = O(1), space = O(n)
         public void push(int x) {
             if (count == maxSize) return;
 
@@ -79,7 +103,6 @@ public class LC1381_DesignaStackWithIncrementOperation {
             count++;
         }
 
-        // time = O(1), space = O(n)
         public int pop() {
             if (count == 0) return -1;
             diff += offset[count - 1];
@@ -88,7 +111,6 @@ public class LC1381_DesignaStackWithIncrementOperation {
             return res;
         }
 
-        // time = O(1), space = O(n)
         public void increment(int k, int val) {
             if (count == 0) return;
             offset[Math.min(k - 1, count - 1)] += val;

@@ -27,19 +27,20 @@ public class LC2207_MaximizeNumberofSubsequencesinaString {
      */
     // time = O(n), space = O(1)
     public long maximumSubsequenceCount(String text, String pattern) {
-        int n = text.length(), count = 1;
-        long option1 = 0, option2 = 0;
-
-        for (char c : text.toCharArray()) {
-            if (c == pattern.charAt(1)) option1 += count;
-            if (c == pattern.charAt(0)) count++;
-        }
-        count = 1;
+        int n = text.length(), a = 0, b = 0;
+        long res = 0;
         for (int i = n - 1; i >= 0; i--) {
             char c = text.charAt(i);
-            if (c == pattern.charAt(0)) option2 += count;
-            if (c == pattern.charAt(1)) count++;
+            if (c == pattern.charAt(0) && c == pattern.charAt(1)) {
+                res += a;
+                a++;
+            } else {
+                if (c == pattern.charAt(0)) {
+                    res += b;
+                    a++;
+                } else if (c == pattern.charAt(1)) b++;
+            }
         }
-        return Math.max(option1, option2);
+        return Math.max(res + b, res + a);
     }
 }

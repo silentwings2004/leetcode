@@ -26,17 +26,13 @@ public class LC2501_LongestSquareStreakinanArray {
      */
     // S1: LIS
     // time = O(nlogn), space = O(n)
-    final int N = 100010;
     public int longestSquareStreak(int[] nums) {
-        int[] f = new int[N];
         Arrays.sort(nums);
-
-        int n = nums.length, res = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int x = nums[i];
-            long y = (long) x * x;
-            if (y < N) f[x] = f[(int) y] + 1;
-            else f[x] = 1;
+        int[] f = new int[100010];
+        int res = 0;
+        for (int x : nums) {
+            int y = (int)Math.sqrt(x);
+            f[x] = 1 + (y * y == x ? f[y] : 0);
             res = Math.max(res, f[x]);
         }
         return res < 2 ? -1 : res;

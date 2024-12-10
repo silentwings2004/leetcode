@@ -25,17 +25,14 @@ public class LC2696_MinimumStringLengthAfterRemovingSubstrings {
      * @return
      */
     // time = O(n), space = O(n)
-    final int N = 110;
     public int minLength(String s) {
-        char[] stk = new char[N];
-        int n = s.length(), tt = 0;
+        int n = s.length();
+        char[] stk = new char[n + 1];
+        int tt = 0;
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
-            if (tt == 0 || c != 'B' && c != 'D') stk[++tt] = c;
-            else {
-                if (c == 'B' && stk[tt] == 'A' || c == 'D' && stk[tt] == 'C') tt--;
-                else stk[++tt] = c;
-            }
+            if (tt > 0 && (c == 'B' && stk[tt] == 'A' || c == 'D' && stk[tt] == 'C')) tt--;
+            else stk[++tt] = c;
         }
         return tt;
     }

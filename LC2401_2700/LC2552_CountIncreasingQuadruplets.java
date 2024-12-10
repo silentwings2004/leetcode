@@ -116,6 +116,24 @@ public class LC2552_CountIncreasingQuadruplets {
         }
         return res;
     }
+
+    // S4
+    // time = O(n), space = O(n)
+    public long countQuadruplets4(int[] nums) {
+        int n = nums.length;
+        long cnt4 = 0;
+        long[] cnt3 = new long[n];
+        for (int l = 2; l < n; l++) {
+            long cnt2 = 0;
+            for (int j = 0; j < l; j++) {
+                if (nums[j] < nums[l]) {
+                    cnt4 += cnt3[j];
+                    cnt2++;
+                } else cnt3[j] += cnt2;
+            }
+        }
+        return cnt4;
+    }
 }
 /**
  * 从数据规模来看，我们可以尝试n^2的时间复杂度。

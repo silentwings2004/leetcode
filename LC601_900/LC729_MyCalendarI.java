@@ -1,6 +1,6 @@
 package LC601_900;
 import java.util.*;
-public class  LC729_MyCalendarI {
+public class LC729_MyCalendarI {
     /**
      * You are implementing a program to use as your calendar. We can add a new event if adding the event will not
      * cause a double booking.
@@ -29,22 +29,18 @@ public class  LC729_MyCalendarI {
      * At most 1000 calls will be made to book.
      */
     // time = O(nlogn), space = O(n)
-    private TreeMap<Integer, Integer> map;
+    TreeMap<Integer, Integer> map;
     public LC729_MyCalendarI() {
         map = new TreeMap<>();
-    } // 把起点做为key，终点作为end,注意区间是左闭右开！
+    }
 
-    public boolean book(int start, int end) { // 2种情况：1种是起点与[start, end]有重合，一种是终点和[start, end]有重合。
-        Integer fk = map.floorKey(start);
-        if (fk != null) {
-            if (map.get(fk) > start) return false;
+    public boolean book(int start, int end) {
+        Integer lk = map.lowerKey(end);
+        if (lk == null || map.get(lk) <= start) {
+            map.put(start, end);
+            return true;
         }
-        Integer hk = map.higherKey(start);
-        if (hk != null) {
-            if (hk < end) return false;
-        }
-        map.put(start, end);
-        return true;
+        return false;
     }
 }
 /**

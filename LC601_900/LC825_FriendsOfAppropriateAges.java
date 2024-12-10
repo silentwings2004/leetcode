@@ -62,6 +62,26 @@ public class LC825_FriendsOfAppropriateAges {
         }
         return count;
     }
+
+    // S3: two pointers
+    // time = O(nlogn), space = O(logn)
+    public int numFriendRequests3(int[] ages) {
+        Arrays.sort(ages);
+        int n = ages.length, res = 0;
+        for (int i = 0, l = 0, r = 0; i < n; i++) {
+            while (l < i && !check(ages[l], ages[i])) l++;
+            r = Math.max(r, i);
+            while (r < n && check(ages[r], ages[i])) r++;
+            if (r > l) res += r - l - 1;
+        }
+        return res;
+    }
+
+    private boolean check(int x, int y) {
+        if (y <= 0.5 * x + 7) return false;
+        if (y > x) return false;
+        return true;
+    }
 }
 /**
  * age[B] <= 0.5 * age[A] + 7   => age[B] > age[A]*0.5+7  => age[B] >= age[A]*0.5 + 8

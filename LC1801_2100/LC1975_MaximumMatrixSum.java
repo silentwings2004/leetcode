@@ -23,20 +23,21 @@ public class LC1975_MaximumMatrixSum {
      */
     // time = O(n^2), space = O(1)
     public long maxMatrixSum(int[][] matrix) {
-        // corner case
-        if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) return 0;
-
-        int n = matrix.length, count = 0, min = Integer.MAX_VALUE;
-        long sum = 0;
+        int n = matrix.length;
+        long res = 0;
+        int minv = Integer.MAX_VALUE;
+        boolean f = true;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (matrix[i][j] < 0) {
-                    count++;
-                    sum -= matrix[i][j];
-                } else sum += matrix[i][j];
-                min = Math.min(min, Math.abs(matrix[i][j]));
+                int x = matrix[i][j];
+                if (x >= 0) res += x;
+                else {
+                    res -= x;
+                    f = !f;
+                }
+                minv = Math.min(minv, Math.abs(x));
             }
         }
-        return count % 2 == 0 ? sum : sum - 2 * min;
+        return f ? res : res - minv * 2;
     }
 }

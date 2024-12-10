@@ -30,19 +30,17 @@ public class LC1497_CheckIfArrayPairsAreDivisiblebyk {
      */
     // time = O(n), space = O(n)
     public boolean canArrange(int[] arr, int k) {
-        int n = arr.length;
-        long s = 0;
-        for (int x : arr) s += x;
-        if (s % k != 0) return false;
-        HashMap<Integer, Integer> map = new HashMap();
-        int res = 0;
-        for (int x : arr) {
-            int r = (x % k + k) % k, t = (k - r) % k;
-            if (map.containsKey(t)) {
-                map.put(t, map.get(t) - 1);
-                if (map.get(t) == 0) map.remove(t);
-            } else map.put(r, map.getOrDefault(r, 0) + 1);
+        int[] cnt = new int[k + 1];
+        for (int x : arr) cnt[(x % k + k) % k]++;
+        for (int i = 0; i < k; i++) {
+            if (cnt[i] > 0) {
+                if (i == (k - i) % k) {
+                    if (cnt[i] % 2 != 0) return false;
+                } else {
+                    if (cnt[i] != cnt[k - i]) return false;
+                }
+            }
         }
-        return map.isEmpty();
+        return true;
     }
 }

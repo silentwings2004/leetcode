@@ -66,6 +66,24 @@ public class LC983_MinimumCostForTickets {
         }
         return f[n];
     }
+
+    // S3
+    // time = O(n), space = O(n)
+    public int mincostTickets3(int[] days, int[] costs) {
+        int n = days.length;
+        int[] f = new int[days[n - 1] + 1];
+        boolean[] st = new boolean[days[n - 1] + 1];
+        for (int d : days) st[d] = true;
+        for (int i = 1; i <= days[n - 1]; i++) {
+            if (!st[i]) f[i] = f[i - 1];
+            else {
+                f[i] = f[i - 1] + costs[0];
+                f[i] = Math.min(f[i], f[Math.max(0, i - 7)] + costs[1]);
+                f[i] = Math.min(f[i], f[Math.max(0, i - 30)] + costs[2]);
+            }
+        }
+        return f[days[n - 1]];
+    }
 }
 /**
  * dp[i]: the cost for the first i days you can travel

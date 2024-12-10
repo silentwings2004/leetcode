@@ -25,17 +25,13 @@ public class LC1184_DistanceBetweenBusStops {
      */
     // time = O(n), space = O(1)
     public int distanceBetweenBusStops(int[] distance, int start, int destination) {
-        // corner case
-        if (distance == null || distance.length == 0) return 0;
-
-        int dist1 = 0, dist2 = 0, n = distance.length;
-        for (int i = start; i < (destination < start ? destination + n : destination); i++) {
-            dist1 += distance[i % n];
+        int n = distance.length, s = 0;
+        for (int x : distance) s += x;
+        int x = start, d = 0;
+        while (x != destination) {
+            d += distance[x];
+            x = (x + 1) % n;
         }
-
-        for (int i = destination; i < (start < destination ? start + n : start); i++) {
-            dist2 += distance[i % n];
-        }
-        return Math.min(dist1, dist2);
+        return Math.min(d, s - d);
     }
 }

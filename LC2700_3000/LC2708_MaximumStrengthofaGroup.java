@@ -21,6 +21,7 @@ public class LC2708_MaximumStrengthofaGroup {
      * @param nums
      * @return
      */
+    // S1
     // time = O(n), space = O(1)
     public long maxStrength(int[] nums) {
         int pos = 0, neg = 0, zero = 0;
@@ -40,5 +41,33 @@ public class LC2708_MaximumStrengthofaGroup {
         if (pos == 0 && neg == 1) return zero > 0 ? 0 : res;
         if (neg % 2 == 1) res /= t;
         return res;
+    }
+
+    // S2: 状态压缩
+    // time = O(2^n), space = O(1)
+    public long maxStrength2(int[] nums) {
+        int n = nums.length;
+        long res = Long.MIN_VALUE;
+        for (int i = 1; i < 1 << n; i++) {
+            long t = 1;
+            for (int j = 0; j < n; j++) {
+                if ((i >> j & 1) == 1) t *= nums[j];
+            }
+            res = Math.max(res, t);
+        }
+        return res;
+    }
+
+    // S3
+    // time = O(n), space = O(1)
+    public long maxStrength3(int[] nums) {
+        int n = nums.length;
+        long mn = nums[0], mx = nums[0];
+        for (int i = 1; i < n; i++) {
+            long x = nums[i], tmn = mn, tmx = mx;
+            mn = Math.min(tmn, Math.min(x, Math.min(tmn * x, tmx * x)));
+            mx = Math.max(tmx, Math.max(x, Math.max(tmn * x, tmx * x)));
+        }
+        return mx;
     }
 }

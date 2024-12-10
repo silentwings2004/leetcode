@@ -42,27 +42,15 @@ public class LC2181_MergeNodesinBetweenZeros {
     // S2: iteration
     // time = O(n), space = O(n)
     public ListNode mergeNodes2(ListNode head) {
-        // corner case
-        if (head == null || head.next == null) return null;
-
-        ListNode dummy = new ListNode(0);
-        List<Integer> list = new ArrayList<>();
-        ListNode cur = head;
-
-        while (cur != null) {
-            int num = 0;
-            cur = cur.next;
-            while (cur != null && cur.val > 0) {
-                num += cur.val;
-                cur = cur.next;
-            }
-            if (num > 0) list.add(num);
-        }
-
-        cur = dummy;
-        for (int x : list) {
-            cur.next = new ListNode(x);
-            cur = cur.next;
+        ListNode dummy = new ListNode(0), cur = dummy;
+        int v = -1;
+        for (ListNode p = head; p != null; p = p.next) {
+            if (p.val == 0) {
+                if (v != -1) {
+                    cur = cur.next = new ListNode(v);
+                }
+                v = 0;
+            } else v += p.val;
         }
         return dummy.next;
     }

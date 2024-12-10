@@ -35,48 +35,30 @@ public class LC2257_CountUnguardedCellsintheGrid {
      * @return
      */
     // time = O(m * n), space = O(m * n)
-    private int[][] directions = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
         int[][] grid = new int[m][n];
-        for (int[] wall : walls) {
-            int x = wall[0], y = wall[1];
-            grid[x][y] = -1;
-        }
-
-        Queue<int[]> queue = new LinkedList<>();
-        boolean[][][] visited = new boolean[m][n][4];
-        for (int[] guard : guards) {
-            int x = guard[0], y = guard[1];
-            queue.offer(new int[]{x, y, 0});
-            queue.offer(new int[]{x, y, 1});
-            queue.offer(new int[]{x, y, 2});
-            queue.offer(new int[]{x, y, 3});
-            visited[x][y][0] = true;
-            visited[x][y][1] = true;
-            visited[x][y][2] = true;
-            visited[x][y][3] = true;
-        }
-
-        while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            int x = cur[0], y = cur[1], k = cur[2];
-            grid[x][y] = 1;
-
-            int i = x + directions[k][0];
-            int j = y + directions[k][1];
-            if (i < 0 || i >= m || j < 0 || j >= n) continue;
-            if (visited[i][j][k]) continue;
-            if (grid[i][j] == -1) continue;
-            queue.offer(new int[]{i, j, k});
-            visited[i][j][k] = true;
-        }
-
-        int count = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) count++;
+        for (int[] g : guards) grid[g[0]][g[1]] = 1;
+        for (int[] w : walls) grid[w[0]][w[1]] = 2;
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        for (int[] g : guards) {
+            int x = g[0], y = g[1];
+            for (int i = 0; i < 4; i++) {
+                int a = x + dx[i], b = y + dy[i];
+                while (a >= 0 && a < m && b >= 0 && b < n && grid[a][b] != 1 && grid[a][b] != 2) {
+                    grid[a][b] = 3;
+                    a += dx[i];
+                    b += dy[i];
+                }
             }
         }
-        return count;
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
+                    res++;
+                }
+            }
+        }
+        return res;
     }
 }

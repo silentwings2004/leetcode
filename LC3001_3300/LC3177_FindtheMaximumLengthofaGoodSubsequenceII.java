@@ -81,6 +81,36 @@ public class LC3177_FindtheMaximumLengthofaGoodSubsequenceII {
         }
         return f[k + 1];
     }
+
+    // S3
+    // time = O(n * k), space = O(n * k)
+    public int maximumLength3(int[] nums, int k) {
+        int n = nums.length;
+        int[][] f = new int[n][k + 1];
+        HashMap<Integer, Integer>[] hm = new HashMap[k + 1];
+        int[] mx = new int[k + 1];
+        for (int i = 0; i <= k; i++) hm[i] = new HashMap<>();
+
+        int res = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= k; j++) {
+                int t = 1;
+                if (hm[j].containsKey(nums[i])) {
+                    t = Math.max(t, hm[j].get(nums[i]) + 1);
+                }
+                if (j > 0) {
+                    t = Math.max(t, mx[j - 1] + 1);
+                }
+                f[i][j] = t;
+                res = Math.max(res, t);
+            }
+            for (int j = 0; j <= k; j++) {
+                hm[j].put(nums[i], f[i][j]);
+                mx[j] = Math.max(mx[j], f[i][j]);
+            }
+        }
+        return res;
+    }
 }
 /**
  * 子序列 dp 的两种模型：

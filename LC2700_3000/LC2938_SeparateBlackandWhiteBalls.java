@@ -43,9 +43,10 @@ public class LC2938_SeparateBlackandWhiteBalls {
     public long minimumSteps2(String s) {
         int n = s.length();
         long res = 0;
-        for (int i = 0, j = -1; i < n; i++) {
-            if (s.charAt(i) == '0') {
-                res += i - j - 1;
+        for (int i = 0, j = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '0') {
+                res += i - j;
                 j++;
             }
         }
