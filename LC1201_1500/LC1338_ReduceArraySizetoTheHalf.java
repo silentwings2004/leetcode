@@ -17,24 +17,20 @@ public class LC1338_ReduceArraySizetoTheHalf {
      * @param arr
      * @return
      */
-    // S1: hash + pq
+    // S1: HashMap + sort
     // time = O(nlogn), space = O(n)
     public int minSetSize(int[] arr) {
-        // corner case
-        if (arr == null || arr.length == 0) return 0;
-
         int n = arr.length;
         HashMap<Integer, Integer> map = new HashMap<>();
-        for (int num : arr) map.put(num, map.getOrDefault(num, 0) + 1);
-
-        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        for (int val : map.values()) pq.offer(val);
-
-        int count = 0, res = 0;
-        while (!pq.isEmpty()) {
-            count += pq.poll();
+        for (int x : arr) map.put(x, map.getOrDefault(x, 0) + 1);
+        List<Integer> q = new ArrayList<>();
+        for (int v : map.values()) q.add(v);
+        Collections.sort(q, (o1, o2) -> o2 - o1);
+        int s = 0, res = 0;
+        for (int x : q) {
+            s += x;
             res++;
-            if (count >= n / 2) break;
+            if (s >= n / 2) break;
         }
         return res;
     }

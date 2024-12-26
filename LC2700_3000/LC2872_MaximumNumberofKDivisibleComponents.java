@@ -40,7 +40,6 @@ public class LC2872_MaximumNumberofKDivisibleComponents {
      */
     // time = O(n), space = O(n)
     List<Integer>[] adj;
-    long[] f;
     int[] values;
     int res, k;
     public int maxKDivisibleComponents(int n, int[][] edges, int[] values, int k) {

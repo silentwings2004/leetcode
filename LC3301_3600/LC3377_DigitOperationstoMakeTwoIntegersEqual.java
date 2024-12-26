@@ -33,6 +33,7 @@ public class LC3377_DigitOperationstoMakeTwoIntegersEqual {
      * @param m
      * @return
      */
+    // S1
     // time = O(mlogm), space = O(m)
     final int inf = 0x3f3f3f3f;
     public int minOperations(int n, int m) {
@@ -97,5 +98,69 @@ public class LC3377_DigitOperationstoMakeTwoIntegersEqual {
             if (x % i == 0) return false;
         }
         return true;
+    }
+
+    // S2
+    // time = O(mlogm), space = O(m)
+    class Solution {
+        final int N = 10010, inf = 0x3f3f3f3f;
+        int[] primes;
+        int cnt;
+        boolean[] st, isPrime;
+        public int minOperations(int n, int m) {
+            primes = new int[N];
+            st = new boolean[N];
+            st[0] = st[1] = true;
+            init();
+
+            if (!st[n] || !st[m]) return -1;
+
+            int sz = String.valueOf(n).length();
+            int[] dist = new int[(int)Math.pow(10, sz)];
+            Arrays.fill(dist, inf);
+            dist[n] = n;
+
+            PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
+            pq.offer(new int[]{n, n});
+            while (!pq.isEmpty()) {
+                int[] t = pq.poll();
+                int d = t[0], x = t[1];
+                if (x == m) return d;
+                if (d > dist[x]) continue;
+
+                int pow10 = 1;
+                for (int v = x; v > 0; v /= 10) {
+                    int u = v % 10;
+                    if (u > 0) {
+                        int y = x - pow10;
+                        int nd = d + y;
+                        if (st[y] && nd < dist[y]) {
+                            dist[y] = nd;
+                            pq.offer(new int[]{nd, y});
+                        }
+                    }
+                    if (u < 9) {
+                        int y = x + pow10;
+                        int nd = d + y;
+                        if (st[y] && nd < dist[y]) {
+                            dist[y] = nd;
+                            pq.offer(new int[]{nd, y});
+                        }
+                    }
+                    pow10 *= 10;
+                }
+            }
+            return -1;
+        }
+
+        private void init() {
+            for (int i = 2; i < N; i++) {
+                if (!st[i]) primes[cnt++] = i;
+                for (int j = 0; i * primes[j] < N; j++) {
+                    st[i * primes[j]] = true;
+                    if (i % primes[j] == 0) break;
+                }
+            }
+        }
     }
 }

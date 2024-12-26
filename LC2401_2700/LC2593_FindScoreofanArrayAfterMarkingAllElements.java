@@ -74,4 +74,22 @@ public class LC2593_FindScoreofanArrayAfterMarkingAllElements {
         }
         return res;
     }
+
+    // S3
+    // time = O(nlogn), space = O(n)
+    public long findScore3(int[] nums) {
+        int n = nums.length;
+        TreeSet<int[]> set = new TreeSet<>((o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+        for (int i = 0; i < n; i++) set.add(new int[]{nums[i], i});
+        long res = 0;
+        while (!set.isEmpty()) {
+            int[] t = set.first();
+            res += t[0];
+            int idx = t[1];
+            set.remove(t);
+            if (idx > 0) set.remove(new int[]{nums[idx - 1], idx - 1});
+            if (idx + 1 < n) set.remove(new int[]{nums[idx + 1], idx + 1});
+        }
+        return res;
+    }
 }

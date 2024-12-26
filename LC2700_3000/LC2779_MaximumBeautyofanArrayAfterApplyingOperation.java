@@ -54,8 +54,8 @@ public class LC2779_MaximumBeautyofanArrayAfterApplyingOperation {
         Arrays.sort(nums);
         int n = nums.length, res = 0;
         for (int i = 0, j = 0; i < n; i++) {
-            while (nums[i] - nums[j] > k * 2) j++;
-            res = Math.max(res, i - j + 1);
+            while (j < n && nums[j] - nums[i] <= k * 2) j++;
+            res = Math.max(res, j - i);
         }
         return res;
     }

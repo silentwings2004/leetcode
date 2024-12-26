@@ -38,13 +38,15 @@ public class LC1475_FinalPricesWithaSpecialDiscountinaShop {
     // time = O(n), space = O(n)
     public int[] finalPrices2(int[] prices) {
         int n = prices.length;
-        int[] res = new int[n];
-        Stack<Integer> stk = new Stack<>();
-        for (int i = n - 1; i >= 0; i--) {
-            while (!stk.isEmpty() && prices[stk.peek()] > prices[i]) stk.pop();
-            res[i] = prices[i] - stk.isEmpty() ? 0 : prices[stk.peek()];
-            stk.push(i);
+        int[] stk = new int[n + 1];
+        int tt = 0;
+        stk[++tt] = prices[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            int x = prices[i];
+            while (tt > 0 && stk[tt] > x) tt--;
+            if (tt > 0) prices[i] -= stk[tt];
+            stk[++tt] = x;
         }
-        return res;
+        return prices;
     }
 }

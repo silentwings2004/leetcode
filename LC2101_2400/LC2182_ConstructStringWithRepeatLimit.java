@@ -23,38 +23,29 @@ public class LC2182_ConstructStringWithRepeatLimit {
      * @param repeatLimit
      * @return
      */
-    // S1: PQ
-    // time = O(nlogn), space = O(n)
+    // time = O(n), space = O(n)
     public String repeatLimitedString(String s, int repeatLimit) {
-        int[] freq = new int[26];
-        for (char c : s.toCharArray()) freq[c - 'a']++;
-
-        PriorityQueue<int[]> pq = new PriorityQueue<>(((o1, o2) -> o2[0] - o1[0])); // {idx, freq}
-        for (int i = 0; i < 26; i++) {
-            if (freq[i] > 0) pq.offer(new int[]{i, freq[i]});
+        int[] cnt = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            int u = s.charAt(i) - 'a';
+            cnt[u]++;
         }
 
         StringBuilder sb = new StringBuilder();
-        while (!pq.isEmpty()) {
-            int[] x = pq.poll();
-            char c1 = (char)(x[0] + 'a');
-            int count1 = x[1];
-            int limit = repeatLimit;
-            // 如果这一轮的最大频率字符与上一轮的次大频率字符相同，那么这里该字符最多只能放limit-1个！
-            if (sb.length() > 0 && sb.charAt(sb.length() - 1) == c1) limit--;
-            int k = Math.min(limit, count1);
-            for (int i = 0; i < k; i++) sb.append(c1);
-            count1 -= k;
-            if (pq.size() == 0) break;
-
-            int[] y = pq.poll();
-            char c2 = (char)(y[0] + 'a');
-            int count2 = y[1];
-            sb.append(c2);
-            count2--;
-
-            if (count1 > 0) pq.offer(new int[]{x[0], count1});
-            if (count2 > 0) pq.offer(new int[]{y[0], count2});
+        for (int i = 25; i >= 0; i--) {
+            int k = i - 1;
+            while (true) {
+                for (int j = 0; j < repeatLimit && cnt[i] > 0; j++) {
+                    cnt[i]--;
+                    sb.append((char)(i + 'a'));
+                }
+                if (cnt[i] == 0) break;
+                while (k >= 0 && cnt[k] == 0) k--;
+                if (k < 0) break;
+                cnt[k]--;
+                sb.append((char)(k + 'a'));
+            }
         }
         return sb.toString();
     }

@@ -15,11 +15,9 @@ public class LC3378_CountConnectedComponentsinLCMGraph {
      * The term lcm(a, b) denotes the least common multiple of a and b.
      *
      * Input: nums = [2,4,8,3,9], threshold = 5
-     *
      * Output: 4
      *
      * Input: nums = [2,4,8,3,9,12], threshold = 10
-     *
      * Output: 2
      *
      * Constraints:
@@ -58,3 +56,7 @@ public class LC3378_CountConnectedComponentsinLCMGraph {
         return p[x];
     }
 }
+/**
+ * 1. LCM 转成 GCD
+ * 2. 枚举 GCD 及其倍数
+ */

@@ -29,13 +29,13 @@ public class LC2762_ContinuousSubarrays {
         long res = 0;
         TreeMap<Integer, Integer> map = new TreeMap<>();
         for (int i = 0, j = 0; i < n; i++) {
-            while (map.size() > 0 && (Math.abs(nums[i] - map.firstKey()) > 2 || Math.abs(nums[i] - map.lastKey()) > 2)) {
-                int x = nums[j++];
-                map.put(x, map.get(x) - 1);
-                if (map.get(x) == 0) map.remove(x);
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+            while (map.lastKey() - map.firstKey() > 2) {
+                map.put(nums[j], map.get(nums[j]) - 1);
+                if (map.get(nums[j]) == 0) map.remove(nums[j]);
+                j++;
             }
             res += i - j + 1;
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
         }
         return res;
     }

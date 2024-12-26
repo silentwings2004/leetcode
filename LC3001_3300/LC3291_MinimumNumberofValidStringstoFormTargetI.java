@@ -73,4 +73,42 @@ public class LC3291_MinimumNumberofValidStringstoFormTargetI {
             this.next = new TrieNode[26];
         }
     }
+
+    // S1.2
+    // time = O(L + nlogn), space = O(L + n)
+    class Solution {
+        final int inf = 0x3f3f3f3f;
+        int[][] son;
+        int idx;
+        public int minValidStrings(String[] words, String target) {
+            int m = 0;
+            for (String w : words) m += w.length();
+            son = new int[m + 1][26];
+            int n = target.length();
+            for (String w : words) insert(w);
+            int[] f = new int[n + 1];
+            Arrays.fill(f, inf);
+            f[n] = 0;
+
+            for (int i = n - 1; i >= 0; i--) {
+                int p = 0;
+                for (int j = i; j < n; j++) {
+                    int u = target.charAt(j) - 'a';
+                    if (son[p][u] == 0) break;
+                    p = son[p][u];
+                    f[i] = Math.min(f[i], f[j + 1] + 1);
+                }
+            }
+            return f[0] == inf ? -1 : f[0];
+        }
+
+        private void insert(String s) {
+            int p = 0;
+            for (int i = 0; i < s.length(); i++) {
+                int u = s.charAt(i) - 'a';
+                if (son[p][u] == 0) son[p][u] = ++idx;
+                p = son[p][u];
+            }
+        }
+    }
 }
