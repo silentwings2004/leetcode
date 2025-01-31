@@ -31,6 +31,7 @@ public class LC2271_MaximumWhiteTilesCoveredbyaCarpet {
      * @param carpetLen
      * @return
      */
+    // S1
     // time = O(nlogn), space = O(n)
     public int maximumWhiteTiles(int[][] tiles, int carpetLen) {
         Arrays.sort(tiles, (o1, o2) -> o1[0] - o2[0]);
@@ -45,6 +46,24 @@ public class LC2271_MaximumWhiteTilesCoveredbyaCarpet {
             // 注意：这里有可能会搞出负数，所以要和0比较，最小只能取0！！！
             if (j < n) len += Math.max(0, tiles[i][0] + carpetLen - 1 - tiles[j][0] + 1);
             res = Math.max(res, len);
+        }
+        return res;
+    }
+
+    // S2
+    // time = O(nlogn), space = O(logn)
+    public int maximumWhiteTiles2(int[][] tiles, int carpetLen) {
+        Arrays.sort(tiles, (o1, o2) -> o1[0] - o2[0]);
+        int n = tiles.length, k = carpetLen, res = 0, s = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            int l = tiles[i][0], r = tiles[i][1];
+            s += r - l + 1;
+            while (r - k + 1 > tiles[j][1]) {
+                s -= tiles[j][1] - tiles[j][0] + 1;
+                j++;
+            }
+            int t = Math.max(0, r - k + 1 - tiles[j][0]);
+            res = Math.max(res, s - t);
         }
         return res;
     }

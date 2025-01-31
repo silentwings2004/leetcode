@@ -30,18 +30,18 @@ public class LC2944_MinimumNumberofCoinsforFruits {
      */
     // time = O(n^2), space = O(n)
     public int minimumCoins(int[] prices) {
-        int n = prices.length, inf = (int)1e9;
-        int[][] f = new int[n + 1][2];
-        for (int i = 0; i <= n; i++) Arrays.fill(f[i], inf);
-        f[0][0] = f[0][1] = 0;
+        int n = prices.length;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MAX_VALUE);
+        f[0] = 0;
+
         for (int i = 1; i <= n; i++) {
-            f[i][1] = Math.min(f[i - 1][0], f[i - 1][1]) + prices[i - 1];
-            for (int j = 1; j < i; j++) {
-                if (j + j >= i) {
-                    f[i][0] = Math.min(f[i][0], f[j][1]);
-                }
+            f[i] = Math.min(f[i], f[i - 1] + prices[i - 1]);
+            for (int j = 1; j <= i; j++) {
+                if (i + j > n) break;
+                f[i + j] = Math.min(f[i + j], f[i - 1] + prices[i - 1]);
             }
         }
-        return Math.min(f[n][0], f[n][1]);
+        return f[n];
     }
 }

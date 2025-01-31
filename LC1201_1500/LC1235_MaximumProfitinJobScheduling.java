@@ -23,90 +23,31 @@ public class LC1235_MaximumProfitinJobScheduling {
      * @param profit
      * @return
      */
-    // S1: DP
     // time = O(nlogn), space = O(n)
     public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
         int n = startTime.length;
-        int[][] jobs = new int[n][3];
-
-        for (int i = 0; i < n; i++) { // O(n)
-            jobs[i] = new int[]{startTime[i], endTime[i], profit[i]};
-        }
-
-        Arrays.sort(jobs, (o1, o2) -> o1[1] - o2[1]); // O(nlogn)
-
-        TreeMap<Integer, Integer> map = new TreeMap<>(); // dp[t] -> val
-        map.put(-1, 0); // 加入一个虚拟结点，来避免下面fk可能出现null的情况，保证一定能找到一个
-        int res = 0;
-        for (int i = 0; i < n; i++) { // O(n)
-            int cur = res; // choose not to -> directly inherit from the previous res
-            Integer fk = map.floorKey(jobs[i][0]); // O(logn)
-            cur = Math.max(cur, map.get(fk) + jobs[i][2]);
-            map.put(jobs[i][1], cur);
-            res = Math.max(res, cur);
-        }
-        return res;
-    }
-
-    // S1.2: DP2
-    // time = O(nlogn), space = O(n)
-    public int jobScheduling2(int[] startTime, int[] endTime, int[] profit) {
-        int n = startTime.length;
-        int[][] jobs = new int[n][3];
-
+        int[][] w = new int[n][2];
+        for (int i = 0; i < n; i++) w[i] = new int[]{endTime[i], i};
+        Arrays.sort(w, (o1, o2) -> o1[0] - o2[0]);
+        int[] f = new int[n];
         for (int i = 0; i < n; i++) {
-            jobs[i] = new int[]{startTime[i], endTime[i], profit[i]};
+            if (i > 0) f[i] = f[i - 1];
+            int pos = find(w, i - 1, startTime[w[i][1]]);
+            if (pos == -1) f[i] = Math.max(f[i], profit[w[i][1]]);
+            else f[i] = Math.max(f[i - 1], f[pos] + profit[w[i][1]]);
         }
-
-        Arrays.sort(jobs, (o1, o2) -> o1[1] - o2[1]);
-
-        List<int[]> dp = new ArrayList<>(); // {endTime, profit}
-        dp.add(new int[]{-1, 0});
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            int cur = res; // choose not to -> directly inherit from the previous res
-            int idx = lowerBound(dp, jobs[i][0]); // 直接用二分法，之前jobs已经排过序了
-            cur = Math.max(cur, dp.get(idx)[1] + jobs[i][2]);
-            dp.add(new int[]{jobs[i][1], cur});
-            res = Math.max(res, cur);
-        }
-        return res;
+        return f[n - 1];
     }
 
-    private int lowerBound(List<int[]> dp, int t) {
-        int left = 0, right = dp.size() - 1;
-        while (left < right) {
-            int mid = right - (right - left) / 2;
-            if (dp.get(mid)[0] <= t) left = mid;
-            else right = mid - 1;
-        }
-        return dp.get(left)[0] <= t ? left : left - 1;
-    }
-
-    // S3: DP
-    // time = O(nlogn), space = O(n)
-    public int jobScheduling3(int[] startTime, int[] endTime, int[] profit) {
-        int n = profit.length;
-        int[][] w = new int[n][3];
-        for (int i = 0; i < n; i++) w[i] = new int[]{startTime[i], endTime[i], profit[i]};
-        Arrays.sort(w, (o1, o2) -> o1[1] - o2[1]);
-
-        int[] f = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            int j = find(w, w[i - 1][0]);
-            f[i] = Math.max(f[i - 1], f[j + 1] + w[i - 1][2]);
-        }
-        return f[n];
-    }
-
-    private int find(int[][] w, int t) {
-        int l = 0, r = w.length - 1;
+    private int find(int[][] w, int r, int t) {
+        int l = 0;
+        if (r < l) return -1;
         while (l < r) {
             int mid = l + r + 1 >> 1;
-            if (w[mid][1] <= t) l = mid;
+            if (w[mid][0] <= t) l = mid;
             else r = mid - 1;
         }
-        return w[r][1] <= t ? r : r - 1;
+        return w[r][0] <= t ? r : r - 1;
     }
 }
 /**

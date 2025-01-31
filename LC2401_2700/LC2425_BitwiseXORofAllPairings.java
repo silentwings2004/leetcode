@@ -24,23 +24,12 @@ public class LC2425_BitwiseXORofAllPairings {
      */
     // time = O(m + n), space = O(1)
     public int xorAllNums(int[] nums1, int[] nums2) {
-        int m = nums1.length, n = nums2.length;
-        int[] cnt = new int[32];
-        for (int x : nums1) {
-            for (int i = 0; i < 32; i++) {
-                if ((x >> i & 1) == 1) cnt[i] += n;
-            }
+        int m = nums1.length, n = nums2.length, res = 0;
+        if (n % 2 == 1) {
+            for (int x : nums1) res ^= x;
         }
-
-        for (int x : nums2) {
-            for (int i = 0; i < 32; i++) {
-                if ((x >> i & 1) == 1) cnt[i] += m;
-            }
-        }
-
-        int res = 0;
-        for (int i = 0; i < 32; i++) {
-            if (cnt[i] % 2 == 1) res |= 1 << i;
+        if (m % 2 == 1) {
+            for (int x : nums2) res ^= x;
         }
         return res;
     }

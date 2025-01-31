@@ -70,6 +70,22 @@ public class LC45_JumpGameII {
         }
         return -1;
     }
+
+    // S4: DP
+    // time = O(n * k), space = O(n)
+    public int jump4(int[] nums) {
+        int n = nums.length;
+        int[] f = new int[n];
+        Arrays.fill(f, Integer.MAX_VALUE);
+        f[0] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= nums[i]; j++) {
+                if (i + j >= n) break;
+                f[i + j] = Math.min(f[i + j], f[i] + 1);
+            }
+        }
+        return f[n - 1];
+    }
 }
 /**
  * 类似于一个贪心

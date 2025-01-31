@@ -33,26 +33,24 @@ public class LC802_FindEventualSafeStates {
     // time = O(n + m), space = O(n + m)
     public List<Integer> eventualSafeNodes(int[][] graph) {
         int n = graph.length;
+        List<Integer>[] adj = new List[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
         int[] d = new int[n];
-        List<Integer>[] g = new List[n];
-        for (int i = 0; i < n; i++) g[i] = new ArrayList<>();
+        Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < n; i++) {
-            for (int b : graph[i]) {
-                int a = i;
-                g[b].add(a);
-                d[a]++;
+            if (graph[i].length == 0) q.offer(i);
+            else {
+                for (int x : graph[i]) {
+                    adj[x].add(i);
+                    d[i]++;
+                }
             }
         }
 
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            if (d[i] == 0) queue.offer(i);
-        }
-
-        while (!queue.isEmpty()) {
-            int t = queue.poll();
-            for (int next : g[t]) {
-                if (--d[next] == 0) queue.offer(next);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v : adj[u]) {
+                if (--d[v] == 0) q.offer(v);
             }
         }
 

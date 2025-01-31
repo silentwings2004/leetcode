@@ -84,4 +84,29 @@ public class LC1930_UniqueLength3PalindromicSubsequences {
             fk = sk;
         }
     }
+
+    // S3
+    // time = O(26n), space = O(1)
+    public int countPalindromicSubsequence3(String s) {
+        int n = s.length(), res = 0;
+        for (int i = 0; i < 26; i++) {
+            int t = 0, cnt = 0;
+            boolean[] st = new boolean[26];
+            for (int j = 0; j < n; j++) {
+                int u = s.charAt(j) - 'a';
+                if (u == i) {
+                    if (cnt > 0) res += t;
+                    cnt++;
+                    t = 0;
+                }
+                if (cnt == 0 || st[u]) continue;
+                if (u != i) {
+                    st[u] = true;
+                    t++;
+                }
+            }
+            if (cnt > 2) res++;
+        }
+        return res;
+    }
 }

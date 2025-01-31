@@ -27,10 +27,9 @@ public class LC2218_MaximumValueofKCoinsFromPiles {
      * @return
      */
     // time = O(s * k), space = O(n * k)
-    final int N = 1010, M = 2010;
     public int maxValueOfCoins(List<List<Integer>> piles, int k) {
         int n = piles.size();
-        int[][] s = new int[N][M];
+        int[][] s = new int[n][2010];
         for (int i = 0; i < n; i++) {
             int m = piles.get(i).size();
             for (int j = 1; j <= m; j++) {
@@ -40,16 +39,15 @@ public class LC2218_MaximumValueofKCoinsFromPiles {
 
         int[][] f = new int[n + 1][k + 1];
         for (int i = 1; i <= n; i++) {
+            int m = piles.get(i - 1).size();
             for (int j = 0; j <= k; j++) {
-                for (int u = 0; u <= Math.min(j, piles.get(i - 1).size()); u++) {
-                    f[i][j] = Math.max(f[i][j], f[i - 1][j - u] + s[i - 1][u]);
+                for (int u = j; u >= 0; u--) {
+                    if (j - u > m) break;
+                    f[i][j] = Math.max(f[i][j], f[i - 1][u] + s[i - 1][j - u]);
                 }
             }
         }
-
-        int res = 0;
-        for (int i = 1; i <= n; i++) res = Math.max(res, f[i][k]);
-        return res;
+        return f[n][k];
     }
 }
 /**

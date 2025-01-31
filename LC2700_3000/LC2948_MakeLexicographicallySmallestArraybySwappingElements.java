@@ -74,4 +74,24 @@ public class LC2948_MakeLexicographicallySmallestArraybySwappingElements {
         if (x != p[x]) p[x] = find(p[x]);
         return p[x];
     }
+
+    // S2
+    // time = O(nlogn), space = O(n)
+    public int[] lexicographicallySmallestArray2(int[] nums, int limit) {
+        int n = nums.length;
+        int[][] a = new int[n][2];
+        for (int i = 0; i < n; i++) a[i] = new int[]{nums[i], i};
+        Arrays.sort(a, (o1, o2) -> o1[0] - o2[0]);
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            List<Integer> q = new ArrayList<>();
+            q.add(a[i][1]);
+            int j = i + 1;
+            while (j < n && a[j][0] - a[j - 1][0] <= limit) q.add(a[j++][1]);
+            Collections.sort(q);
+            for (int x : q) res[x] = a[i++][0];
+            i--;
+        }
+        return res;
+    }
 }

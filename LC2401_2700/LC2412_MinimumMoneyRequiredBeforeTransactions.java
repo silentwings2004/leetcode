@@ -28,20 +28,12 @@ public class LC2412_MinimumMoneyRequiredBeforeTransactions {
     // S1
     // time = O(n), space = O(1)
     public long minimumMoney(int[][] transactions) {
-        long sum = 0;
+        long s = 0, t = 0;
         for (int[] x : transactions) {
-            int a = x[0], b = x[1];
-            if (a > b) sum += a - b;
+            s += Math.max(0, x[0] - x[1]);
+            t = Math.max(t, Math.min(x[0], x[1]));
         }
-
-        long res = 0;
-        for (int[] x : transactions) {
-            int a = x[0], b = x[1];
-            long s = sum;
-            if (a > b) s -= a - b;
-            res = Math.max(res, s + a);
-        }
-        return res;
+        return s + t;
     }
 
     // S2
@@ -76,4 +68,10 @@ public class LC2412_MinimumMoneyRequiredBeforeTransactions {
  * netLoss transactions: max{cost[i] - (Totalloss - (back[i] - cost[i]))}
  * => max {back[i] - TotalLoss}  TotalLoss is fixed => cashback最大的放在后面
  * 只需要按照cashback从小到大排序
+ *
+ * 记 tot 为所有亏钱的 cost−cashback 之和。
+ * 对于赚钱的交易，假设这是（亏钱后的）第一笔赚钱的交易, x - tot >= cost => x >= tot + cost
+ * 对于亏钱的交易，假设这是最后一笔亏钱的交易, x - (tot - (cost - cashback)) >= cost
+ * => x - tot + cost - cashback >= cost => x >= tot + cashback
+ * 合起来看 => x >= tot + min(cost, cashback)
  */

@@ -38,26 +38,26 @@ public class LC1769_MinimumNumberofOperationstoMoveAllBallstoEachBox {
         return res;
     }
 
-    // S2: 3-pass
+    // S2: 前后缀分解
     // time = O(n), space = O(n)
     public int[] minOperations2(String boxes) {
         int n = boxes.length();
-        int[] leftMoves = new int[n], rightMoves = new int[n];
-        int left = 0, right = 0;
-
-        for (int i = 1; i < n; i++) {
-            left += boxes.charAt(i - 1) == '1' ? 1 : 0; // 看当前位左边是否为1
-            leftMoves[i] = leftMoves[i - 1] + left * 1;
-        }
-
-        for (int i = n - 2; i >= 0; i--) {
-            right += boxes.charAt(i + 1) == '1' ? 1 : 0; // 看当前位右边是否为1
-            rightMoves[i] = rightMoves[i + 1] + right * 1;
-        }
-
         int[] res = new int[n];
-        for (int i = 0; i < n; i++) {
-            res[i] = leftMoves[i] + rightMoves[i];
+        int[] pre = new int[n + 1], suf = new int[n + 1];
+        int t = 0;
+        for (int i = 1; i <= n; i++) {
+            t += boxes.charAt(i - 1) - '0';
+            pre[i] = pre[i - 1] + t;
+        }
+
+        t = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            t += boxes.charAt(i) - '0';
+            suf[i] = suf[i + 1] + t;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            res[i - 1] = pre[i - 1] + suf[i];
         }
         return res;
     }

@@ -31,20 +31,18 @@ public class LC2017_GridGame {
     // time = O(n), space = O(n)
     public long gridGame(int[][] grid) {
         int n = grid[0].length;
-        long[] p1 = new long[n + 1];
-        long[] p2 = new long[n + 1];
-
-        for (int i = 1; i <= n; i++) {
-            p1[i] = p1[i - 1] + grid[0][i - 1];
-            p2[i] = p2[i - 1] + grid[1][i - 1];
-        }
-
-        long min = Long.MAX_VALUE;
-        for (int i = 1; i <= n; i++) {
-            if (Math.max(p1[n] - p1[i], p2[i - 1]) < min) {
-                min = Math.max(p1[n] - p1[i], p2[i - 1]);
+        long[][] s = new long[2][n + 1];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 1; j <= n; j++) {
+                s[i][j] = s[i][j - 1] + grid[i][j - 1];
             }
         }
-        return min;
+
+        long res = Long.MAX_VALUE;
+        for (int j = 1; j <= n; j++) {
+            long v = Math.max(s[0][n] - s[0][j], s[1][j - 1]);
+            res = Math.min(res, v);
+        }
+        return res;
     }
 }
