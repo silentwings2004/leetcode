@@ -31,8 +31,6 @@ public class LC2375_ConstructSmallestNumberFromDIString {
         int n = pattern.length();
         char[] chars = new char[n + 1];
         for (int i = 0; i <= n; i++) chars[i] = (char)(i + 1 + '0');
-
-
         for (int i = 0; i < n; i++) {
             int j = i;
             char c = pattern.charAt(i);

@@ -35,7 +35,7 @@ public class LC1718_ConstructtheLexicographicallyLargestValidSequence {
         return res;
     }
 
-    private boolean dfs(int pos, int n, boolean[] used, int[]res) {
+    private boolean dfs(int pos, int n, boolean[] used, int[] res) {
         if (pos == 2 * n - 1) return true;
         if (res[pos] > 0) return dfs(pos + 1, n, used, res);
 
@@ -51,6 +51,44 @@ public class LC1718_ConstructtheLexicographicallyLargestValidSequence {
             if (d > 1) res[pos + d] = 0;
         }
         return false;
+    }
+
+    // S2
+    // time = O(n!), space = O(n)
+    class Solution {
+        int[] path;
+        boolean[] st;
+        int n;
+        public int[] constructDistancedSequence(int n) {
+            this.n = n;
+            path = new int[n * 2 - 1];
+            st = new boolean[n + 1];
+            dfs(0);
+            return path;
+        }
+
+        private boolean dfs(int u) {
+            if (u == n * 2 - 1) return true;
+            if (path[u] > 0) return dfs(u + 1);
+
+            for (int i = n; i > 1; i--) {
+                if (!st[i] && u + i < n * 2 - 1 && path[u + i] == 0) {
+                    st[i] = true;
+                    path[u] = path[u + i] = i;
+                    if (dfs(u + 1)) return true;
+                    path[u] = path[u + i] = 0;
+                    st[i] = false;
+                }
+            }
+            if (!st[1]) {
+                st[1] = true;
+                path[u] = 1;
+                if (dfs(u + 1)) return true;
+                path[u] = 0;
+                st[1] = false;
+            }
+            return false;
+        }
     }
 }
 /**

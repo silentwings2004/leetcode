@@ -25,26 +25,26 @@ public class LC2349_DesignaNumberContainerSystem {
      * 1 <= index, number <= 10^9
      * At most 105 calls will be made in total to change and find.
      */
-    HashMap<Integer, Integer> idx2Num;
-    HashMap<Integer, TreeSet<Integer>> num2Idx;
+    HashMap<Integer, Integer> map;
+    HashMap<Integer, TreeSet<Integer>> cnt;
     public LC2349_DesignaNumberContainerSystem() {
-        idx2Num = new HashMap<>();
-        num2Idx = new HashMap<>();
+        map = new HashMap<>();
+        cnt = new HashMap<>();
     }
-    // time = O(logn), space = O(n)
+    // time = O(nlogn), space = O(n)
     public void change(int index, int number) {
-        if (idx2Num.containsKey(index)) {
-            int num = idx2Num.get(index);
-            num2Idx.get(num).remove(index);
-            if (num2Idx.get(num).size() == 0) num2Idx.remove(num);
+        if (map.containsKey(index)) {
+            int v = map.get(index);
+            cnt.get(v).remove(index);
+            if (cnt.get(v).size() == 0) cnt.remove(v);
         }
-        idx2Num.put(index, number);
-        num2Idx.putIfAbsent(number, new TreeSet<>());
-        num2Idx.get(number).add(index);
+        map.put(index, number);
+        cnt.putIfAbsent(number, new TreeSet<>());
+        cnt.get(number).add(index);
     }
-    // time = O(n), space = O(logn)
+    // time = O(nlogn), space = O(n)
     public int find(int number) {
-        if (!num2Idx.containsKey(number)) return -1;
-        return num2Idx.get(number).first();
+        if (cnt.containsKey(number)) return cnt.get(number).first();
+        return -1;
     }
 }

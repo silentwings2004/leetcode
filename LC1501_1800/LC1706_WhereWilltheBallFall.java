@@ -63,6 +63,63 @@ public class LC1706_WhereWilltheBallFall {
         }
         return res;
     }
+
+    // S2
+    // time = O(n), space = O(n)
+    public int[] findBall2(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        Queue<int[]> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) q.offer(new int[]{i, 0, i});
+        int[] res = new int[n];
+        Arrays.fill(res, -1);
+
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            while (sz-- > 0) {
+                int[] t = q.poll();
+                int id = t[0], x = t[1], y = t[2];
+                int v = grid[x][y];
+                if (v == 1) {
+                    int a = x, b = y + 1;
+                    if (b >= n || grid[a][b] == -1) continue;
+                    if (a == m - 1) {
+                        res[id] = b;
+                        continue;
+                    }
+                    q.offer(new int[]{id, a + 1, b});
+                } else {
+                    int a = x, b = y - 1;
+                    if (b < 0|| grid[a][b] == 1) continue;
+                    if (a == m - 1) {
+                        res[id] = b;
+                        continue;
+                    }
+                    q.offer(new int[]{id, a + 1, b});
+                }
+            }
+        }
+        return res;
+    }
+
+    // S3
+    // time = O(n), space = O(1)
+    public int[] findBall3(int[][] grid) {
+        int n = grid[0].length;
+        int[] res = new int[n];
+        for (int j = 0; j < n; j++) {
+            int curCol = j;
+            for (int[] x : grid) {
+                int d = x[curCol];
+                curCol += d;
+                if (curCol < 0 || curCol == n || x[curCol] != d) {
+                    curCol = -1;
+                    break;
+                }
+            }
+            res[j] = curCol;
+        }
+        return res;
+    }
 }
 /**
  * 轨迹是确定的，本质上是道模拟题

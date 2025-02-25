@@ -104,7 +104,6 @@ public class LC913_CatandMouse {
 
     // S2
     // time = O(n^3), space = O(n^2)
-    final int N = 210;
     int[][] g;
     int[][][] f;
     int n;

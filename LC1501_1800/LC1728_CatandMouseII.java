@@ -162,6 +162,73 @@ public class LC1728_CatandMouseII {
         }
         return true;
     }
+
+    // S2
+    // time = O(m^2 * n^2 * (m + n)), space = O(m^2 * n^2)
+    int[][][][][] f;
+    String[] g;
+    int m, n, cj, mj;
+    int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+    public boolean canMouseWin2(String[] grid, int catJump, int mouseJump) {
+        g = grid;
+        m = g.length;
+        n = g[0].length();
+        cj = catJump;
+        mj = mouseJump;
+        f = new int[m][n][m][n][100];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int a = 0; a < m; a++) {
+                    for (int b = 0; b < n; b++) {
+                        Arrays.fill(f[i][j][a][b], -1);
+                    }
+                }
+            }
+        }
+
+        int cx = 0, cy = 0, mx = 0, my = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (g[i].charAt(j) == 'C') {
+                    cx = i;
+                    cy = j;
+                } else if (g[i].charAt(j) == 'M') {
+                    mx = i;
+                    my = j;
+                }
+            }
+        }
+        return dp(cx, cy, mx, my, 0) == 1;
+    }
+
+    private int dp(int cx, int cy, int mx, int my, int k) {
+        if (k >= 100) return 0;
+        if (f[cx][cy][mx][my][k] != -1) return f[cx][cy][mx][my][k];
+
+        if ((k & 1) == 1) { // cat
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j <= cj; j++) {
+                    int x = cx + dx[i] * j, y = cy + dy[i] * j;
+                    if (x < 0 || x >= m || y < 0 || y >= n || g[x].charAt(y) == '#') break;
+                    if (x == mx && y == my) return f[cx][cy][mx][my][k] = 0;
+                    if (g[x].charAt(y) == 'F') return f[cx][cy][mx][my][k] = 0;
+                    if (dp(x, y, mx, my, k + 1) == 0) return f[cx][cy][mx][my][k] = 0;
+                }
+            }
+            return f[cx][cy][mx][my][k] = 1;
+        } else { // mouse
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j <= mj; j++) {
+                    int x = mx + dx[i] * j, y = my + dy[i] * j;
+                    if (x < 0 || x >= m || y < 0 || y >= n || g[x].charAt(y) == '#') break;
+                    if (x == cx && y == cy) continue;
+                    if (g[x].charAt(y) == 'F') return f[cx][cy][mx][my][k] = 1;
+                    if (dp(cx, cy, x, y, k + 1) == 1) return f[cx][cy][mx][my][k] = 1;
+                }
+            }
+            return f[cx][cy][mx][my][k] = 0;
+        }
+    }
 }
 /**
  * dfs(state, A)
@@ -184,4 +251,20 @@ public class LC1728_CatandMouseII {
  * 2. when (m2,c2,t2) must lose? 包围它的所有结点都是明确的对手必赢，才能推断出此轮必输
  * if all (mm,cc,tt): cat turn, cat wins => (m2,c2,t2) must lose (mouse turn)
  * if all (mm,cc,tt): mouse turn, mouse wins => (m2,c2,t2) must lose (cat turn)
+ *
+ * 有限状态博弈论
+ * 1.必胜态
+ * 2.必败态
+ * state:
+ * 必胜态：存在一个必败态
+ * 必败态：不存在必败态
+ * f(cx,cy,mx,my,k)
+ * 1.猫先走 -> 枚举下猫的所有状态
+ * (1) 抓住老鼠 -> 0
+ * (2) 走到食物 -> 0
+ * (3) ...-> 0
+ * 2.老鼠走 -> 枚举老鼠可走的状态
+ * (1) 走到食物 -> 1
+ * (2) .. -> 1
+ * k >= 1000 -> 0
  */
