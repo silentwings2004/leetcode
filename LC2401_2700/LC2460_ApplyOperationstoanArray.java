@@ -37,11 +37,12 @@ public class LC2460_ApplyOperationstoanArray {
                 nums[i + 1] = 0;
             }
         }
-        int[] res = new int[n];
-        int idx = 0;
-        for (int x : nums) {
-            if (x != 0) res[idx++] = x;
+
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != 0) nums[j++] = nums[i];
         }
-        return res;
+        while (j < n) nums[j++] = 0;
+        return nums;
     }
 }

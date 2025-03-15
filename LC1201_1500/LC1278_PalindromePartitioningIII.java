@@ -25,6 +25,7 @@ public class LC1278_PalindromePartitioningIII {
      * @param k
      * @return
      */
+    // S1: dp
     // time = O(n^3), space = O(n^2)
     public int palindromePartition(String s, int k) {
         int n = s.length(), INF = (int)1e8;
@@ -46,6 +47,45 @@ public class LC1278_PalindromePartitioningIII {
             }
         }
         return f[n - 1][k];
+    }
+
+    // S2: memoization
+    // time = O(n^2 * k), space = O(n^2)
+    final int inf = 0x3f3f3f3f;
+    int[][] f, g;
+    public int palindromePartition2(String s, int k) {
+        int n = s.length();
+        f = new int[n][k];
+        g = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(f[i], -1);
+            for (int j = i + 1; j < n; j++) {
+                g[i][j] = get(s, i, j);
+            }
+        }
+        return dp(s, 0, k - 1);
+    }
+
+    private int dp(String s, int u, int k) {
+        if (u == s.length()) return inf;
+        if (k == 0) return g[u][s.length() - 1];
+        if (f[u][k] != -1) return f[u][k];
+
+        int res = inf;
+        for (int i = u; i < s.length(); i++) {
+            res = Math.min(res, dp(s, i + 1, k - 1) + g[u][i]);
+        }
+        return f[u][k] = res;
+    }
+
+    private int get(String s, int i, int j) {
+        int t = 0;
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) t++;
+            i++;
+            j--;
+        }
+        return t;
     }
 }
 /**
