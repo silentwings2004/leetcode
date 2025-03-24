@@ -33,29 +33,26 @@ public class LC2116_CheckifaParenthesesStringCanBeValid {
     public boolean canBeValid(String s, String locked) {
         int n = s.length();
         if (n % 2 != 0) return false;
-        int upper = 0, lower = 0;
+        int mx = 0, mn = 0;
         for (int i = 0; i < n; i++) {
-            if (locked.charAt(i) == '1') {
-                if (s.charAt(i) == '(') {
-                    lower++;
-                    upper++;
-                } else {
-                    lower--;
-                    upper--;
-                }
+            char c = s.charAt(i), u = locked.charAt(i);
+            if (u == '1') {
+                int d = c == '(' ? 1 : -1;
+                mx += d;
+                mn += d;
             } else { // *
-                upper++;
-                lower--;
+                mx++;
+                mn--;
             }
 
-            if (lower < 0) { // 右括号太多了，待匹配的左括号变负数了 -> 变成左括号
+            if (mn < 0) { // 右括号太多了，待匹配的左括号变负数了 -> 变成左括号
                 // 为什么+2？反观上面*时，lower--，这个时候将1个右括号变为左括号，相当于当时lower--变为lower++,所以要补的差值是2！！！
                 // ref: LC678,哪里lower < 0的时候，因为可以改成空""，所以只要lower++即可！
-                lower += 2;
+                mn += 2;
             }
-            if (upper < 0) return false; // 在locked[i] = 1的时候，upper与lower同+同-，所以如果没有chance可以变，upper这里会<0！
+            if (mx < 0) return false; // 在locked[i] = 1的时候，upper与lower同+同-，所以如果没有chance可以变，upper这里会<0！
         }
-        return lower == 0;
+        return mn == 0;
     }
 
     // S2: two pass
