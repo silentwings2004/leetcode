@@ -147,6 +147,22 @@ public class LC2360_LongestCycleinaGraph {
         }
         return res;
     }
+
+    // S4
+    // time = O(n), space = O(n)
+    public int longestCycle4(int[] edges) {
+        int n = edges.length, res = -1, cur = 1;
+        int[] t = new int[n];
+        for (int i = 0; i < n; i++) {
+            int x = i, st = cur;
+            while (x != -1 && t[x] == 0) {
+                t[x] = cur++;
+                x = edges[x];
+            }
+            if (x != -1 && t[x] >= st) res = Math.max(res, cur - t[x]);
+        }
+        return res;
+    }
 }
 /**
  * 用Tarjan算法

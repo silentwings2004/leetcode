@@ -89,6 +89,53 @@ public class LC1976_NumberofWaystoArriveatDestination {
         memo[cur] = total;
         return total;
     }
+
+    // S2
+    // time = O(mlogm), space = O(m)
+    class Solution {
+        final long mod = (long)(1e9 + 7), inf = (long)1E18;
+        List<long[]>[] adj;
+        long[] dist, f;
+        public int countPaths(int n, int[][] roads) {
+            adj = new List[n];
+            for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+            for (int[] r : roads) {
+                int a = r[0], b = r[1], c = r[2];
+                adj[a].add(new long[]{b, c});
+                adj[b].add(new long[]{a, c});
+            }
+
+            PriorityQueue<long[]> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1[0], o2[0]));
+            pq.offer(new long[]{0L, 0L});
+            dist = new long[n];
+            Arrays.fill(dist, inf);
+            f = new long[n];
+            dist[0] = 0;
+            f[0] = 1;
+
+            while (!pq.isEmpty()) {
+                long[] t = pq.poll();
+                long d = t[0];
+                int u = (int)t[1];
+                if (u == n - 1) break;
+                if (d > dist[u]) continue;
+
+                for (long[] x : adj[u]) {
+                    long w = x[1];
+                    int v = (int)x[0];
+                    long nd = d + w;
+                    if (nd < dist[v]) {
+                        dist[v] = nd;
+                        f[v] = f[u];
+                        pq.offer(new long[]{dist[v], v});
+                    } else if (nd == dist[v]) {
+                        f[v] = (f[v] + f[u]) % mod;
+                    }
+                }
+            }
+            return (int)f[n - 1];
+        }
+    }
 }
 /**
  * 最短路径长度是多少 -> Dijkstra的裸题
