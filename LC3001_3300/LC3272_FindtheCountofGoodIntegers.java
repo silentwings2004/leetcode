@@ -1,7 +1,5 @@
 package LC3001_3300;
-
-import java.util.HashSet;
-
+import java.util.*;
 public class LC3272_FindtheCountofGoodIntegers {
     /**
      * You are given two positive integers n and k.
@@ -100,6 +98,34 @@ public class LC3272_FindtheCountofGoodIntegers {
                 cnt[i] -= 2;
             }
         }
+    }
+
+    // S2
+    // time = O(10^m * nlogn), space = O(10^m * n), m = (n - 1) / 2
+    public long countGoodIntegers2(int n, int k) {
+        int[] f = new int[n + 1];
+        f[0] = 1;
+        for (int i = 1; i <= n; i++) f[i] = f[i - 1] * i;
+
+        long res = 0;
+        int base = (int) Math.pow(10, (n - 1) / 2);
+        HashSet<String> set = new HashSet<>();
+        for (int i = base; i < 10 * base; i++) {
+            String s = String.valueOf(i);
+            String t = new StringBuilder(s).reverse().toString().substring(n % 2);
+            s += t;
+            if (Long.parseLong(s) % k != 0) continue;
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String ns = String.valueOf(chars);
+            if (!set.add(ns)) continue;
+            int[] cnt = new int[10];
+            for (char c : chars) cnt[c - '0']++;
+            long v = 1L * (n - cnt[0]) * f[n - 1];
+            for (int x : cnt) v /= f[x];
+            res += v;
+        }
+        return res;
     }
 }
 /**

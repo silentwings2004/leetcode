@@ -63,4 +63,7 @@ public class LC368_LargestDivisibleSubset {
  * 只要看相邻2个数能否整除即可
  * f(i) = max(f(i), f(i) + 1)
  * 求方案，倒推
+ *
+ * dp 选或不选: 相邻无关问题，代表题目为 背包
+ * 枚举选哪个: 适用于相邻相关的题目，代表题目为 LIS
  */

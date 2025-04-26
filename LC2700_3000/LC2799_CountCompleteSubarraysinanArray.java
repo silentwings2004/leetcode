@@ -46,19 +46,22 @@ public class LC2799_CountCompleteSubarraysinanArray {
     // S2: sliding window
     // time = O(n), space = O(n)
     public int countCompleteSubarrays2(int[] nums) {
-        int n = nums.length;
-        HashSet<Integer> set = new HashSet<>();
-        for (int x : nums) set.add(x);
-        int cnt = set.size();
+        int n = nums.length, m = 0;
+        int[] cnt = new int[2001];
+        for (int x : nums) {
+            if (cnt[x] == 0) m++;
+            cnt[x]++;
+        }
 
-        HashMap<Integer, Integer> map = new HashMap<>();
         int res = 0;
-        for (int i = 0, j = 0; i < n; i++) {
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
-            while (map.size() == cnt) {
-                int x = nums[j++];
-                map.put(x, map.get(x) - 1);
-                if (map.get(x) == 0) map.remove(x);
+        cnt = new int[2001];
+        for (int i = 0, j = 0, t = 0; i < n; i++) {
+            if (cnt[nums[i]] == 0) t++;
+            cnt[nums[i]]++;
+            while (t == m) {
+                cnt[nums[j]]--;
+                if (cnt[nums[j]] == 0) t--;
+                j++;
             }
             res += j;
         }

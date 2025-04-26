@@ -1,4 +1,4 @@
-package LC2700_3000;
+package LC3001_3300;
 import java.util.*;
 public class LC3189_MinimumMovestoGetaPeacefulBoard {
     /**

@@ -104,6 +104,18 @@ public class LC2140_SolvingQuestionsWithBrainpower {
         }
         return res;
     }
+
+    // S5
+    // time = O(n), space = O(n)
+    public long mostPoints5(int[][] questions) {
+        int n = questions.length;
+        long[] f = new long[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            int x = questions[i][0], y = questions[i][1];
+            f[i] = Math.max(f[i + 1], f[Math.min(i + y + 1, n)] + x);
+        }
+        return f[0];
+    }
 }
 /**
  * 看上去像House Robber

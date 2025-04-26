@@ -30,59 +30,57 @@ public class LC317_ShortestDistancefromAllBuildings {
      * @param grid
      * @return
      */
-    // time = O(m * n * k), space = O(m * n)
-    private static final int[][] DIRECTIONS = new int[][]{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    // time = O(m^2 * n^2), space = O(m * n)
+    final int inf = 0x3f3f3f3f;
+    int[][] grid, dist, cnt;
+    int m, n;
     public int shortestDistance(int[][] grid) {
-        // corner case
-        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) return 0;
-
-        int m = grid.length, n = grid[0].length;
-        Queue<Integer> queue = new LinkedList<>();
-        int[][] sumCost = new int[m][n];
+        this.grid = grid;
+        m = grid.length;
+        n = grid[0].length;
+        dist = new int[m][n];
+        cnt = new int[m][n];
+        int tot = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 1) {
-                    queue.offer(i * n + j);
-                    bfs(grid, queue, sumCost);
+                    tot++;
+                    bfs(i, j);
                 }
             }
         }
-        int min = Integer.MAX_VALUE;
+
+        int res = inf;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) min = Math.min(min, sumCost[i][j]);
+                if (grid[i][j] == 0 && cnt[i][j] == tot) {
+                    res = Math.min(res, dist[i][j]);
+                }
             }
         }
-        return min == Integer.MAX_VALUE ? -1 : min;
+        return res == inf ? -1 : res;
     }
 
-    private void bfs(int[][] grid, Queue<Integer> queue, int[][] sumCost) {
-        int m = grid.length, n = grid[0].length;
-        boolean[][] visited = new boolean[m][n];
-
-        int minLen = 1;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            while (size-- > 0) {
-                int cur = queue.poll();
-                int i = cur / n, j = cur % n;
-                for (int[] dir : DIRECTIONS) {
-                    int ii = i + dir[0];
-                    int jj = j + dir[1];
-                    if (ii >= 0 && ii < m && jj >= 0 && jj < n && !visited[ii][jj] && grid[ii][jj] == 0) {
-                        queue.offer(ii * n + jj);
-                        visited[ii][jj] = true;
-                        sumCost[ii][jj] += minLen;
-                    }
-                }
-            }
-            minLen++;
-        }
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (!visited[i][j] && grid[i][j] == 0) {
-                    grid[i][j] = 2;
+    private void bfs(int i, int j) {
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, i, j});
+        boolean[][] st = new boolean[m][n];
+        st[i][j] = true;
+        int[] dx = new int[]{-1, 0, 1, 0}, dy = new int[]{0, 1, 0, -1};
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            while (sz-- > 0) {
+                int[] t = q.poll();
+                int d = t[0], x = t[1], y = t[2];
+                for (int u = 0; u < 4; u++) {
+                    int a = x + dx[u], b = y + dy[u];
+                    if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                    if (grid[a][b] != 0) continue;
+                    if (st[a][b]) continue;
+                    dist[a][b] += d + 1;
+                    cnt[a][b]++;
+                    st[a][b] = true;
+                    q.offer(new int[]{d + 1, a, b});
                 }
             }
         }
