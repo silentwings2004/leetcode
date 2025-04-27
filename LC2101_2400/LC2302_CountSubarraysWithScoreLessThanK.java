@@ -25,22 +25,39 @@ public class LC2302_CountSubarraysWithScoreLessThanK {
      * @param k
      * @return
      */
+    // S1: binary search
     // time = O(nlogn), space = O(n)
     public long countSubarrays(int[] nums, long k) {
         int n = nums.length;
-        long[] presum = new long[n + 1];
-        for (int i = 1; i <= n; i++) presum[i] = presum[i - 1] + nums[i - 1];
-
+        long[] s = new long[n + 1];
+        for (int i = 1; i <= n; i++) s[i] = s[i - 1] + nums[i - 1];
         long res = 0;
-        for (int i = 1; i <= n; i++) {
-            if (nums[i - 1] >= k) continue;
-            int left = 0, right = i - 1;
-            while (left < right) {
-                int mid = left + (right - left) / 2;
-                if ((presum[i] - presum[mid]) * (i - mid) >= k) left = mid + 1;
-                else right = mid;
-            }
-            res += i - left;
+        for (int i = 0; i < n; i++) {
+            int r = get(s, i, n - 1, k);
+            res += r - i + 1;
+        }
+        return res;
+    }
+
+    private int get(long[] s, int l, int r, long k) {
+        int i = l;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if ((s[mid + 1] - s[i]) * (mid - i + 1) < k) l = mid;
+            else r = mid - 1;
+        }
+        return (s[r + 1] - s[i]) * (r - i + 1) < k ? r : r - 1;
+    }
+
+    // S2: two pointers (optimal)
+    // time = O(n), space = O(1)
+    public long countSubarrays2(int[] nums, long k) {
+        int n = nums.length;
+        long t = 0, res = 0;
+        for (int i = 0, j = 0; i < n; i++) {
+            t += nums[i];
+            while (t * (i - j + 1) >= k) t -= nums[j++];
+            res += i - j + 1;
         }
         return res;
     }
